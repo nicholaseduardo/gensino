@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Test xmlns="http://localhost">
+<Campus><campus id="1" nome="Campus 1"/></Campus>
+<Legenda/>
+<Bibliografia/>
+<Docente><campus id="1" nome="Nicholas"/><campus id="1" nome="Nicholas"/><campus id="1" nome="Nicholas"/><campus id="1" nome="Docente 1"/></Docente><Instrumento><instrumento id="1" nome="prova 1"/></Instrumento><Tecnica/></Test>
