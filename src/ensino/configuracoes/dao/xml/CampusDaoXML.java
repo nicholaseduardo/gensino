@@ -20,9 +20,9 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class CampusDao extends ConfiguracaoDaoXML {
+public class CampusDaoXML extends ConfiguracaoDaoXML {
 
-    public CampusDao() throws IOException, ParserConfigurationException, TransformerException {
+    public CampusDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("Campus", "campus");
     }
 

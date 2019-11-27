@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.patterns.AbstractController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.CampusFactory;
@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 public class CampusController extends AbstractController<Campus> {
         
     public CampusController() throws ParserConfigurationException, TransformerException, IOException {
-        super(new CampusDao());
+        super(new CampusDaoXML());
     }
 
     /**

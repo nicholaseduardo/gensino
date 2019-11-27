@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
-import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.AtividadeDao;
 import ensino.configuracoes.dao.xml.LegendaDao;
 import ensino.configuracoes.dao.xml.CalendarioDao;
@@ -56,7 +56,7 @@ public class AtividadeDaoIT {
     @BeforeClass
     public static void setUpClass() {
         try {
-            CampusDao campusDao = new CampusDao();
+            CampusDaoXML campusDao = new CampusDaoXML();
             Campus campus1 = new Campus(1, "Campus 1");
             Campus campus2 = new Campus(2, "Campus 2");
             campusDao.save(campus1);
@@ -83,7 +83,7 @@ public class AtividadeDaoIT {
     @AfterClass
     public static void tearDownClass() {
         try {
-            CampusDao campusDao = new CampusDao();
+            CampusDaoXML campusDao = new CampusDaoXML();
             campusDao.delete(campusDao.findById(1));
             campusDao.delete(campusDao.findById(2));
             campusDao.commit();

@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
-import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.CalendarioDao;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
@@ -30,11 +30,11 @@ import static org.junit.Assert.*;
 public class CalendarioDaoIT {
     private Campus campus1;
     private Campus campus2;
-    private CampusDao campusDao;
+    private CampusDaoXML campusDao;
     
     public CalendarioDaoIT() {
         try {
-            campusDao = new CampusDao();
+            campusDao = new CampusDaoXML();
         } catch (IOException ex) {
             Logger.getLogger(CursoDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParserConfigurationException ex) {
@@ -50,7 +50,7 @@ public class CalendarioDaoIT {
             Campus campus1 = new Campus(1, "Campus 1");
             Campus campus2 = new Campus(2, "Campus 2");
             
-            CampusDao campusDao = new CampusDao();
+            CampusDaoXML campusDao = new CampusDaoXML();
             campusDao.save(campus1);
             campusDao.save(campus2);
             campusDao.commit();
@@ -64,7 +64,7 @@ public class CalendarioDaoIT {
     @AfterClass
     public static void tearDownClass() {
         try {
-            CampusDao campusDao = new CampusDao();
+            CampusDaoXML campusDao = new CampusDaoXML();
             campusDao.delete(campusDao.findById(1));
             campusDao.delete(campusDao.findById(2));
             campusDao.commit();

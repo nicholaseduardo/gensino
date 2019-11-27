@@ -6,7 +6,7 @@
 package ensino.configuracoes.dao;
 
 import ensino.configuracoes.dao.xml.CursoDao;
-import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import java.io.IOException;
@@ -49,14 +49,14 @@ public class CampusDaoIT {
     }
 
     /**
-     * Test of list method, of class CampusDao.
+     * Test of list method, of class CampusDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            CampusDao instance = new CampusDao();
+            CampusDaoXML instance = new CampusDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -70,7 +70,7 @@ public class CampusDaoIT {
         try {
             System.out.println("save");
             Campus campus = new Campus(1, "Campus 1");
-            CampusDao instance = new CampusDao();
+            CampusDaoXML instance = new CampusDaoXML();
             instance.save(campus);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -83,7 +83,7 @@ public class CampusDaoIT {
     public void testUpdate() {
         try {
             System.out.println("update");
-            CampusDao instance = new CampusDao();
+            CampusDaoXML instance = new CampusDaoXML();
             Campus campus = (Campus) instance.findById(1);
             if (campus == null) {
                 campus = new Campus(null, "Campus 1");
@@ -110,14 +110,14 @@ public class CampusDaoIT {
     }
 
     /**
-     * Test of findById method, of class CampusDao.
+     * Test of findById method, of class CampusDaoXML.
      */
     @Test
     public void testFindById() {
         try {
             System.out.println("findById");
             Integer id = 1;
-            CampusDao instance = new CampusDao();
+            CampusDaoXML instance = new CampusDaoXML();
             Integer expResult = 1;
             Campus result = (Campus)instance.findById(id);
             assertNotNull(result);
@@ -135,7 +135,7 @@ public class CampusDaoIT {
     public void testDelete() {
         try {
             System.out.println("delete");
-            CampusDao instance = new CampusDao();
+            CampusDaoXML instance = new CampusDaoXML();
             Campus result = (Campus)instance.findById(1);
             instance.delete(result);
             instance.commit();

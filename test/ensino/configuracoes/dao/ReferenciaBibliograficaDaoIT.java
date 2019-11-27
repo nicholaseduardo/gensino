@@ -6,7 +6,7 @@
 package ensino.configuracoes.dao;
 
 import ensino.configuracoes.dao.xml.CursoDao;
-import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.BibliografiaDao;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
 import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDao;
@@ -48,7 +48,7 @@ public class ReferenciaBibliograficaDaoIT {
     public static void setUpClass() {
         try {
             Campus campus = new Campus(1, "Campus 1");
-            CampusDao campusDao = new CampusDao();
+            CampusDaoXML campusDao = new CampusDaoXML();
             campusDao.save(campus);
             campusDao.commit();
 
@@ -77,7 +77,7 @@ public class ReferenciaBibliograficaDaoIT {
     @AfterClass
     public static void tearDownClass() {
         try {
-            CampusDao campusDao = new CampusDao();
+            CampusDaoXML campusDao = new CampusDaoXML();
             campusDao.delete(campusDao.findById(1));
             campusDao.commit();
 
@@ -96,7 +96,7 @@ public class ReferenciaBibliograficaDaoIT {
     @Before
     public void setUp() {
         try {
-            CampusDao campusDao = new CampusDao();
+            CampusDaoXML campusDao = new CampusDaoXML();
             campus = (Campus) campusDao.findById(1);
             CursoDao cursoDao = new CursoDao();
             curso = cursoDao.findById(1, 1);
