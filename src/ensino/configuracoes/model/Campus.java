@@ -73,6 +73,10 @@ public class Campus extends BaseObject {
         return this.cursos;
     }
 
+    public void setCursos(List<Curso> cursos) {
+        this.cursos = cursos;
+    }
+
     public void addCurso(Curso c) {
         c.setCampus(this);
         cursos.add(c);
