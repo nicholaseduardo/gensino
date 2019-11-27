@@ -18,7 +18,16 @@ public interface DaoPattern<T> {
     public void delete(T o);
     public List<T> list();
     public List<T> list(String criteria);
-    public T findById(T id);
+    /**
+     * Search by Id
+     * @param id
+     * @return
+     * @deprecated
+     * @since 11-27-2019
+     */
+    @Deprecated
+    public T findById(Object id);
+    public T findById(Object ...ids);
     public void commit() throws TransformerException;
     public void rollback();
     public Integer nextVal();
