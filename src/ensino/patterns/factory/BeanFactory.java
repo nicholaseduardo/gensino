@@ -53,4 +53,12 @@ public interface BeanFactory<T> {
      * @return 
      */
     public Node toXml(Document doc, T o);
+    /**
+     * Recupera a Chave do Objeto.
+     * Recupera a chave primária do objeto seguindo o padrão de conversão de
+     * chave primária do módulo de armazenamento de dados via XML
+     * @param o
+     * @return 
+     */
+    public HashMap<String, Object> getXMLKeyFrom(T o);
 }
