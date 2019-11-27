@@ -16,20 +16,12 @@ import javax.xml.transform.TransformerException;
 public interface DaoPattern<T> {
     public void save(T o);
     public void delete(T o);
-    public boolean exists(T o);
     public List<T> list();
     public List<T> list(String criteria);
-    /**
-     * Search by Id
-     * @param id
-     * @return
-     * @deprecated
-     * @since 11-27-2019
-     */
-    @Deprecated
     public T findById(Object id);
     public T findById(Object ...ids);
-    public void commit() throws TransformerException;
+    public void startTransaction() throws Exception;
+    public void commit() throws Exception;
     public void rollback();
     public Integer nextVal();
 }
