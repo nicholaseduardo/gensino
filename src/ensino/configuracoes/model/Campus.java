@@ -8,10 +8,6 @@ package ensino.configuracoes.model;
 import ensino.patterns.BaseObject;
 import java.util.ArrayList;
 import java.util.List;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -76,20 +72,6 @@ public class Campus extends BaseObject {
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element elem = (Element) super.toXml(doc, "campus");
-        // Adiciona os cursos vinculados ao campus
-        cursos.forEach((curso) -> {
-            elem.appendChild(curso.toXml(doc));
-        });
-        // Adiciona os calendarios
-        calendarios.forEach((cal) -> {
-            elem.appendChild(cal.toXml(doc));
-        });
-        return elem;
     }
 
 }
