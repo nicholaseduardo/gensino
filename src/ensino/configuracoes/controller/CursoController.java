@@ -18,19 +18,19 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class CursoController extends AbstractController {
+public class CursoController extends AbstractController<Curso> {
     
     public CursoController() throws IOException, ParserConfigurationException, TransformerException {
         super(new CursoDao());
     }
 
     @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
+    public Curso salvar(HashMap<String, Object> params) throws TransformerException {
         return super.salvar(new Curso(params));
     }
 
     @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
+    public Curso remover(HashMap<String, Object> params) throws TransformerException {
         return super.remover(new Curso(params));
     }
     
