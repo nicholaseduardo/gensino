@@ -183,10 +183,14 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
         return getRootExpression() + "/" + nodeName;
     }
     
+    protected BeanFactory<T> getBeanFactory() {
+        return this.beanFactory;
+    }
+    
     protected void save(T o, String filter) {
         // recupera a raiz dos campi
         Element rootElement = (Element) getDataByExpression(getRootExpression());
-        // Se a raiz não existir, ela deve ser criada na raiz
+        // Se a raiz não existir,  ela deve ser criada na raiz
         if (rootElement == null) {
             Element parent = doc.getDocumentElement();
             rootElement = doc.createElement(xmlGroup);
@@ -262,6 +266,16 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
             return next + 1;
         }
         return 1;
+    }
+    
+    @Override
+    public Integer nextVal(Object ...params) {
+        return null;
+    }
+    
+    @Override
+    public Integer nextVal() {
+        return null;
     }
 
     /**
