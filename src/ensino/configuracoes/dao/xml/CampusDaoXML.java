@@ -31,6 +31,9 @@ public class CampusDaoXML extends AbstractDaoXML<Campus> {
     @Override
     public void save(Campus o) {
         String expression = String.format("@id=%d", o.getId());
+        if (o.getId() == null) {
+            o.setId(this.nextVal());
+        }
         super.save(o, expression);
     }
 
