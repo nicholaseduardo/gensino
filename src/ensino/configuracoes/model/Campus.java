@@ -57,18 +57,6 @@ public class Campus extends BaseObject {
         }
     }
 
-    public Campus(HashMap<String, Object> params) {
-        super(params);
-        cursos = (List<Curso>) params.get("cursos");
-        if (cursos == null) {
-            cursos = new ArrayList();
-        }
-        calendarios = (List<Calendario>) params.get("calendarios");
-        if (calendarios == null) {
-            calendarios = new ArrayList();
-        }
-    }
-
     public List<Curso> getCursos() {
         return this.cursos;
     }
