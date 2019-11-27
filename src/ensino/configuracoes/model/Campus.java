@@ -7,7 +7,6 @@ package ensino.configuracoes.model;
 
 import ensino.patterns.BaseObject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,34 +26,6 @@ public class Campus extends BaseObject {
         super();
         cursos = new ArrayList();
         calendarios = new ArrayList();
-    }
-
-    public Campus(Integer id, String nome) {
-        super(id, nome);
-        cursos = new ArrayList();
-        calendarios = new ArrayList();
-    }
-
-    public Campus(Element element) {
-        super(element);
-        cursos = new ArrayList();
-        calendarios = new ArrayList();
-
-        if (element.hasChildNodes()) {
-            NodeList nodeList = element.getChildNodes();
-            for (int j = 0; j < nodeList.getLength(); j++) {
-                Node child = nodeList.item(j);
-                if ("curso".equals(child.getNodeName())) {
-                    Curso curso = new Curso((Element) child);
-                    curso.setCampus(this);
-                    this.addCurso(curso);
-                } else if ("calendario".equals(child.getNodeName())) {
-                    Calendario calendario = new Calendario((Element) child);
-                    calendario.setCampus(this);
-                    this.addCalendario(calendario);
-                }
-            }
-        }
     }
 
     public List<Curso> getCursos() {
