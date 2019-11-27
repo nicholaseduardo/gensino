@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
  *
  * @author nicho
  */
-public abstract class XMLAbstractDao implements DaoPattern {
+public abstract class AbstractDao implements DaoPattern {
 
     /**
      * Nome do arquivo.
@@ -83,7 +83,7 @@ public abstract class XMLAbstractDao implements DaoPattern {
      * @throws javax.xml.parsers.ParserConfigurationException
      * @throws javax.xml.transform.TransformerException
      */
-    public XMLAbstractDao(String fileName, String pathObject, String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
+    public AbstractDao(String fileName, String pathObject, String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
         this.pathObject = pathObject;
         this.xmlGroup = xmlGroup;
         this.nodeName = nodeName;
@@ -103,7 +103,7 @@ public abstract class XMLAbstractDao implements DaoPattern {
      * @throws javax.xml.parsers.ParserConfigurationException
      * @throws javax.xml.transform.TransformerException
      */
-    public XMLAbstractDao(String fileName, String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
+    public AbstractDao(String fileName, String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
         this(fileName, "", xmlGroup, nodeName);
     }
 
@@ -145,7 +145,7 @@ public abstract class XMLAbstractDao implements DaoPattern {
                 save(object);
             });
         } catch (ParserConfigurationException | SAXException | IOException | ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(XMLAbstractDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AbstractDao.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -188,7 +188,7 @@ public abstract class XMLAbstractDao implements DaoPattern {
             }
         } catch (ParserConfigurationException | SAXException | IOException | TransformerException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(XMLAbstractDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AbstractDao.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -221,7 +221,7 @@ public abstract class XMLAbstractDao implements DaoPattern {
                 rootElement.appendChild(base.toXml(doc));
             }
         } catch (DOMException ex) {
-            Logger.getLogger(XMLAbstractDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AbstractDao.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -282,7 +282,7 @@ public abstract class XMLAbstractDao implements DaoPattern {
                 searched.getParentNode().removeChild(searched);
             }
         } catch (DOMException ex) {
-            Logger.getLogger(XMLAbstractDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AbstractDao.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -292,7 +292,7 @@ public abstract class XMLAbstractDao implements DaoPattern {
             XPathExpression xPathExpression = XMLHelper.createExpression(expression);
             return xPathExpression.evaluate(doc, XPathConstants.NODESET);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(XMLAbstractDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AbstractDao.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
@@ -309,7 +309,7 @@ public abstract class XMLAbstractDao implements DaoPattern {
             XPathExpression xPathExpression = XMLHelper.createExpression(expression);
             return (Node) xPathExpression.evaluate(doc, XPathConstants.NODE);
         } catch (XPathExpressionException ex) {
-            Logger.getLogger(XMLAbstractDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AbstractDao.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }

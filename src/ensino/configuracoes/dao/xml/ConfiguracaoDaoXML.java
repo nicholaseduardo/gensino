@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.dao.xml;
 
-import ensino.connection.XMLAbstractDao;
+import ensino.connection.AbstractDao;
 import ensino.patterns.BaseObject;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,7 +15,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public abstract class ConfiguracaoDaoXML<T> extends XMLAbstractDao {
+public abstract class ConfiguracaoDaoXML<T> extends AbstractDao {
     
     public ConfiguracaoDaoXML(String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
 //        super("test", "Test/", xmlGroup, nodeName);
