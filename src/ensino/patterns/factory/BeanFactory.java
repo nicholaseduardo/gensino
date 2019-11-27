@@ -6,7 +6,9 @@
 package ensino.patterns.factory;
 
 import java.util.HashMap;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *
@@ -41,4 +43,14 @@ public interface BeanFactory<T> {
      * @return 
      */
     public T getObject(HashMap<String, Object> p);
+    /**
+     * Converter para XML.
+     * Captura o objeto como referência e o converte em um objecto da classe
+     * <Node>
+     * @param doc   Objeto da classe <code>Document</code> relativo ao arquivo
+     *              XML que contém os dados da classe a ser convertida
+     * @param o     Instância da classe a ser convertida
+     * @return 
+     */
+    public Node toXml(Document doc, T o);
 }
