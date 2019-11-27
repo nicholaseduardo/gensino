@@ -5,7 +5,9 @@
  */
 package ensino.configuracoes.dao.xml;
 
+import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Legenda;
+import ensino.configuracoes.model.LegendaFactory;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,50 +23,31 @@ import org.w3c.dom.NodeList;
  * @author nicho
  */
 public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
+    
     public LegendaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
-        super("Legenda", "legenda");
+        super("legenda", "Legenda", "legenda", LegendaFactory.getInstance());
     }
 
     @Override
-    public List<Legenda> list(String criteria) {
-        loadXmlFile();
-        List<Legenda> legendaList = new ArrayList<>();
-        
-        NodeList nodeListResource = getDoc().getElementsByTagName(getNodeName());
-        for (int i = 0; i < nodeListResource.getLength(); i++) {
-            Element element = (Element) nodeListResource.item(i);
-            if (this.getXmlGroup().equals(element.getParentNode().getNodeName())) {
-                legendaList.add(new Legenda(element));
-            }
-        }
-
-        return legendaList;
-    }
-
-    /**
-     * Recupera os dados do legenda
-     * @param id Identificação do legenda
-     * @return Objeto da classe <code>Legenda</code>
-     */
-    @Override
-    public Object findById(Object id) {
-        loadXmlFile();
-        // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("/%s%s/%s[@id=%d]", 
-                getPathObject(), getXmlGroup(), getNodeName(), id);
-        Node searched = getDataByExpression(expression);
-        if (searched != null) {
-            return new Legenda((Element) searched);
-        }
-        return null;
+    public Legenda findById(Object... ids) {
+        return super.findById(ids[0]);
     }
     
     @Override
-    public void save(Object object) {
-        Legenda leg = (Legenda) object;
-        if (leg.getId() == null) {
-            leg.setId(super.nextVal());
-        }
-        super.save(leg);
+    public void save(Legenda o) {
+        String expression = String.format("@id=%d", o.getId());
+        super.save(o, expression);
+    }
+
+    @Override
+    public void delete(Legenda o) {
+        String filter = String.format("@id=%d", o.getId());
+        super.delete(filter);
+    }
+
+    @Override
+    public Integer nextVal() {
+        String expression = String.format("%s/@id", getRootExpression());
+        return super.nextVal(expression);
     }
 }
