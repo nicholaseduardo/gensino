@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
-import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
 import ensino.configuracoes.model.Campus;
@@ -58,7 +58,7 @@ public class UnidadeCurricularDaoIT {
             campusDao.save(campus2);
             campusDao.commit();
             
-            CursoDao cursoDao = new CursoDao();
+            CursoDaoXML cursoDao = new CursoDaoXML();
             for(int i = 0; i < 3; i++) {
                 Curso curso = new Curso(null, "Curso "+ (i+1));
                 campus1.addCurso(curso);

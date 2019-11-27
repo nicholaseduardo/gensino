@@ -5,11 +5,9 @@
  */
 package ensino.configuracoes.dao;
 
-import ensino.configuracoes.dao.xml.CursoDao;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.CampusFactory;
-import ensino.configuracoes.model.Curso;
 import ensino.patterns.factory.BeanFactory;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -102,18 +100,12 @@ public class CampusDaoIT {
                 instance.save(campus);
                 instance.commit();
             }
-//            CursoDao cursoDao = new CursoDao();
-//            Curso curso = new Curso(null, "curso 1");
-//            campus.addCurso(curso);
-//            cursoDao.save(curso);
-//            cursoDao.commit();
-//            assertEquals("insert curso", cursoDao.list().size(), 1);
             
             Campus campus2 = (Campus) instance.findById(1);
             campus2.setNome("Campus 12");
             instance.save(campus2);
             instance.commit();
-//            assertEquals("after update campus", cursoDao.list().size(), 1);
+            
             instance.delete(campus2);
             instance.commit();
         } catch (IOException | ParserConfigurationException | TransformerException ex) {

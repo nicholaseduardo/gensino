@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
-import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
@@ -78,14 +78,14 @@ public class CursoDaoIT {
     }
 
     /**
-     * Test of list method, of class CursoDao.
+     * Test of list method, of class CursoDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            CursoDao instance = new CursoDao();
+            CursoDaoXML instance = new CursoDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -95,7 +95,7 @@ public class CursoDaoIT {
     }
 
     /**
-     * Test of save method, of class CursoDao.
+     * Test of save method, of class CursoDaoXML.
      */
     @Test
     public void testSave() {
@@ -104,7 +104,7 @@ public class CursoDaoIT {
             Curso object = new Curso(1, "Curso 1", campus1);
             campus1.addCurso(object);
             
-            CursoDao instance = new CursoDao();
+            CursoDaoXML instance = new CursoDaoXML();
             instance.save(object);
             instance.commit();
             
@@ -122,13 +122,13 @@ public class CursoDaoIT {
     }
 
     /**
-     * Test of findById method, of class CursoDao.
+     * Test of findById method, of class CursoDaoXML.
      */
     @Test
     public void testFindById() {
         try {
             System.out.println("findById");
-            CursoDao instance = new CursoDao();
+            CursoDaoXML instance = new CursoDaoXML();
             Curso expected1 = campus1.getCursos().get(0);
             
             Curso result = (Curso)instance.findById(1, 1);
@@ -146,7 +146,7 @@ public class CursoDaoIT {
     public void testDelete() {
         try {
             System.out.println("delete");
-            CursoDao instance = new CursoDao();
+            CursoDaoXML instance = new CursoDaoXML();
             instance.delete(instance.findById(1, 1));
             instance.commit();
             assertEquals(1, instance.list().size());

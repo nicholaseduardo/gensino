@@ -7,7 +7,7 @@ package ensino.planejamento.dao;
 
 import ensino.configuracoes.dao.xml.CalendarioDao;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.DocenteDao;
 import ensino.configuracoes.dao.CursoDaoIT;
 import ensino.configuracoes.dao.xml.TecnicaDao;
@@ -58,7 +58,7 @@ public class MetodologiaDaoIT {
             campusDao.save(campus);
             campusDao.commit();
 
-            CursoDao cursoDao = new CursoDao();
+            CursoDaoXML cursoDao = new CursoDaoXML();
             Curso curso = new Curso(null, "Curso 1");
             campus.addCurso(curso);
             cursoDao.save(curso);

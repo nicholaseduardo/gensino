@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
-import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.BibliografiaDao;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
@@ -53,7 +53,7 @@ public class ReferenciaBibliograficaDaoIT {
             campusDao.commit();
 
             Curso curso = new Curso(1, "Curso 1", campus);
-            CursoDao cursoDao = new CursoDao();
+            CursoDaoXML cursoDao = new CursoDaoXML();
             cursoDao.save(curso);
             cursoDao.commit();
 
@@ -98,7 +98,7 @@ public class ReferenciaBibliograficaDaoIT {
         try {
             CampusDaoXML campusDao = new CampusDaoXML();
             campus = (Campus) campusDao.findById(1);
-            CursoDao cursoDao = new CursoDao();
+            CursoDaoXML cursoDao = new CursoDaoXML();
             curso = cursoDao.findById(1, 1);
             UnidadeCurricularDao unidadeDao = new UnidadeCurricularDao();
             unidade = unidadeDao.findById(1, 1, 1);
