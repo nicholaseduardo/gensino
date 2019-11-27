@@ -29,46 +29,8 @@ public class Curso extends BaseObject {
     private List<Turma> turmas;
 
     public Curso() {
-        this(null, "", null);
-    }
-    
-    public Curso(Integer id, String nome) {
-        this(id, nome, null);
-    }
-
-    public Curso(Integer id, String nome, Campus campus) {
-        super(id, nome);
-        this.imagem = null;
-        this.campus = campus;
         unidadesCurriculares = new ArrayList<>();
         turmas = new ArrayList<>();
-    }
-
-    public Curso(Element element) {
-        super(element);
-        unidadesCurriculares = new ArrayList<>();
-        turmas = new ArrayList<>();
-        
-        if (element.hasChildNodes()) {
-            NodeList nodeList = element.getChildNodes();
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node child = nodeList.item(i);
-                if ("unidadeCurricular".equals(child.getNodeName())) {
-                    addUnidadeCurricular(new UnidadeCurricular((Element) child));
-                } else if ("turma".equals(child.getNodeName())) {
-                    addTurma(new Turma((Element) child));
-                }
-            }
-        }
-    }
-
-    public Curso(HashMap<String, Object> params) {
-        super(params);
-        unidadesCurriculares = new ArrayList<>();
-        this.imagem = (ImageIcon) params.get("imagem");
-        this.campus = (Campus) params.get("campus");
-        this.unidadesCurriculares = (List<UnidadeCurricular>) params.get("unidadesCurriculares");
-        this.turmas = (List<Turma>) params.get("turmas");
     }
 
     public ImageIcon getImagem() {
@@ -128,27 +90,6 @@ public class Curso extends BaseObject {
 
     public void setTurmas(List<Turma> turmas) {
         this.turmas = turmas;
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element elem = doc.createElement("curso");
-        elem.setAttribute("id", id.toString());
-        elem.setAttribute("nome", nome);
-        
-        if (!unidadesCurriculares.isEmpty()) {
-            unidadesCurriculares.forEach((und) -> {
-                elem.appendChild(und.toXml(doc));
-            });
-        }
-        
-        if (!turmas.isEmpty()) {
-            turmas.forEach((turma) -> {
-                elem.appendChild(turma.toXml(doc));
-            });
-        }
-
-        return elem;
     }
 
     @Override
