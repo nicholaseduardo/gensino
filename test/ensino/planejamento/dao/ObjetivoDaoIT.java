@@ -5,7 +5,7 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.dao.xml.CalendarioDao;
+import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.DocenteDao;
@@ -69,7 +69,7 @@ public class ObjetivoDaoIT {
             docenteDao.save(docente);
             docenteDao.commit();
             
-            CalendarioDao calDao = new CalendarioDao();
+            CalendarioDaoXML calDao = new CalendarioDaoXML();
             Calendario calendario = calDao.findById(2019, 1);
             
             PlanoDeEnsino object = new PlanoDeEnsino(

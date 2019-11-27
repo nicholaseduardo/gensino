@@ -8,7 +8,7 @@ package ensino.configuracoes.dao;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.AtividadeDao;
 import ensino.configuracoes.dao.xml.LegendaDaoXML;
-import ensino.configuracoes.dao.xml.CalendarioDao;
+import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
@@ -36,13 +36,13 @@ import static org.junit.Assert.*;
 public class AtividadeDaoIT {
     private Calendario cal1;
     private Calendario cal2;
-    private CalendarioDao calendarioDao;
+    private CalendarioDaoXML calendarioDao;
     private Legenda legenda;
     private LegendaDaoXML legDao;
     
     public AtividadeDaoIT() {
         try {
-            calendarioDao = new CalendarioDao();
+            calendarioDao = new CalendarioDaoXML();
             legDao = new LegendaDaoXML();
         } catch (IOException ex) {
             Logger.getLogger(AtividadeDaoIT.class.getName()).log(Level.SEVERE, null, ex);
@@ -63,7 +63,7 @@ public class AtividadeDaoIT {
             campusDao.save(campus2);
             campusDao.commit();
             
-            CalendarioDao calDao = new CalendarioDao();
+            CalendarioDaoXML calDao = new CalendarioDaoXML();
             Calendario cal1 = new Calendario(2019, campus1);
             Calendario cal2 = new Calendario(2019, campus2);
             calDao.save(cal1);

@@ -5,7 +5,7 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.dao.xml.CalendarioDao;
+import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.dao.xml.ConfiguracaoDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
@@ -44,7 +44,7 @@ public class PlanoDeEnsinoDao extends ConfiguracaoDaoXML {
             PlanoDeEnsino planoDeEnsino = new PlanoDeEnsino(elemPlano);
             Campus campus = new Campus(elemCampus);
             // force update composites
-            CalendarioDao calendarioDao = new CalendarioDao();
+            CalendarioDaoXML calendarioDao = new CalendarioDaoXML();
             // recupera o calendario com as ultimas atualizacoes
             Calendario calendario = calendarioDao.findById(planoDeEnsino.getCalendario().getAno(), 
                     campus.getId());

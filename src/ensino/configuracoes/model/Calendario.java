@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class Calendario implements XMLInterface {
+public class Calendario {
 
     private Integer ano;
     private String descricao;
@@ -23,58 +23,10 @@ public class Calendario implements XMLInterface {
     private List<PeriodoLetivo> periodosLetivos;
     private List<PlanoDeEnsino> planosDeEnsino;
 
-    public Calendario(Integer ano, Campus campus) {
-        this(ano, "Calendario " + ano.toString(), campus);
-    }
-
-    public Calendario(Integer ano, String descricao) {
-        this(ano, descricao, null);
-    }
-
-    public Calendario(Integer ano, String descricao, Campus campus) {
-        this.ano = ano;
-        this.descricao = descricao;
-        this.campus = campus;
-
+    public Calendario() {
         atividades = new ArrayList();
         periodosLetivos = new ArrayList();
         planosDeEnsino = new ArrayList();
-    }
-
-    public Calendario(Element e) {
-        this(
-                Integer.parseInt(e.getAttribute("ano")),
-                e.getAttribute("descricao")
-        );
-        if (e.hasChildNodes()) {
-            NodeList nodeList = e.getChildNodes();
-            try {
-                for (int i = 0; i < nodeList.getLength(); i++) {
-                    Node child = nodeList.item(i);
-                    if ("atividade".equals(child.getNodeName())) {
-                        this.addAtividade(new Atividade((Element) child));
-                    } else if ("periodoLetivo".equals(child.getNodeName())) {
-                        this.addPeriodoLetivo(new PeriodoLetivo((Element) child));
-                    }
-                    if ("planoDeEnsino".equals(child.getNodeName())) {
-                        this.addPlanoDeEnsino(new PlanoDeEnsino((Element) child));
-                    }
-                }
-            } catch (ParseException ex) {
-                Logger.getLogger(Calendario.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    public Calendario(HashMap<String, Object> params) {
-        this(
-                (Integer) params.get("ano"),
-                (String) params.get("descricao"),
-                (Campus) params.get("campus")
-        );
-        this.atividades = (List<Atividade>) params.get("atividades");
-        this.periodosLetivos = (List<PeriodoLetivo>) params.get("periodosLetivos");
-        this.planosDeEnsino = (List<PlanoDeEnsino>) params.get("planoDeEnsino");
     }
 
     public Integer getAno() {
@@ -155,40 +107,6 @@ public class Calendario implements XMLInterface {
 
     public void setPlanosDeEnsino(List<PlanoDeEnsino> planosDeEnsino) {
         this.planosDeEnsino = planosDeEnsino;
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element element = doc.createElement("calendario");
-        element.setAttribute("ano", ano.toString());
-        element.setAttribute("descricao", descricao);
-
-        atividades.forEach((at) -> {
-            element.appendChild(at.toXml(doc));
-        });
-
-        periodosLetivos.forEach((semestre) -> {
-            element.appendChild(semestre.toXml(doc));
-        });
-
-        /**
-         * Os planos de ensino não serão armazenados no calendário porque ele
-         * já tem uma relação de agregação com o plano de ensino e sua ativação
-         * gerará um loop de dados
-         */
-//        planosDeEnsino.forEach((planoDeEnsino) -> {
-//            element.appendChild(planoDeEnsino.toXml(doc));
-//        });
-
-        return element;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-        map.put("ano", ano);
-        map.put("campus", campus);
-        return map;
     }
 
     @Override

@@ -108,7 +108,7 @@ public class AtividadeDao extends ConfiguracaoDaoXML {
             Element rootElement = (Element) getDataByExpression(expression);
             // se a raiz não existir, emitir erro
             if (rootElement == null) {
-                Logger.getLogger(CalendarioDao.class.getName()).log(Level.SEVERE, null,
+                Logger.getLogger(CalendarioDaoXML.class.getName()).log(Level.SEVERE, null,
                         new Exception("Não existe o campus no arquivo"));
             }   expression += String.format("/%s[@id=%d]", getNodeName(), atividade.getId());
             Node searchedNode = getDataByExpression(expression);

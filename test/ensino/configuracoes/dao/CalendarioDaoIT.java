@@ -6,7 +6,7 @@
 package ensino.configuracoes.dao;
 
 import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.configuracoes.dao.xml.CalendarioDao;
+import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import java.io.IOException;
@@ -86,14 +86,14 @@ public class CalendarioDaoIT {
     }
 
     /**
-     * Test of list method, of class CalendarioDao.
+     * Test of list method, of class CalendarioDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            CalendarioDao instance = new CalendarioDao();
+            CalendarioDaoXML instance = new CalendarioDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -107,7 +107,7 @@ public class CalendarioDaoIT {
     }
 
     /**
-     * Test of save method, of class CalendarioDao.
+     * Test of save method, of class CalendarioDaoXML.
      */
     @Test
     public void testSave() {
@@ -116,7 +116,7 @@ public class CalendarioDaoIT {
             Calendario object = new Calendario(2019, campus1);
             campus1.addCalendario(object);
             
-            CalendarioDao instance = new CalendarioDao();
+            CalendarioDaoXML instance = new CalendarioDaoXML();
             instance.save(object);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -134,13 +134,13 @@ public class CalendarioDaoIT {
     }
 
     /**
-     * Test of findById method, of class CalendarioDao.
+     * Test of findById method, of class CalendarioDaoXML.
      */
     @Test
     public void testFindById_Integer_Integer() {
         try {
             System.out.println("findById");
-            CalendarioDao instance = new CalendarioDao();
+            CalendarioDaoXML instance = new CalendarioDaoXML();
             Calendario expResult = campus1.getCalendarios().get(0);
             Calendario result = instance.findById(2019, 1);
             assertNotNull(result);
@@ -161,7 +161,7 @@ public class CalendarioDaoIT {
     public void testDelete() {
         try {
             System.out.println("delete");
-            CalendarioDao instance = new CalendarioDao();
+            CalendarioDaoXML instance = new CalendarioDaoXML();
             instance.delete(instance.findById(2019, 1));
             instance.commit();
         } catch (IOException | TransformerException ex) {

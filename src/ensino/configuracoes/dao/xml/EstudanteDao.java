@@ -84,7 +84,7 @@ public class EstudanteDao extends ConfiguracaoDaoXML {
         Element rootElement = (Element) getDataByExpression(expression);
         // se a raiz não existir, emitir erro
         if (rootElement == null) {
-            Logger.getLogger(CalendarioDao.class.getName()).log(Level.SEVERE, null,
+            Logger.getLogger(CalendarioDaoXML.class.getName()).log(Level.SEVERE, null,
                     new Exception("Não existe o campus no arquivo"));
         }
         // Verifica se o objeto existe

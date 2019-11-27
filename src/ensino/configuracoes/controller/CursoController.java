@@ -32,7 +32,7 @@ public class CursoController extends AbstractController<Curso> {
      * @return 
      */
     public Curso buscarPor(Integer id, Integer campusId) {
-        CursoDaoXML cursoDao = (CursoDaoXML) super.getDao();
+        DaoPattern<Curso> cursoDao = super.getDao();
         return cursoDao.findById(id, campusId);
     }
     
@@ -43,7 +43,7 @@ public class CursoController extends AbstractController<Curso> {
      */
     public List<Curso> listar(Integer campusId) {
         DaoPattern<Curso> cursoDao = super.getDao();
-        String filter = String.format("//Curso/curso[@campus=%d]", campusId);
+        String filter = String.format("//Curso/curso[@campusId=%d]", campusId);
         return cursoDao.list(filter);
     }
     

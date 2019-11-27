@@ -7,11 +7,11 @@ package ensino.configuracoes.model;
 
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.patterns.factory.BeanFactory;
+import ensino.planejamento.model.PlanoDeEnsino;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,33 +20,34 @@ import org.w3c.dom.Node;
  *
  * @author nicho
  */
-public class CursoFactory implements BeanFactory<Curso> {
+public class CalendarioFactory implements BeanFactory<Calendario> {
 
-    private static CursoFactory instance = null;
+    private static CalendarioFactory instance = null;
 
-    private CursoFactory() {
+    private CalendarioFactory() {
     }
 
-    public static CursoFactory getInstance() {
+    public static CalendarioFactory getInstance() {
         if (instance == null) {
-            instance = new CursoFactory();
+            instance = new CalendarioFactory();
         }
         return instance;
     }
 
     @Override
-    public Curso getObject(Object... args) {
-        Curso c = new Curso();
+    public Calendario getObject(Object... args) {
+        Calendario c = new Calendario();
         int index = 0;
-        c.setId((Integer) args[index++]);
-        c.setNome((String) args[index++]);
+        c.setAno((Integer) args[index++]);
+        c.setDescricao((String) args[index++]);
         return c;
     }
 
     @Override
-    public Curso getObject(Element e) {
-        Integer id = Integer.parseInt(e.getAttribute("id"));
-        Curso c = getObject(id, e.getAttribute("nome"));
+    public Calendario getObject(Element e) {
+        Calendario c = getObject(
+                Integer.parseInt(e.getAttribute("ano")),
+                e.getAttribute("descricao"));
         try {
             // Identifica o objeto Pai (Campus)
             String sParentId = e.getAttribute("campusId");
@@ -62,22 +63,22 @@ public class CursoFactory implements BeanFactory<Curso> {
     }
 
     @Override
-    public Curso getObject(HashMap<String, Object> p) {
-        Curso c = getObject(p.get("id"), p.get("nome"));
-        c.setImagem((ImageIcon) p.get("imagem"));
+    public Calendario getObject(HashMap<String, Object> p) {
+        Calendario c = getObject(p.get("ano"), p.get("descricao"));
         c.setCampus((Campus) p.get("campus"));
-        c.setUnidadesCurriculares((List<UnidadeCurricular>) p.get("unidadesCurriculares"));
-        c.setTurmas((List<Turma>) p.get("turmas"));
-
+        c.setAtividade((List<Atividade>) p.get("atividades"));
+        c.setPeriodosLetivos((List<PeriodoLetivo>) p.get("periodosLetivos"));
+        c.setPlanosDeEnsino((List<PlanoDeEnsino>) p.get("planoDeEnsino"));
+        
         return c;
     }
 
     @Override
-    public Node toXml(Document doc, Curso o) {
-        Element e = doc.createElement("curso");
-        e.setAttribute("id", o.getId().toString());
+    public Node toXml(Document doc, Calendario o) {
+        Element e = doc.createElement("calendario");
+        e.setAttribute("ano", o.getAno().toString());
         e.setAttribute("campusId", o.getCampus().getId().toString());
-        e.setAttribute("nome", o.getNome());
+        e.setAttribute("descricao", o.getDescricao());
 
         return e;
     }

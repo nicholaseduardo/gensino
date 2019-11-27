@@ -5,9 +5,10 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.CalendarioDao;
+import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.patterns.AbstractController;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -18,33 +19,30 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class CalendarioController extends AbstractController {
+public class CalendarioController extends AbstractController<Calendario> {
     public CalendarioController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new CalendarioDao());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Calendario(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Calendario(params));
+        super(new CalendarioDaoXML());
     }
     
+    /**
+     * Busca um calendario pela sua chave primária
+     * @param ano       ano do calendario
+     * @param campusId  Id do campus
+     * @return 
+     */
     public Calendario buscarPor(Integer ano, Integer campusId) {
-        CalendarioDao calDal = (CalendarioDao)super.getDao();
+        DaoPattern<Calendario> calDal = (CalendarioDaoXML)super.getDao();
         return calDal.findById(ano, campusId);
     }
     
-    @Override
-    public List<Calendario> listar() {
-        return (List<Calendario>) super.getDao().list();
-    }
-    
+    /**
+     * Lista os calendarios de um determinado campus
+     * @param campusId  Identificação do campus
+     * @return 
+     */
     public List<Calendario> listar(Integer campusId) {
-        CalendarioDao calDal = (CalendarioDao)super.getDao();
-        return calDal.list(campusId);
+        DaoPattern<Calendario> dao = super.getDao();
+        String filter = String.format("//Calendario/calendario[@campusId=%d]", campusId);
+        return dao.list(filter);
     }
 }
