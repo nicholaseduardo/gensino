@@ -183,7 +183,7 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
         return getRootExpression() + "/" + nodeName;
     }
     
-    protected void save(T o, String expressionFilter) {
+    protected void save(T o, String filter) {
         // recupera a raiz dos campi
         Element rootElement = (Element) getDataByExpression(getRootExpression());
         // Se a raiz não existir, ela deve ser criada na raiz
@@ -194,7 +194,8 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
         }
 
         // verifica se o objeto já existe
-        Node searchedNode = getDataByExpression(expressionFilter);
+        Node searchedNode = getDataByExpression(String.format("%s[%s]",
+                getObjectExpression(), filter));
         Node toSave = beanFactory.toXml(doc, o);
         if (searchedNode != null) {
             rootElement.replaceChild(toSave, searchedNode);
@@ -207,10 +208,11 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
     /**
      * Remoção do objeto.
      * Remove uma instância do objeto do arquivo XML
-     * @param expressionFilter 
+     * @param filter 
      */
-    protected void delete(String expressionFilter) {
-        Node searched = getDataByExpression(expressionFilter);
+    protected void delete(String filter) {
+        Node searched = getDataByExpression(String.format("%s[%s]", 
+                getObjectExpression(), filter));
 
         // removendo o item do xml se existir
         if (searched != null) {
