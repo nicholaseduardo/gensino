@@ -7,12 +7,10 @@ package ensino.connection;
 
 import ensino.defaults.XMLInterface;
 import ensino.patterns.DaoPattern;
+import ensino.patterns.factory.BeanFactory;
 import ensino.util.helper.XMLHelper;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +23,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,7 +33,7 @@ import org.xml.sax.SAXException;
  *
  * @author nicho
  */
-public abstract class AbstractDaoXML implements DaoPattern {
+public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
 
     /**
      * Nome do arquivo.
@@ -71,6 +68,7 @@ public abstract class AbstractDaoXML implements DaoPattern {
      * dos dados dentro do arquivo XML
      */
     private final String nodeName;
+    private final BeanFactory<T> beanFactory;
     /**
      * Cria a classe e abre o arquivo xml
      *
@@ -79,15 +77,18 @@ public abstract class AbstractDaoXML implements DaoPattern {
      * finalizado com um '/'
      * @param xmlGroup Nome da classe de agrupamento
      * @param nodeName Nome do nó ao qual será agrupado em xmlGroup
+     * @param beanFactory
      * @throws java.io.IOException
      * @throws javax.xml.parsers.ParserConfigurationException
      * @throws javax.xml.transform.TransformerException
      */
-    public AbstractDaoXML(String fileName, String pathObject, String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
+    public AbstractDaoXML(String fileName, String pathObject, String xmlGroup, 
+            String nodeName, BeanFactory beanFactory) throws IOException, ParserConfigurationException, TransformerException {
         this.pathObject = pathObject;
         this.xmlGroup = xmlGroup;
         this.nodeName = nodeName;
         this.filename = fileName;
+        this.beanFactory = beanFactory;
 
         this.loadXmlFile();
     }
@@ -99,70 +100,14 @@ public abstract class AbstractDaoXML implements DaoPattern {
      * @param fileName Nome do arquivo sem a extensão.
      * @param xmlGroup Nome da classe de agrupamento
      * @param nodeName Nome do nó ao qual será agrupado em xmlGroup
+     * @param beanFactory
      * @throws java.io.IOException
      * @throws javax.xml.parsers.ParserConfigurationException
      * @throws javax.xml.transform.TransformerException
      */
-    public AbstractDaoXML(String fileName, String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
-        this(fileName, "", xmlGroup, nodeName);
-    }
-
-    /**
-     * Inicialização dos dados padrões do Gensino. Deve ser utilizado apenas uma
-     * vez.
-     *
-     * @param classname Nome da classe a ser importada
-     */
-    public void init(String classname) {
-        Class c = null;
-        List list = new ArrayList();
-        try {
-            // Cria a classe em tempo de execução
-            c = Class.forName(classname);
-            // Cria a classe que contém os construtores da classe recém criada
-            Constructor contructor = c.getConstructor();
-
-            // Carrega os dados do arquivo
-            InputStream in = getClass().getResourceAsStream(filename + ".xml");
-            doc = XMLHelper.open(in);
-            String expression = String.format("/%s%s/%s",
-                    getPathObject(), getXmlGroup(), getNodeName());
-
-            Object searched = getDataExpression(expression);
-            if (searched != null && searched instanceof NodeList) {
-                NodeList nodeList = (NodeList) searched;
-                for (int i = 0; i < nodeList.getLength(); i++) {
-                    Node node = nodeList.item(i);
-                    // Cria o objeto com base no construtor
-                    Object obj = contructor.newInstance((Element) node);
-                    list.add(obj);
-                }
-            }
-            // força a abertura do arquivo XML na máquina do usuário
-            loadXmlFile();
-            // inicia o cadastro dos itens que não existem
-            list.forEach((object) -> {
-                save(object);
-            });
-        } catch (ParserConfigurationException | SAXException | IOException | ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(AbstractDaoXML.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public Document getDoc() {
-        return doc;
-    }
-
-    public String getPathObject() {
-        return pathObject;
-    }
-
-    public String getXmlGroup() {
-        return xmlGroup;
-    }
-
-    public String getNodeName() {
-        return nodeName;
+    public AbstractDaoXML(String fileName, String xmlGroup, String nodeName,
+            BeanFactory beanFactory) throws IOException, ParserConfigurationException, TransformerException {
+        this(fileName, "", xmlGroup, nodeName, beanFactory);
     }
 
     protected void loadXmlFile() {
@@ -188,100 +133,6 @@ public abstract class AbstractDaoXML implements DaoPattern {
             }
         } catch (ParserConfigurationException | SAXException | IOException | TransformerException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(AbstractDaoXML.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    /**
-     * Salva os dados do <b>Object</b> no arquivo XML. Neste caso, se o objeto
-     * não existe, ele é adicionado Do contrário, ele é apenas atualizado.
-     *
-     * @param object Objeto da classe <b>BaseObject</b>
-     */
-    @Override
-    public void save(Object object) {
-        try {
-            XMLInterface base = (XMLInterface) object;
-            // recupera a raiz dos campi
-            String expression = String.format("/%s%s", pathObject, xmlGroup);
-            Element rootElement = (Element) getDataByExpression(expression);
-            // Se a raiz não existir, ela deve ser criada na raiz
-            if (rootElement == null) {
-                Element parent = doc.getDocumentElement();
-                rootElement = doc.createElement(xmlGroup);
-                parent.appendChild(rootElement);
-            }
-
-            // verifica se o objeto já existe
-            Node searchedNode = getElementBy(base.getKey());
-            if (searchedNode != null) {
-                rootElement.replaceChild(base.toXml(doc), searchedNode);
-            } else {
-                // adiciona o elemento a raiz principal
-                rootElement.appendChild(base.toXml(doc));
-            }
-        } catch (DOMException ex) {
-            Logger.getLogger(AbstractDaoXML.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private String getIds(HashMap<String, Object> ids) {
-        StringBuilder tagId = new StringBuilder();
-        int count = 0;
-        for (Map.Entry<String, Object> entry : ids.entrySet()) {
-            if (count > 0) {
-                tagId.append(" and ");
-            }
-            if (entry.getValue() instanceof XMLInterface) {
-                XMLInterface oInternal = (XMLInterface) entry.getValue();
-                tagId.append(getIds(oInternal.getKey()));
-            } else {
-                String sid = String.format("@%s=%s", entry.getKey(), entry.getValue());
-                tagId.append(sid);
-            }
-            count++;
-        }
-        return tagId.toString();
-    }
-
-    /**
-     * Recupera o contexto XML do objeto a ser modificado pela sua TAGNAME
-     *
-     * @param ids Objeto da classe HashMap contendo uma string para o nome da
-     * TAG e um objeto contendo o valor a ser comparado
-     * @return
-     */
-    protected Node getElementBy(HashMap<String, Object> ids) {
-        StringBuilder tagId = new StringBuilder();
-
-        tagId.append(getIds(ids));
-        // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("//%s%s/%s[%s]",
-                getPathObject(), getXmlGroup(), getNodeName(), tagId.toString());
-        Node searched = getDataByExpression(expression);
-        if (searched != null) {
-            return searched;
-        }
-        return null;
-    }
-
-    /**
-     * Remove os dados do <b>Object</b> do arquivo XML
-     *
-     * @param object Objeto da classe <b>BaseObject</b>
-     */
-    @Override
-    public void delete(Object object) {
-        try {
-            loadXmlFile();
-            XMLInterface base = (XMLInterface) object;
-            Node searched = getElementBy(base.getKey());
-
-            // removendo o item do xml se existir
-            if (searched != null) {
-                searched.getParentNode().removeChild(searched);
-            }
-        } catch (DOMException ex) {
             Logger.getLogger(AbstractDaoXML.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -313,6 +164,69 @@ public abstract class AbstractDaoXML implements DaoPattern {
             return null;
         }
     }
+    /**
+     * Expressão do root.
+     * Método utilizado para retornar a expressão de filtro em XMLParser da raíz
+     * do objeto
+     * @return 
+     */
+    protected String getRootExpression() {
+        return String.format("//%s%s", pathObject, xmlGroup);
+    }
+    /**
+     * Expressão do objeto.
+     * Método utilizado para retornar a expressão de filtro em XMLParser da
+     * representação do objeto no arquivo XML.
+     * @return 
+     */
+    protected String getObjectExpression() {
+        return getRootExpression() + "/" + nodeName;
+    }
+    
+    protected void save(T o, String expressionFilter) {
+        // recupera a raiz dos campi
+        Element rootElement = (Element) getDataByExpression(getRootExpression());
+        // Se a raiz não existir, ela deve ser criada na raiz
+        if (rootElement == null) {
+            Element parent = doc.getDocumentElement();
+            rootElement = doc.createElement(xmlGroup);
+            parent.appendChild(rootElement);
+        }
+
+        // verifica se o objeto já existe
+        Node searchedNode = getDataByExpression(expressionFilter);
+        Node toSave = beanFactory.toXml(doc, o);
+        if (searchedNode != null) {
+            rootElement.replaceChild(toSave, searchedNode);
+        } else {
+            // adiciona o elemento a raiz principal
+            rootElement.appendChild(toSave);
+        }
+    }
+    
+    /**
+     * Remoção do objeto.
+     * Remove uma instância do objeto do arquivo XML
+     * @param expressionFilter 
+     */
+    protected void delete(String expressionFilter) {
+        Node searched = getDataByExpression(expressionFilter);
+
+        // removendo o item do xml se existir
+        if (searched != null) {
+            searched.getParentNode().removeChild(searched);
+        }
+    }
+
+    /**
+     * Inicio de transação.
+     * Deve ser utilizado para abrir o arquivo XML para leitura/escrita
+     * @throws Exception 
+     */
+    @Override
+    public void startTransaction() throws Exception {
+        loadXmlFile();
+    }
 
     /**
      * Efetiva a gravação dos dados no arquivo
@@ -331,13 +245,15 @@ public abstract class AbstractDaoXML implements DaoPattern {
     public void rollback() {
         loadXmlFile();
     }
-
-    @Override
-    public Integer nextVal() {
-        loadXmlFile();
-        String expression = String.format("/%s%s/%s/@id",
-                getPathObject(), getXmlGroup(), getNodeName());
-        NodeList nodeList = (NodeList) getDataExpression(expression);
+    /**
+     * Próxima chave.
+     * Recupera o valor da próxima chave primária no formato de número inteiro
+     * @param expressionFilter  Expressão XMLParser usada para buscar o dado no
+     *                          arquivo XML.
+     * @return 
+     */
+    protected Integer nextVal(String expressionFilter) {
+        NodeList nodeList = (NodeList) getDataExpression(expressionFilter);
         Integer length = nodeList.getLength();
         if (length > 0) {
             Integer next = Integer.parseInt(nodeList.item(length - 1).getNodeValue());
@@ -346,8 +262,47 @@ public abstract class AbstractDaoXML implements DaoPattern {
         return 1;
     }
 
+    /**
+     * Recupera os dados do campus
+     *
+     * @param id Identificação do objeto
+     * @return 
+     */
     @Override
-    public List<?> list() {
+    public T findById(Object id) {
+        // Cria mecanismo para buscar o conteudo no xml
+        String expression = String.format("%s[@id=%d]", getObjectExpression(),id);
+        Node searched = getDataByExpression(expression);
+        if (searched != null) {
+            return beanFactory.getObject((Element) searched);
+        }
+        return null;
+    }
+
+    @Override
+    public List<T> list(String criteria) {
+        if (doc == null) {
+            return null;
+        }
+        String expression = criteria;
+        if ("".equals(criteria)) {
+            expression = getObjectExpression();
+        }
+
+        List<T> list = new ArrayList<>();
+        Object searched = getDataExpression(expression);
+        if (searched != null && searched instanceof NodeList) {
+            NodeList nodeList = (NodeList) searched;
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                list.add(beanFactory.getObject((Element) nodeList.item(i)));
+            }
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<T> list() {
         loadXmlFile();
         return list("");
     }
