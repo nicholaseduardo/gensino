@@ -8,7 +8,9 @@ package ensino.configuracoes.dao;
 import ensino.configuracoes.dao.xml.CursoDao;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.model.Campus;
+import ensino.configuracoes.model.CampusFactory;
 import ensino.configuracoes.model.Curso;
+import ensino.patterns.factory.BeanFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +30,10 @@ import static org.junit.Assert.*;
  * @author nicho
  */
 public class CampusDaoIT {
+    private BeanFactory<Campus> beanFactory;
     
     public CampusDaoIT() {
+        beanFactory = CampusFactory.getInstance();
     }
     
     @BeforeClass
@@ -57,10 +61,14 @@ public class CampusDaoIT {
             System.out.println("list");
             String criteria = "";
             CampusDaoXML instance = new CampusDaoXML();
+            instance.startTransaction();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
+            instance.commit();
             assertEquals(expResult, result);
         } catch (IOException | ParserConfigurationException | TransformerException ex) {
+            Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -69,12 +77,15 @@ public class CampusDaoIT {
     public void testSave() {
         try {
             System.out.println("save");
-            Campus campus = new Campus(1, "Campus 1");
+            Campus campus = beanFactory.getObject(1, "Campus 1");
             CampusDaoXML instance = new CampusDaoXML();
+            instance.startTransaction();
             instance.save(campus);
             instance.commit();
             assertEquals(1, instance.list().size());
         } catch (TransformerException | IOException | ParserConfigurationException ex) {
+            Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -84,27 +95,30 @@ public class CampusDaoIT {
         try {
             System.out.println("update");
             CampusDaoXML instance = new CampusDaoXML();
+            instance.startTransaction();
             Campus campus = (Campus) instance.findById(1);
             if (campus == null) {
-                campus = new Campus(null, "Campus 1");
+                campus = beanFactory.getObject(null, "Campus 1");
                 instance.save(campus);
                 instance.commit();
             }
-            CursoDao cursoDao = new CursoDao();
-            Curso curso = new Curso(null, "curso 1");
-            campus.addCurso(curso);
-            cursoDao.save(curso);
-            cursoDao.commit();
-            assertEquals("insert curso", cursoDao.list().size(), 1);
+//            CursoDao cursoDao = new CursoDao();
+//            Curso curso = new Curso(null, "curso 1");
+//            campus.addCurso(curso);
+//            cursoDao.save(curso);
+//            cursoDao.commit();
+//            assertEquals("insert curso", cursoDao.list().size(), 1);
             
             Campus campus2 = (Campus) instance.findById(1);
             campus2.setNome("Campus 12");
             instance.save(campus2);
             instance.commit();
-            assertEquals("after update campus", cursoDao.list().size(), 1);
+//            assertEquals("after update campus", cursoDao.list().size(), 1);
             instance.delete(campus2);
             instance.commit();
         } catch (IOException | ParserConfigurationException | TransformerException ex) {
+            Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -118,8 +132,10 @@ public class CampusDaoIT {
             System.out.println("findById");
             Integer id = 1;
             CampusDaoXML instance = new CampusDaoXML();
+            instance.startTransaction();
             Integer expResult = 1;
             Campus result = (Campus)instance.findById(id);
+            instance.commit();
             assertNotNull(result);
             assertEquals(expResult, result.getId());
         } catch (IOException ex) {
@@ -127,6 +143,8 @@ public class CampusDaoIT {
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TransformerException ex) {
+            Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -136,13 +154,17 @@ public class CampusDaoIT {
         try {
             System.out.println("delete");
             CampusDaoXML instance = new CampusDaoXML();
+            instance.startTransaction();
             Campus result = (Campus)instance.findById(1);
             instance.delete(result);
             instance.commit();
+            instance.startTransaction();
             assertEquals(0, instance.list().size());
         } catch (TransformerException | IOException ex) {
             Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParserConfigurationException ex) {
+            Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
             Logger.getLogger(CampusDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
