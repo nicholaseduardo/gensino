@@ -5,6 +5,8 @@
  */
 package ensino.util;
 
+import ensino.util.types.Periodo;
+import ensino.util.types.MesesDeAno;
 import ensino.configuracoes.controller.AtividadeController;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;

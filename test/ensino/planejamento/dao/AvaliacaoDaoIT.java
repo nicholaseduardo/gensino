@@ -20,7 +20,7 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.configuracoes.model.Docente;
 import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.util.Bimestre;
+import ensino.util.types.Bimestre;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;

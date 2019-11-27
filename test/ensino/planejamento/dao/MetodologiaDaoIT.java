@@ -22,7 +22,7 @@ import ensino.configuracoes.model.Docente;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.util.TipoMetodo;
+import ensino.util.types.TipoMetodo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

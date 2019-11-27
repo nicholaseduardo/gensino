@@ -28,7 +28,7 @@ import ensino.planejamento.view.models.MetodologiaTableModel;
 import ensino.planejamento.view.models.ObjetivoComboBoxModel;
 import ensino.planejamento.view.models.ObjetivoTableModel;
 import ensino.planejamento.view.renderer.MetodologiaCellRenderer;
-import ensino.util.TipoMetodo;
+import ensino.util.types.TipoMetodo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;

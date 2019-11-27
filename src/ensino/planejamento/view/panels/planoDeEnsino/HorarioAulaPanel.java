@@ -16,7 +16,7 @@ import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.HorarioAulaTableModel;
 import ensino.planejamento.view.renderer.HorarioAulaCellRenderer;
-import ensino.util.Turno;
+import ensino.util.types.Turno;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;

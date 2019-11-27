@@ -4,7 +4,7 @@ import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.defaults.XMLInterface;
 import ensino.helpers.DateHelper;
-import ensino.util.Bimestre;
+import ensino.util.types.Bimestre;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;

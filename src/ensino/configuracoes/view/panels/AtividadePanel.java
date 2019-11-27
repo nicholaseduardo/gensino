@@ -12,7 +12,7 @@ import ensino.configuracoes.model.Calendario;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.defaults.DefaultFormPanel;
 import ensino.util.JCalendario;
-import ensino.util.MesesDeAno;
+import ensino.util.types.MesesDeAno;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.IOException;

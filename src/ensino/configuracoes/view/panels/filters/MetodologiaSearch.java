@@ -15,7 +15,7 @@ import ensino.configuracoes.view.panels.TecnicaPanel;
 import ensino.defaults.DefaultFormPanel;
 import ensino.patterns.AbstractController;
 import ensino.patterns.BaseObject;
-import ensino.util.TipoMetodo;
+import ensino.util.types.TipoMetodo;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;

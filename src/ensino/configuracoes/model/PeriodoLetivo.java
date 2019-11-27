@@ -1,7 +1,7 @@
 package ensino.configuracoes.model;
 
 import ensino.defaults.XMLInterface;
-import ensino.util.Periodo;
+import ensino.util.types.Periodo;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;

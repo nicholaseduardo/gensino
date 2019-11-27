@@ -14,7 +14,7 @@ import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.FrequenciaTableModel;
 import ensino.planejamento.view.renderer.DiarioFrequenciaCellRenderer;
-import ensino.util.Presenca;
+import ensino.util.types.Presenca;
 import ensino.util.VerticalTableHeaderCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Dimension;

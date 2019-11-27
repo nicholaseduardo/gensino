@@ -2,7 +2,7 @@ package ensino.configuracoes.model;
 
 import ensino.defaults.XMLInterface;
 import ensino.helpers.DateHelper;
-import ensino.util.Periodo;
+import ensino.util.types.Periodo;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.HashMap;

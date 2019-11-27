@@ -17,7 +17,7 @@ import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.DiarioTableModel;
 import ensino.planejamento.view.renderer.DiarioCellRenderer;
-import ensino.util.TipoAula;
+import ensino.util.types.TipoAula;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;

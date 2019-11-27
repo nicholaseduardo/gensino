@@ -7,7 +7,7 @@ package ensino.planejamento.model;
 
 import ensino.configuracoes.model.Estudante;
 import ensino.defaults.XMLInterface;
-import ensino.util.Presenca;
+import ensino.util.types.Presenca;
 import java.util.HashMap;
 import java.util.Objects;
 import org.w3c.dom.Document;

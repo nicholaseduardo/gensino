@@ -15,7 +15,7 @@ import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Legenda;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.util.Periodo;
+import ensino.util.types.Periodo;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.IOException;

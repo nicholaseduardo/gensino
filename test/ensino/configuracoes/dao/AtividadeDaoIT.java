@@ -9,7 +9,7 @@ import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Legenda;
-import ensino.util.Periodo;
+import ensino.util.types.Periodo;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;

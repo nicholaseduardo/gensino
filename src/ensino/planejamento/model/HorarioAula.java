@@ -6,7 +6,7 @@
 package ensino.planejamento.model;
 
 import ensino.defaults.XMLInterface;
-import ensino.util.Turno;
+import ensino.util.types.Turno;
 import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.Date;

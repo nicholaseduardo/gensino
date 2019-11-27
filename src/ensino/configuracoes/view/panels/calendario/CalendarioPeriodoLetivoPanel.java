@@ -16,7 +16,7 @@ import ensino.configuracoes.view.panels.CalendarioPanel;
 import ensino.configuracoes.view.renderer.PeriodoLetivoCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.util.Periodo;
+import ensino.util.types.Periodo;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;

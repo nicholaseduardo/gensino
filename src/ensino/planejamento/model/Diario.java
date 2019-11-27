@@ -8,7 +8,7 @@ package ensino.planejamento.model;
 import ensino.configuracoes.model.Estudante;
 import ensino.defaults.XMLInterface;
 import ensino.helpers.DateHelper;
-import ensino.util.TipoAula;
+import ensino.util.types.TipoAula;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;

@@ -5,7 +5,7 @@ import ensino.configuracoes.model.Recurso;
 import ensino.configuracoes.model.Tecnica;
 import ensino.defaults.XMLInterface;
 import ensino.patterns.BaseObject;
-import ensino.util.TipoMetodo;
+import ensino.util.types.TipoMetodo;
 import java.util.HashMap;
 import java.util.Objects;
 import org.w3c.dom.Document;
