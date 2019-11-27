@@ -534,7 +534,7 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
                 JOptionPane.showMessageDialog(frame,
                         "Dados excluídos com sucesso!", "Confirmação",
                         JOptionPane.INFORMATION_MESSAGE);
-            } catch (TransformerException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(frame, ex.getMessage(),
                         "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -602,7 +602,7 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
 
                 componentsControl(0);
                 showPanelInCard(CARD_LIST);
-            } catch (TransformerException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(frame, ex.getMessage(),
                         "Aviso", JOptionPane.WARNING_MESSAGE);

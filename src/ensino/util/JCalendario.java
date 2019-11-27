@@ -512,12 +512,10 @@ public class JCalendario extends JPanel {
                                 JOptionPane.showMessageDialog(null,
                                         "Dados excluídos com sucesso!", "Confirmação",
                                         JOptionPane.INFORMATION_MESSAGE);
-                            } catch (TransformerException ex) {
+                            } catch (Exception ex) {
                                 Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
                                 JOptionPane.showMessageDialog(null, ex.getMessage(),
                                         "Aviso", JOptionPane.WARNING_MESSAGE);
-                            } catch (IOException | ParserConfigurationException ex) {
-                                Logger.getLogger(JCalendario.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
                         }

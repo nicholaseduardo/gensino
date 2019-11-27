@@ -10,7 +10,6 @@ import ensino.patterns.AbstractController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.CampusFactory;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -20,23 +19,7 @@ import javax.xml.transform.TransformerException;
  */
 public class CampusController extends AbstractController<Campus> {
         
-    public CampusController() throws ParserConfigurationException, TransformerException, IOException {
-        super(new CampusDaoXML());
-    }
-
-    /**
-     *
-     * @param params
-     * @return 
-     * @throws TransformerException
-     */
-    @Override
-    public Campus salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(CampusFactory.getInstance().getObject(params));
-    }
-
-    @Override
-    public Campus remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(CampusFactory.getInstance().getObject(params));
+    public CampusController() throws IOException, ParserConfigurationException, TransformerException {
+        super(new CampusDaoXML(), CampusFactory.getInstance());
     }
 }

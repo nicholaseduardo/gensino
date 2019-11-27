@@ -7,10 +7,9 @@ package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.LegendaDaoXML;
 import ensino.configuracoes.model.Legenda;
+import ensino.configuracoes.model.LegendaFactory;
 import ensino.patterns.AbstractController;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -18,29 +17,9 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class LegendaController extends AbstractController {
+public class LegendaController extends AbstractController<Legenda> {
+
     public LegendaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new LegendaDaoXML());
-    }
-    
-    @Override
-    public List<Legenda> listar() {
-        return (List<Legenda>) getDao().list();
-    }
-
-    /**
-     *
-     * @param params
-     * @return 
-     * @throws TransformerException
-     */
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Legenda(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Legenda(params));
+        super(new LegendaDaoXML(), LegendaFactory.getInstance());
     }
 }

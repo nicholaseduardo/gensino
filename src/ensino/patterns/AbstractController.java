@@ -5,6 +5,7 @@
  */
 package ensino.patterns;
 
+import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,10 +17,19 @@ import javax.xml.transform.TransformerException;
  * @author santos
  */
 public abstract class AbstractController<T> {
-
+    private BeanFactory<T> beanFactory;
     private DaoPattern<T> dao;
     
     public AbstractController() {}
+
+    public AbstractController(DaoPattern<T> dao) {
+        this.dao = dao;
+    }
+    
+    public AbstractController(DaoPattern<T> dao, BeanFactory<T> beanFactory) {
+        this(dao);
+        this.beanFactory = beanFactory;
+    }
     
     protected void setDao(DaoPattern<T> dao) {
         this.dao = dao;
@@ -29,17 +39,15 @@ public abstract class AbstractController<T> {
         return this.dao;
     }
 
-    public AbstractController(DaoPattern<T> dao) {
-        this.dao = dao;
+    public T salvar(HashMap<String, Object> params) throws Exception {
+        return this.salvar(beanFactory.getObject(params));
     }
 
-    public abstract T salvar(HashMap<String, Object> params) throws TransformerException;
-
-    public T salvar(T object) throws TransformerException {
+    public T salvar(T object) throws Exception {
         dao.save(object);
         try {
             dao.commit();
-        } catch (TransformerException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
             dao.rollback();
             throw ex;
@@ -47,13 +55,15 @@ public abstract class AbstractController<T> {
         return object;
     }
 
-    public abstract Object remover(HashMap<String, Object> params) throws TransformerException;
+    public T remover(HashMap<String, Object> params) throws Exception {
+        return this.remover(beanFactory.getObject(params));
+    }
 
-    public T remover(T object) throws TransformerException {
+    public T remover(T object) throws Exception {
         dao.delete(object);
         try {
             dao.commit();
-        } catch (TransformerException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
             dao.rollback();
             throw ex;
