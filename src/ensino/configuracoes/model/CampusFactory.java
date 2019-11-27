@@ -45,21 +45,7 @@ public class CampusFactory implements BeanFactory<Campus> {
     public Campus getObject(Element e) {
         Integer id = Integer.parseInt(e.getAttribute("id"));
         Campus campus = getObject(id, e.getAttribute("nome"));
-        if (e.hasChildNodes()) {
-            NodeList nodeList = e.getChildNodes();
-            for (int j = 0; j < nodeList.getLength(); j++) {
-                Node child = nodeList.item(j);
-                if ("curso".equals(child.getNodeName())) {
-                    Curso curso = new Curso((Element) child);
-                    curso.setCampus(campus);
-                    campus.addCurso(curso);
-                } else if ("calendario".equals(child.getNodeName())) {
-                    Calendario calendario = new Calendario((Element) child);
-                    calendario.setCampus(campus);
-                    campus.addCalendario(calendario);
-                }
-            }
-        }
+        
         return campus;
     }
 
@@ -84,14 +70,7 @@ public class CampusFactory implements BeanFactory<Campus> {
         Element e = doc.createElement("campus");
         e.setAttribute("id", o.getId().toString());
         e.setAttribute("nome", o.getNome());
-        // Adiciona os cursos vinculados ao campus
-        o.getCursos().forEach((curso) -> {
-            e.appendChild(curso.toXml(doc));
-        });
-        // Adiciona os calendarios
-        o.getCalendarios().forEach((cal) -> {
-            e.appendChild(cal.toXml(doc));
-        });
+        
         return e;
     }
 }
