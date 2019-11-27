@@ -9,6 +9,7 @@ import ensino.patterns.factory.BeanFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -76,5 +77,21 @@ public class CampusFactory implements BeanFactory<Campus> {
         }
         campus.setCalendarios(calendarios);
         return campus;
+    }
+
+    @Override
+    public Node toXml(Document doc, Campus o) {
+        Element e = doc.createElement("campus");
+        e.setAttribute("id", o.getId().toString());
+        e.setAttribute("nome", o.getNome());
+        // Adiciona os cursos vinculados ao campus
+        o.getCursos().forEach((curso) -> {
+            e.appendChild(curso.toXml(doc));
+        });
+        // Adiciona os calendarios
+        o.getCalendarios().forEach((cal) -> {
+            e.appendChild(cal.toXml(doc));
+        });
+        return e;
     }
 }
