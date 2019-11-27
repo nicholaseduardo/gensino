@@ -15,27 +15,27 @@ import javax.xml.transform.TransformerException;
  *
  * @author santos
  */
-public abstract class AbstractController {
+public abstract class AbstractController<T> {
 
-    private DaoPattern dao;
+    private DaoPattern<T> dao;
     
     public AbstractController() {}
     
-    protected void setDao(DaoPattern dao) {
+    protected void setDao(DaoPattern<T> dao) {
         this.dao = dao;
     }
     
-    protected DaoPattern getDao() {
+    protected DaoPattern<T> getDao() {
         return this.dao;
     }
 
-    public AbstractController(DaoPattern dao) {
+    public AbstractController(DaoPattern<T> dao) {
         this.dao = dao;
     }
 
-    public abstract Object salvar(HashMap<String, Object> params) throws TransformerException;
+    public abstract T salvar(HashMap<String, Object> params) throws TransformerException;
 
-    public Object salvar(Object object) throws TransformerException {
+    public T salvar(T object) throws TransformerException {
         dao.save(object);
         try {
             dao.commit();
@@ -49,7 +49,7 @@ public abstract class AbstractController {
 
     public abstract Object remover(HashMap<String, Object> params) throws TransformerException;
 
-    public Object remover(Object object) throws TransformerException {
+    public T remover(T object) throws TransformerException {
         dao.delete(object);
         try {
             dao.commit();
@@ -61,15 +61,19 @@ public abstract class AbstractController {
         return object;
     }
 
-    public List<?> listar() {
+    public List<T> listar() {
         return dao.list();
     }
 
-    public List<?> listar(String criteria) {
+    public List<T> listar(String criteria) {
         return dao.list(criteria);
     }
 
-    public Object buscarPorId(Object id) {
+    public T buscarPorId(Object id) {
         return dao.findById(id);
+    }
+    
+    public T buscarPorId(Object ...ids) {
+        return dao.findById(ids);
     }
 }
