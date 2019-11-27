@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.PeriodoLetivoDao;
+import ensino.configuracoes.dao.xml.PeriodoLetivoDao;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.patterns.AbstractController;
 import java.io.IOException;

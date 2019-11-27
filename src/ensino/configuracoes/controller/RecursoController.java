@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.RecursoDao;
+import ensino.configuracoes.dao.xml.RecursoDao;
 import ensino.configuracoes.model.Recurso;
 import ensino.patterns.AbstractController;
 import java.io.IOException;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.dao;
+package ensino.configuracoes.dao.xml;
 
 import ensino.configuracoes.model.Bibliografia;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class BibliografiaDao extends ConfiguracaoDao {
+public class BibliografiaDao extends ConfiguracaoDaoXML {
 
     public BibliografiaDao() throws IOException, ParserConfigurationException, TransformerException {
         super("Bibliografia", "bibliografia");

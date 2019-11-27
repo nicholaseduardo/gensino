@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.dao;
+package ensino.configuracoes.dao.xml;
 
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Campus;
@@ -24,7 +24,7 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class CalendarioDao extends ConfiguracaoDao {
+public class CalendarioDao extends ConfiguracaoDaoXML {
 
     public CalendarioDao() throws IOException, ParserConfigurationException, TransformerException {
         super("Campus/campus", "calendario");

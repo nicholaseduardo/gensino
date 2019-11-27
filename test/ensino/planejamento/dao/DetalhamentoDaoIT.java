@@ -5,12 +5,12 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.dao.CalendarioDao;
-import ensino.configuracoes.dao.CampusDao;
-import ensino.configuracoes.dao.CursoDao;
-import ensino.configuracoes.dao.DocenteDao;
+import ensino.configuracoes.dao.xml.CalendarioDao;
+import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.DocenteDao;
 import ensino.configuracoes.dao.CursoDaoIT;
-import ensino.configuracoes.dao.UnidadeCurricularDao;
+import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;

@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.dao;
+package ensino.configuracoes.dao.xml;
 
-import ensino.configuracoes.model.Tecnica;
+import ensino.configuracoes.model.Recurso;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,22 +19,22 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class TecnicaDao extends ConfiguracaoDao {
+ public class RecursoDao extends ConfiguracaoDaoXML {
 
-    public TecnicaDao() throws IOException, ParserConfigurationException, TransformerException {
-        super("Tecnica", "tecnica");
+    public RecursoDao() throws IOException, ParserConfigurationException, TransformerException {
+        super("Recurso", "recurso");
     }
 
     @Override
-    public List<Tecnica> list(String criteria) {
+    public List<Recurso> list(String criteria) {
         loadXmlFile();
-        List<Tecnica> lista = new ArrayList<>();
+        List<Recurso> lista = new ArrayList<>();
         
         NodeList nodeListResource = getDoc().getElementsByTagName(getNodeName());
         for (int i = 0; i < nodeListResource.getLength(); i++) {
             Element element = (Element) nodeListResource.item(i);
             if (this.getXmlGroup().equals(element.getParentNode().getNodeName())) {
-                lista.add(new Tecnica(element));
+                lista.add(new Recurso(element));
             }
         }
 
@@ -49,7 +49,7 @@ public class TecnicaDao extends ConfiguracaoDao {
                 getPathObject(), getXmlGroup(), getNodeName(), id);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
-            return new Tecnica((Element) searched);
+            return new Recurso((Element) searched);
         }
         return null;
     }

@@ -5,8 +5,8 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.TurmaDao;
-import ensino.configuracoes.dao.UnidadeCurricularDao;
+import ensino.configuracoes.dao.xml.TurmaDao;
+import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;

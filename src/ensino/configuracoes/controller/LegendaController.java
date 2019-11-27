@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.LegendaDao;
+import ensino.configuracoes.dao.xml.LegendaDao;
 import ensino.configuracoes.model.Legenda;
 import ensino.patterns.AbstractController;
 import java.io.IOException;

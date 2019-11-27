@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
+import ensino.configuracoes.dao.xml.LegendaDao;
 import ensino.configuracoes.model.Legenda;
 import java.awt.Color;
 import java.io.IOException;

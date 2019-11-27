@@ -6,7 +6,7 @@
 package ensino.planejamento.dao;
 
 import ensino.configuracoes.model.Docente;
-import ensino.configuracoes.dao.DocenteDao;
+import ensino.configuracoes.dao.xml.DocenteDao;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

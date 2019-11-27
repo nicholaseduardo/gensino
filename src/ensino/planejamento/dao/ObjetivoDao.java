@@ -5,7 +5,7 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.dao.ConfiguracaoDao;
+import ensino.configuracoes.dao.xml.ConfiguracaoDaoXML;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class ObjetivoDao extends ConfiguracaoDao {
+public class ObjetivoDao extends ConfiguracaoDaoXML {
 
     public ObjetivoDao() throws IOException, ParserConfigurationException, TransformerException {
         super("Campus/campus", "objetivo");

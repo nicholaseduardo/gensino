@@ -5,6 +5,11 @@
  */
 package ensino.configuracoes.dao;
 
+import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.BibliografiaDao;
+import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
+import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDao;
 import ensino.configuracoes.model.Bibliografia;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;

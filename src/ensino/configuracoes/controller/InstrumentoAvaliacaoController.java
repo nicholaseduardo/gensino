@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.InstrumentoAvaliacaoDao;
+import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDao;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.patterns.AbstractController;
 import java.io.IOException;

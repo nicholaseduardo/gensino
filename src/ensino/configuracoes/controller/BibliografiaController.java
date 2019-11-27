@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.BibliografiaDao;
+import ensino.configuracoes.dao.xml.BibliografiaDao;
 import ensino.configuracoes.model.Bibliografia;
 import ensino.patterns.AbstractController;
 import java.io.IOException;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.dao;
+package ensino.configuracoes.dao.xml;
 
 import ensino.connection.XMLAbstractDao;
 import ensino.patterns.BaseObject;
@@ -15,9 +15,9 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public abstract class ConfiguracaoDao extends XMLAbstractDao {
+public abstract class ConfiguracaoDaoXML extends XMLAbstractDao {
     
-    public ConfiguracaoDao(String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
+    public ConfiguracaoDaoXML(String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
 //        super("test", "Test/", xmlGroup, nodeName);
         super("configuracao", "Configuracao/", xmlGroup, nodeName);
     }

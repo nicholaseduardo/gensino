@@ -5,8 +5,8 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.dao.CalendarioDao;
-import ensino.configuracoes.dao.ConfiguracaoDao;
+import ensino.configuracoes.dao.xml.CalendarioDao;
+import ensino.configuracoes.dao.xml.ConfiguracaoDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class PlanoDeEnsinoDao extends ConfiguracaoDao {
+public class PlanoDeEnsinoDao extends ConfiguracaoDaoXML {
 
     public PlanoDeEnsinoDao() throws IOException, ParserConfigurationException, TransformerException {
         super("Campus/campus", "planoDeEnsino");

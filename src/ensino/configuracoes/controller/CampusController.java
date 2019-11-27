@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.CampusDao;
+import ensino.configuracoes.dao.xml.CampusDao;
 import ensino.patterns.AbstractController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.CampusFactory;
@@ -18,7 +18,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class CampusController extends AbstractController {
+public class CampusController extends AbstractController<Campus> {
         
     public CampusController() throws ParserConfigurationException, TransformerException, IOException {
         super(new CampusDao());
@@ -31,12 +31,12 @@ public class CampusController extends AbstractController {
      * @throws TransformerException
      */
     @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
+    public Campus salvar(HashMap<String, Object> params) throws TransformerException {
         return super.salvar(CampusFactory.getInstance().getObject(params));
     }
 
     @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
+    public Campus remover(HashMap<String, Object> params) throws TransformerException {
         return super.remover(CampusFactory.getInstance().getObject(params));
     }
 }

@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.dao;
+package ensino.configuracoes.dao.xml;
 
-import ensino.configuracoes.model.InstrumentoAvaliacao;
+import ensino.configuracoes.model.Tecnica;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,22 +19,22 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class InstrumentoAvaliacaoDao  extends ConfiguracaoDao {
+public class TecnicaDao extends ConfiguracaoDaoXML {
 
-    public InstrumentoAvaliacaoDao() throws IOException, ParserConfigurationException, TransformerException {
-        super("Instrumento", "instrumento");
+    public TecnicaDao() throws IOException, ParserConfigurationException, TransformerException {
+        super("Tecnica", "tecnica");
     }
 
     @Override
-    public List<InstrumentoAvaliacao> list(String criteria) {
+    public List<Tecnica> list(String criteria) {
         loadXmlFile();
-        List<InstrumentoAvaliacao> lista = new ArrayList<>();
+        List<Tecnica> lista = new ArrayList<>();
         
         NodeList nodeListResource = getDoc().getElementsByTagName(getNodeName());
         for (int i = 0; i < nodeListResource.getLength(); i++) {
             Element element = (Element) nodeListResource.item(i);
             if (this.getXmlGroup().equals(element.getParentNode().getNodeName())) {
-                lista.add(new InstrumentoAvaliacao(element));
+                lista.add(new Tecnica(element));
             }
         }
 
@@ -49,8 +49,9 @@ public class InstrumentoAvaliacaoDao  extends ConfiguracaoDao {
                 getPathObject(), getXmlGroup(), getNodeName(), id);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
-            return new InstrumentoAvaliacao((Element) searched);
+            return new Tecnica((Element) searched);
         }
         return null;
     }
+    
 }

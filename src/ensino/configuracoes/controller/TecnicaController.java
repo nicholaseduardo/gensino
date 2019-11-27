@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.TecnicaDao;
+import ensino.configuracoes.dao.xml.TecnicaDao;
 import ensino.configuracoes.model.Tecnica;
 import ensino.patterns.AbstractController;
 import java.io.IOException;

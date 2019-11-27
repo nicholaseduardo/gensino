@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
+import ensino.configuracoes.dao.xml.BibliografiaDao;
 import ensino.configuracoes.model.Bibliografia;
 import java.io.IOException;
 import java.util.ArrayList;

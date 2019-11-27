@@ -5,6 +5,9 @@
  */
 package ensino.configuracoes.dao;
 
+import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;

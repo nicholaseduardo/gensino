@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.CalendarioDao;
+import ensino.configuracoes.dao.xml.CalendarioDao;
 import ensino.configuracoes.model.Calendario;
 import ensino.patterns.AbstractController;
 import java.io.IOException;

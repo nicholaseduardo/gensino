@@ -5,6 +5,10 @@
  */
 package ensino.configuracoes.dao;
 
+import ensino.configuracoes.dao.xml.CampusDao;
+import ensino.configuracoes.dao.xml.AtividadeDao;
+import ensino.configuracoes.dao.xml.LegendaDao;
+import ensino.configuracoes.dao.xml.CalendarioDao;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;

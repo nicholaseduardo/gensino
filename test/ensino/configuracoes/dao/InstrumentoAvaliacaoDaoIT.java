@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
+import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDao;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import java.io.IOException;
 import java.util.ArrayList;

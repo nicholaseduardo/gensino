@@ -5,7 +5,7 @@
  */
 package ensino.mvc.view.main;
 
-import ensino.configuracoes.dao.RecursoDao;
+import ensino.configuracoes.dao.xml.RecursoDao;
 import ensino.configuracoes.model.Recurso;
 import java.io.IOException;
 import java.util.List;

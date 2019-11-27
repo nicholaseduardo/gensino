@@ -5,6 +5,8 @@
  */
 package ensino.configuracoes.dao;
 
+import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.CampusDao;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import java.io.IOException;

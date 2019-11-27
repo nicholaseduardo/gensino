@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.SemanaLetivaDao;
+import ensino.configuracoes.dao.xml.SemanaLetivaDao;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.patterns.AbstractController;
 import java.io.IOException;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.dao;
+package ensino.configuracoes.dao.xml;
 
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.SemanaLetiva;
@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class SemanaLetivaDao extends ConfiguracaoDao {
+public class SemanaLetivaDao extends ConfiguracaoDaoXML {
 
     public SemanaLetivaDao() throws IOException, ParserConfigurationException, TransformerException {
         super("Campus/campus", "semanaLetiva");
