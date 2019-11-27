@@ -20,7 +20,7 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class CampusDaoXML extends ConfiguracaoDaoXML {
+public class CampusDaoXML extends ConfiguracaoDaoXML<Campus> {
 
     public CampusDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("Campus", "campus");
@@ -58,7 +58,7 @@ public class CampusDaoXML extends ConfiguracaoDaoXML {
      * @return Objeto da classe <code>Campus</code>
      */
     @Override
-    public Object findById(Object id) {
+    public Campus findById(Object id) {
         loadXmlFile();
         // Cria mecanismo para buscar o conteudo no xml
         String expression = String.format("/%s%s/%s[@id=%d]",

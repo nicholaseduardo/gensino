@@ -15,7 +15,7 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public abstract class ConfiguracaoDaoXML extends XMLAbstractDao {
+public abstract class ConfiguracaoDaoXML<T> extends XMLAbstractDao {
     
     public ConfiguracaoDaoXML(String xmlGroup, String nodeName) throws IOException, ParserConfigurationException, TransformerException {
 //        super("test", "Test/", xmlGroup, nodeName);
@@ -31,6 +31,11 @@ public abstract class ConfiguracaoDaoXML extends XMLAbstractDao {
             }
         }
         super.save(object);
+    }
+
+    @Override
+    public T findById(Object... ids) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
