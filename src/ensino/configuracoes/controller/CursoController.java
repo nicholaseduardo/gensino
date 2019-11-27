@@ -5,9 +5,10 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.CursoDao;
+import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.model.Curso;
 import ensino.patterns.AbstractController;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -21,17 +22,7 @@ import javax.xml.transform.TransformerException;
 public class CursoController extends AbstractController<Curso> {
     
     public CursoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new CursoDao());
-    }
-
-    @Override
-    public Curso salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Curso(params));
-    }
-
-    @Override
-    public Curso remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Curso(params));
+        super(new CursoDaoXML());
     }
     
     /**
@@ -41,13 +32,8 @@ public class CursoController extends AbstractController<Curso> {
      * @return 
      */
     public Curso buscarPor(Integer id, Integer campusId) {
-        CursoDao cursoDao = (CursoDao) super.getDao();
+        CursoDaoXML cursoDao = (CursoDaoXML) super.getDao();
         return cursoDao.findById(id, campusId);
-    }
-    
-    @Override
-    public List<Curso> listar() {
-        return (List<Curso>) super.getDao().list();
     }
     
     /**
@@ -56,8 +42,9 @@ public class CursoController extends AbstractController<Curso> {
      * @return 
      */
     public List<Curso> listar(Integer campusId) {
-        CursoDao cursoDao = (CursoDao) super.getDao();
-        return cursoDao.list(campusId);
+        DaoPattern<Curso> cursoDao = super.getDao();
+        String filter = String.format("//Curso/curso[@campus=%d]", campusId);
+        return cursoDao.list(filter);
     }
     
 }
