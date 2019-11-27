@@ -5,43 +5,19 @@
  */
 package ensino.patterns;
 
-import ensino.defaults.XMLInterface;
-import java.util.HashMap;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
  * @author nicho
  */
-public abstract class BaseObject implements XMLInterface {
+public abstract class BaseObject {
     protected Integer id;
     protected String nome;
     
     public BaseObject() {
         id = null;
         nome = "";
-    }
-    
-    public BaseObject(Integer id, String nome) {
-        this.id = id;
-        this.nome = nome;
-    }
-    
-    public BaseObject(Element element) {
-        this(
-                Integer.parseInt(element.getAttribute("id")),
-                element.getAttribute("nome")
-        );
-    }
-    
-    public BaseObject(HashMap<String, Object> params) {
-        this(
-                (Integer)params.get("id"),
-                (String)params.get("nome")
-        );
     }
 
     public Integer getId() {
@@ -58,23 +34,6 @@ public abstract class BaseObject implements XMLInterface {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-    
-    /**
-     * Converte o objeto da classe <code>Object</code> em um 
-     * objeto da classe <code>Node</code>.
-     * Deve ser reescrita para as classe que tenham atributos distintos do
-     * proposto nesta classe.
-     * 
-     * @param doc   Objeto da classe <code>Document</code> que representa o arquivo XML
-     * @param elementName Nome do nó a ser adicionado no arquivo
-     * @return 
-     */
-    protected Node toXml(Document doc, String elementName) {
-        Element element = doc.createElement(elementName);
-        element.setAttribute("id", id.toString());
-        element.setAttribute("nome", this.nome);
-        return element;
     }
 
     @Override
@@ -101,13 +60,6 @@ public abstract class BaseObject implements XMLInterface {
             return false;
         }
         return Objects.equals(this.id, other.id);
-    }
-    
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-        map.put("id", id);
-        return map;
     }
     
 }
