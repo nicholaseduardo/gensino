@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
-import ensino.configuracoes.dao.xml.LegendaDao;
+import ensino.configuracoes.dao.xml.LegendaDaoXML;
 import ensino.configuracoes.model.Legenda;
 import java.awt.Color;
 import java.io.IOException;
@@ -48,14 +48,14 @@ public class LegendaDaoIT {
     }
 
     /**
-     * Test of list method, of class LegendaDao.
+     * Test of list method, of class LegendaDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            LegendaDao instance = new LegendaDao();
+            LegendaDaoXML instance = new LegendaDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -69,14 +69,14 @@ public class LegendaDaoIT {
     }
 
     /**
-     * Test of save method, of class LegendaDao.
+     * Test of save method, of class LegendaDaoXML.
      */
     @Test
     public void testSave() {
         try {
             System.out.println("save");
             Legenda object = new Legenda(1, "teste", true, true, Color.red);
-            LegendaDao instance = new LegendaDao();
+            LegendaDaoXML instance = new LegendaDaoXML();
             instance.save(object);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -88,14 +88,14 @@ public class LegendaDaoIT {
     }
 
     /**
-     * Test of findById method, of class LegendaDao.
+     * Test of findById method, of class LegendaDaoXML.
      */
     @Test
     public void testFindById() {
         try {
             System.out.println("findById");
             Object id = 1;
-            LegendaDao instance = new LegendaDao();
+            LegendaDaoXML instance = new LegendaDaoXML();
             Object result = instance.findById(id);
             assertNotNull(result);
         } catch (IOException ex) {

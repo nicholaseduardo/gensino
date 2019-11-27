@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.LegendaDao;
+import ensino.configuracoes.dao.xml.LegendaDaoXML;
 import ensino.configuracoes.model.Legenda;
 import ensino.patterns.AbstractController;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import javax.xml.transform.TransformerException;
  */
 public class LegendaController extends AbstractController {
     public LegendaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new LegendaDao());
+        super(new LegendaDaoXML());
     }
     
     @Override

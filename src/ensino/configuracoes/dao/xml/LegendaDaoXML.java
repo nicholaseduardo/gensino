@@ -6,6 +6,7 @@
 package ensino.configuracoes.dao.xml;
 
 import ensino.configuracoes.model.Legenda;
+import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,8 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class LegendaDao extends ConfiguracaoDaoXML {
-    public LegendaDao() throws IOException, ParserConfigurationException, TransformerException {
+public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
+    public LegendaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("Legenda", "legenda");
     }
 

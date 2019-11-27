@@ -7,7 +7,7 @@ package ensino.configuracoes.dao;
 
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.AtividadeDao;
-import ensino.configuracoes.dao.xml.LegendaDao;
+import ensino.configuracoes.dao.xml.LegendaDaoXML;
 import ensino.configuracoes.dao.xml.CalendarioDao;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
@@ -38,12 +38,12 @@ public class AtividadeDaoIT {
     private Calendario cal2;
     private CalendarioDao calendarioDao;
     private Legenda legenda;
-    private LegendaDao legDao;
+    private LegendaDaoXML legDao;
     
     public AtividadeDaoIT() {
         try {
             calendarioDao = new CalendarioDao();
-            legDao = new LegendaDao();
+            legDao = new LegendaDaoXML();
         } catch (IOException ex) {
             Logger.getLogger(AtividadeDaoIT.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParserConfigurationException ex) {
@@ -70,7 +70,7 @@ public class AtividadeDaoIT {
             calDao.save(cal2);
             calDao.commit();
             
-            LegendaDao legDao = new LegendaDao();
+            LegendaDaoXML legDao = new LegendaDaoXML();
             legDao.save(new Legenda(1, "Legenda 1", false, false, Color.red));
             legDao.commit();
         } catch (IOException | TransformerException ex) {
@@ -88,7 +88,7 @@ public class AtividadeDaoIT {
             campusDao.delete(campusDao.findById(2));
             campusDao.commit();
             
-            LegendaDao legDao = new LegendaDao();
+            LegendaDaoXML legDao = new LegendaDaoXML();
             legDao.delete(legDao.findById(1));
             legDao.commit();
         } catch (TransformerException | IOException ex) {
