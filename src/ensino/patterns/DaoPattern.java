@@ -16,6 +16,7 @@ import javax.xml.transform.TransformerException;
 public interface DaoPattern<T> {
     public void save(T o);
     public void delete(T o);
+    public boolean exists(T o);
     public List<T> list();
     public List<T> list(String criteria);
     /**
