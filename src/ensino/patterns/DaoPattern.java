@@ -11,13 +11,14 @@ import javax.xml.transform.TransformerException;
 /**
  *
  * @author nicho
+ * @param <T>
  */
-public interface DaoPattern {
-    public void save(Object object);
-    public void delete(Object object);
-    public List<?> list();
-    public List<?> list(String criteria);
-    public Object findById(Object id);
+public interface DaoPattern<T> {
+    public void save(T o);
+    public void delete(T o);
+    public List<T> list();
+    public List<T> list(String criteria);
+    public T findById(T id);
     public void commit() throws TransformerException;
     public void rollback();
     public Integer nextVal();
