@@ -24,4 +24,5 @@ public interface DaoPattern<T> {
     public void commit() throws Exception;
     public void rollback();
     public Integer nextVal();
+    public Integer nextVal(Object ...params);
 }
