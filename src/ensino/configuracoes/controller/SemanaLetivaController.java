@@ -5,9 +5,11 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.SemanaLetivaDao;
+import ensino.configuracoes.dao.xml.SemanaLetivaDaoXML;
 import ensino.configuracoes.model.SemanaLetiva;
+import ensino.configuracoes.model.SemanaLetivaFactory;
 import ensino.patterns.AbstractController;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -18,20 +20,10 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class SemanaLetivaController extends AbstractController {
+public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
     
     public SemanaLetivaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new SemanaLetivaDao());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new SemanaLetiva(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new SemanaLetiva(params));
+        super(new SemanaLetivaDaoXML(), SemanaLetivaFactory.getInstance());
     }
     
     /**
@@ -43,13 +35,8 @@ public class SemanaLetivaController extends AbstractController {
      * @return 
      */
     public SemanaLetiva buscarPor(Integer id, Integer numero, Integer ano, Integer campusId) {
-        SemanaLetivaDao periodoLetivoDao = (SemanaLetivaDao) super.getDao();
-        return periodoLetivoDao.findById(id, numero, ano, campusId);
-    }
-    
-    @Override
-    public List<SemanaLetiva> listar() {
-        return (List<SemanaLetiva>) super.getDao().list();
+        DaoPattern<SemanaLetiva> dao = super.getDao();
+        return dao.findById(id, numero, ano, campusId);
     }
     
     /**
@@ -60,8 +47,10 @@ public class SemanaLetivaController extends AbstractController {
      * @return 
      */
     public List<SemanaLetiva> listar(Integer numero, Integer ano, Integer campusId) {
-        SemanaLetivaDao periodoLetivoDao = (SemanaLetivaDao) super.getDao();
-        return periodoLetivoDao.list(numero, ano, campusId);
+        DaoPattern<SemanaLetiva> dao = super.getDao();
+        String filter = String.format("//SemanaLetiva/semanaLetiva[@pNumero=%d and @ano=%d and @campusId=%d]", 
+                ano, campusId);
+        return dao.list(filter);
     }
     
 }

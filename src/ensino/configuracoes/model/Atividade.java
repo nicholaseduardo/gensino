@@ -1,17 +1,10 @@
 package ensino.configuracoes.model;
 
-import ensino.defaults.XMLInterface;
-import ensino.helpers.DateHelper;
 import ensino.util.types.Periodo;
-import java.text.ParseException;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-public class Atividade implements XMLInterface {
+public class Atividade {
 
     private Integer id;
     private Periodo periodo;
@@ -21,44 +14,6 @@ public class Atividade implements XMLInterface {
     
     public Atividade() {
         
-    }
-
-    public Atividade(Integer id, Periodo periodo, String descricao, Calendario c, Legenda l) {
-        this.id = id;
-        this.periodo = periodo;
-        this.descricao = descricao;
-        this.calendario = c;
-        this.legenda = l;
-    }
-
-    public Atividade(Calendario calendario, Legenda legenda) {
-        this(null, null, "", calendario, legenda);
-    }
-
-    public Atividade(Element e) throws ParseException {
-        this(
-                Integer.parseInt(e.getAttribute("id")),
-                new Periodo(DateHelper.stringToDate(e.getAttribute("periodoDe"), "dd/MM/yyyy"),
-                        DateHelper.stringToDate(e.getAttribute("periodoAte"), "dd/MM/yyyy")),
-                e.getAttribute("descricao"),
-                null,
-                null
-        );
-        if (e.hasChildNodes()) {
-            // o primeiro elemento é a legenda
-            Element nodeLegenda = (Element) e.getFirstChild();
-            this.legenda = new Legenda(nodeLegenda);
-        }
-    }
-
-    public Atividade(HashMap<String, Object> params) {
-        this(
-                (Integer) params.get("id"),
-                (Periodo) params.get("periodo"),
-                (String) params.get("descricao"),
-                (Calendario) params.get("calendario"),
-                (Legenda) params.get("legenda")
-        );
     }
 
     public Integer getId() {
@@ -99,25 +54,6 @@ public class Atividade implements XMLInterface {
 
     public void setLegenda(Legenda legenda) {
         this.legenda = legenda;
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = doc.createElement("atividade");
-        e.setAttribute("id", id.toString());
-        e.setAttribute("periodoDe", DateHelper.dateToString(periodo.getDe(), "dd/MM/yyyy"));
-        e.setAttribute("periodoAte", DateHelper.dateToString(periodo.getAte(), "dd/MM/yyyy"));
-        e.setAttribute("descricao", descricao);
-        e.appendChild(legenda.toXml(doc));
-        return e;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-//        map.put("ano", ano);
-//        map.put("campusId", campus.getId());
-        return map;
     }
 
     @Override

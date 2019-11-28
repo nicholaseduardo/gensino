@@ -5,22 +5,14 @@
  */
 package ensino.configuracoes.dao.xml;
 
-import ensino.configuracoes.model.Atividade;
-import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.CalendarioFactory;
-import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -35,18 +27,20 @@ public class CalendarioDaoXML  extends AbstractDaoXML<Calendario> {
     /**
      * Recupera um objeto da classe Calendario de acorco com sua chave primária
      *
-     * @param ids       O primeiro campo indica o Número de identificação 
-     *                  do curso e o segundo campo indica o Número de 
-     *                  identificação do campus
+     * @param ids       Os IDS estão divididos em dois parâmetros:<br/>
+     *                  <ul>
+     *                      <li>Param[0]: Ano do calendário</li>
+     *                      <li>Param[1]: ID do campus</li>
+     *                  </ul>
      * @return
      */
     @Override
     public Calendario findById(Object... ids) {
-        Integer campusId = (Integer) ids[0];
-        Integer id = (Integer) ids[1];
+        Integer campusId = (Integer) ids[1];
+        Integer ano = (Integer) ids[0];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("/%s[@id=%d and @campusId=%d]",
-                getObjectExpression(), id, campusId);
+        String expression = String.format("/%s[@ano=%d and @campusId=%d]",
+                getObjectExpression(), ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
             return getBeanFactory().getObject((Element) searched);

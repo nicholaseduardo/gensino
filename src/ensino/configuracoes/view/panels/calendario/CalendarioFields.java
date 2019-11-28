@@ -15,6 +15,7 @@ import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
+import ensino.configuracoes.model.SemanaLetivaFactory;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.util.JCalendario;
@@ -443,7 +444,8 @@ public class CalendarioFields extends DefaultFieldsPanel {
                         // a ultima semana considera o último dia do período letivo
                         newPeriodo.setAte(periodo.getAte());
                     }
-                    SemanaLetiva semana = new SemanaLetiva(i, descricao, newPeriodo, periodoLetivo);
+                    SemanaLetiva semana = SemanaLetivaFactory.getInstance()
+                            .getObject(i, descricao, newPeriodo, periodoLetivo);
                     // Adiciona ao periodo letivo a semana recém-criada.
                     periodoLetivo.addSemanaLetiva(semana);
 

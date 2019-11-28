@@ -5,11 +5,12 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.PeriodoLetivoDao;
+import ensino.configuracoes.dao.xml.PeriodoLetivoDaoXML;
 import ensino.configuracoes.model.PeriodoLetivo;
+import ensino.configuracoes.model.PeriodoLetivoFactory;
 import ensino.patterns.AbstractController;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -18,20 +19,10 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class PeriodoLetivoController extends AbstractController {
+public class PeriodoLetivoController extends AbstractController<PeriodoLetivo> {
     
     public PeriodoLetivoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new PeriodoLetivoDao());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new PeriodoLetivo(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new PeriodoLetivo(params));
+        super(new PeriodoLetivoDaoXML(), PeriodoLetivoFactory.getInstance());
     }
     
     /**
@@ -42,13 +33,8 @@ public class PeriodoLetivoController extends AbstractController {
      * @return 
      */
     public PeriodoLetivo buscarPor(Integer numero, Integer ano, Integer campusId) {
-        PeriodoLetivoDao periodoLetivoDao = (PeriodoLetivoDao) super.getDao();
-        return periodoLetivoDao.findById(numero, ano, campusId);
-    }
-    
-    @Override
-    public List<PeriodoLetivo> listar() {
-        return (List<PeriodoLetivo>) super.getDao().list();
+        DaoPattern<PeriodoLetivo> dao = super.getDao();
+        return dao.findById(numero, ano, campusId);
     }
     
     /**
@@ -58,8 +44,10 @@ public class PeriodoLetivoController extends AbstractController {
      * @return 
      */
     public List<PeriodoLetivo> listar(Integer ano, Integer campusId) {
-        PeriodoLetivoDao periodoLetivoDao = (PeriodoLetivoDao) super.getDao();
-        return periodoLetivoDao.list(ano, campusId);
+        DaoPattern<PeriodoLetivo> dao = super.getDao();
+        String filter = String.format("//PeriodoLetivo/periodoLetivo[@ano=%d and @campusId=%d]", 
+                ano, campusId);
+        return dao.list(filter);
     }
     
 }

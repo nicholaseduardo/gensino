@@ -6,6 +6,7 @@
 package ensino.configuracoes.model;
 
 import ensino.configuracoes.dao.xml.CampusDaoXML;
+import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.BeanFactory;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.util.HashMap;
@@ -54,8 +55,8 @@ public class CalendarioFactory implements BeanFactory<Calendario> {
             Integer parentId = sParentId.matches("\\d+")
                     ? Integer.parseInt(sParentId) : null;
             // Aciona o Dao do Campus
-            CampusDaoXML campusDaoXML = new CampusDaoXML();
-            c.setCampus(campusDaoXML.findById(parentId));
+            DaoPattern<Campus> dao = new CampusDaoXML();
+            c.setCampus(dao.findById(parentId));
         } catch (Exception ex) {
             Logger.getLogger(CursoFactory.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -7,6 +7,7 @@ package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.model.Curso;
+import ensino.configuracoes.model.CursoFactory;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import javax.xml.transform.TransformerException;
 public class CursoController extends AbstractController<Curso> {
     
     public CursoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new CursoDaoXML());
+        super(new CursoDaoXML(), CursoFactory.getInstance());
     }
     
     /**

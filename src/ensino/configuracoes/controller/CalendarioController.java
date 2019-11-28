@@ -7,10 +7,10 @@ package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.model.Calendario;
+import ensino.configuracoes.model.CalendarioFactory;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
  */
 public class CalendarioController extends AbstractController<Calendario> {
     public CalendarioController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new CalendarioDaoXML());
+        super(new CalendarioDaoXML(), CalendarioFactory.getInstance());
     }
     
     /**

@@ -141,7 +141,7 @@ public class AtividadePanel extends DefaultFormPanel {
                 componenteCalendario.setAtividades(selectedCalendario.getAtividades());
                 componentsControl(0);
                 showPanelInCard(CARD_LIST);
-            } catch (TransformerException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(getFrame(), ex.getMessage(),
                         "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -206,7 +206,7 @@ public class AtividadePanel extends DefaultFormPanel {
                 JOptionPane.showMessageDialog(null,
                         "Dados excluídos com sucesso!", "Confirmação",
                         JOptionPane.INFORMATION_MESSAGE);
-            } catch (TransformerException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(getFrame(), ex.getMessage(),
                         "Aviso", JOptionPane.WARNING_MESSAGE);

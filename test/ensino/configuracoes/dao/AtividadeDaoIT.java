@@ -6,7 +6,7 @@
 package ensino.configuracoes.dao;
 
 import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.configuracoes.dao.xml.AtividadeDao;
+import ensino.configuracoes.dao.xml.AtividadeDaoXML;
 import ensino.configuracoes.dao.xml.LegendaDaoXML;
 import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.model.Atividade;
@@ -110,14 +110,14 @@ public class AtividadeDaoIT {
     }
 
     /**
-     * Test of list method, of class AtividadeDao.
+     * Test of list method, of class AtividadeDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            AtividadeDao instance = new AtividadeDao();
+            AtividadeDaoXML instance = new AtividadeDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -131,7 +131,7 @@ public class AtividadeDaoIT {
     }
 
     /**
-     * Test of save method, of class AtividadeDao.
+     * Test of save method, of class AtividadeDaoXML.
      */
     @Test
     public void testSave() {
@@ -139,7 +139,7 @@ public class AtividadeDaoIT {
             System.out.println("save");
             Periodo periodo = new Periodo();
             Atividade at1 = new Atividade(1, periodo, "Atividade 1", cal1, legenda);
-            AtividadeDao instance = new AtividadeDao();
+            AtividadeDaoXML instance = new AtividadeDaoXML();
             instance.save(at1);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -156,7 +156,7 @@ public class AtividadeDaoIT {
     }
 
     /**
-     * Test of findById method, of class AtividadeDao.
+     * Test of findById method, of class AtividadeDaoXML.
      */
     @Test
     public void testFindById_3args() {
@@ -165,7 +165,7 @@ public class AtividadeDaoIT {
             Integer id = 1;
             Integer ano = 2019;
             Integer campusId = 1;
-            AtividadeDao instance = new AtividadeDao();
+            AtividadeDaoXML instance = new AtividadeDaoXML();
             Atividade expResult = cal1.getAtividades().get(0);
             Atividade result = instance.findById(id, ano, campusId);
             assertNotNull(result);
@@ -186,7 +186,7 @@ public class AtividadeDaoIT {
     public void testNextVal() {
         try {
             System.out.println("nextval");
-            AtividadeDao instance = new AtividadeDao();
+            AtividadeDaoXML instance = new AtividadeDaoXML();
             Integer i = instance.nextVal(1, 2019), expected = 1;
             assertEquals(expected, i);
         } catch (IOException ex) {
@@ -202,7 +202,7 @@ public class AtividadeDaoIT {
     public void testDelete() {
         try {
             System.out.println("delete");
-            AtividadeDao instance = new AtividadeDao();
+            AtividadeDaoXML instance = new AtividadeDaoXML();
             Atividade at1 = instance.findById(1, 2019, 1);
             Atividade at2 = instance.findById(1, 2019, 2);
             instance.delete(at1);

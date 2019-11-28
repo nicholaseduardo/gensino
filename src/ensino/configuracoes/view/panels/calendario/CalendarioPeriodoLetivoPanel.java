@@ -11,6 +11,7 @@ import ensino.components.GenJLabel;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.Calendario;
+import ensino.configuracoes.model.PeriodoLetivoFactory;
 import ensino.configuracoes.view.models.PeriodoLetivoTableModel;
 import ensino.configuracoes.view.panels.CalendarioPanel;
 import ensino.configuracoes.view.renderer.PeriodoLetivoCellRenderer;
@@ -132,7 +133,6 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
             source = String.format("/img/%s", "clear-icon-25px.png");
             btClear = new GenJButton("Limpar", new ImageIcon(getClass().getResource(source)));
 
-            
             PeriodoLetivoActionListener atividadeListener = new PeriodoLetivoActionListener();
             btAdd.addActionListener(atividadeListener);
             btDel.addActionListener(atividadeListener);
@@ -268,15 +268,17 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
             if (e.getSource() == btAdd) {
                 if (isValidated()) {
                     try {
-                        PeriodoLetivo periodoLetivo = new PeriodoLetivo(selectedCalendario);
                         String sid = txtId.getText();
                         boolean updateStatus = sid.matches("\\d+");
-                        periodoLetivo.setNumero(updateStatus ? Integer.parseInt(sid) : null);
-                        periodoLetivo.setPeriodo(new Periodo(txtDe.getText(), txtAte.getText()));
-                        periodoLetivo.setDescricao(txtPeriodoLetivo.getText());
-
+                        PeriodoLetivo periodoLetivo = PeriodoLetivoFactory.getInstance()
+                                .getObject((updateStatus ? Integer.parseInt(sid) : null),
+                                        txtPeriodoLetivo.getText(),
+                                        new Periodo(txtDe.getText(), txtAte.getText()));
+                        periodoLetivo.setCalendario(selectedCalendario);
+                        
                         if (periodoLetivoTableModel.getData().contains(periodoLetivo)) {
-                            JOptionPane.showMessageDialog(getParent(), "O Periodo Letivo já foi adicionado.\nEscolha outro Periodo Letivo!",
+                            JOptionPane.showMessageDialog(getParent(), "O Periodo Letivo já foi adicionado.\n"
+                                    + "Escolha outro Periodo Letivo!",
                                     "Aviso", JOptionPane.WARNING_MESSAGE);
                             return;
                         }

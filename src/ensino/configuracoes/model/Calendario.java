@@ -1,18 +1,9 @@
 package ensino.configuracoes.model;
 
-import ensino.defaults.XMLInterface;
 import ensino.planejamento.model.PlanoDeEnsino;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class Calendario {
 
