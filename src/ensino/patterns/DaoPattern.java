@@ -20,7 +20,7 @@ public interface DaoPattern<T> {
     public List<T> list(String criteria);
     public T findById(Object id);
     public T findById(Object ...ids);
-    public void startTransaction() throws Exception;
+    public void startTransaction();
     public void commit() throws Exception;
     public void rollback();
     public Integer nextVal();

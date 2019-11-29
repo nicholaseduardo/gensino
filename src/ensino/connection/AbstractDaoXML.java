@@ -215,6 +215,7 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
      * @param filter 
      */
     protected void delete(String filter) {
+        startTransaction();
         Node searched = getDataByExpression(String.format("%s[%s]", 
                 getObjectExpression(), filter));
 
@@ -226,11 +227,10 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
 
     /**
      * Inicio de transação.
-     * Deve ser utilizado para abrir o arquivo XML para leitura/escrita
-     * @throws Exception 
+     * Deve ser utilizado para abrir o arquivo XML para leitura/escrita 
      */
     @Override
-    public void startTransaction() throws Exception {
+    public void startTransaction() {
         loadXmlFile();
     }
 
@@ -259,6 +259,7 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
      * @return 
      */
     protected Integer nextVal(String expressionFilter) {
+        startTransaction();
         NodeList nodeList = (NodeList) getDataExpression(expressionFilter);
         Integer length = nodeList.getLength();
         if (length > 0) {
@@ -297,6 +298,7 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
 
     @Override
     public List<T> list(String criteria) {
+        startTransaction();
         if (doc == null) {
             return null;
         }
@@ -319,7 +321,6 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
 
     @Override
     public List<T> list() {
-        loadXmlFile();
         return list("");
     }
 

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -53,6 +52,17 @@ public abstract class AbstractController<T> {
             throw ex;
         }
         return object;
+    }
+    
+    public void salvarEmCascata(List<T> l) throws Exception {
+        try {
+            for (int i = 0; i < l.size(); i++) {
+                this.salvar(l.get(i));
+            }
+        } catch (Exception ex) {
+            dao.rollback();
+            throw ex;
+        }
     }
 
     public T remover(HashMap<String, Object> params) throws Exception {

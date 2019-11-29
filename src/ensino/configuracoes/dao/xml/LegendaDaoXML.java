@@ -5,18 +5,12 @@
  */
 package ensino.configuracoes.dao.xml;
 
-import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Legenda;
 import ensino.configuracoes.model.LegendaFactory;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -47,7 +41,7 @@ public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
 
     @Override
     public Integer nextVal() {
-        String expression = String.format("%s/@id", getRootExpression());
+        String expression = String.format("%s/@id", getObjectExpression());
         return super.nextVal(expression);
     }
 }

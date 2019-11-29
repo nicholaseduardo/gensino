@@ -9,6 +9,7 @@ import ensino.components.GenJButton;
 import ensino.components.GenJFormattedTextField;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextField;
+import ensino.configuracoes.controller.PeriodoLetivoController;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivoFactory;
@@ -221,8 +222,16 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(Object object) {
         if (object instanceof Calendario) {
-            Calendario calendario = (Calendario) object;
-            setData(calendario.getPeriodosLetivos());
+            try {
+                Calendario calendario = (Calendario) object;
+                PeriodoLetivoController col = new PeriodoLetivoController();
+                calendario.setPeriodosLetivos(
+                    col.listar(calendario.getAno(), 
+                            calendario.getCampus().getId()));
+                setData(calendario.getPeriodosLetivos());
+            } catch (Exception ex) {
+                Logger.getLogger(CalendarioPeriodoLetivoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

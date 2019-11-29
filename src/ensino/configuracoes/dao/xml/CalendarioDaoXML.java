@@ -39,7 +39,7 @@ public class CalendarioDaoXML  extends AbstractDaoXML<Calendario> {
         Integer campusId = (Integer) ids[1];
         Integer ano = (Integer) ids[0];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("/%s[@ano=%d and @campusId=%d]",
+        String expression = String.format("%s[@ano=%d and @campusId=%d]",
                 getObjectExpression(), ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {

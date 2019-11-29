@@ -45,7 +45,7 @@ public class CampusDaoXML extends AbstractDaoXML<Campus> {
 
     @Override
     public Integer nextVal() {
-        String expression = String.format("%s/@id", getRootExpression());
+        String expression = String.format("%s/@id", getObjectExpression());
         return super.nextVal(expression);
     }
 

@@ -5,23 +5,14 @@
  */
 package ensino.configuracoes.dao.xml;
 
-import ensino.configuracoes.controller.LegendaController;
-import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeFactory;
-import ensino.configuracoes.model.Campus;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -50,7 +41,7 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
         Integer ano = (Integer) ids[1];
         Integer campusId = (Integer) ids[2];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("/%s[@id=%d and @ano=%d and @campusId=%d]",
+        String expression = String.format("%s[@id=%d and @ano=%d and @campusId=%d]",
                 getObjectExpression(), id, ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
@@ -96,8 +87,8 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
      */
     @Override
     public Integer nextVal(Object ...params) {
-        String filter = String.format("%s/@id[@ano=%d and @campusId=%d]", 
-                getRootExpression(), params[0], params[1]);
+        String filter = String.format("%s[@ano=%d and @campusId=%d]/@id", 
+                getObjectExpression(), params[0], params[1]);
         return super.nextVal(filter);
     }
 }

@@ -248,7 +248,7 @@ public class CalendarioFields extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(Object object) {
         atividadePanel.setFieldValues(object);
-        periodosLetivosPanel.setFieldValues(object);
+        periodosLetivosPanel.setFieldValues(object); 
         if (object instanceof Calendario) {
             Calendario calendario = (Calendario) object;
             txtAno.setText(calendario.getAno().toString());

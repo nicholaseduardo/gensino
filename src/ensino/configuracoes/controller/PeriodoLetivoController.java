@@ -8,6 +8,7 @@ package ensino.configuracoes.controller;
 import ensino.configuracoes.dao.xml.PeriodoLetivoDaoXML;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.PeriodoLetivoFactory;
+import ensino.configuracoes.model.SemanaLetiva;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
@@ -50,4 +51,12 @@ public class PeriodoLetivoController extends AbstractController<PeriodoLetivo> {
         return dao.list(filter);
     }
     
+    @Override
+    public PeriodoLetivo salvar(PeriodoLetivo o) throws Exception {
+        o = super.salvar(o);
+        // salver cascade
+        AbstractController<SemanaLetiva> col = new SemanaLetivaController();
+        col.salvarEmCascata(o.getSemanasLetivas());
+        return o;
+    }
 }

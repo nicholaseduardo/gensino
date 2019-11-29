@@ -69,7 +69,7 @@ public class CalendarioFactory implements BeanFactory<Calendario> {
         c.setCampus((Campus) p.get("campus"));
         c.setAtividade((List<Atividade>) p.get("atividades"));
         c.setPeriodosLetivos((List<PeriodoLetivo>) p.get("periodosLetivos"));
-        c.setPlanosDeEnsino((List<PlanoDeEnsino>) p.get("planoDeEnsino"));
+//        c.setPlanosDeEnsino((List<PlanoDeEnsino>) p.get("planoDeEnsino"));
         
         return c;
     }

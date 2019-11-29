@@ -23,7 +23,7 @@ import org.w3c.dom.Node;
 public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
 
     public SemanaLetivaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
-        super("semana-letiva", "SemanaLetiva", "semanaLetiva", SemanaLetivaFactory.getInstance());
+        super("semanaLetiva", "SemanaLetiva", "semanaLetiva", SemanaLetivaFactory.getInstance());
     }
 
     /**
@@ -45,7 +45,7 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
         Integer ano = (Integer) ids[2];
         Integer campusId = (Integer) ids[3];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("/%s[@numero=%d and @pNumero=%d and @ano=@d and @campusId=%d]",
+        String expression = String.format("%s[@numero=%d and @pNumero=%d and @ano=@d and @campusId=%d]",
                 getObjectExpression(), numero, nPeriodoLetivo, ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
@@ -98,8 +98,8 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
      */
     @Override
     public Integer nextVal(Object ...params) {
-        String filter = String.format("%s/@numero[@pNumero=%d and @ano=%d and @campusId=%d]", 
-                getRootExpression(), params[0], params[1], params[2]);
+        String filter = String.format("%s[@pNumero=%d and @ano=%d and @campusId=%d]/@numero", 
+                getObjectExpression(), params[0], params[1], params[2]);
         return super.nextVal(filter);
     }
 }

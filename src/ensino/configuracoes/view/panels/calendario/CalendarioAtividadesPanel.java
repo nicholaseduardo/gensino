@@ -10,6 +10,7 @@ import ensino.components.GenJComboBox;
 import ensino.components.GenJFormattedTextField;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextField;
+import ensino.configuracoes.controller.AtividadeController;
 import ensino.configuracoes.controller.LegendaController;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
@@ -19,6 +20,7 @@ import ensino.configuracoes.view.panels.CalendarioPanel;
 import ensino.configuracoes.view.renderer.AtividadeCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.AbstractController;
 import ensino.util.types.Periodo;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -266,8 +268,20 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(Object object) {
         if (object instanceof Calendario) {
-            Calendario calendario = (Calendario) object;
-            setData(calendario.getAtividades());
+            try {
+                Calendario calendario = (Calendario) object;
+                /**
+                 * Recupera a lista de atividades por calendário poque
+                 * ela não vem preenchida no calendário
+                 */
+                AtividadeController col = new AtividadeController();
+                calendario.setAtividade(
+                    col.listar(calendario.getCampus().getId(), 
+                            calendario.getAno()));
+                setData(calendario.getAtividades());
+            } catch (Exception ex) {
+                Logger.getLogger(CalendarioAtividadesPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

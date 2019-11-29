@@ -49,7 +49,7 @@ public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
     public List<SemanaLetiva> listar(Integer numero, Integer ano, Integer campusId) {
         DaoPattern<SemanaLetiva> dao = super.getDao();
         String filter = String.format("//SemanaLetiva/semanaLetiva[@pNumero=%d and @ano=%d and @campusId=%d]", 
-                ano, campusId);
+                numero, ano, campusId);
         return dao.list(filter);
     }
     

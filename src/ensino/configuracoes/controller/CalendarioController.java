@@ -6,8 +6,10 @@
 package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.CalendarioDaoXML;
+import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.CalendarioFactory;
+import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
@@ -44,5 +46,18 @@ public class CalendarioController extends AbstractController<Calendario> {
         DaoPattern<Calendario> dao = super.getDao();
         String filter = String.format("//Calendario/calendario[@campusId=%d]", campusId);
         return dao.list(filter);
+    }
+    
+    @Override
+    public Calendario salvar(Calendario o) throws Exception {
+        o = super.salvar(o);
+        // salvar cascade
+        AbstractController<Atividade> colAtividade = new AtividadeController();
+        colAtividade.salvarEmCascata(o.getAtividades());
+        
+        AbstractController<PeriodoLetivo> colPeriodoLetivo = new PeriodoLetivoController();
+        colPeriodoLetivo.salvarEmCascata(o.getPeriodosLetivos());
+
+        return o;
     }
 }

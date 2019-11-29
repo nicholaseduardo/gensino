@@ -38,7 +38,6 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.xml.transform.TransformerException;
 
 /**
  * Esta classe serve de base para a construção de telas que possuem um conjunto

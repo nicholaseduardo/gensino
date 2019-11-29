@@ -21,7 +21,7 @@ import org.w3c.dom.Node;
 public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
 
     public PeriodoLetivoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
-        super("periodo-letivo", "PeriodoLetivo", "periodoLetivo", PeriodoLetivoFactory.getInstance());
+        super("periodoLetivo", "PeriodoLetivo", "periodoLetivo", PeriodoLetivoFactory.getInstance());
     }
 
     /**
@@ -41,7 +41,7 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
         Integer ano = (Integer) ids[1];
         Integer campusId = (Integer) ids[2];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("/%s[@numero=%d and @ano=@d and @campusId=%d]",
+        String expression = String.format("%s[@numero=%d and @ano=@d and @campusId=%d]",
                 getObjectExpression(), numero, ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
@@ -87,8 +87,8 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
      */
     @Override
     public Integer nextVal(Object ...params) {
-        String filter = String.format("%s/@numero[@ano=%d and @campusId=%d]", 
-                getRootExpression(), params[0], params[1]);
+        String filter = String.format("%s[@ano=%d and @campusId=%d]/@numero", 
+                getObjectExpression(), params[0], params[1]);
         return super.nextVal(filter);
     }
 }

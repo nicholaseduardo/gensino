@@ -7,6 +7,7 @@ package ensino.configuracoes.view.panels.calendario;
 
 import ensino.components.GenJLabel;
 import ensino.components.GenJTree;
+import ensino.configuracoes.controller.SemanaLetivaController;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.view.models.PeriodoLetivoTreeModel;
@@ -19,9 +20,12 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -32,6 +36,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -45,7 +51,7 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
     private PeriodoLetivoTreeModel periodoLetivoTreeModel;
 
     private List<PeriodoLetivo> periodoLetivoLista;
-    
+
     private GenJLabel lblPeriodoSelecionado;
 
     public CalendarioSemanaLetivaPanel() {
@@ -79,13 +85,13 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
         // painel a direita (tabela)
         JPanel panelRight = new JPanel(new GridBagLayout());
         panel.add(panelRight);
-        
+
         int col = 0, row = 0;
         lblPeriodoSelecionado = new GenJLabel("Selecionar um período");
         lblPeriodoSelecionado.toBold();
         GridLayoutHelper.set(c, col, row++);
         panelRight.add(lblPeriodoSelecionado, c);
-        
+
         semanaLetivaTable = new JTable();
         ListSelectionModel cellSelectionModel = semanaLetivaTable.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -160,7 +166,7 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
 
     @Override
     public void enableFields(boolean active) {
-        
+
     }
 
     @Override
@@ -176,6 +182,21 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
             DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tp.getLastPathComponent();
             PeriodoLetivo periodoLetivo = (PeriodoLetivo) selectedNode.getUserObject();
             lblPeriodoSelecionado.setText("Período selecionado: " + periodoLetivo.getDescricao());
+            /**
+             * Verifica se existem semanas vinculadas ao período. Do contrário,
+             * busca-se do arquivo e vincula ao periodo
+             */
+            if (periodoLetivo.getSemanasLetivas().isEmpty()) {
+                try {
+                    SemanaLetivaController col = new SemanaLetivaController();
+                    periodoLetivo.setSemanasLetivas(
+                            col.listar(periodoLetivo.getNumero(),
+                                    periodoLetivo.getCalendario().getAno(),
+                                    periodoLetivo.getCalendario().getCampus().getId()));
+                } catch (Exception ex) {
+                    Logger.getLogger(CalendarioSemanaLetivaPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             setData(periodoLetivo.getSemanasLetivas());
         }
 

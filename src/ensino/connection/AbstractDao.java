@@ -89,7 +89,7 @@ public abstract class AbstractDao implements DaoPattern {
         this.nodeName = nodeName;
         this.filename = fileName;
 
-        this.loadXmlFile();
+        startTransaction();
     }
 
     /**
