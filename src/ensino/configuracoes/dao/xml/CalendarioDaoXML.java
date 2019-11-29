@@ -5,10 +5,17 @@
  */
 package ensino.configuracoes.dao.xml;
 
+import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.CalendarioFactory;
+import ensino.configuracoes.model.Campus;
+import ensino.configuracoes.model.CursoFactory;
+import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.connection.AbstractDaoXML;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
@@ -18,20 +25,52 @@ import org.w3c.dom.Node;
  *
  * @author nicho
  */
-public class CalendarioDaoXML  extends AbstractDaoXML<Calendario> {
+public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
 
     public CalendarioDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("calendario", "Calendario", "calendario", CalendarioFactory.getInstance());
     }
 
+    @Override
+    protected Calendario createObject(Element e, Object ref) {
+        try {
+            Calendario o = getBeanFactory().getObject(e);
+            // Identifica o objeto Pai (Campus)
+            Integer campusId = new Integer(e.getAttribute("campusId")),
+                    ano = new Integer(e.getAttribute("ano"));
+            // Adiciona a referência, que é a classe pai
+            if (ref != null && ref instanceof Campus) {
+                Campus campus = (Campus) ref;
+                campus.addCalendario(o);
+            }
+
+            // load children
+            String formatter = "%s[@ano=%d and @campusId=%d]";
+            String filter = String.format(formatter,
+                    "//Atividade/atividade", ano, campusId);
+            DaoPattern<Atividade> atividadeDao = new AtividadeDaoXML();
+            o.setAtividade(atividadeDao.list(filter, o));
+
+            DaoPattern<PeriodoLetivo> periodoLetivoDao = new PeriodoLetivoDaoXML();
+            filter = String.format(formatter,
+                    "//PeriodoLetivo/periodoLetivo", ano, campusId);
+            o.setPeriodosLetivos(periodoLetivoDao.list(filter, o));
+
+            return o;
+        } catch (Exception ex) {
+            Logger.getLogger(CursoFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     /**
      * Recupera um objeto da classe Calendario de acorco com sua chave primária
      *
-     * @param ids       Os IDS estão divididos em dois parâmetros:<br/>
-     *                  <ul>
-     *                      <li>Param[0]: Ano do calendário</li>
-     *                      <li>Param[1]: ID do campus</li>
-     *                  </ul>
+     * @param ids Os IDS estão divididos em dois parâmetros:<br/>
+     * <ul>
+     * <li>Param[0]: Ano do calendário</li>
+     * <li>Param[1]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
@@ -43,7 +82,7 @@ public class CalendarioDaoXML  extends AbstractDaoXML<Calendario> {
                 getObjectExpression(), ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
-            return getBeanFactory().getObject((Element) searched);
+            return createObject((Element) searched);
         }
 
         return null;

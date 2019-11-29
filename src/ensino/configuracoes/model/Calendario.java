@@ -68,9 +68,6 @@ public class Calendario {
 
     public void setAtividade(List<Atividade> atividades) {
         this.atividades = atividades;
-        this.atividades.forEach((o) -> {
-            o.setCalendario(this);
-        });
     }
 
     public void addPeriodoLetivo(PeriodoLetivo periodoLetivo) {
@@ -84,9 +81,6 @@ public class Calendario {
 
     public void setPeriodosLetivos(List<PeriodoLetivo> periodosLetivos) {
         this.periodosLetivos = periodosLetivos;
-        this.periodosLetivos.forEach((o) -> {
-            o.setCalendario(this);
-        });
     }
 
     public void addPlanoDeEnsino(PlanoDeEnsino planoDeEnsino) {

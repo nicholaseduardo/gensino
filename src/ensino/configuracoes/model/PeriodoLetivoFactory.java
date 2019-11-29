@@ -5,8 +5,6 @@
  */
 package ensino.configuracoes.model;
 
-import ensino.configuracoes.dao.xml.CalendarioDaoXML;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.BeanFactory;
 import ensino.util.types.Periodo;
 import java.util.HashMap;
@@ -48,19 +46,10 @@ public class PeriodoLetivoFactory implements BeanFactory<PeriodoLetivo> {
     @Override
     public PeriodoLetivo getObject(Element e) {
         try {
-            PeriodoLetivo p = getObject(Integer.parseInt(e.getAttribute("numero")),
+            Integer numero = new Integer(e.getAttribute("numero"));
+            PeriodoLetivo p = getObject(numero,
                     e.getAttribute("descricao"),
                     new Periodo(e.getAttribute("periodoDe"), e.getAttribute("periodoAte")));
-            // Identifica o objeto Pai (Campus)
-            String sCampusId = e.getAttribute("campusId");
-            String sCalendarioAno = e.getAttribute("ano");
-            Integer campusId = sCampusId.matches("\\d+")
-                    ? Integer.parseInt(sCampusId) : null;
-            Integer ano = sCalendarioAno.matches("\\d+")
-                    ? Integer.parseInt(sCalendarioAno) : null;
-            // Aciona o Dao do Campus
-            DaoPattern<Calendario> dao = new CalendarioDaoXML();
-            p.setCalendario(dao.findById(ano, campusId));
             return p;
         } catch (Exception ex) {
             Logger.getLogger(PeriodoLetivoFactory.class.getName()).log(Level.SEVERE, null, ex);

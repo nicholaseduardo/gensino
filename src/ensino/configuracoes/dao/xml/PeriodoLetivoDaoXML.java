@@ -5,10 +5,15 @@
  */
 package ensino.configuracoes.dao.xml;
 
+import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.PeriodoLetivoFactory;
+import ensino.configuracoes.model.SemanaLetiva;
 import ensino.connection.AbstractDaoXML;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
@@ -24,15 +29,41 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
         super("periodoLetivo", "PeriodoLetivo", "periodoLetivo", PeriodoLetivoFactory.getInstance());
     }
 
+    @Override
+    public PeriodoLetivo createObject(Element e, Object ref) {
+        try {
+            PeriodoLetivo o = getBeanFactory().getObject(e);
+            // Aciona o Dao do Campus
+            if (ref != null && ref instanceof Calendario) {
+                Calendario calendario = (Calendario) ref;
+                calendario.addPeriodoLetivo(o);
+            }
+            // load children
+            Integer campusId = new Integer(e.getAttribute("campusId")),
+                    ano = new Integer(e.getAttribute("ano"));
+            String formatter = "%s[@pNumero=%d and @ano=%d and @campusId=%d]";
+            String filter = String.format(formatter,
+                    "//SemanaLetiva/semanaLetiva", o.getNumero(), ano, campusId);
+            DaoPattern<SemanaLetiva> semanaLetivaDao = new SemanaLetivaDaoXML();
+            o.setSemanasLetivas(semanaLetivaDao.list(filter, o));
+
+            return o;
+        } catch (Exception ex) {
+            Logger.getLogger(PeriodoLetivoFactory.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     /**
-     * Recupera um objeto da classe PeriodoLetivo de acorco com sua chave primária
+     * Recupera um objeto da classe PeriodoLetivo de acorco com sua chave
+     * primária
      *
-     * @param ids       Os IDS estão divididos em três parâmetros:<br/>
-     *                  <ul>
-     *                      <li>Param[0]: Número do período letivo</li>
-     *                      <li>Param[1]: Ano do calendário</li>
-     *                      <li>Param[2]: ID do campus</li>
-     *                  </ul>
+     * @param ids Os IDS estão divididos em três parâmetros:<br/>
+     * <ul>
+     * <li>Param[0]: Número do período letivo</li>
+     * <li>Param[1]: Ano do calendário</li>
+     * <li>Param[2]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
@@ -45,7 +76,7 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
                 getObjectExpression(), numero, ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
-            return getBeanFactory().getObject((Element) searched);
+            return createObject((Element) searched);
         }
 
         return null;
@@ -75,19 +106,19 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
     }
 
     /**
-     * Próximo valor da sequencia.
-     * Busca o próximo valor da sequência do periodo letivo de acordo com o 
-     * ano e ID do campus
-     * @param params    Os parametros estão divididos em dois parâmetros:<br/>
-     *                  <ul>
-     *                      <li>Param[0]: Ano do calendário</li>
-     *                      <li>Param[1]: ID do campus</li>
-     *                  </ul>
+     * Próximo valor da sequencia. Busca o próximo valor da sequência do periodo
+     * letivo de acordo com o ano e ID do campus
+     *
+     * @param params Os parametros estão divididos em dois parâmetros:<br/>
+     * <ul>
+     * <li>Param[0]: Ano do calendário</li>
+     * <li>Param[1]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
-    public Integer nextVal(Object ...params) {
-        String filter = String.format("%s[@ano=%d and @campusId=%d]/@numero", 
+    public Integer nextVal(Object... params) {
+        String filter = String.format("%s[@ano=%d and @campusId=%d]/@numero",
                 getObjectExpression(), params[0], params[1]);
         return super.nextVal(filter);
     }

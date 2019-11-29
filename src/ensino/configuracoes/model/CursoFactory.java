@@ -47,17 +47,7 @@ public class CursoFactory implements BeanFactory<Curso> {
     public Curso getObject(Element e) {
         Integer id = Integer.parseInt(e.getAttribute("id"));
         Curso c = getObject(id, e.getAttribute("nome"));
-        try {
-            // Identifica o objeto Pai (Campus)
-            String sParentId = e.getAttribute("campusId");
-            Integer parentId = sParentId.matches("\\d+")
-                    ? Integer.parseInt(sParentId) : null;
-            // Aciona o Dao do Campus
-            CampusDaoXML campusDaoXML = new CampusDaoXML();
-            c.setCampus(campusDaoXML.findById(parentId));
-        } catch (Exception ex) {
-            Logger.getLogger(CursoFactory.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
         return c;
     }
 

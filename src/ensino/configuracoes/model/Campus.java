@@ -30,9 +30,6 @@ public class Campus extends BaseObject {
 
     public void setCursos(List<Curso> cursos) {
         this.cursos = cursos;
-        this.cursos.forEach((o) -> {
-            o.setCampus(this);
-        });
     }
 
     public void addCurso(Curso c) {
@@ -51,9 +48,6 @@ public class Campus extends BaseObject {
 
     public void setCalendarios(List<Calendario> calendarios) {
         this.calendarios = calendarios;
-        this.calendarios.forEach((o) -> {
-            o.setCampus(this);
-        });
     }
 
     public void addCalendario(Calendario c) {

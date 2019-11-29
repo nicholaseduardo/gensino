@@ -7,8 +7,11 @@ package ensino.configuracoes.dao.xml;
 
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeFactory;
+import ensino.configuracoes.model.Calendario;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
@@ -24,15 +27,31 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
         super("atividade", "Atividade", "atividade", AtividadeFactory.getInstance());
     }
 
+    @Override
+    protected Atividade createObject(Element e, Object ref) {
+        try {
+            Atividade o = getBeanFactory().getObject(e);
+            // Recupera o calendario
+            if (ref != null && ref instanceof Calendario) {
+                Calendario calendario = (Calendario) ref;
+                calendario.addAtividade(o);
+            }
+            return o;
+        } catch (Exception ex) {
+            Logger.getLogger(AtividadeDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     /**
      * Recupera um objeto da classe Atividade de acorco com sua chave primária
      *
-     * @param ids       Os IDS estão divididos em dtrêsois parâmetros:<br/>
-     *                  <ul>
-     *                      <li>Param[0]: ID da atividade</li>
-     *                      <li>Param[1]: Ano do calendário</li>
-     *                      <li>Param[2]: ID do campus</li>
-     *                  </ul>
+     * @param ids Os IDS estão divididos em dtrêsois parâmetros:<br/>
+     * <ul>
+     * <li>Param[0]: ID da atividade</li>
+     * <li>Param[1]: Ano do calendário</li>
+     * <li>Param[2]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
@@ -45,7 +64,7 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
                 getObjectExpression(), id, ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
-            return getBeanFactory().getObject((Element) searched);
+            return createObject((Element) searched);
         }
 
         return null;
@@ -75,19 +94,19 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
     }
 
     /**
-     * Próximo valor da sequencia.
-     * Busca o próximo valor da sequência da atividade de acordo com o 
-     * ano e ID do campus
-     * @param params    Os parametros estão divididos em dois parâmetros:<br/>
-     *                  <ul>
-     *                      <li>Param[0]: Ano do calendário</li>
-     *                      <li>Param[1]: ID do campus</li>
-     *                  </ul>
+     * Próximo valor da sequencia. Busca o próximo valor da sequência da
+     * atividade de acordo com o ano e ID do campus
+     *
+     * @param params Os parametros estão divididos em dois parâmetros:<br/>
+     * <ul>
+     * <li>Param[0]: Ano do calendário</li>
+     * <li>Param[1]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
-    public Integer nextVal(Object ...params) {
-        String filter = String.format("%s[@ano=%d and @campusId=%d]/@id", 
+    public Integer nextVal(Object... params) {
+        String filter = String.format("%s[@ano=%d and @campusId=%d]/@id",
                 getObjectExpression(), params[0], params[1]);
         return super.nextVal(filter);
     }

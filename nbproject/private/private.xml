@@ -5,15 +5,8 @@
         <group>
             <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/view/panels/calendario/CalendarioFields.java</file>
             <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/view/panels/calendario/CalendarioAtividadesPanel.java</file>
-            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/model/Campus.java</file>
-            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/controller/CampusController.java</file>
-            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/view/panels/CalendarioPanel.java</file>
-            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/controller/CalendarioController.java</file>
-            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/patterns/AbstractController.java</file>
-            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/controller/PeriodoLetivoController.java</file>
-            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/model/CalendarioFactory.java</file>
+            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/view/panels/calendario/CalendarioSemanaLetivaPanel.java</file>
             <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/configuracoes/view/panels/calendario/CalendarioPeriodoLetivoPanel.java</file>
-            <file>file:/C:/Users/nicho/OneDrive/Documents/GitHub/gensino/src/ensino/defaults/DefaultFormPanel.java</file>
         </group>
     </open-files>
 </project-private>

@@ -11,6 +11,7 @@ import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -20,6 +21,11 @@ public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
     
     public LegendaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("legenda", "Legenda", "legenda", LegendaFactory.getInstance());
+    }
+
+    @Override
+    protected Legenda createObject(Element e, Object ref) {
+        return getBeanFactory().getObject(e);
     }
 
     @Override

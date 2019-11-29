@@ -68,9 +68,6 @@ public class PeriodoLetivo {
 
     public void setSemanasLetivas(List<SemanaLetiva> semanasLetivas) {
         this.semanasLetivas = semanasLetivas;
-        this.semanasLetivas.forEach((o) -> {
-            o.setPeriodoLetivo(this);
-        });
     }
     
     /**

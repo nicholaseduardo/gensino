@@ -274,10 +274,10 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
                  * Recupera a lista de atividades por calendário poque
                  * ela não vem preenchida no calendário
                  */
-                AtividadeController col = new AtividadeController();
-                calendario.setAtividade(
-                    col.listar(calendario.getCampus().getId(), 
-                            calendario.getAno()));
+//                AtividadeController col = new AtividadeController();
+//                calendario.setAtividade(
+//                    col.listar(calendario.getCampus().getId(), 
+//                            calendario.getAno()));
                 setData(calendario.getAtividades());
             } catch (Exception ex) {
                 Logger.getLogger(CalendarioAtividadesPanel.class.getName()).log(Level.SEVERE, null, ex);

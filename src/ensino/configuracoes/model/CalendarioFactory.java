@@ -5,14 +5,9 @@
  */
 package ensino.configuracoes.model;
 
-import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.BeanFactory;
-import ensino.planejamento.model.PlanoDeEnsino;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,20 +41,8 @@ public class CalendarioFactory implements BeanFactory<Calendario> {
 
     @Override
     public Calendario getObject(Element e) {
-        Calendario c = getObject(
-                Integer.parseInt(e.getAttribute("ano")),
-                e.getAttribute("descricao"));
-        try {
-            // Identifica o objeto Pai (Campus)
-            String sParentId = e.getAttribute("campusId");
-            Integer parentId = sParentId.matches("\\d+")
-                    ? Integer.parseInt(sParentId) : null;
-            // Aciona o Dao do Campus
-            DaoPattern<Campus> dao = new CampusDaoXML();
-            c.setCampus(dao.findById(parentId));
-        } catch (Exception ex) {
-            Logger.getLogger(CursoFactory.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Integer ano = new Integer(e.getAttribute("ano"));
+        Calendario c = getObject(ano, e.getAttribute("descricao"));
         return c;
     }
 

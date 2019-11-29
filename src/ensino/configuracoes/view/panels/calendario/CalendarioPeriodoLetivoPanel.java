@@ -224,10 +224,10 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
         if (object instanceof Calendario) {
             try {
                 Calendario calendario = (Calendario) object;
-                PeriodoLetivoController col = new PeriodoLetivoController();
-                calendario.setPeriodosLetivos(
-                    col.listar(calendario.getAno(), 
-                            calendario.getCampus().getId()));
+//                PeriodoLetivoController col = new PeriodoLetivoController();
+//                calendario.setPeriodosLetivos(
+//                    col.listar(calendario.getAno(), 
+//                            calendario.getCampus().getId()));
                 setData(calendario.getPeriodosLetivos());
             } catch (Exception ex) {
                 Logger.getLogger(CalendarioPeriodoLetivoPanel.class.getName()).log(Level.SEVERE, null, ex);

@@ -20,7 +20,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +35,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -186,17 +183,17 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
              * Verifica se existem semanas vinculadas ao período. Do contrário,
              * busca-se do arquivo e vincula ao periodo
              */
-            if (periodoLetivo.getSemanasLetivas().isEmpty()) {
-                try {
-                    SemanaLetivaController col = new SemanaLetivaController();
-                    periodoLetivo.setSemanasLetivas(
-                            col.listar(periodoLetivo.getNumero(),
-                                    periodoLetivo.getCalendario().getAno(),
-                                    periodoLetivo.getCalendario().getCampus().getId()));
-                } catch (Exception ex) {
-                    Logger.getLogger(CalendarioSemanaLetivaPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+//            if (periodoLetivo.getSemanasLetivas().isEmpty()) {
+//                try {
+//                    SemanaLetivaController col = new SemanaLetivaController();
+//                    periodoLetivo.setSemanasLetivas(
+//                            col.listar(periodoLetivo.getNumero(),
+//                                    periodoLetivo.getCalendario().getAno(),
+//                                    periodoLetivo.getCalendario().getCampus().getId()));
+//                } catch (Exception ex) {
+//                    Logger.getLogger(CalendarioSemanaLetivaPanel.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
             setData(periodoLetivo.getSemanasLetivas());
         }
 

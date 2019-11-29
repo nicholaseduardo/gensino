@@ -32,7 +32,7 @@ public class CalendarioController extends AbstractController<Calendario> {
      * @param campusId  Id do campus
      * @return 
      */
-    public Calendario buscarPor(Integer ano, Integer campusId) {
+    public Calendario buscarPor(Integer ano, Integer campusId) {;
         DaoPattern<Calendario> calDal = (CalendarioDaoXML)super.getDao();
         return calDal.findById(ano, campusId);
     }

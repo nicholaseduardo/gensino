@@ -10,7 +10,10 @@ import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetivaFactory;
 import ensino.connection.AbstractDaoXML;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
@@ -26,16 +29,36 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
         super("semanaLetiva", "SemanaLetiva", "semanaLetiva", SemanaLetivaFactory.getInstance());
     }
 
+    @Override
+    public SemanaLetiva createObject(Element e, Object ref) {
+        try {
+            SemanaLetiva o = getBeanFactory().getObject(e);
+
+            Integer pNumero = new Integer(e.getAttribute("pNumero")),
+                    ano = new Integer(e.getAttribute("ano")),
+                    campusId = new Integer(e.getAttribute("campusId"));
+            if (ref != null && ref instanceof PeriodoLetivo) {
+                PeriodoLetivo periodoLetivo = (PeriodoLetivo) ref;
+                periodoLetivo.addSemanaLetiva(o);
+            }
+            return o;
+        } catch (Exception ex) {
+            Logger.getLogger(SemanaLetivaDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     /**
-     * Recupera um objeto da classe SemanaLetiva de acorco com sua chave primária
+     * Recupera um objeto da classe SemanaLetiva de acorco com sua chave
+     * primária
      *
-     * @param ids       Os IDS estão divididos em quatro parâmetros:<br/>
-     *                  <ul>
-     *                      <li>Param[0]: Número da semana letivo</li>
-     *                      <li>Param[1]: Número do período letivo</li>
-     *                      <li>Param[2]: Ano do calendário</li>
-     *                      <li>Param[3]: ID do campus</li>
-     *                  </ul>
+     * @param ids Os IDS estão divididos em quatro parâmetros:<br/>
+     * <ul>
+     * <li>Param[0]: Número da semana letivo</li>
+     * <li>Param[1]: Número do período letivo</li>
+     * <li>Param[2]: Ano do calendário</li>
+     * <li>Param[3]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
@@ -49,7 +72,7 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
                 getObjectExpression(), numero, nPeriodoLetivo, ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
-            return getBeanFactory().getObject((Element) searched);
+            return createObject((Element) searched);
         }
 
         return null;
@@ -80,25 +103,25 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
         // cria a expressão de acordo com o código do campus
         String filter = String.format("@numero=%d and @pNumero=%d and @ano=%d and @campusId=%d",
                 o.getId(), p.getNumero(), ano, campusId);
-        
+
         super.delete(filter);
     }
 
     /**
-     * Próximo valor da sequencia.
-     * Busca o próximo valor da sequência do periodo letivo de acordo com o 
-     * ano e ID do campus
-     * @param params    Os parametros estão divididos em três parâmetros:<br/>
-     *                  <ul>
-     *                      <li>Param[0]: Número do período letivo</li>
-     *                      <li>Param[1]: Ano do calendário</li>
-     *                      <li>Param[2]: ID do campus</li>
-     *                  </ul>
+     * Próximo valor da sequencia. Busca o próximo valor da sequência do periodo
+     * letivo de acordo com o ano e ID do campus
+     *
+     * @param params Os parametros estão divididos em três parâmetros:<br/>
+     * <ul>
+     * <li>Param[0]: Número do período letivo</li>
+     * <li>Param[1]: Ano do calendário</li>
+     * <li>Param[2]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
-    public Integer nextVal(Object ...params) {
-        String filter = String.format("%s[@pNumero=%d and @ano=%d and @campusId=%d]/@numero", 
+    public Integer nextVal(Object... params) {
+        String filter = String.format("%s[@pNumero=%d and @ano=%d and @campusId=%d]/@numero",
                 getObjectExpression(), params[0], params[1], params[2]);
         return super.nextVal(filter);
     }

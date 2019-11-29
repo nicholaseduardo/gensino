@@ -5,16 +5,13 @@
  */
 package ensino.connection;
 
-import ensino.defaults.XMLInterface;
 import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.BeanFactory;
 import ensino.util.helper.XMLHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -278,6 +275,31 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
     public Integer nextVal() {
         return null;
     }
+    
+    /**
+     * Criação de objetos.
+     * Método abstrato que exigirá a implementação da criação do objeto
+     * a ser salvo no arquivo. Sua implementação exige que seja preenchido
+     * o atributo de chave primária (classe pai)
+     * 
+     * @param e
+     * @return 
+     */
+    protected T createObject(Element e) {
+        return createObject(e, null);
+    }
+    
+    /**
+     * Criação de objetos.
+     * Método abstrato que exigirá a implementação da criação do objeto
+     * a ser salvo no arquivo. Sua implementação exige que seja preenchido
+     * o atributo de chave primária (classe pai)
+     * 
+     * @param e
+     * @param ref
+     * @return 
+     */
+    protected abstract T createObject(Element e, Object ref);
 
     /**
      * Recupera os dados do campus
@@ -291,13 +313,23 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
         String expression = String.format("%s[@id=%d]", getObjectExpression(),id);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
-            return beanFactory.getObject((Element) searched);
+            return createObject((Element) searched);
         }
         return null;
     }
 
     @Override
-    public List<T> list(String criteria) {
+    public List<T> list() {
+        return list("");
+    }
+
+    @Override
+    public List<T> list(Object ref) {
+        return list("", ref);
+    }
+
+    @Override
+    public List<T> list(String criteria, Object ref) {
         startTransaction();
         if (doc == null) {
             return null;
@@ -312,16 +344,11 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
         if (searched != null && searched instanceof NodeList) {
             NodeList nodeList = (NodeList) searched;
             for (int i = 0; i < nodeList.getLength(); i++) {
-                list.add(beanFactory.getObject((Element) nodeList.item(i)));
+                list.add(createObject((Element) nodeList.item(i), ref));
             }
         }
 
         return list;
-    }
-
-    @Override
-    public List<T> list() {
-        return list("");
     }
 
 }

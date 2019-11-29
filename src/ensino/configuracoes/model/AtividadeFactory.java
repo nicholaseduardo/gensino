@@ -5,7 +5,6 @@
  */
 package ensino.configuracoes.model;
 
-import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.dao.xml.LegendaDaoXML;
 import ensino.helpers.DateHelper;
 import ensino.patterns.DaoPattern;
@@ -62,14 +61,6 @@ public class AtividadeFactory implements BeanFactory<Atividade> {
                 DaoPattern<Legenda> daoLegenda = new LegendaDaoXML();
                 o.setLegenda(daoLegenda.findById(new Integer(sLegendaId)));
             }
-            // Recupera o calendario
-            String sAno = e.getAttribute("ano");
-            String sCampusId = e.getAttribute("campusId");
-            Integer ano = sAno.matches("\\d+") ? new Integer(sAno) : null;
-            Integer campusId = sCampusId.matches("\\d+") ? new Integer(sCampusId) : null;
-            // Aciona o Dao do Campus
-            DaoPattern<Calendario> dao = new CalendarioDaoXML();
-            o.setCalendario(dao.findById(ano, campusId));
             
             return o;
         } catch (Exception ex) {
