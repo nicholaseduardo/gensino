@@ -8,7 +8,7 @@ package ensino.configuracoes.dao;
 import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.BibliografiaDao;
-import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
+import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDao;
 import ensino.configuracoes.model.Bibliografia;
 import ensino.configuracoes.model.Campus;
@@ -59,7 +59,7 @@ public class ReferenciaBibliograficaDaoIT {
 
             UnidadeCurricular unidade = new UnidadeCurricular(1, "Teste 1", 30, 30, 60, "Teste");
             curso.addUnidadeCurricular(unidade);
-            UnidadeCurricularDao unidadeDao = new UnidadeCurricularDao();
+            UnidadeCurricularDaoXML unidadeDao = new UnidadeCurricularDaoXML();
             unidadeDao.save(unidade);
             unidadeDao.commit();
 
@@ -100,7 +100,7 @@ public class ReferenciaBibliograficaDaoIT {
             campus = (Campus) campusDao.findById(1);
             CursoDaoXML cursoDao = new CursoDaoXML();
             curso = cursoDao.findById(1, 1);
-            UnidadeCurricularDao unidadeDao = new UnidadeCurricularDao();
+            UnidadeCurricularDaoXML unidadeDao = new UnidadeCurricularDaoXML();
             unidade = unidadeDao.findById(1, 1, 1);
             BibliografiaDao bibliografiaDao = new BibliografiaDao();
             bibliografiaList = (List<Bibliografia>) bibliografiaDao.list();

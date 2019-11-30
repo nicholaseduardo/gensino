@@ -121,7 +121,7 @@ public class CalendarioPanel extends DefaultFormPanel {
         if (selectedCampus == null) {
             list = col.listar();
         } else {
-            list = col.listar(selectedCampus.getId());
+            list = col.listar(selectedCampus);
         }
         setTableModel(new CalendarioTableModel(list));
         resizeTableColumns();

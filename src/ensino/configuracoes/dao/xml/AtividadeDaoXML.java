@@ -9,6 +9,7 @@ import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeFactory;
 import ensino.configuracoes.model.Calendario;
 import ensino.connection.AbstractDaoXML;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,10 +33,17 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
         try {
             Atividade o = getBeanFactory().getObject(e);
             // Recupera o calendario
+            Calendario calendario;
             if (ref != null && ref instanceof Calendario) {
-                Calendario calendario = (Calendario) ref;
-                calendario.addAtividade(o);
+                calendario = (Calendario) ref;
+            } else {
+                DaoPattern<Calendario> dao = new CalendarioDaoXML();
+                calendario = dao.findById(
+                        new Integer(e.getAttribute("ano")),
+                        new Integer(e.getAttribute("campusId"))
+                );
             }
+            calendario.addAtividade(o);
             return o;
         } catch (Exception ex) {
             Logger.getLogger(AtividadeDaoXML.class.getName()).log(Level.SEVERE, null, ex);

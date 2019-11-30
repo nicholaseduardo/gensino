@@ -37,10 +37,14 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
             Integer pNumero = new Integer(e.getAttribute("pNumero")),
                     ano = new Integer(e.getAttribute("ano")),
                     campusId = new Integer(e.getAttribute("campusId"));
+            PeriodoLetivo periodoLetivo;
             if (ref != null && ref instanceof PeriodoLetivo) {
-                PeriodoLetivo periodoLetivo = (PeriodoLetivo) ref;
-                periodoLetivo.addSemanaLetiva(o);
+                periodoLetivo = (PeriodoLetivo) ref;
+            } else {
+                DaoPattern<PeriodoLetivo> dao = new PeriodoLetivoDaoXML();
+                periodoLetivo = dao.findById(pNumero, ano, campusId);
             }
+            periodoLetivo.addSemanaLetiva(o);
             return o;
         } catch (Exception ex) {
             Logger.getLogger(SemanaLetivaDaoXML.class.getName()).log(Level.SEVERE, null, ex);

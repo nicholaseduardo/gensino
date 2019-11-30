@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
+import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 public class UnidadeCurricularController extends AbstractController {
     
     public UnidadeCurricularController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new UnidadeCurricularDao());
+        super(new UnidadeCurricularDaoXML());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class UnidadeCurricularController extends AbstractController {
     
     @Override
     public List<UnidadeCurricular> listar() {
-        UnidadeCurricularDao d = (UnidadeCurricularDao) getDao();
+        UnidadeCurricularDaoXML d = (UnidadeCurricularDaoXML) getDao();
         return d.list("");
     }
     
@@ -47,7 +47,7 @@ public class UnidadeCurricularController extends AbstractController {
      * @return 
      */
     public List<UnidadeCurricular> listar(Integer cursoId, Integer campusId) {
-        UnidadeCurricularDao unidadeDao = (UnidadeCurricularDao) super.getDao();
+        UnidadeCurricularDaoXML unidadeDao = (UnidadeCurricularDaoXML) super.getDao();
         return unidadeDao.list(cursoId, campusId);
     }
     
@@ -57,7 +57,7 @@ public class UnidadeCurricularController extends AbstractController {
      * @return 
      */
     public List<UnidadeCurricular> listar(Integer campusId) {
-        UnidadeCurricularDao unidadeDao = (UnidadeCurricularDao) super.getDao();
+        UnidadeCurricularDaoXML unidadeDao = (UnidadeCurricularDaoXML) super.getDao();
         return unidadeDao.list(campusId);
     }
     
@@ -69,7 +69,7 @@ public class UnidadeCurricularController extends AbstractController {
      * @return 
      */
     public UnidadeCurricular buscarPor(Integer id, Integer cursoId, Integer campusId) {
-        UnidadeCurricularDao uindadeCurricularDao = (UnidadeCurricularDao)super.getDao();
+        UnidadeCurricularDaoXML uindadeCurricularDao = (UnidadeCurricularDaoXML)super.getDao();
         return uindadeCurricularDao.findById(id, cursoId, campusId);
     }
 }

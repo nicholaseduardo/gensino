@@ -9,6 +9,7 @@ import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.CalendarioFactory;
+import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
@@ -39,13 +40,13 @@ public class CalendarioController extends AbstractController<Calendario> {
     
     /**
      * Lista os calendarios de um determinado campus
-     * @param campusId  Identificação do campus
+     * @param campus  Identificação do campus
      * @return 
      */
-    public List<Calendario> listar(Integer campusId) {
+    public List<Calendario> listar(Campus campus) {
         DaoPattern<Calendario> dao = super.getDao();
-        String filter = String.format("//Calendario/calendario[@campusId=%d]", campusId);
-        return dao.list(filter);
+        String filter = String.format("//Calendario/calendario[@campusId=%d]", campus.getId());
+        return dao.list(filter, campus);
     }
     
     @Override

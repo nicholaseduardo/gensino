@@ -30,11 +30,6 @@ public class CampusDaoXML extends AbstractDaoXML<Campus> {
 
     @Override
     protected Campus createObject(Element e, Object ref) {
-        return createObject(e);
-    }
-
-    @Override
-    public Campus createObject(Element e) {
         try {
             Campus o = getBeanFactory().getObject(e);
             Integer id = o.getId();

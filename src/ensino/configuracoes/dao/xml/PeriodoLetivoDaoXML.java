@@ -34,10 +34,17 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
         try {
             PeriodoLetivo o = getBeanFactory().getObject(e);
             // Aciona o Dao do Campus
+            Calendario calendario;
             if (ref != null && ref instanceof Calendario) {
-                Calendario calendario = (Calendario) ref;
-                calendario.addPeriodoLetivo(o);
+                calendario = (Calendario) ref;
+            } else {
+                DaoPattern<Calendario> dao = new CalendarioDaoXML();
+                calendario = dao.findById(
+                        new Integer(e.getAttribute("ano")),
+                        new Integer(e.getAttribute("campusId"))
+                );
             }
+            calendario.addPeriodoLetivo(o);
             // load children
             Integer campusId = new Integer(e.getAttribute("campusId")),
                     ano = new Integer(e.getAttribute("ano"));

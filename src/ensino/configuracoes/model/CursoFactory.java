@@ -5,12 +5,9 @@
  */
 package ensino.configuracoes.model;
 
-import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

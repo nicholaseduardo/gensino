@@ -9,6 +9,9 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.ReferenciaBibliografica;
+import ensino.configuracoes.model.UnidadeCurricularFactory;
+import ensino.connection.AbstractDaoXML;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,23 +27,40 @@ import org.w3c.dom.NodeList;
  *
  * @author nicho
  */
-public class UnidadeCurricularDao extends ConfiguracaoDaoXML {
+public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
 
-    public UnidadeCurricularDao() throws IOException, ParserConfigurationException, TransformerException {
-        super("Campus/campus", "unidadeCurricular");
+    public UnidadeCurricularDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+        super("unidadeCurricular", "UnidadeCurricular", "unidadeCurricular", UnidadeCurricularFactory.getInstance());
     }
 
-    private UnidadeCurricular createObject(Node node) {
-        Element e = (Element) node;
-        UnidadeCurricular und = new UnidadeCurricular(e);
-        // Identifica o objeto pai (Curso\Campus)
-        Element parentCurso = (Element) e.getParentNode();
-        Element parentCampus = (Element) parentCurso.getParentNode();
-        Curso curso = new Curso(parentCurso);
-        curso.setCampus(new Campus(parentCampus));
-        // buscar pelo elemento UnidadeCurricular
-        und.setCurso(curso);
-        return und;
+    @Override
+    public UnidadeCurricular createObject(Element e, Object ref) {
+        try {
+            UnidadeCurricular o = getBeanFactory().getObject(e);
+            // Identifica o objeto Pai (Campus)
+            Integer campusId = new Integer(e.getAttribute("campusId")),
+                    cursoId = new Integer(e.getAttribute("cursoId"));
+            Curso curso;
+            if (ref != null && ref instanceof Curso) {
+                curso = (Curso) ref;
+            } else {
+                DaoPattern<Curso> dao = new CursoDaoXML();
+                curso = dao.findById(cursoId, campusId);
+            }
+            curso.addUnidadeCurricular(o);
+            
+            // load children
+            String formatter = "%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
+            String filter = String.format(formatter,
+                    "//ReferenciaBibliografica/referenciaBibliografica", o.getId(), cursoId, campusId);
+            DaoPattern<ReferenciaBibliografica> dao = new ReferenciaBibliograficaDaoXML();
+            o.setReferenciasBibliograficas(dao.list(filter, o));
+            
+            return o;
+        } catch (Exception ex) {
+            Logger.getLogger(UnidadeCurricularDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @Override
@@ -115,7 +135,7 @@ public class UnidadeCurricularDao extends ConfiguracaoDaoXML {
                     }
                 }
             } catch (IOException | ParserConfigurationException | TransformerException ex) {
-                Logger.getLogger(UnidadeCurricularDao.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UnidadeCurricularDaoXML.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -124,7 +144,7 @@ public class UnidadeCurricularDao extends ConfiguracaoDaoXML {
         Element rootElement = (Element) getDataByExpression(expression);
         // se a raiz não existir, emitir erro
         if (rootElement == null) {
-            Logger.getLogger(UnidadeCurricularDao.class.getName()).log(Level.SEVERE, null,
+            Logger.getLogger(UnidadeCurricularDaoXML.class.getName()).log(Level.SEVERE, null,
                     new Exception("Não existe o curso no arquivo"));
         }
         expression += String.format("/%s[@id=%s]", getNodeName(), und.getId());

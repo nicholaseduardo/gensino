@@ -1,16 +1,10 @@
 package ensino.configuracoes.model;
 
-import ensino.defaults.XMLInterface;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-public class Turma implements XMLInterface {
+public class Turma {
 
     private Integer id;
     private String nome;
@@ -20,42 +14,8 @@ public class Turma implements XMLInterface {
     // aggregation
     private List<Estudante> estudantes;
 
-    public Turma(Integer id, String nome, Integer ano) {
-        this.id = id;
-        this.nome = nome;
-        this.ano = ano;
-        this.estudantes = new ArrayList<>();
-    }
-
     public Turma() {
-        this(null, null, null);
-    }
-
-    public Turma(Element e) {
-        this(
-                Integer.parseInt(e.getAttribute("id")),
-                e.getAttribute("nome"),
-                Integer.parseInt(e.getAttribute("ano"))
-        );
-        if (e.hasChildNodes()) {
-            NodeList nodes = e.getChildNodes();
-            for(int i = 0; i < nodes.getLength(); i++) {
-                Node child = nodes.item(i);
-                if ("estudante".equals(child.getNodeName())) {
-                    addEstudante(new Estudante((Element) child));
-                }
-            }
-        }
-    }
-
-    public Turma(HashMap<String, Object> params) {
-        this(
-                (Integer) params.get("id"),
-                (String) params.get("nome"),
-                (Integer) params.get("ano")
-        );
-        this.curso = (Curso) params.get("curso");
-        this.estudantes = (List<Estudante>) params.get("estudantes");
+        this.estudantes = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -118,28 +78,6 @@ public class Turma implements XMLInterface {
 
     public void setEstudantes(List<Estudante> estudantes) {
         this.estudantes = estudantes;
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = (Element) doc.createElement("turma");
-        e.setAttribute("id", id.toString());
-        e.setAttribute("nome", nome);
-        e.setAttribute("ano", ano.toString());
-        
-        for(Estudante estudante : estudantes) {
-            e.appendChild(estudante.toXml(doc));
-        }
-        return e;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-        map.put("id", id);
-        map.put("curso", curso);
-
-        return map;
     }
 
     @Override

@@ -5,13 +5,14 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.TurmaDao;
-import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
+import ensino.configuracoes.dao.xml.TurmaDaoXML;
+import ensino.configuracoes.model.Curso;
+import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.Turma;
-import ensino.configuracoes.model.UnidadeCurricular;
+import ensino.configuracoes.model.TurmaFactory;
 import ensino.patterns.AbstractController;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -20,37 +21,10 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class TurmaController extends AbstractController {
+public class TurmaController extends AbstractController<Turma> {
     
     public TurmaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new TurmaDao());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Turma(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Turma(params));
-    }
-    
-    @Override
-    public List<Turma> listar() {
-        TurmaDao d = (TurmaDao) getDao();
-        return d.list("");
-    }
-    
-    /**
-     * Listar turmas por curso e campus
-     * @param cursoId   Identificacao do curso
-     * @param campusId  Identificacao do campus
-     * @return 
-     */
-    public List<Turma> listar(Integer cursoId, Integer campusId) {
-        TurmaDao turmaDao = (TurmaDao) super.getDao();
-        return turmaDao.list(cursoId, campusId);
+        super(new TurmaDaoXML(), TurmaFactory.getInstance());
     }
     
     /**
@@ -61,7 +35,29 @@ public class TurmaController extends AbstractController {
      * @return 
      */
     public Turma buscarPor(Integer id, Integer cursoId, Integer campusId) {
-        TurmaDao turma = (TurmaDao)super.getDao();
-        return turma.findById(id, cursoId, campusId);
+        DaoPattern<Turma> turmaDao = super.getDao();
+        return turmaDao.findById(id, cursoId, campusId);
+    }
+    
+    /**
+     * Listar turmas por curso e campus
+     * @param curso   Identificacao do curso
+     * @return 
+     */
+    public List<Turma> listar(Curso curso) {
+        DaoPattern<Turma> turmaDao = super.getDao();
+        String filter = String.format("//Turma/turma[@cursoId=%d and @campusId=%d]", 
+                curso.getId(), curso.getCampus().getId());
+        return turmaDao.list(filter, curso);
+    }
+
+    @Override
+    public Turma salvar(Turma o) throws Exception {
+        o = super.salvar(o);
+        // salvar cascade
+        AbstractController<Estudante> estudanteCon = new EstudanteController();
+        estudanteCon.salvarEmCascata(o.getEstudantes());
+
+        return o;
     }
 }

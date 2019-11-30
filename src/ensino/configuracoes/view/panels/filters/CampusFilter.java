@@ -52,11 +52,10 @@ public class CampusFilter extends JPanel {
             setLayout(new GridBagLayout());
             GridBagConstraints cfilter = new GridBagConstraints();
             CampusController campusCol = new CampusController();
-            CalendarioController calCol = new CalendarioController();
+            
             List listaCampus = campusCol.listar();
             for (int i = 0; i < listaCampus.size(); i++) {
                 Campus c = (Campus) listaCampus.get(i);
-                c.setCalendarios(calCol.listar(c.getId()));
                 GenJRadioButton rb = new GenJRadioButton(c.getNome());
                 rb.setEnabled(selectedCampus == null);
                 rb.setObjectValue(c);

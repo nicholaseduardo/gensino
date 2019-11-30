@@ -7,7 +7,7 @@ package ensino.configuracoes.dao;
 
 import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
+import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
@@ -97,14 +97,14 @@ public class UnidadeCurricularDaoIT {
     }
 
     /**
-     * Test of list method, of class UnidadeCurricularDao.
+     * Test of list method, of class UnidadeCurricularDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            UnidadeCurricularDao instance = new UnidadeCurricularDao();
+            UnidadeCurricularDaoXML instance = new UnidadeCurricularDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -119,7 +119,7 @@ public class UnidadeCurricularDaoIT {
     }
 
     /**
-     * Test of save method, of class UnidadeCurricularDao.
+     * Test of save method, of class UnidadeCurricularDaoXML.
      */
     @Test
     public void testSave() {
@@ -128,7 +128,7 @@ public class UnidadeCurricularDaoIT {
             UnidadeCurricular object = new UnidadeCurricular(null, "Teste 1", 30, 30, 60, "Teste");
             Curso curso = campus1.getCursos().get(0);
             curso.addUnidadeCurricular(object);
-            UnidadeCurricularDao instance = new UnidadeCurricularDao();
+            UnidadeCurricularDaoXML instance = new UnidadeCurricularDaoXML();
             instance.save(object);
             assertEquals(1, instance.list().size());
             
@@ -146,13 +146,13 @@ public class UnidadeCurricularDaoIT {
     }
 
     /**
-     * Test of findById method, of class UnidadeCurricularDao.
+     * Test of findById method, of class UnidadeCurricularDaoXML.
      */
     @Test
     public void testFindById_3args() {
         try {
             System.out.println("findById");
-            UnidadeCurricularDao instance = new UnidadeCurricularDao();
+            UnidadeCurricularDaoXML instance = new UnidadeCurricularDaoXML();
             UnidadeCurricular result = instance.findById(1, 1, 1);
             assertNotNull(result);
         } catch (IOException ex) {
@@ -165,13 +165,13 @@ public class UnidadeCurricularDaoIT {
     }
 
     /**
-     * Test of delete method, of class UnidadeCurricularDao.
+     * Test of delete method, of class UnidadeCurricularDaoXML.
      */
     @Test
     public void testDelete() {
         try {
             System.out.println("delete");
-            UnidadeCurricularDao instance = new UnidadeCurricularDao();
+            UnidadeCurricularDaoXML instance = new UnidadeCurricularDaoXML();
             UnidadeCurricular object = instance.findById(1, 1, 1);
             instance.delete(object);
             instance.commit();
@@ -186,7 +186,7 @@ public class UnidadeCurricularDaoIT {
     }
 
     /**
-     * Test of nextVal method, of class UnidadeCurricularDao.
+     * Test of nextVal method, of class UnidadeCurricularDaoXML.
      */
     @Test
     public void testNextVal() {
@@ -194,7 +194,7 @@ public class UnidadeCurricularDaoIT {
             System.out.println("nextVal");
             Integer campusId = campus1.getId();
             Integer cursoId = campus1.getCursos().get(0).getId();
-            UnidadeCurricularDao instance = new UnidadeCurricularDao();
+            UnidadeCurricularDaoXML instance = new UnidadeCurricularDaoXML();
             Integer expResult = 3;
             Integer result = instance.nextVal(campusId, cursoId);
             assertEquals(expResult, result);
@@ -209,13 +209,13 @@ public class UnidadeCurricularDaoIT {
     }
 
 //    /**
-//     * Test of findById method, of class UnidadeCurricularDao.
+//     * Test of findById method, of class UnidadeCurricularDaoXML.
 //     */
 //    @Test
 //    public void testFindById_Object() {
 //        System.out.println("findById");
 //        Object id = null;
-//        UnidadeCurricularDao instance = new UnidadeCurricularDao();
+//        UnidadeCurricularDaoXML instance = new UnidadeCurricularDaoXML();
 //        Object expResult = null;
 //        Object result = instance.findById(id);
 //        assertEquals(expResult, result);

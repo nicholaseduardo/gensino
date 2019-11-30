@@ -6,12 +6,13 @@
 package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.CursoDaoXML;
+import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoFactory;
+import ensino.configuracoes.model.Turma;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -39,13 +40,26 @@ public class CursoController extends AbstractController<Curso> {
     
     /**
      * Lista os curso de um determinado campus
-     * @param campusId  Identificação do campus
+     * @param campus  Identificação do campus
      * @return 
      */
-    public List<Curso> listar(Integer campusId) {
+    public List<Curso> listar(Campus campus) {
         DaoPattern<Curso> cursoDao = super.getDao();
-        String filter = String.format("//Curso/curso[@campusId=%d]", campusId);
-        return cursoDao.list(filter);
+        String filter = String.format("//Curso/curso[@campusId=%d]", campus.getId());
+        return cursoDao.list(filter, campus);
+    }
+    
+    @Override
+    public Curso salvar(Curso o) throws Exception {
+        o = super.salvar(o);
+        // salvar cascade
+        AbstractController<Turma> turmaCol = new TurmaController();
+        turmaCol.salvarEmCascata(o.getTurmas());
+        
+//        AbstractController<PeriodoLetivo> colPeriodoLetivo = new PeriodoLetivoController();
+//        colPeriodoLetivo.salvarEmCascata(o.getPeriodosLetivos());
+
+        return o;
     }
     
 }

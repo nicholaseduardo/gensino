@@ -8,7 +8,9 @@ package ensino.configuracoes.dao.xml;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoFactory;
+import ensino.configuracoes.model.Turma;
 import ensino.connection.AbstractDaoXML;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,21 +30,30 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
     }
 
     @Override
-    public Curso createObject(Element e) {
+    public Curso createObject(Element e, Object ref) {
         try {
+            Curso o = getBeanFactory().getObject(e);
             // Identifica o objeto Pai (Campus)
-            String sParentId = e.getAttribute("campusId");
-            Integer parentId = sParentId.matches("\\d+")
-                    ? Integer.parseInt(sParentId) : null;
-            // Aciona o Dao do Campus
-            CampusDaoXML campusDaoXML = new CampusDaoXML();
-            Campus campus = campusDaoXML.findById(parentId);
+            Integer campusId = new Integer(e.getAttribute("campusId"));
+            Campus campus;
+            if (ref != null && ref instanceof Campus) {
+                campus = (Campus) ref;
+            } else {
+                DaoPattern<Campus> dao = new CampusDaoXML();
+                campus = dao.findById(campusId);
+            }
+            campus.addCurso(o);
             
-            Curso c = getBeanFactory().getObject(e);
-            campus.addCurso(c);
-            return c;
+            // load children
+            String formatter = "%s[@cursoId=%d and @campusId=%d]";
+            String filter = String.format(formatter,
+                    "//Turma/turma", o.getId(), campusId);
+            DaoPattern<Turma> turmaDao = new TurmaDaoXML();
+            o.setTurmas(turmaDao.list(filter, o));
+            
+            return o;
         } catch (Exception ex) {
-            Logger.getLogger(CursoFactory.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CursoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -50,20 +61,23 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
     /**
      * Recupera um objeto da classe Curso de acorco com sua chave primária
      *
-     * @param ids O primeiro campo indica o Número de identificação do curso e o
-     * segundo campo indica o Número de identificação do campus
+     * @param ids Os IDS estão divididos em dois parâmetros:<br/>
+     * <ul>
+     * <li>Param[0]: ID do curso</li>
+     * <li>Param[1]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
     public Curso findById(Object... ids) {
-        Integer campusId = (Integer) ids[0];
-        Integer id = (Integer) ids[1];
+        Integer id = (Integer) ids[0];
+        Integer campusId = (Integer) ids[1];
         // Cria mecanismo para buscar o conteudo no xml
         String expression = String.format("/%s[@id=%d and @campusId=%d]",
                 getObjectExpression(), id, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
-            return getBeanFactory().getObject((Element) searched);
+            return createObject((Element) searched);
         }
 
         return null;
@@ -99,8 +113,8 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
      */
     @Override
     public Integer nextVal(Object... params) {
-        String filter = String.format("%s/@id[@campusId=%d]",
-                getRootExpression(), params[0]);
+        String filter = String.format("%s[@campusId=%d]/@id",
+                getObjectExpression(), params[0]);
         return super.nextVal(filter);
     }
 }

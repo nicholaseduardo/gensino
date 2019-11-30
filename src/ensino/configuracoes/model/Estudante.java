@@ -1,44 +1,15 @@
 package ensino.configuracoes.model;
 
-import ensino.defaults.XMLInterface;
-import java.util.HashMap;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-public class Estudante implements XMLInterface {
+public class Estudante {
     private Integer id;
     private String nome;
     private String registro;
     // parent
     private Turma turma;
     
-    public Estudante(Integer id, String nome, String registro) {
-        this.id = id;
-        this.nome = nome;
-        this.registro = registro;
-    }
-    
     public Estudante() {
-        this(null, null, null);
-    }
-    
-    public Estudante(Element e) {
-        this(
-                Integer.parseInt(e.getAttribute("id")),
-                e.getAttribute("nome"),
-                e.getAttribute("registro")
-        );
-    }
-    
-    public Estudante(HashMap<String, Object> params) {
-        this(
-                (Integer)params.get("id"),
-                (String)params.get("nome"),
-                (String)params.get("registro")
-        );
-        this.turma = (Turma) params.get("turma");
     }
 
     public Integer getId() {
@@ -75,24 +46,6 @@ public class Estudante implements XMLInterface {
 
     public void setTurma(Turma turma) {
         this.turma = turma;
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = (Element) doc.createElement("estudante");
-        e.setAttribute("id", id.toString());
-        e.setAttribute("nome", nome);
-        e.setAttribute("registro", registro);
-        return e;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-        map.put("id", id);
-        map.put("turma", turma);
-        
-        return map;
     }
 
     @Override

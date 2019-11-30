@@ -39,10 +39,15 @@ public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
             Integer campusId = new Integer(e.getAttribute("campusId")),
                     ano = new Integer(e.getAttribute("ano"));
             // Adiciona a referência, que é a classe pai
+            Campus campus;
             if (ref != null && ref instanceof Campus) {
-                Campus campus = (Campus) ref;
-                campus.addCalendario(o);
+                campus = (Campus) ref;
+            } else {
+                // se o campus não existe, ele deve ser recuperado
+                DaoPattern<Campus> dao = new CampusDaoXML();
+                campus = dao.findById(campusId);
             }
+            campus.addCalendario(o);
 
             // load children
             String formatter = "%s[@ano=%d and @campusId=%d]";
@@ -75,8 +80,8 @@ public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
      */
     @Override
     public Calendario findById(Object... ids) {
-        Integer campusId = (Integer) ids[1];
         Integer ano = (Integer) ids[0];
+        Integer campusId = (Integer) ids[1];
         // Cria mecanismo para buscar o conteudo no xml
         String expression = String.format("%s[@ano=%d and @campusId=%d]",
                 getObjectExpression(), ano, campusId);

@@ -10,7 +10,7 @@ import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.DocenteDao;
 import ensino.configuracoes.dao.CursoDaoIT;
-import ensino.configuracoes.dao.xml.UnidadeCurricularDao;
+import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
@@ -60,7 +60,7 @@ public class ObjetivoDaoIT {
 
             UnidadeCurricular unidade = new UnidadeCurricular(null, "Teste 1", 30, 30, 60, "Teste");
             curso.addUnidadeCurricular(unidade);
-            UnidadeCurricularDao unidadeDao = new UnidadeCurricularDao();
+            UnidadeCurricularDaoXML unidadeDao = new UnidadeCurricularDaoXML();
             unidadeDao.save(unidade);
             unidadeDao.commit();
 
