@@ -5,11 +5,12 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.BibliografiaDao;
+import ensino.configuracoes.dao.xml.BibliografiaDaoXML;
 import ensino.configuracoes.model.Bibliografia;
+import ensino.configuracoes.model.BibliografiaFactory;
 import ensino.patterns.AbstractController;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -18,26 +19,10 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class BibliografiaController extends AbstractController {
+public class BibliografiaController extends AbstractController<Bibliografia> {
     
     public BibliografiaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new BibliografiaDao());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Bibliografia(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Bibliografia(params));
-    }
-    
-    @Override
-    public List<Bibliografia> listar() {
-        BibliografiaDao bDao = (BibliografiaDao) getDao();
-        return bDao.list("");
+        super(new BibliografiaDaoXML(), BibliografiaFactory.getInstance());
     }
     
     /**
@@ -46,8 +31,10 @@ public class BibliografiaController extends AbstractController {
      * @return 
      */
     public List<Bibliografia> listarPorAutor(String autor) {
-        BibliografiaDao bDao = (BibliografiaDao) getDao();
-        return bDao.listByAutor(autor);
+        DaoPattern<Bibliografia> dao = getDao();
+        String filter = String.format("%s[contains(@autor, '%s')]",
+                "//Bibliografia/bibliografia", autor);
+        return dao.list(filter);
     }
     
     /**
@@ -56,7 +43,9 @@ public class BibliografiaController extends AbstractController {
      * @return 
      */
     public List<Bibliografia> listarPorTitulo(String titulo) {
-        BibliografiaDao bDao = (BibliografiaDao) getDao();
-        return bDao.listByTitulo(titulo);
+        DaoPattern<Bibliografia> dao = getDao();
+        String filter = String.format("%s[contains(@titulo, '%s')]",
+                "//Bibliografia/bibliografia", titulo);
+        return dao.list(filter);
     }
 }

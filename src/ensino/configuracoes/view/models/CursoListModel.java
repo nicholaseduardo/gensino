@@ -53,7 +53,7 @@ public class CursoListModel extends AbstractListModel {
         if (campus == null) {
             list = (List<Curso>) cursoCol.listar();
         } else {
-            list = cursoCol.listar(campus.getId());
+            list = cursoCol.listar(campus);
         }
         if (!list.isEmpty()) {
             list.sort(Comparator.comparing(Curso::getNome));

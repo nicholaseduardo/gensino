@@ -5,11 +5,10 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.RecursoDao;
-import ensino.configuracoes.model.Recurso;
+import ensino.configuracoes.dao.xml.RecursoDaoXML;
+import ensino.configuracoes.model.RecursoFactory;
 import ensino.patterns.AbstractController;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -20,17 +19,6 @@ import javax.xml.transform.TransformerException;
 public class RecursoController extends AbstractController {
 
     public RecursoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new RecursoDao());
+        super(new RecursoDaoXML(), RecursoFactory.getInstance());
     }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Recurso(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Recurso(params));
-    }
-    
 }

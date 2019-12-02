@@ -6,10 +6,13 @@
 package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
+import ensino.configuracoes.model.Curso;
+import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
+import ensino.configuracoes.model.UnidadeCurricularFactory;
 import ensino.patterns.AbstractController;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -18,47 +21,10 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class UnidadeCurricularController extends AbstractController {
+public class UnidadeCurricularController extends AbstractController<UnidadeCurricular> {
     
     public UnidadeCurricularController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new UnidadeCurricularDaoXML());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new UnidadeCurricular(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new UnidadeCurricular(params));
-    }
-    
-    @Override
-    public List<UnidadeCurricular> listar() {
-        UnidadeCurricularDaoXML d = (UnidadeCurricularDaoXML) getDao();
-        return d.list("");
-    }
-    
-    /**
-     * Listar unidades por curso e campus
-     * @param cursoId   Identificacao do curso
-     * @param campusId  Identificacao do campus
-     * @return 
-     */
-    public List<UnidadeCurricular> listar(Integer cursoId, Integer campusId) {
-        UnidadeCurricularDaoXML unidadeDao = (UnidadeCurricularDaoXML) super.getDao();
-        return unidadeDao.list(cursoId, campusId);
-    }
-    
-    /**
-     * Listar unidades por campus
-     * @param campusId  Identificacao do campus
-     * @return 
-     */
-    public List<UnidadeCurricular> listar(Integer campusId) {
-        UnidadeCurricularDaoXML unidadeDao = (UnidadeCurricularDaoXML) super.getDao();
-        return unidadeDao.list(campusId);
+        super(new UnidadeCurricularDaoXML(), UnidadeCurricularFactory.getInstance());
     }
     
     /**
@@ -69,7 +35,41 @@ public class UnidadeCurricularController extends AbstractController {
      * @return 
      */
     public UnidadeCurricular buscarPor(Integer id, Integer cursoId, Integer campusId) {
-        UnidadeCurricularDaoXML uindadeCurricularDao = (UnidadeCurricularDaoXML)super.getDao();
-        return uindadeCurricularDao.findById(id, cursoId, campusId);
+        DaoPattern<UnidadeCurricular> dao = super.getDao();
+        return dao.findById(id, cursoId, campusId);
+    }
+    
+    /**
+     * Listar unidades por curso e campus
+     * @param curso   Identificacao do curso
+     * @return 
+     */
+    public List<UnidadeCurricular> listar(Curso curso) {
+        DaoPattern<UnidadeCurricular> dao = super.getDao();
+        String filter = String.format("//UnidadeCurricular/unidadeCurricular[@cursoId=%d and @campusId=%d]", 
+                curso.getId(), curso.getCampus().getId());
+        return dao.list(filter, curso);
+    }
+    
+    /**
+     * Listar unidades por campus
+     * @param campusId  Identificacao do campus
+     * @return 
+     */
+    public List<UnidadeCurricular> listar(Integer campusId) {
+        DaoPattern<UnidadeCurricular> dao = super.getDao();
+        String filter = String.format("//UnidadeCurricular/unidadeCurricular[@campusId=%d]", 
+                campusId);
+        return dao.list(filter);
+    }
+
+    @Override
+    public UnidadeCurricular salvar(UnidadeCurricular o) throws Exception {
+        o = super.salvar(o);
+        //salvar cascade
+        AbstractController<ReferenciaBibliografica> col = new ReferenciaBibliograficaController();
+        col.salvarEmCascata(o.getReferenciasBibliograficas());
+        
+        return o;
     }
 }

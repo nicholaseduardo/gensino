@@ -8,7 +8,7 @@ package ensino.planejamento.dao;
 import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.CursoDaoXML;
-import ensino.configuracoes.dao.xml.DocenteDao;
+import ensino.configuracoes.dao.xml.DocenteDaoXML;
 import ensino.configuracoes.dao.CursoDaoIT;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Calendario;
@@ -64,7 +64,7 @@ public class ObjetivoDaoIT {
             unidadeDao.save(unidade);
             unidadeDao.commit();
 
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             Docente docente = new Docente(null, "Nicholas");
             docenteDao.save(docente);
             docenteDao.commit();
@@ -94,7 +94,7 @@ public class ObjetivoDaoIT {
             campusDao.delete(campusDao.findById(1));
             campusDao.commit();
 
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             docenteDao.delete(docenteDao.findById(1));
             docenteDao.commit();
             

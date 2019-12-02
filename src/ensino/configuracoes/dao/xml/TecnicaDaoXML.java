@@ -5,8 +5,8 @@
  */
 package ensino.configuracoes.dao.xml;
 
-import ensino.configuracoes.model.Legenda;
-import ensino.configuracoes.model.LegendaFactory;
+import ensino.configuracoes.model.Tecnica;
+import ensino.configuracoes.model.TecnicaFactory;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,24 +17,24 @@ import org.w3c.dom.Element;
  *
  * @author nicho
  */
-public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
-    
-    public LegendaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
-        super("legenda", "Legenda", "legenda", LegendaFactory.getInstance());
+public class TecnicaDaoXML extends AbstractDaoXML<Tecnica> {
+
+    public TecnicaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+        super("tecnica", "Tecnica", "tecnica", TecnicaFactory.getInstance());
     }
 
     @Override
-    protected Legenda createObject(Element e, Object ref) {
+    protected Tecnica createObject(Element e, Object ref) {
         return getBeanFactory().getObject(e);
     }
 
     @Override
-    public Legenda findById(Object... ids) {
+    public Tecnica findById(Object... ids) {
         return super.findById(ids[0]);
     }
     
     @Override
-    public void save(Legenda o) {
+    public void save(Tecnica o) {
         String expression = String.format("@id=%d", o.getId());
         if (o.getId() == null) {
             o.setId(this.nextVal());
@@ -43,7 +43,7 @@ public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
     }
 
     @Override
-    public void delete(Legenda o) {
+    public void delete(Tecnica o) {
         String filter = String.format("@id=%d", o.getId());
         super.delete(filter);
     }
@@ -53,4 +53,5 @@ public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
         String expression = String.format("%s/@id", getObjectExpression());
         return super.nextVal(expression);
     }
+
 }

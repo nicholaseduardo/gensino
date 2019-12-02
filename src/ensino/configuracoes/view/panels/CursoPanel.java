@@ -37,7 +37,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -140,7 +139,7 @@ public class CursoPanel extends DefaultFormPanel {
             list = col.listar();
         } else {
             // recupera a lista de cursos pelo campus
-            list = col.listar(selectedCampus.getId());
+            list = col.listar(selectedCampus);
         }
         setTableModel(new CursoTableModel(list));
         resizeTableColumns();

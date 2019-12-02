@@ -5,11 +5,10 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.TecnicaDao;
-import ensino.configuracoes.model.Tecnica;
+import ensino.configuracoes.dao.xml.TecnicaDaoXML;
+import ensino.configuracoes.model.TecnicaFactory;
 import ensino.patterns.AbstractController;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -20,16 +19,6 @@ import javax.xml.transform.TransformerException;
 public class TecnicaController  extends AbstractController {
 
     public TecnicaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new TecnicaDao());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Tecnica(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Tecnica(params));
+        super(new TecnicaDaoXML(), TecnicaFactory.getInstance());
     }
 }

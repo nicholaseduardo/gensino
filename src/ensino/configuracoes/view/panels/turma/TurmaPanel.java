@@ -123,7 +123,7 @@ public class TurmaPanel extends DefaultFormPanel {
         TurmaTableModel model;
         List<Turma> list;
         if (campus != null && selectedCurso != null) {
-            list = col.listar(selectedCurso.getId(), campus.getId());
+            list = col.listar(selectedCurso);
         } else {
             list = col.listar();
         }

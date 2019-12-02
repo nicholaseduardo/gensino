@@ -5,11 +5,11 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.DocenteDao;
+import ensino.configuracoes.dao.xml.DocenteDaoXML;
 import ensino.patterns.AbstractController;
 import ensino.configuracoes.model.Docente;
+import ensino.configuracoes.model.DocenteFactory;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -17,25 +17,9 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class DocenteController extends AbstractController {
+public class DocenteController extends AbstractController<Docente> {
         
     public DocenteController() throws ParserConfigurationException, TransformerException, IOException {
-        super(new DocenteDao());
-    }
-
-    /**
-     *
-     * @param params
-     * @return 
-     * @throws TransformerException
-     */
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Docente(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Docente(params));
+        super(new DocenteDaoXML(), DocenteFactory.getInstance());
     }
 }

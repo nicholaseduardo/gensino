@@ -53,7 +53,7 @@ public class CalendarioListModel extends AbstractListModel {
         if (campus == null) {
             list = (List<Calendario>) calendarioCol.listar();
         } else {
-            list = calendarioCol.listar(campus.getId());
+            list = calendarioCol.listar(campus);
         }
         if (!list.isEmpty()) {
             list.sort(Comparator.comparing(Calendario::getAno));

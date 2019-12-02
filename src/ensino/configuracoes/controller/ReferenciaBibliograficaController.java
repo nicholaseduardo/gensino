@@ -5,11 +5,12 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDao;
+import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDaoXML;
 import ensino.configuracoes.model.ReferenciaBibliografica;
+import ensino.configuracoes.model.ReferenciaBibliograficaFactory;
 import ensino.patterns.AbstractController;
+import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -17,20 +18,10 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class ReferenciaBibliograficaController extends AbstractController {
+public class ReferenciaBibliograficaController extends AbstractController<ReferenciaBibliografica> {
     
     public ReferenciaBibliograficaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new ReferenciaBibliograficaDao());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new ReferenciaBibliografica(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new ReferenciaBibliografica(params));
+        super(new ReferenciaBibliograficaDaoXML(), ReferenciaBibliograficaFactory.getInstance());
     }
     
     /**
@@ -42,7 +33,12 @@ public class ReferenciaBibliograficaController extends AbstractController {
      * @return 
      */
     public ReferenciaBibliografica buscarPor(Integer sequencia, Integer unidadeId, Integer cursoId, Integer campusId) {
-        ReferenciaBibliograficaDao referenciaDao = (ReferenciaBibliograficaDao)super.getDao();
-        return referenciaDao.findById(sequencia, unidadeId, cursoId, campusId);
+        DaoPattern<ReferenciaBibliografica> dao = super.getDao();
+        return dao.findById(sequencia, unidadeId, cursoId, campusId);
+    }
+
+    @Override
+    public ReferenciaBibliografica salvar(ReferenciaBibliografica o) throws Exception {
+        return super.salvar(o);
     }
 }

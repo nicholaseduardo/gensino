@@ -5,8 +5,8 @@
  */
 package ensino.configuracoes.dao.xml;
 
-import ensino.configuracoes.model.Legenda;
-import ensino.configuracoes.model.LegendaFactory;
+import ensino.configuracoes.model.Bibliografia;
+import ensino.configuracoes.model.BibliografiaFactory;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,33 +17,30 @@ import org.w3c.dom.Element;
  *
  * @author nicho
  */
-public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
-    
-    public LegendaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
-        super("legenda", "Legenda", "legenda", LegendaFactory.getInstance());
-    }
+public class BibliografiaDaoXML extends AbstractDaoXML<Bibliografia> {
 
+    public BibliografiaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+        super("bibliografia", "Bibliografia", "bibliografia", BibliografiaFactory.getInstance());
+    }
+    
     @Override
-    protected Legenda createObject(Element e, Object ref) {
+    protected Bibliografia createObject(Element e, Object ref) {
         return getBeanFactory().getObject(e);
     }
 
     @Override
-    public Legenda findById(Object... ids) {
+    public Bibliografia findById(Object... ids) {
         return super.findById(ids[0]);
     }
     
     @Override
-    public void save(Legenda o) {
+    public void save(Bibliografia o) {
         String expression = String.format("@id=%d", o.getId());
-        if (o.getId() == null) {
-            o.setId(this.nextVal());
-        }
         super.save(o, expression);
     }
 
     @Override
-    public void delete(Legenda o) {
+    public void delete(Bibliografia o) {
         String filter = String.format("@id=%d", o.getId());
         super.delete(filter);
     }

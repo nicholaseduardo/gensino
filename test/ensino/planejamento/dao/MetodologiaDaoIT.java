@@ -8,9 +8,9 @@ package ensino.planejamento.dao;
 import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.CursoDaoXML;
-import ensino.configuracoes.dao.xml.DocenteDao;
+import ensino.configuracoes.dao.xml.DocenteDaoXML;
 import ensino.configuracoes.dao.CursoDaoIT;
-import ensino.configuracoes.dao.xml.TecnicaDao;
+import ensino.configuracoes.dao.xml.TecnicaDaoXML;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
@@ -70,7 +70,7 @@ public class MetodologiaDaoIT {
             unidadeDao.save(unidade);
             unidadeDao.commit();
 
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             Docente docente = new Docente(null, "Nicholas");
             docenteDao.save(docente);
             docenteDao.commit();
@@ -92,7 +92,7 @@ public class MetodologiaDaoIT {
             objetivoDao.commit();
             
             Tecnica tecnica = new Tecnica(null, "tecnica 1");
-            TecnicaDao tecnicaDao = new TecnicaDao();
+            TecnicaDaoXML tecnicaDao = new TecnicaDaoXML();
             tecnicaDao.save(tecnica);
             tecnicaDao.commit();
             
@@ -116,7 +116,7 @@ public class MetodologiaDaoIT {
             campusDao.delete(campusDao.findById(1));
             campusDao.commit();
 
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             docenteDao.delete(docenteDao.findById(1));
             docenteDao.commit();
             
@@ -124,7 +124,7 @@ public class MetodologiaDaoIT {
             planoDao.delete(planoDao.findById(1));
             planoDao.commit();
             
-            TecnicaDao tecnicaDao = new TecnicaDao();
+            TecnicaDaoXML tecnicaDao = new TecnicaDaoXML();
             tecnicaDao.delete(tecnicaDao.findById(1));
             tecnicaDao.commit();
         } catch (TransformerException | IOException ex) {
@@ -140,7 +140,7 @@ public class MetodologiaDaoIT {
             DetalhamentoDao detalhamentoDao = new DetalhamentoDao();
             detalhamento = detalhamentoDao.findById(1, 1, 1, 1, 1);
             
-            TecnicaDao tecnicaDao = new TecnicaDao();
+            TecnicaDaoXML tecnicaDao = new TecnicaDaoXML();
             tecnica = (Tecnica) tecnicaDao.findById(1);
         } catch (IOException ex) {
             Logger.getLogger(MetodologiaDaoIT.class.getName()).log(Level.SEVERE, null, ex);

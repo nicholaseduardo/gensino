@@ -43,7 +43,7 @@ public class LegendaFactory implements BeanFactory<Legenda> {
 
     @Override
     public Legenda getObject(Element e) {
-        return getObject(Integer.parseInt(e.getAttribute("id")),
+        return getObject(new Integer(e.getAttribute("id")),
                 e.getAttribute("nome"),
                 Boolean.parseBoolean(e.getAttribute("letivo")),
                 Boolean.parseBoolean(e.getAttribute("informativo")),
@@ -53,11 +53,11 @@ public class LegendaFactory implements BeanFactory<Legenda> {
     @Override
     public Legenda getObject(HashMap<String, Object> p) {
         return getObject(
-                (Integer) p.get("id"),
-                (String) p.get("nome"),
-                (Boolean) p.get("letivo"),
-                (Boolean) p.get("informativo"),
-                (Color) p.get("cor")
+                p.get("id"),
+                p.get("nome"),
+                p.get("letivo"),
+                p.get("informativo"),
+                p.get("cor")
         );
     }
 

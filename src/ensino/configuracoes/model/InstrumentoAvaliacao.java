@@ -6,10 +6,6 @@
 package ensino.configuracoes.model;
 
 import ensino.patterns.BaseObject;
-import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -17,25 +13,12 @@ import org.w3c.dom.Node;
  */
 public class InstrumentoAvaliacao extends BaseObject {
     
-    public InstrumentoAvaliacao(Integer id, String nome) {
-        super(id, nome);
-    }
-    
-    public InstrumentoAvaliacao(Element element) {
-        super(element);
-    }
-
-    public InstrumentoAvaliacao(HashMap<String, Object> params) {
-        super(params);
+    public InstrumentoAvaliacao() {
+        super();
     }
 
     @Override
     public String toString() {
         return nome;
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        return super.toXml(doc, "instrumento");
     }
 }

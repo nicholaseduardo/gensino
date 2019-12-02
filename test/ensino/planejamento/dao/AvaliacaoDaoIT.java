@@ -8,9 +8,9 @@ package ensino.planejamento.dao;
 import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.CursoDaoXML;
-import ensino.configuracoes.dao.xml.DocenteDao;
+import ensino.configuracoes.dao.xml.DocenteDaoXML;
 import ensino.configuracoes.dao.CursoDaoIT;
-import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDao;
+import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDaoXML;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
@@ -69,7 +69,7 @@ public class AvaliacaoDaoIT {
             unidadeDao.save(unidade);
             unidadeDao.commit();
 
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             Docente docente = new Docente(null, "Nicholas");
             docenteDao.save(docente);
             docenteDao.commit();
@@ -85,7 +85,7 @@ public class AvaliacaoDaoIT {
             planoDao.commit();
             
             InstrumentoAvaliacao instrumento = new InstrumentoAvaliacao(null, "prova 1");
-            InstrumentoAvaliacaoDao instrumentoDao = new InstrumentoAvaliacaoDao();
+            InstrumentoAvaliacaoDaoXML instrumentoDao = new InstrumentoAvaliacaoDaoXML();
             instrumentoDao.save(instrumento);
             instrumentoDao.commit();
 
@@ -103,7 +103,7 @@ public class AvaliacaoDaoIT {
             campusDao.delete(campusDao.findById(1));
             campusDao.commit();
 
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             docenteDao.delete(docenteDao.findById(1));
             docenteDao.commit();
             
@@ -123,7 +123,7 @@ public class AvaliacaoDaoIT {
             PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
             plano = (PlanoDeEnsino)planoDao.findById(1);
             
-            InstrumentoAvaliacaoDao instrumentoDao = new InstrumentoAvaliacaoDao();
+            InstrumentoAvaliacaoDaoXML instrumentoDao = new InstrumentoAvaliacaoDaoXML();
             instrumento = (InstrumentoAvaliacao) instrumentoDao.findById(1);
         } catch (IOException ex) {
             Logger.getLogger(ObjetivoDaoIT.class.getName()).log(Level.SEVERE, null, ex);

@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.dao;
 
-import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDao;
+import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDaoXML;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,14 +47,14 @@ public class InstrumentoAvaliacaoDaoIT {
     }
 
     /**
-     * Test of list method, of class InstrumentoAvaliacaoDao.
+     * Test of list method, of class InstrumentoAvaliacaoDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            InstrumentoAvaliacaoDao instance = new InstrumentoAvaliacaoDao();
+            InstrumentoAvaliacaoDaoXML instance = new InstrumentoAvaliacaoDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -75,7 +75,7 @@ public class InstrumentoAvaliacaoDaoIT {
         try {
             System.out.println("save");
             InstrumentoAvaliacao object = new InstrumentoAvaliacao(null, "prova 1");
-            InstrumentoAvaliacaoDao instance = new InstrumentoAvaliacaoDao();
+            InstrumentoAvaliacaoDaoXML instance = new InstrumentoAvaliacaoDaoXML();
             instance.save(object);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -87,14 +87,14 @@ public class InstrumentoAvaliacaoDaoIT {
     }
 
     /**
-     * Test of findById method, of class InstrumentoAvaliacaoDao.
+     * Test of findById method, of class InstrumentoAvaliacaoDaoXML.
      */
     @Test
     public void testFindById() {
         try {
             System.out.println("findById");
             Object id = null;
-            InstrumentoAvaliacaoDao instance = new InstrumentoAvaliacaoDao();
+            InstrumentoAvaliacaoDaoXML instance = new InstrumentoAvaliacaoDaoXML();
             Object expResult = null;
             Object result = instance.findById(id);
             assertEquals(expResult, result);
@@ -114,7 +114,7 @@ public class InstrumentoAvaliacaoDaoIT {
     public void testDelete() {
         try {
             System.out.println("delete");
-            InstrumentoAvaliacaoDao instance = new InstrumentoAvaliacaoDao();
+            InstrumentoAvaliacaoDaoXML instance = new InstrumentoAvaliacaoDaoXML();
             Object object = instance.findById(1);
             instance.delete(object);
             instance.commit();

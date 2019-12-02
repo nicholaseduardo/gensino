@@ -112,12 +112,10 @@ public class FrameAtividade extends JDialog {
                         JOptionPane.showMessageDialog(null, "Dados gravados com sucesso!",
                                 "Informação", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
-                    } catch (TransformerException ex) {
+                    } catch (Exception ex) {
                         Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
                         JOptionPane.showMessageDialog(null, ex.getMessage(),
                                 "Aviso", JOptionPane.WARNING_MESSAGE);
-                    } catch (IOException | ParserConfigurationException ex) {
-                        Logger.getLogger(FrameAtividade.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Os campos em Asterisco (*) não foram preenchidos/selecioados.",

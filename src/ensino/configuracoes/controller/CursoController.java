@@ -10,6 +10,7 @@ import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoFactory;
 import ensino.configuracoes.model.Turma;
+import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
@@ -56,8 +57,8 @@ public class CursoController extends AbstractController<Curso> {
         AbstractController<Turma> turmaCol = new TurmaController();
         turmaCol.salvarEmCascata(o.getTurmas());
         
-//        AbstractController<PeriodoLetivo> colPeriodoLetivo = new PeriodoLetivoController();
-//        colPeriodoLetivo.salvarEmCascata(o.getPeriodosLetivos());
+        AbstractController<UnidadeCurricular> unidadeCurricularCol = new UnidadeCurricularController();
+        unidadeCurricularCol.salvarEmCascata(o.getUnidadesCurriculares());
 
         return o;
     }

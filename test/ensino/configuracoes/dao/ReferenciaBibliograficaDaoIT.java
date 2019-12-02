@@ -7,9 +7,9 @@ package ensino.configuracoes.dao;
 
 import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.configuracoes.dao.xml.BibliografiaDao;
+import ensino.configuracoes.dao.xml.BibliografiaDaoXML;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
-import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDao;
+import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDaoXML;
 import ensino.configuracoes.model.Bibliografia;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
@@ -63,7 +63,7 @@ public class ReferenciaBibliograficaDaoIT {
             unidadeDao.save(unidade);
             unidadeDao.commit();
 
-            BibliografiaDao bibliografiaDao = new BibliografiaDao();
+            BibliografiaDaoXML bibliografiaDao = new BibliografiaDaoXML();
             for (int i = 0; i < 3; i++) {
                 Bibliografia bibliografia = new Bibliografia(null, "Bibliografia " + (i + 1), "autor", "Referencias");
                 bibliografiaDao.save(bibliografia);
@@ -81,7 +81,7 @@ public class ReferenciaBibliograficaDaoIT {
             campusDao.delete(campusDao.findById(1));
             campusDao.commit();
 
-            BibliografiaDao bibliografiaDao = new BibliografiaDao();
+            BibliografiaDaoXML bibliografiaDao = new BibliografiaDaoXML();
             bibliografiaDao.delete(bibliografiaDao.findById(1));
             bibliografiaDao.delete(bibliografiaDao.findById(2));
             bibliografiaDao.delete(bibliografiaDao.findById(3));
@@ -102,7 +102,7 @@ public class ReferenciaBibliograficaDaoIT {
             curso = cursoDao.findById(1, 1);
             UnidadeCurricularDaoXML unidadeDao = new UnidadeCurricularDaoXML();
             unidade = unidadeDao.findById(1, 1, 1);
-            BibliografiaDao bibliografiaDao = new BibliografiaDao();
+            BibliografiaDaoXML bibliografiaDao = new BibliografiaDaoXML();
             bibliografiaList = (List<Bibliografia>) bibliografiaDao.list();
         } catch (IOException | ParserConfigurationException | TransformerException ex) {
             Logger.getLogger(ReferenciaBibliograficaDaoIT.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,14 +114,14 @@ public class ReferenciaBibliograficaDaoIT {
     }
 
     /**
-     * Test of list method, of class ReferenciaBibliograficaDao.
+     * Test of list method, of class ReferenciaBibliograficaDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            ReferenciaBibliograficaDao instance = new ReferenciaBibliograficaDao();
+            ReferenciaBibliograficaDaoXML instance = new ReferenciaBibliograficaDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -131,14 +131,14 @@ public class ReferenciaBibliograficaDaoIT {
     }
 
     /**
-     * Test of save method, of class ReferenciaBibliograficaDao.
+     * Test of save method, of class ReferenciaBibliograficaDaoXML.
      */
     @Test
     public void testSave() {
         try {
             System.out.println("save");
             ReferenciaBibliografica object = new ReferenciaBibliografica(null, 0, unidade, bibliografiaList.get(0));
-            ReferenciaBibliograficaDao instance = new ReferenciaBibliograficaDao();
+            ReferenciaBibliograficaDaoXML instance = new ReferenciaBibliograficaDaoXML();
             instance.save(new ReferenciaBibliografica(null, 0, unidade, bibliografiaList.get(0)));
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -151,7 +151,7 @@ public class ReferenciaBibliograficaDaoIT {
     }
 
     /**
-     * Test of findById method, of class ReferenciaBibliograficaDao.
+     * Test of findById method, of class ReferenciaBibliograficaDaoXML.
      */
     @Test
     public void testFindById_4args() {
@@ -161,7 +161,7 @@ public class ReferenciaBibliograficaDaoIT {
             Integer undId = 1;
             Integer cursoId = 1;
             Integer campusId = 1;
-            ReferenciaBibliograficaDao instance = new ReferenciaBibliograficaDao();
+            ReferenciaBibliograficaDaoXML instance = new ReferenciaBibliograficaDaoXML();
 
             ReferenciaBibliografica result = instance.findById(id, undId, cursoId, campusId);
             assertNotNull(result);
@@ -171,13 +171,13 @@ public class ReferenciaBibliograficaDaoIT {
     }
 
     /**
-     * Test of delete method, of class ReferenciaBibliograficaDao.
+     * Test of delete method, of class ReferenciaBibliograficaDaoXML.
      */
     @Test
     public void testDelete() {
         try {
             System.out.println("delete");
-            ReferenciaBibliograficaDao instance = new ReferenciaBibliograficaDao();
+            ReferenciaBibliograficaDaoXML instance = new ReferenciaBibliograficaDaoXML();
             instance.delete(instance.findById(1, 1, 1, 1));
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -190,7 +190,7 @@ public class ReferenciaBibliograficaDaoIT {
     }
 
     /**
-     * Test of nextVal method, of class ReferenciaBibliograficaDao.
+     * Test of nextVal method, of class ReferenciaBibliograficaDaoXML.
      */
     @Test
     public void testNextVal() {
@@ -199,7 +199,7 @@ public class ReferenciaBibliograficaDaoIT {
             Integer campusId = 1;
             Integer cursoId = 1;
             Integer undId = 1;
-            ReferenciaBibliograficaDao instance = new ReferenciaBibliograficaDao();
+            ReferenciaBibliograficaDaoXML instance = new ReferenciaBibliograficaDaoXML();
             Integer expResult = 1;
             Integer result = instance.nextVal(campusId, cursoId, undId);
             assertEquals(expResult, result);
@@ -209,14 +209,14 @@ public class ReferenciaBibliograficaDaoIT {
     }
 
     /**
-     * Test of findById method, of class ReferenciaBibliograficaDao.
+     * Test of findById method, of class ReferenciaBibliograficaDaoXML.
      */
     @Test
     public void testFindById_Object() {
         try {
             System.out.println("findById");
             Object id = null;
-            ReferenciaBibliograficaDao instance = new ReferenciaBibliograficaDao();
+            ReferenciaBibliograficaDaoXML instance = new ReferenciaBibliograficaDaoXML();
             Object expResult = null;
             Object result = instance.findById(id);
             assertEquals(expResult, result);

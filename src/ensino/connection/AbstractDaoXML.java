@@ -115,7 +115,7 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
                 // cria o diretorio
                 File directory = new File("data/");
                 if (!directory.mkdir()) {
-                    JOptionPane.showMessageDialog(null, "Diretório não foi criado", "Erro", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Diretório não existe e será criado", "Aviso", JOptionPane.WARNING_MESSAGE);
                 }
 
                 doc = XMLHelper.newDocument();

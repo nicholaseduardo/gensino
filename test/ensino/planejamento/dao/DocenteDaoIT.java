@@ -6,7 +6,7 @@
 package ensino.planejamento.dao;
 
 import ensino.configuracoes.model.Docente;
-import ensino.configuracoes.dao.xml.DocenteDao;
+import ensino.configuracoes.dao.xml.DocenteDaoXML;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,14 +47,14 @@ public class DocenteDaoIT {
     }
 
     /**
-     * Test of list method, of class DocenteDao.
+     * Test of list method, of class DocenteDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            DocenteDao instance = new DocenteDao();
+            DocenteDaoXML instance = new DocenteDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -75,7 +75,7 @@ public class DocenteDaoIT {
         try {
             System.out.println("save");
             Docente object = new Docente(null, "Docente 1");
-            DocenteDao instance = new DocenteDao();
+            DocenteDaoXML instance = new DocenteDaoXML();
             instance.save(object);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -93,7 +93,7 @@ public class DocenteDaoIT {
     public void testDelete() {
         try {
             System.out.println("delete");
-            DocenteDao instance = new DocenteDao();
+            DocenteDaoXML instance = new DocenteDaoXML();
             Object object = instance.findById(1);
             instance.delete(object);
             instance.commit();
@@ -106,14 +106,14 @@ public class DocenteDaoIT {
     }
 
     /**
-     * Test of findById method, of class DocenteDao.
+     * Test of findById method, of class DocenteDaoXML.
      */
     @Test
     public void testFindById() {
         try {
             System.out.println("findById");
             Object id = null;
-            DocenteDao instance = new DocenteDao();
+            DocenteDaoXML instance = new DocenteDaoXML();
             Object expResult = null;
             Object result = instance.findById(id);
             assertEquals(expResult, result);

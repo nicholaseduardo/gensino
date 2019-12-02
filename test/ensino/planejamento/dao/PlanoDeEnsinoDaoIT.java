@@ -7,7 +7,7 @@ package ensino.planejamento.dao;
 
 import ensino.configuracoes.dao.xml.CalendarioDaoXML;
 import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.configuracoes.dao.xml.DocenteDao;
+import ensino.configuracoes.dao.xml.DocenteDaoXML;
 import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.CursoDaoIT;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
@@ -64,7 +64,7 @@ public class PlanoDeEnsinoDaoIT {
             unidadeDao.save(object);
             unidadeDao.commit();
 
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             Docente docente = new Docente(null, "Nicholas");
             docenteDao.save(docente);
             docenteDao.commit();
@@ -83,7 +83,7 @@ public class PlanoDeEnsinoDaoIT {
             campusDao.delete(campusDao.findById(1));
             campusDao.commit();
 
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             docenteDao.delete(docenteDao.findById(1));
             docenteDao.commit();
         } catch (TransformerException | IOException ex) {
@@ -96,7 +96,7 @@ public class PlanoDeEnsinoDaoIT {
     @Before
     public void setUp() {
         try {
-            DocenteDao docenteDao = new DocenteDao();
+            DocenteDaoXML docenteDao = new DocenteDaoXML();
             docente = (Docente) docenteDao.findById(1);
 
             UnidadeCurricularDaoXML unidadeDao = new UnidadeCurricularDaoXML();

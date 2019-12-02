@@ -7,46 +7,33 @@ package ensino.configuracoes.view.panels.unidadeCurricular;
 
 import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
-import ensino.components.GenJTextArea;
-import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.UnidadeCurricularController;
-import ensino.configuracoes.model.Bibliografia;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
-import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.view.models.CampusComboBoxModel;
 import ensino.configuracoes.view.models.CursoComboBoxListModel;
 import ensino.configuracoes.view.models.CursoListModel;
-import ensino.configuracoes.view.models.ReferenciaBibliograficaTableModel;
 import ensino.configuracoes.view.models.UnidadeCurricularTableModel;
 import ensino.configuracoes.view.panels.CursoPanel;
-import ensino.configuracoes.view.panels.filters.BibliografiaSearch;
 import ensino.configuracoes.view.renderer.UnidadeCurricularCellRenderer;
-import ensino.defaults.DefaultFieldsPanel;
 import ensino.defaults.DefaultFormPanel;
 import ensino.helpers.GridLayoutHelper;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -141,7 +128,7 @@ public class UnidadeCurricularPanel extends DefaultFormPanel {
         UnidadeCurricularTableModel model;
         List<UnidadeCurricular> list = new ArrayList<>();
         if (campus != null && selectedCurso != null) {
-            list = col.listar(selectedCurso.getId(), campus.getId());
+            list = col.listar(selectedCurso);
         } else if (campus != null) {
             list = col.listar(campus.getId());
         } else {
