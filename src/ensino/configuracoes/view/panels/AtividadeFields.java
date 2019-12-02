@@ -58,7 +58,7 @@ public class AtividadeFields extends DefaultFieldsPanel {
             GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 0);
             fieldsPanel.add(lblId, c);
-            txtId = new GenJTextField(10);
+            txtId = new GenJTextField(10, false);
             txtId.setEnabled(false);
             lblId.setLabelFor(txtId);
             GridLayoutHelper.set(c, 1, 0);
@@ -85,7 +85,7 @@ public class AtividadeFields extends DefaultFieldsPanel {
             GenJLabel lblDescricao = new GenJLabel("Descrição: ", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 2);
             fieldsPanel.add(lblDescricao, c);
-            txtDescricao = new GenJTextField(25);
+            txtDescricao = new GenJTextField(25, true);
             lblDescricao.setLabelFor(txtDescricao);
             GridLayoutHelper.set(c, 1, 2);
             c.gridwidth = 3;

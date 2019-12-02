@@ -113,12 +113,12 @@ public class LegendaPanel extends DefaultFormPanel {
             
             JPanel fieldsPanel = new JPanel(layout);
             GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
-            txtId = new GenJTextField(10);
+            txtId = new GenJTextField(10, false);
             txtId.setFocusable(true);
             lblId.setLabelFor(txtId);
             
             GenJLabel lblNome = new GenJLabel("Nome:", JLabel.TRAILING);
-            txtNome = new GenJTextField(30);
+            txtNome = new GenJTextField(30, true);
             lblNome.setLabelFor(txtNome);
             
             fieldsPanel.add(lblId);

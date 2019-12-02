@@ -117,10 +117,10 @@ public class InstrumentoAvaliacaoPanel extends DefaultFormPanel {
 
             JPanel fieldsPanel = new JPanel(layout);
             GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
-            txtId = new GenJTextField(10);
+            txtId = new GenJTextField(10, false);
 
             GenJLabel lblNome = new GenJLabel("Nome:", JLabel.TRAILING);
-            txtNome = new GenJTextField(30);
+            txtNome = new GenJTextField(30, true);
 
             fieldsPanel.add(lblId);
             fieldsPanel.add(txtId);

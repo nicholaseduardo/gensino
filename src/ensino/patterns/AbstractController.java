@@ -16,24 +16,26 @@ import java.util.logging.Logger;
  * @author santos
  */
 public abstract class AbstractController<T> {
+
     private BeanFactory<T> beanFactory;
     private DaoPattern<T> dao;
-    
-    public AbstractController() {}
+
+    public AbstractController() {
+    }
 
     public AbstractController(DaoPattern<T> dao) {
         this.dao = dao;
     }
-    
+
     public AbstractController(DaoPattern<T> dao, BeanFactory<T> beanFactory) {
         this(dao);
         this.beanFactory = beanFactory;
     }
-    
+
     protected void setDao(DaoPattern<T> dao) {
         this.dao = dao;
     }
-    
+
     protected DaoPattern<T> getDao() {
         return this.dao;
     }
@@ -53,11 +55,13 @@ public abstract class AbstractController<T> {
         }
         return object;
     }
-    
+
     public void salvarEmCascata(List<T> l) throws Exception {
         try {
-            for (int i = 0; i < l.size(); i++) {
-                this.salvar(l.get(i));
+            if (l != null) {
+                for (int i = 0; i < l.size(); i++) {
+                    this.salvar(l.get(i));
+                }
             }
         } catch (Exception ex) {
             dao.rollback();
@@ -92,8 +96,8 @@ public abstract class AbstractController<T> {
     public T buscarPorId(Object id) {
         return dao.findById(id);
     }
-    
-    public T buscarPorId(Object ...ids) {
+
+    public T buscarPorId(Object... ids) {
         return dao.findById(ids);
     }
 }

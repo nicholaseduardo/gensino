@@ -109,7 +109,7 @@ public class CalendarioFields extends DefaultFieldsPanel {
             GenJLabel lblAno = new GenJLabel("Ano:", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 0);
             add(lblAno, c);
-            txtAno = new GenJTextField(10);
+            txtAno = new GenJTextField(10, false);
             txtAno.setFocusable(true);
             lblAno.setLabelFor(txtAno);
             GridLayoutHelper.set(c, 1, 0);
@@ -134,7 +134,7 @@ public class CalendarioFields extends DefaultFieldsPanel {
             GenJLabel lblDescricao = new GenJLabel("Descrição:", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 1);
             add(lblDescricao, c);
-            txtDescricao = new GenJTextField(30);
+            txtDescricao = new GenJTextField(30, true);
             lblDescricao.setLabelFor(txtDescricao);
             GridLayoutHelper.set(c, 1, 1);
             add(txtDescricao, c);

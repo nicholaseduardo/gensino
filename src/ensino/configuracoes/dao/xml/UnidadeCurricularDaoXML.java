@@ -116,17 +116,19 @@ public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
     }
 
     /**
-     * Próximo valor da sequencia. Busca o próximo valor da sequência do curso
-     * de acordo com o ID do campus
+     * Próximo valor da sequencia. Busca o próximo valor da sequência
      *
-     * @param params Objeto da classe <code>Integer</code> que represente a
-     * identificação do campus
+     * @param p     Estão divididos em dois parâmetros:<br>
+     * <ul>
+     * <li>Param[0]: ID do curso</li>
+     * <li>Param[1]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
-    public Integer nextVal(Object... params) {
+    public Integer nextVal(Object... p) {
         String filter = String.format("%s[@cursoId=%d and @campusId=%d]/@id",
-                getObjectExpression(), params[0]);
+                getObjectExpression(), p[0], p[1]);
         return super.nextVal(filter);
     }
 }

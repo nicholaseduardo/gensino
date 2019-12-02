@@ -173,7 +173,7 @@ public abstract class GenImportDialog extends JDialog {
         panelRadio.add(radioVirgula);
         panelRadio.add(radioPontoVirgula);
 
-        txtFilePath = new GenJTextField(30);
+        txtFilePath = new GenJTextField(30, true);
         txtFilePath.setEnabled(false);
         txtFilePath.setLabelFor("Endereço do arquivo selecionado");
         JPanel panelArquivo = createFlowLayoutPanel(txtFilePath,

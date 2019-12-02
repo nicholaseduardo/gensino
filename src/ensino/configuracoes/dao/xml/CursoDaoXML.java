@@ -98,23 +98,24 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
     @Override
     public void delete(Curso o) {
         // Cria mecanismo para buscar o conteudo no xml
-        String filter = String.format("@id=%d and @campusId=%d]",
+        String filter = String.format("@id=%d and @campusId=%d",
                 o.getId(), o.getCampus().getId());
         super.delete(filter);
     }
 
     /**
-     * Próximo valor da sequencia. Busca o próximo valor da sequência do curso
-     * de acordo com o ID do campus
+     * Próximo valor da sequencia. Busca o próximo valor da sequência
      *
-     * @param params Objeto da classe <code>Integer</code> que represente a
-     * identificação do campus
+     * @param p Estão divididos em um parâmetro:<br>
+     * <ul>
+     * <li>Param[0]: ID do campus</li>
+     * </ul>
      * @return
      */
     @Override
-    public Integer nextVal(Object... params) {
+    public Integer nextVal(Object... p) {
         String filter = String.format("%s[@campusId=%d]/@id",
-                getObjectExpression(), params[0]);
+                getObjectExpression(), p[0]);
         return super.nextVal(filter);
     }
 }

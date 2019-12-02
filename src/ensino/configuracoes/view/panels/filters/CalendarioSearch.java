@@ -74,11 +74,11 @@ public class CalendarioSearch extends JPanel {
         SearchListener searchListener = new SearchListener();
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        txtAno = new GenJTextField(4);
+        txtAno = new GenJTextField(4, false);
         txtAno.addActionListener(searchListener);
         txtAno.addFocusListener(new SearchFocusListener());
 
-        txtDescricao = new GenJTextField(20);
+        txtDescricao = new GenJTextField(20, false);
         txtDescricao.setEditable(false);
 
         String source = String.format("/img/%s", "search-button-25px.png");

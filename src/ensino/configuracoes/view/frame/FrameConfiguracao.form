@@ -25,7 +25,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="treePanel" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="mainPanel" pref="576" max="32767" attributes="0"/>
+              <Component id="mainPanel" pref="650" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

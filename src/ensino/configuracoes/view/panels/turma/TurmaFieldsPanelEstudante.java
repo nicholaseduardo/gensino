@@ -66,7 +66,7 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
         GridLayoutHelper.setRight(c, col++, row);
         panel.add(lblId, c);
 
-        txtId = new GenJTextField(5);
+        txtId = new GenJTextField(5, false);
         lblId.setLabelFor(txtId);
         GridLayoutHelper.set(c, col++, row);
         panel.add(txtId, c);
@@ -75,7 +75,7 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
         GridLayoutHelper.setRight(c, col++, row);
         panel.add(lblRegistro, c);
 
-        txtRegistro = new GenJTextField(10);
+        txtRegistro = new GenJTextField(10, false);
         lblRegistro.setLabelFor(txtRegistro);
         GridLayoutHelper.set(c, col, row++);
         panel.add(txtRegistro, c);
@@ -85,7 +85,7 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
         GridLayoutHelper.setRight(c, col++, row);
         panel.add(lblNome, c);
 
-        txtNome = new GenJTextField(30);
+        txtNome = new GenJTextField(30, true);
         lblNome.setLabelFor(txtNome);
         GridLayoutHelper.set(c, col, row++, 3, 1, GridBagConstraints.LINE_START);
         panel.add(txtNome, c);

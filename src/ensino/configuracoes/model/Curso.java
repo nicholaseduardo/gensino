@@ -63,6 +63,8 @@ public class Curso extends BaseObject {
     }
 
     public List<UnidadeCurricular> getUnidadesCurriculares() {
+        if (unidadesCurriculares == null)
+            unidadesCurriculares = new ArrayList<>();
         return unidadesCurriculares;
     }
 
@@ -80,6 +82,8 @@ public class Curso extends BaseObject {
     }
 
     public List<Turma> getTurmas() {
+        if (turmas == null)
+            turmas = new ArrayList<>();
         return turmas;
     }
 

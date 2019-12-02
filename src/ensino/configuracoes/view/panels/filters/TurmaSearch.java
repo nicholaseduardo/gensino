@@ -74,11 +74,11 @@ public class TurmaSearch extends JPanel {
         SearchListener searchListener = new SearchListener();
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        txtId = new GenJTextField(4);
+        txtId = new GenJTextField(4, false);
         txtId.addActionListener(searchListener);
         txtId.addFocusListener(new SearchFocusListener());
 
-        txtNome = new GenJTextField(20);
+        txtNome = new GenJTextField(20, false);
         txtNome.setEditable(false);
 
         String source = String.format("/img/%s", "search-button-25px.png");

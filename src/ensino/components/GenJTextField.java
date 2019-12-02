@@ -19,17 +19,24 @@ import javax.swing.border.TitledBorder;
  * @author nicho
  */
 public class GenJTextField extends JTextField {
+    private boolean required = false;
     
-    public GenJTextField() {
+    public GenJTextField(boolean required) {
         super();
+        this.required = required;
     }
     
-    public GenJTextField(int columns) {
+    public GenJTextField(int columns, boolean required) {
         super(columns);
+        this.required = required;
         initComponents();
     }
     
     private void initComponents() {
+//        if (required) {
+//            Border lineBorder = BorderFactory.createLineBorder(Color.RED);
+//            super.setBorder(lineBorder);
+//        }
         resetFontSize(16);
         super.setMargin(new Insets(6,6,6,6));
         super.addFocusListener(new GenFocusAdapter());
@@ -40,7 +47,7 @@ public class GenJTextField extends JTextField {
      * @param label     Texto que será colocado como título do campo 
      */
     protected void setLabelFor(String label) {
-        Border lineBorder = BorderFactory.createLineBorder(Color.BLACK);
+        Border lineBorder = BorderFactory.createLineBorder(required ? Color.RED : Color.BLACK);
         setBorder(BorderFactory.createTitledBorder(
                 lineBorder, label, 
                 TitledBorder.LEFT, 

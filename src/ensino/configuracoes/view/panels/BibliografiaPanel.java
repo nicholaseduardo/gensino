@@ -132,7 +132,7 @@ public class BibliografiaPanel extends DefaultFormPanel {
         GridLayoutHelper.setRight(c, 0, 0);
         panel.add(lblTitulo, c);
         
-        txtTitulo = new GenJTextField(30);
+        txtTitulo = new GenJTextField(30, true);
         lblTitulo.setLabelFor(txtTitulo);
         GridLayoutHelper.set(c, 1, 0);
         panel.add(txtTitulo, c);
@@ -141,7 +141,7 @@ public class BibliografiaPanel extends DefaultFormPanel {
         GridLayoutHelper.setRight(c, 0, 1);
         panel.add(lblAutor, c);
         
-        txtAutor = new GenJTextField(30);
+        txtAutor = new GenJTextField(30, true);
         lblAutor.setLabelFor(txtAutor);
         GridLayoutHelper.set(c, 1, 1);
         panel.add(txtAutor, c);
@@ -170,7 +170,7 @@ public class BibliografiaPanel extends DefaultFormPanel {
             GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 0);
             fieldsPanel.add(lblId, c);
-            txtId = new GenJTextField(10);
+            txtId = new GenJTextField(10, false);
             txtId.setEnabled(false);
             lblId.setLabelFor(txtId);
             GridLayoutHelper.set(c, 1, 0);
@@ -179,7 +179,7 @@ public class BibliografiaPanel extends DefaultFormPanel {
             GenJLabel lblTitulo = new GenJLabel("Título:", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 1);
             fieldsPanel.add(lblTitulo, c);
-            txtTitulo = new GenJTextField(30);
+            txtTitulo = new GenJTextField(30, true);
             txtTitulo.setFocusable(true);
             lblTitulo.setLabelFor(txtTitulo);
             GridLayoutHelper.set(c, 1, 1);
@@ -188,7 +188,7 @@ public class BibliografiaPanel extends DefaultFormPanel {
             GenJLabel lblAutor = new GenJLabel("Autor:", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 2);
             fieldsPanel.add(lblAutor, c);
-            txtAutor = new GenJTextField(30);
+            txtAutor = new GenJTextField(30, true);
             txtAutor.setFocusable(true);
             lblAutor.setLabelFor(txtAutor);
             GridLayoutHelper.set(c, 1, 2);

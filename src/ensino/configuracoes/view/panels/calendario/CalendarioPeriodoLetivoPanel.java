@@ -9,7 +9,6 @@ import ensino.components.GenJButton;
 import ensino.components.GenJFormattedTextField;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextField;
-import ensino.configuracoes.controller.PeriodoLetivoController;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivoFactory;
@@ -85,7 +84,7 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
             GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 0);
             panelLeft.add(lblId, c);
-            txtId = new GenJTextField(5);
+            txtId = new GenJTextField(5, false);
             txtId.setEnabled(false);
             lblId.setLabelFor(txtId);
             GridLayoutHelper.set(c, 1, 0);
@@ -114,7 +113,7 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
             GenJLabel lblDescricao = new GenJLabel("Periodo Letivo: ", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 2);
             panelLeft.add(lblDescricao, c);
-            txtPeriodoLetivo = new GenJTextField(20);
+            txtPeriodoLetivo = new GenJTextField(20, true);
             lblDescricao.setLabelFor(txtPeriodoLetivo);
             GridLayoutHelper.set(c, 1, 2);
             c.gridwidth = 3;

@@ -77,7 +77,7 @@ public class TurmaFieldsPanel extends DefaultFieldsPanel {
         GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblId, c);
-        txtId = new GenJTextField(10);
+        txtId = new GenJTextField(10, false);
         lblId.setLabelFor(txtId);
         GridLayoutHelper.set(c, col, row++, 2, 1, GridBagConstraints.LINE_START);
         fieldsPanel.add(txtId, c);
@@ -112,7 +112,7 @@ public class TurmaFieldsPanel extends DefaultFieldsPanel {
         GenJLabel lblNome = new GenJLabel("Nome da Turma:", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblNome, c);
-        txtNome = new GenJTextField(10);
+        txtNome = new GenJTextField(10, true);
         lblNome.setLabelFor(txtNome);
         GridLayoutHelper.set(c, col++, row);
         c.fill = GridBagConstraints.HORIZONTAL;

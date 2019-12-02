@@ -27,7 +27,7 @@ public class TestClass {
         p.add(p1);
         
         p1.add(new GenJLabel("Teste"), BorderLayout.NORTH);
-        GenJTextField t = new GenJTextField(10);
+        GenJTextField t = new GenJTextField(10, false);
         
         p1.add(t, java.awt.BorderLayout.CENTER);
         

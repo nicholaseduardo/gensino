@@ -138,7 +138,7 @@ public class CampusPanel extends DefaultFormPanel {
             GridLayoutHelper.setRight(c, 0, 0);
             fieldsPanel.add(lblId, c);
 
-            txtId = new GenJTextField(10);
+            txtId = new GenJTextField(10, false);
             txtId.setFocusable(true);
             lblId.setLabelFor(txtId);
             GridLayoutHelper.set(c, 1, 0);
@@ -147,7 +147,7 @@ public class CampusPanel extends DefaultFormPanel {
             GenJLabel lblNome = new GenJLabel("Nome:", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 1);
             fieldsPanel.add(lblNome, c);
-            txtNome = new GenJTextField(30);
+            txtNome = new GenJTextField(30, true);
             lblNome.setLabelFor(txtNome);
             GridLayoutHelper.set(c, 1, 1);
             fieldsPanel.add(txtNome, c);

@@ -51,11 +51,11 @@ public class BibliografiaSearch extends JPanel {
         SearchListener searchListener = new SearchListener();
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
-        txtId = new GenJTextField(4);
+        txtId = new GenJTextField(4, false);
         txtId.addActionListener(searchListener);
         txtId.addFocusListener(new SearchFocusListener());
 
-        txtTitulo = new GenJTextField(30);
+        txtTitulo = new GenJTextField(30, false);
         txtTitulo.setEditable(false);
 
         String source = String.format("/img/%s", "search-button-25px.png");

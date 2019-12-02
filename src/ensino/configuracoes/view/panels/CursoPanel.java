@@ -182,7 +182,7 @@ public class CursoPanel extends DefaultFormPanel {
                 GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
                 GridLayoutHelper.setRight(c, 0, 0);
                 fieldsPanel.add(lblId, c);
-                txtId = new GenJTextField(5);
+                txtId = new GenJTextField(5, false);
                 lblId.setLabelFor(txtId);
                 GridLayoutHelper.set(c, 1, 0);
                 fieldsPanel.add(txtId, c);
@@ -207,7 +207,7 @@ public class CursoPanel extends DefaultFormPanel {
                 GenJLabel lblNome = new GenJLabel("Nome:", JLabel.TRAILING);
                 GridLayoutHelper.setRight(c, 0, 1);
                 fieldsPanel.add(lblNome, c);
-                txtNome = new GenJTextField(30);
+                txtNome = new GenJTextField(30, true);
                 lblNome.setLabelFor(txtNome);
                 GridLayoutHelper.set(c, 1, 1, 3, 1, GridBagConstraints.BASELINE);
                 fieldsPanel.add(txtNome, c);

@@ -183,7 +183,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblId, c);
-        txtId = new GenJTextField(10);
+        txtId = new GenJTextField(10, false);
         lblId.setLabelFor(txtId);
         GridLayoutHelper.set(c, col++, row);
         fieldsPanel.add(txtId, c);
@@ -191,7 +191,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         GenJLabel lblCarga = new GenJLabel("Carga Horária:", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblCarga, c);
-        txtCargaHoraria = new GenJTextField(10);
+        txtCargaHoraria = new GenJTextField(10, true);
         lblCarga.setLabelFor(txtCargaHoraria);
         GridLayoutHelper.set(c, col, row++, 3, 1, GridBagConstraints.LINE_START);
         fieldsPanel.add(txtCargaHoraria, c);
@@ -226,7 +226,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         GenJLabel lblNome = new GenJLabel("Nome da U.C.:", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblNome, c);
-        txtNome = new GenJTextField(30);
+        txtNome = new GenJTextField(30, true);
         lblNome.setLabelFor(txtNome);
         GridLayoutHelper.set(c, col, row++, 3, 1, GridBagConstraints.LINE_START);
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -236,7 +236,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         GenJLabel lblTeoricas = new GenJLabel("N.o Aulas Teóricas:", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblTeoricas, c);
-        txtAulasTeoricas = new GenJTextField(10);
+        txtAulasTeoricas = new GenJTextField(10, true);
         lblTeoricas.setLabelFor(txtAulasTeoricas);
         GridLayoutHelper.set(c, col++, row);
         fieldsPanel.add(txtAulasTeoricas, c);
@@ -244,7 +244,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         GenJLabel lblPraticas = new GenJLabel("N.o Aulas Práticas:", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblPraticas, c);
-        txtAulasPraticas = new GenJTextField(10);
+        txtAulasPraticas = new GenJTextField(10, true);
         lblPraticas.setLabelFor(txtAulasPraticas);
         GridLayoutHelper.set(c, col, row++);
         fieldsPanel.add(txtAulasPraticas, c);
