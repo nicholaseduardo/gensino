@@ -26,6 +26,17 @@ public class SemanaLetivaTableModel extends DefaultTableModel {
         });
     }
     
+    /**
+     * Remoção lógica
+     * @param row 
+     */
+    @Override
+    public void removeRow(int row) {
+        SemanaLetiva o = (SemanaLetiva) lista.get(row);
+        o.delete();
+        updateRow(row, o);
+    }
+    
     @Override
     public List<SemanaLetiva> getData() {
         return (List<SemanaLetiva>)super.getData();

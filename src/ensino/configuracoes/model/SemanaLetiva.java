@@ -17,12 +17,21 @@ public class SemanaLetiva {
     private Integer id;
     private String descricao;
     private Periodo periodo;
+    private Boolean deleted;
 
     // parent
     private PeriodoLetivo periodoLetivo;
 
     public SemanaLetiva() {
-
+        deleted = false;
+    }
+    
+    public Boolean isDeleted() {
+        return deleted;
+    }
+    
+    public void delete() {
+        deleted = true;
     }
 
     public Integer getId() {

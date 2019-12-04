@@ -423,7 +423,9 @@ public class CalendarioFields extends DefaultFieldsPanel {
                 Periodo periodo = periodoLetivo.getPeriodo();
                 Long nPeriodos = periodo.getSemanas();
                 // Remove as semanas já adicionadas no período letivo
-                periodoLetivo.getSemanasLetivas().clear();
+                periodoLetivo.getSemanasLetivas().forEach((semanaLetiva) -> {
+                    semanaLetiva.delete();
+                });
                 /**
                  * Variável utilizada para controlar a dada de referência que
                  * determinará o início e o fim do período da semana letiva. Ela

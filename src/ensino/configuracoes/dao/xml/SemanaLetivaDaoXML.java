@@ -92,10 +92,14 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
         if (o.getId() == null) {
             o.setId(nextVal(p.getNumero(), ano, campusId));
         }
-        // cria a expressão de acordo com o código do campus
-        String filter = String.format("@numero=%d and @pNumero=%d and @ano=%d and @campusId=%d",
-                o.getId(), p.getNumero(), ano, campusId);
-        super.save(o, filter);
+        if (o.isDeleted()) {
+            this.delete(o);
+        } else {
+            // cria a expressão de acordo com o código do campus
+            String filter = String.format("@numero=%d and @pNumero=%d and @ano=%d and @campusId=%d",
+                    o.getId(), p.getNumero(), ano, campusId);
+            super.save(o, filter);
+        }
     }
 
     @Override

@@ -36,6 +36,9 @@ public class SemanaLetivaCellRenderer extends GenCellRenderer {
 
         SemanaLetivaTableModel model = (SemanaLetivaTableModel) table.getModel();
         SemanaLetiva semana = (SemanaLetiva) model.getRow(row);
+        if (semana.isDeleted()) {
+            markAsDeleted();
+        }
         GenJLabel lblTitle = createLabel(semana.getDescricao());
         
         GenJLabel lblSemana = createLabel(String.format("[Semana: %s]", 
