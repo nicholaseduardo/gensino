@@ -562,8 +562,8 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
             return;
         }
         fieldsPanel.setStatusPanel(DefaultFieldsPanel.UPDATE_STATUS_PANEL);
-        componentsControl(1);
         loadView(selectedRow);
+        componentsControl(1);
     }
 
     private void loadView(int selectedRow) {
