@@ -84,7 +84,9 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
         Integer campusId = o.getCalendario().getCampus().getId();
         if (o.getId() == null) {
             o.setId(this.nextVal(ano, campusId));
-        } else if (o.isDeleted()) {
+        } 
+        
+        if (o.isDeleted()) {
             this.delete(o);
         } else {
             // cria a expressão de acordo com o código do campus

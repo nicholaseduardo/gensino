@@ -95,7 +95,8 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
         Integer campusId = o.getCalendario().getCampus().getId();
         if (o.getNumero() == null) {
             o.setNumero(this.nextVal(ano, campusId));
-        } else if (o.isDeleted()) {
+        } 
+        if (o.isDeleted()) {
             // está marcado para remoção, logo, deve ser deletado
             this.delete(o);
         } else {

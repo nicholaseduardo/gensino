@@ -97,21 +97,6 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
             panelLeft.add(lblDe, c);
             txtDe = GenJFormattedTextField.createFormattedField("##/##/####", 1);
             txtDe.setColumns(8);
-            txtDe.addFocusListener(new FocusAdapter(){
-                @Override
-                public void focusLost(FocusEvent e) {
-                    if (txtDe.getValue() != null && txtAte.getValue() == null) {
-                        try {
-                            txtDe.commitEdit();
-                            txtAte.setValue(txtDe.getValue());
-                            txtPeriodoLetivo.requestFocusInWindow();
-                        } catch (ParseException ex) {
-                            Logger.getLogger(CalendarioAtividadesPanel.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-                
-            });
             lblDe.setLabelFor(txtDe);
             GridLayoutHelper.set(c, 1, 1);
             c.fill = GridBagConstraints.HORIZONTAL;
