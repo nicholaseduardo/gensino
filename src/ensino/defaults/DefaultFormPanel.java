@@ -530,6 +530,8 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
                 model.removeRow(selectedRow);
 
                 componentsControl(0);
+                // atualiza a tabela
+                reloadTableData();
                 JOptionPane.showMessageDialog(frame,
                         "Dados excluídos com sucesso!", "Confirmação",
                         JOptionPane.INFORMATION_MESSAGE);
@@ -600,6 +602,8 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
                         "Informação", JOptionPane.INFORMATION_MESSAGE);
 
                 componentsControl(0);
+                // atualiza a tabela
+                reloadTableData();
                 showPanelInCard(CARD_LIST);
             } catch (Exception ex) {
                 Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
