@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
  * @author nicho
  */
 public class BibliografiaDaoXML extends AbstractDaoXML<Bibliografia> {
-
+    
     public BibliografiaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("bibliografia", "Bibliografia", "bibliografia", BibliografiaFactory.getInstance());
     }
@@ -27,7 +27,7 @@ public class BibliografiaDaoXML extends AbstractDaoXML<Bibliografia> {
     protected Bibliografia createObject(Element e, Object ref) {
         return getBeanFactory().getObject(e);
     }
-
+    
     @Override
     public Bibliografia findById(Object... ids) {
         return super.findById(ids[0]);
@@ -35,16 +35,19 @@ public class BibliografiaDaoXML extends AbstractDaoXML<Bibliografia> {
     
     @Override
     public void save(Bibliografia o) {
+        if (o.getId() == null) {
+            o.setId(this.nextVal());
+        }
         String expression = String.format("@id=%d", o.getId());
         super.save(o, expression);
     }
-
+    
     @Override
     public void delete(Bibliografia o) {
         String filter = String.format("@id=%d", o.getId());
         super.delete(filter);
     }
-
+    
     @Override
     public Integer nextVal() {
         String expression = String.format("%s/@id", getObjectExpression());
