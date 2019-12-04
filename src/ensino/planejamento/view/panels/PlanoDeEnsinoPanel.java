@@ -114,7 +114,7 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
                     plano.setDiarios(new ArrayList());
                     try {
                         col.salvar(plano);
-                    } catch (TransformerException ex) {
+                    } catch (Exception ex) {
                         JOptionPane.showMessageDialog(PlanoDeEnsinoPanel.this, "Erro ao duplicar o plano de ensino: " +
                                 ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                     }
@@ -189,8 +189,7 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
         PlanoDeEnsinoController col = (PlanoDeEnsinoController) getController();
         List<PlanoDeEnsino> list = new ArrayList<>();
         if (campus != null && curso != null && selectedUnidadeCurricular != null) {
-            list = col.listar(campus.getId(), curso.getId(),
-                    selectedUnidadeCurricular.getId());
+            list = col.listar(selectedUnidadeCurricular);
         } else {
             list = col.listar();
         }

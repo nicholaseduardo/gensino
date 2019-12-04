@@ -1,18 +1,11 @@
 package ensino.planejamento.model;
 
 import ensino.configuracoes.model.SemanaLetiva;
-import ensino.defaults.XMLInterface;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-public class Detalhamento implements XMLInterface {
+public class Detalhamento {
 
     private Integer sequencia;
     private Integer nAulasPraticas;
@@ -24,61 +17,11 @@ public class Detalhamento implements XMLInterface {
     // composition
     private SemanaLetiva semanaLetiva;
     private List<Metodologia> metodologias;
-    private List<Objetivo> objetivos;
+    private List<ObjetivoDetalhe> objetivoDetalhes;
 
     public Detalhamento() {
-        this(null, 0, 0, " ", " ", null, null);
-    }
-
-    public Detalhamento(Integer sequencia, Integer nAulasPraticas, Integer nAulasTeoricas,
-            String conteudo, String observacao, PlanoDeEnsino planoDeEnsino,
-            SemanaLetiva semanaLetiva) {
-        this.sequencia = sequencia;
-        this.nAulasPraticas = nAulasPraticas;
-        this.nAulasTeoricas = nAulasTeoricas;
-        this.conteudo = conteudo;
-        this.observacao = observacao;
-        this.planoDeEnsino = planoDeEnsino;
-        this.semanaLetiva = semanaLetiva;
-        
         this.metodologias = new ArrayList();
-        this.objetivos = new ArrayList();
-    }
-
-    public Detalhamento(Element e) throws ParseException {
-        this(
-                Integer.parseInt(e.getAttribute("sequencia")),
-                Integer.parseInt(e.getAttribute("nAulasPraticas")),
-                Integer.parseInt(e.getAttribute("nAulasTeoricas")),
-                e.getAttribute("conteudo"),
-                e.getAttribute("observacao"), null, null);
-        if (e.hasChildNodes()) {
-            NodeList nodeList = e.getChildNodes();
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Element child = (Element) nodeList.item(i);
-                if ("metodologia".equals(child.getNodeName())) {
-                    this.addMetodologia(new Metodologia((Element)child));
-                } else if ("objetivo".equals(child.getNodeName())) {
-                    this.addObjetivo(new Objetivo((Element)child));
-                } else if ("semanaLetiva".equals(child.getNodeName())) {
-                    semanaLetiva = new SemanaLetiva((Element)child);
-                }
-            }
-        }
-    }
-
-    public Detalhamento(HashMap<String, Object> params) {
-        this(
-                (Integer) params.get("sequencia"),
-                (Integer) params.get("nAulasPraticas"),
-                (Integer) params.get("nAulasTeoricas"),
-                (String) params.get("conteudo"),
-                (String) params.get("observacao"),
-                (PlanoDeEnsino) params.get("planoDeEnsino"),
-                (SemanaLetiva) params.get("semanaLetiva")
-        );
-        this.metodologias = (List<Metodologia>) params.get("metodologias");
-        this.objetivos = (List<Objetivo>) params.get("objetivos");
+        this.objetivoDetalhes = new ArrayList();
     }
 
     public Integer getSequencia() {
@@ -154,55 +97,20 @@ public class Detalhamento implements XMLInterface {
         this.metodologias = metodologias;
     }
     
-    public void addObjetivo(Objetivo objetivo) {
-        this.objetivos.add(objetivo);
+    public void addObjetivoDetalhe(ObjetivoDetalhe objetivoDetalhe) {
+        this.objetivoDetalhes.add(objetivoDetalhe);
     }
     
-    public void removeObjetivo(Objetivo objetivo) {
-        this.objetivos.remove(objetivo);
+    public void removeObjetivoDetalhe(ObjetivoDetalhe objetivoDetalhe) {
+        this.objetivoDetalhes.remove(objetivoDetalhe);
     }
 
-    public List<Objetivo> getObjetivos() {
-        return objetivos;
+    public List<ObjetivoDetalhe> getObjetivoDetalhes() {
+        return objetivoDetalhes;
     }
 
-    public void setObjetivos(List<Objetivo> objetivos) {
-        this.objetivos = objetivos;
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = doc.createElement("detalhamento");
-        e.setAttribute("sequencia", sequencia.toString());
-        e.setAttribute("nAulasPraticas", nAulasPraticas.toString());
-        e.setAttribute("nAulasTeoricas", nAulasTeoricas.toString());
-        e.setAttribute("conteudo", conteudo);
-        e.setAttribute("observacao", observacao);
-        
-        e.appendChild(semanaLetiva.toXml(doc));
-
-        // composition
-        if (!metodologias.isEmpty()) {
-            metodologias.forEach((metodo) -> {
-                e.appendChild(metodo.toXml(doc));
-            });
-        }
-        
-        if (!objetivos.isEmpty()) {
-            objetivos.forEach((objetivo) -> {
-                e.appendChild(objetivo.toXml(doc));
-            });
-        }
-
-        return e;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-        map.put("sequencia", sequencia);
-
-        return map;
+    public void setObjetivoDetalhes(List<ObjetivoDetalhe> objetivoDetalhes) {
+        this.objetivoDetalhes = objetivoDetalhes;
     }
 
     @Override

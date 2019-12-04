@@ -8,6 +8,7 @@ package ensino.configuracoes.dao.xml;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.CampusFactory;
+import ensino.configuracoes.model.Curso;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
@@ -36,13 +37,14 @@ public class CampusDaoXML extends AbstractDaoXML<Campus> {
             // load children
             String formatter = "%s[@campusId=%d]";
 
-            DaoPattern<Calendario> calendarioDao = new CalendarioDaoXML();
             // Cria mecanismo para buscar o conteudo no xml
+            DaoPattern<Calendario> calendarioDao = new CalendarioDaoXML();
             String filter = String.format(formatter, "//Calendario/calendario", id);
             o.setCalendarios(calendarioDao.list(filter, o));
             
-//            CursoController cursoCol = new CursoController();
-//            o.setCursos(cursoCol.listar(id));
+            DaoPattern<Curso> cursoDao = new CursoDaoXML();
+            filter = String.format(formatter, "//Curso/curso", id);
+            o.setCursos(cursoDao.list(filter, o));
             
             return o;
         } catch (Exception ex) {

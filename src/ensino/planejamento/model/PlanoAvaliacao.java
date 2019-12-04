@@ -2,21 +2,13 @@ package ensino.planejamento.model;
 
 import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
-import ensino.defaults.XMLInterface;
-import ensino.helpers.DateHelper;
 import ensino.util.types.Bimestre;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-public class PlanoAvaliacao implements XMLInterface {
+public class PlanoAvaliacao {
     /**
      * Atributo utilizado para identificar a sequência de inclusão
      * dos instrumentos avaliativos.
@@ -69,94 +61,7 @@ public class PlanoAvaliacao implements XMLInterface {
     private List<Avaliacao> avaliacoes;
 
     public PlanoAvaliacao() {
-        this(null, null, null, null, null, null);
-    }
-
-    public PlanoAvaliacao(Integer sequencia, String nome,
-            Bimestre bimestre, Double peso, Double valor,
-            Date data) {
-        this.sequencia = sequencia;
-        this.nome = nome;
-        this.bimestre = bimestre;
-        this.peso = peso;
-        this.valor = valor;
-        this.data = data;
         this.avaliacoes = new ArrayList<>();
-    }
-
-    public PlanoAvaliacao(Element e, PlanoDeEnsino planoDeEnsino) throws ParseException {
-        this(
-                Integer.parseInt(e.getAttribute("sequencia")),
-                e.getAttribute("nome"),
-                null,
-                Double.parseDouble(e.getAttribute("peso")),
-                Double.parseDouble(e.getAttribute("valor")),
-                DateHelper.stringToDate(e.getAttribute("data"), "dd/MM/yyyy"));
-        this.planoDeEnsino = planoDeEnsino;
-        String sBim = e.getAttribute("bimestre");
-        if (sBim.matches("\\d")) {
-            Bimestre b = Bimestre.values()[Integer.parseInt(sBim)];
-            bimestre = b;
-        }
-        if (e.hasChildNodes()) {
-            NodeList nodeList = e.getChildNodes();
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node child = nodeList.item(i);
-                if ("instrumento".equals(child.getNodeName())) {
-                    this.instrumentoAvaliacao = new InstrumentoAvaliacao((Element) child);
-                } else if ("objetivo".equals(child.getNodeName())) {
-                    this.objetivo = new Objetivo((Element) child);
-                } else if ("avaliacao".equals(child.getNodeName())) {
-                    addAvaliacao(new Avaliacao((Element) child, this));
-                }
-            }
-        }
-    }
-
-    public PlanoAvaliacao(HashMap<String, Object> params) {
-        this(
-                (Integer) params.get("sequencia"),
-                (String) params.get("nome"),
-                (Bimestre) params.get("bimestre"),
-                (Double) params.get("peso"),
-                (Double) params.get("valor"),
-                (Date) params.get("data")
-        );
-        this.instrumentoAvaliacao = (InstrumentoAvaliacao) params.get("instrumentoAvaliacao");
-        this.objetivo = (Objetivo) params.get("objetivo");
-        this.planoDeEnsino = (PlanoDeEnsino) params.get("planoDeEnsino");
-        this.avaliacoes = (List<Avaliacao>) params.get("avaliacoes");
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = doc.createElement("planoAvaliacao");
-        e.setAttribute("sequencia", sequencia.toString());
-        e.setAttribute("nome", nome);
-        e.setAttribute("bimestre", String.valueOf(bimestre.getValor()));
-        e.setAttribute("peso", peso.toString());
-        e.setAttribute("valor", valor.toString());
-        e.setAttribute("data", DateHelper.dateToString(data, "dd/MM/yyyy"));
-
-        e.appendChild(instrumentoAvaliacao.toXml(doc));
-        if (objetivo != null) {
-            e.appendChild(objetivo.toXml(doc));
-        }
-        if (!avaliacoes.isEmpty()) {
-            avaliacoes.forEach((avaliacao) -> {
-                e.appendChild(avaliacao.toXml(doc));
-            });
-        }
-
-        return e;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-        map.put("sequencia", sequencia);
-
-        return map;
     }
 
     @Override

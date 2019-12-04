@@ -5,12 +5,19 @@
  */
 package ensino.planejamento.controller;
 
+import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;
-import ensino.planejamento.dao.PlanoDeEnsinoDao;
+import ensino.patterns.DaoPattern;
+import ensino.planejamento.dao.PlanoDeEnsinoDaoXML;
+import ensino.planejamento.model.Detalhamento;
+import ensino.planejamento.model.Diario;
+import ensino.planejamento.model.HorarioAula;
+import ensino.planejamento.model.Objetivo;
+import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
+import ensino.planejamento.model.PlanoDeEnsinoFactory;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -19,43 +26,47 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class PlanoDeEnsinoController extends AbstractController {
+public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
     
     public PlanoDeEnsinoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new PlanoDeEnsinoDao());
+        super(new PlanoDeEnsinoDaoXML(), PlanoDeEnsinoFactory.getInstance());
     }
     
     @Override
-    public List<PlanoDeEnsino> listar() {
-        PlanoDeEnsinoDao d = (PlanoDeEnsinoDao) getDao();
-        return d.list("");
+    public PlanoDeEnsino salvar(PlanoDeEnsino o) throws Exception {
+        o = super.salvar(o);
+        // Salvar cascade
+        AbstractController<Detalhamento> colDetalhamento = new DetalhamentoController();
+        colDetalhamento.salvarEmCascata(o.getDetalhamentos());
+        
+        AbstractController<HorarioAula> colCurso = new HorarioAulaController();
+        colCurso.salvarEmCascata(o.getHorarios());
+        
+        AbstractController<Diario> colDiario = new DiarioController();
+        colDiario.salvarEmCascata(o.getDiarios());
+        
+        AbstractController<Objetivo> colObjetivo = new ObjetivoController();
+        colObjetivo.salvarEmCascata(o.getObjetivos());
+        
+        AbstractController<PlanoAvaliacao> colPlanoAvaliacao = new PlanoAvaliacaoController();
+        colPlanoAvaliacao.salvarEmCascata(o.getPlanosAvaliacoes());
+        
+        return o;
     }
     
     /**
      * Listagem de planos de ensino
      * 
-     * @param campusId  Identificação do campus
-     * @param cursoId   Identificação do curso
-     * @param unidadeId Identificação da unidade curricular
+     * @param unidadeCurricular Identificação da unidade curricular
      * @return 
      */
-    public List<PlanoDeEnsino> listar(Integer campusId, Integer cursoId,
-            Integer unidadeId) {
-        PlanoDeEnsinoDao d = (PlanoDeEnsinoDao) getDao();
-        return d.list(unidadeId, cursoId, campusId);
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        PlanoDeEnsino planoDeEnsino = new PlanoDeEnsino(params);
-        planoDeEnsino.criarDiarios();
-        planoDeEnsino.criarAvaliacoes();
-        return super.salvar(planoDeEnsino);
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new PlanoDeEnsino(params));
+    public List<PlanoDeEnsino> listar(UnidadeCurricular unidadeCurricular) {
+        DaoPattern<PlanoDeEnsino> dao = super.getDao();
+        String filter = String.format("//PlanoDeEnsino/planoDeEnsino[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]", 
+                unidadeCurricular.getId(),
+                unidadeCurricular.getCurso().getId(),
+                unidadeCurricular.getCurso().getCampus().getId());
+        return dao.list(filter, unidadeCurricular);
     }
     
     /**
@@ -70,7 +81,7 @@ public class PlanoDeEnsinoController extends AbstractController {
     public PlanoDeEnsino buscarPor(Integer id, 
             Integer unidadeCurricularId, Integer cursoId,
             Integer campusId) throws ParseException {
-        PlanoDeEnsinoDao planoDeEnsino = (PlanoDeEnsinoDao)super.getDao();
-        return planoDeEnsino.findById(id, unidadeCurricularId, cursoId, campusId);
+        DaoPattern<PlanoDeEnsino> dao = super.getDao();
+        return dao.findById(id, unidadeCurricularId, cursoId, campusId);
     }
 }

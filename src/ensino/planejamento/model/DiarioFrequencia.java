@@ -6,20 +6,18 @@
 package ensino.planejamento.model;
 
 import ensino.configuracoes.model.Estudante;
-import ensino.defaults.XMLInterface;
 import ensino.util.types.Presenca;
-import java.util.HashMap;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
  * @author nicho
  */
-public class DiarioFrequencia implements XMLInterface {
+public class DiarioFrequencia {
+    /**
+     * Atributo utilizado para identificar uma frequência do diário
+     */
+    private Integer id;
     /**
      * Atributo utilizado para identificar de qual diário é o registro
      * desta frequência.
@@ -44,55 +42,14 @@ public class DiarioFrequencia implements XMLInterface {
     public DiarioFrequencia() {
         presenca = Presenca.PONTO;
     }
-    
-    public DiarioFrequencia(Presenca presenca, Estudante estudante) {
-        this.presenca = presenca;
-        this.estudante = estudante;
-    }
-    
-    public DiarioFrequencia(Element e, Diario diario) {
-        this.presenca = Presenca.of(e.getAttribute("presenca"));
-        this.diario = diario;
-        if (e.hasChildNodes()) {
-            NodeList nodeList = e.getChildNodes();
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node child = nodeList.item(i);
-                if ("estudante".equals(child.getNodeName())) {
-                    estudante = new Estudante((Element) child);
-                    if (diario != null) {
-                        estudante.setTurma(diario.getPlanoDeEnsino().getTurma());
-                    }
-                }
-            }
-        }
-    }
-    
-    public DiarioFrequencia(HashMap<String, Object> params) {
-        this((Presenca) params.get("presenca"),
-                (Estudante) params.get("estudante"));
-        this.diario = (Diario) params.get("diario");
-    } 
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = doc.createElement("diarioFrequencia");
-        e.setAttribute("presenca", presenca == null ? " " :  presenca.getValue());
-        e.appendChild(estudante.toXml(doc));
-        
-        return e;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 79 * hash + Objects.hashCode(this.diario);
-        hash = 79 * hash + Objects.hashCode(this.presenca);
-        hash = 79 * hash + Objects.hashCode(this.estudante);
+        int hash = 5;
+        hash = 37 * hash + Objects.hashCode(this.id);
+        hash = 37 * hash + Objects.hashCode(this.diario);
+        hash = 37 * hash + Objects.hashCode(this.presenca);
+        hash = 37 * hash + Objects.hashCode(this.estudante);
         return hash;
     }
 
@@ -108,6 +65,9 @@ public class DiarioFrequencia implements XMLInterface {
             return false;
         }
         final DiarioFrequencia other = (DiarioFrequencia) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
         if (!Objects.equals(this.diario, other.diario)) {
             return false;
         }
@@ -118,6 +78,14 @@ public class DiarioFrequencia implements XMLInterface {
             return false;
         }
         return true;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Diario getDiario() {

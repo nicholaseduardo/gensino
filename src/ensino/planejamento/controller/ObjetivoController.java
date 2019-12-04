@@ -6,8 +6,10 @@
 package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
-import ensino.planejamento.dao.ObjetivoDao;
+import ensino.patterns.DaoPattern;
+import ensino.planejamento.dao.ObjetivoDaoXML;
 import ensino.planejamento.model.Objetivo;
+import ensino.planejamento.model.ObjetivoFactory;
 import java.io.IOException;
 import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,20 +19,10 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class ObjetivoController extends AbstractController {
+public class ObjetivoController extends AbstractController<Objetivo> {
     
     public ObjetivoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new ObjetivoDao());
-    }
-
-    @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new Objetivo(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new Objetivo(params));
+        super(new ObjetivoDaoXML(), ObjetivoFactory.getInstance());
     }
     
     /**
@@ -44,8 +36,8 @@ public class ObjetivoController extends AbstractController {
      */
     public Objetivo buscarPor(Integer sequencia, Integer planoId, 
             Integer unidadeCurricularId, Integer cursoId, Integer campusId) {
-        ObjetivoDao objetivoDao = (ObjetivoDao)super.getDao();
-        return objetivoDao.findById(sequencia, planoId, unidadeCurricularId,
+        DaoPattern<Objetivo> dao = super.getDao();
+        return dao.findById(sequencia, planoId, unidadeCurricularId,
                                     cursoId, campusId);
     }
 }

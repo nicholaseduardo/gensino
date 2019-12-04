@@ -81,13 +81,13 @@ public class MetodologiaDaoIT {
             PlanoDeEnsino plano = new PlanoDeEnsino(
                     null, "objetivo 1", "recuperacao 1", docente, unidade,
                     calendario, calendario.getPeriodosLetivos().get(0));
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             planoDao.save(plano);
             planoDao.commit();
             
             Objetivo objetivo = new Objetivo(null, "Objetivo 1", plano);
             plano.addObjetivo(objetivo);
-            ObjetivoDao objetivoDao = new ObjetivoDao();
+            ObjetivoDaoXML objetivoDao = new ObjetivoDaoXML();
             objetivoDao.save(objetivo);
             objetivoDao.commit();
             
@@ -98,7 +98,7 @@ public class MetodologiaDaoIT {
             
             Detalhamento detalhamento = new Detalhamento(null, 30, 30, "Conteudo 1", "Observacao", plano, null);
             plano.addDetalhamento(detalhamento);
-            DetalhamentoDao detalhamentoDao = new DetalhamentoDao();
+            DetalhamentoDaoXML detalhamentoDao = new DetalhamentoDaoXML();
             detalhamentoDao.save(detalhamento);
             detalhamentoDao.commit();
 
@@ -120,7 +120,7 @@ public class MetodologiaDaoIT {
             docenteDao.delete(docenteDao.findById(1));
             docenteDao.commit();
             
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             planoDao.delete(planoDao.findById(1));
             planoDao.commit();
             
@@ -137,7 +137,7 @@ public class MetodologiaDaoIT {
     @Before
     public void setUp() {
         try {
-            DetalhamentoDao detalhamentoDao = new DetalhamentoDao();
+            DetalhamentoDaoXML detalhamentoDao = new DetalhamentoDaoXML();
             detalhamento = detalhamentoDao.findById(1, 1, 1, 1, 1);
             
             TecnicaDaoXML tecnicaDao = new TecnicaDaoXML();
@@ -156,14 +156,14 @@ public class MetodologiaDaoIT {
     }
 
     /**
-     * Test of list method, of class MetodologiaDao.
+     * Test of list method, of class MetodologiaDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            MetodologiaDao instance = new MetodologiaDao();
+            MetodologiaDaoXML instance = new MetodologiaDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -177,13 +177,13 @@ public class MetodologiaDaoIT {
     }
 
     /**
-     * Test of save method, of class MetodologiaDao.
+     * Test of save method, of class MetodologiaDaoXML.
      */
     @Test
     public void testSave() {
         try {
             System.out.println("save");
-            MetodologiaDao instance = new MetodologiaDao();
+            MetodologiaDaoXML instance = new MetodologiaDaoXML();
             Metodologia object = new Metodologia(
                     null, TipoMetodo.TECNICA, detalhamento, tecnica);
             instance.save(object);
@@ -197,7 +197,7 @@ public class MetodologiaDaoIT {
     }
 
     /**
-     * Test of findById method, of class MetodologiaDao.
+     * Test of findById method, of class MetodologiaDaoXML.
      */
     @Test
     public void testFindById_3args() {
@@ -206,7 +206,7 @@ public class MetodologiaDaoIT {
             Integer id = 1;
             Integer detalhamentoSeq = 1;
             Integer planoId = 1;
-            MetodologiaDao instance = new MetodologiaDao();
+            MetodologiaDaoXML instance = new MetodologiaDaoXML();
             
             Metodologia result = instance.findById(id, detalhamentoSeq, planoId);
             assertNotNull(result);
@@ -220,13 +220,13 @@ public class MetodologiaDaoIT {
     }
 
     /**
-     * Test of delete method, of class MetodologiaDao.
+     * Test of delete method, of class MetodologiaDaoXML.
      */
     @Test
     public void testDelete() {
         try {
             System.out.println("delete");
-            MetodologiaDao instance = new MetodologiaDao();
+            MetodologiaDaoXML instance = new MetodologiaDaoXML();
             Object object = instance.findById(1, 1, 1);
             instance.delete(object);
             instance.commit();
@@ -239,7 +239,7 @@ public class MetodologiaDaoIT {
     }
 
     /**
-     * Test of nextVal method, of class MetodologiaDao.
+     * Test of nextVal method, of class MetodologiaDaoXML.
      */
     @Test
     public void testNextVal() {
@@ -247,7 +247,7 @@ public class MetodologiaDaoIT {
             System.out.println("nextVal");
             Integer planoId = 1;
             Integer detalhamentoSeq = 1;
-            MetodologiaDao instance = new MetodologiaDao();
+            MetodologiaDaoXML instance = new MetodologiaDaoXML();
             Integer expResult = 1;
             Integer result = instance.nextVal(planoId, detalhamentoSeq);
             assertEquals(expResult, result);

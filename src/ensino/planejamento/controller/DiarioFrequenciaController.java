@@ -8,9 +8,11 @@ package ensino.planejamento.controller;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import ensino.planejamento.dao.DiarioDaoXML;
+import ensino.planejamento.dao.DiarioFrequenciaDaoXML;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.DiarioFactory;
 import ensino.planejamento.model.DiarioFrequencia;
+import ensino.planejamento.model.DiarioFrequenciaFactory;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
 import java.text.ParseException;
@@ -23,25 +25,16 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class DiarioController extends AbstractController<Diario> {
+public class DiarioFrequenciaController extends AbstractController<DiarioFrequencia> {
     
-    public DiarioController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new DiarioDaoXML(), DiarioFactory.getInstance());
-    }
-    
-    @Override
-    public Diario salvar(Diario o) throws Exception {
-        o = super.salvar(o);
-        // Salvar cascade
-        AbstractController<DiarioFrequencia> colDiarioFrequencia = new DiarioFrequenciaController();
-        colDiarioFrequencia.salvarEmCascata(o.getFrequencias());
-        
-        return o;
+    public DiarioFrequenciaController() throws IOException, ParserConfigurationException, TransformerException {
+        super(new DiarioFrequenciaDaoXML(), DiarioFrequenciaFactory.getInstance());
     }
     
     /**
-     * Buscar por sequência do diario
-     * @param id                    Identificação do diário
+     * Buscar por sequência da frequência do diario
+     * @param id                    Identificação da frequência do diário
+     * @param diarioId              Identificação do diário
      * @param planoId               Identificação do plano de ensino
      * @param unidadeCurricularId   Identificação da unidade curricular
      * @param cursoId               Identificação do curso
@@ -49,22 +42,21 @@ public class DiarioController extends AbstractController<Diario> {
      * @return 
      * @throws java.text.ParseException 
      */
-    public Diario buscarPor(Integer id, Integer planoId,
+    public DiarioFrequencia buscarPor(Integer id, Integer diarioId, Integer planoId,
             Integer unidadeCurricularId, Integer cursoId, Integer campusId) throws ParseException {
-        DaoPattern<Diario> dao = super.getDao();
-        return dao.findById(id, planoId, unidadeCurricularId,
+        DaoPattern<DiarioFrequencia> dao = super.getDao();
+        return dao.findById(id, diarioId, planoId, unidadeCurricularId,
                 cursoId, campusId);
     }
     
     /**
      * Listagem de diários por data
      * 
-     * @param data                  Data a ser procurada
-     * @param planoDeEnsino         Identificação do plano de ensino
+     * @param diario         Identificação do diário
      * @return 
      */
-    public List<Diario> list(Date data, PlanoDeEnsino planoDeEnsino) {
-        DiarioDaoXML diarioDao = (DiarioDaoXML)super.getDao();
-        return diarioDao.list(data, planoDeEnsino);
+    public List<DiarioFrequencia> list(Diario diario) {
+        DaoPattern<DiarioFrequencia> dao = super.getDao();
+        return dao.list(diario);
     }
 }

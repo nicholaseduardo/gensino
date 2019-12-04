@@ -90,7 +90,7 @@ public class ConteudoPanel extends DefaultFieldsPanel {
         try {
             GridBagConstraints c = new GridBagConstraints();
             comboTipoAula = new GenJComboBox(TipoAula.values());
-            txtConteudo = new GenJTextField(40);
+            txtConteudo = new GenJTextField(40, false);
             Calendar cal = Calendar.getInstance();
             spinData = new GenJSpinner(new SpinnerDateModel(cal.getTime(),
                     null, null, Calendar.DATE));

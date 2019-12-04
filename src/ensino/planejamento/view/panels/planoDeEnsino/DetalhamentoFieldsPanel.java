@@ -343,7 +343,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
             metodologiaTableModel = new MetodologiaTableModel(detalhe.getMetodologias());
             reloadMetodologiaTable();
-            objetivoTableModel = new ObjetivoTableModel(detalhe.getObjetivos());
+            objetivoTableModel = new ObjetivoTableModel(detalhe.getObjetivoDetalhes());
             reloadObjetivoTable();
         }
     }

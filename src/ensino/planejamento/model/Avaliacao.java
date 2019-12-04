@@ -6,19 +6,14 @@
 package ensino.planejamento.model;
 
 import ensino.configuracoes.model.Estudante;
-import ensino.defaults.XMLInterface;
-import java.util.HashMap;
 import java.util.Objects;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
  * @author nicho
  */
-public class Avaliacao implements XMLInterface {    
+public class Avaliacao {    
     /**
      * Atributo utilizado para identificar em qual plano de avaliacao será
      * utilizado para registro de nota do estudante
@@ -39,46 +34,8 @@ public class Avaliacao implements XMLInterface {
         
     }
     
-    public Avaliacao(Estudante estudante, Double nota) {
-        this.estudante = estudante;
-        this.nota = nota;
-    }
-    
     public Avaliacao(Element e, PlanoAvaliacao planoAvaliacao) {
-        this.nota = Double.parseDouble(e.getAttribute("nota"));
-        this.planoAvaliacao = planoAvaliacao;
-                
-        if (e.hasChildNodes()) {
-            NodeList nodeList = e.getChildNodes();
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node child = nodeList.item(i);
-                if ("estudante".equals(child.getNodeName())) {
-                    estudante = new Estudante((Element) child);
-                    if (planoAvaliacao != null) {
-                        estudante.setTurma(planoAvaliacao.getPlanoDeEnsino().getTurma());
-                    }
-                }
-            }
-        }
-    }
-    
-    public Avaliacao(HashMap<String, Object> params) {
-        this((Estudante) params.get("estudante"), (Double) params.get("nota"));
-        this.planoAvaliacao = (PlanoAvaliacao) params.get("planoAvaliacao");
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = doc.createElement("avaliacao");
-        e.setAttribute("nota", nota.toString());
-        e.appendChild(estudante.toXml(doc));
         
-        return e;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

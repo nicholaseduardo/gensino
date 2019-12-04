@@ -12,19 +12,31 @@ package ensino.util.types;
 public enum TipoMetodo {
     TECNICA(0), RECURSO(1), INSTRUMENTO(2);
 
-    private final int tipo;
+    private final int value;
 
-    TipoMetodo(int tipo) {
-        this.tipo = tipo;
+    TipoMetodo(int value) {
+        this.value = value;
     }
 
-    public int getTipo() {
-        return tipo;
+    public int getValue() {
+        return value;
+    }
+    
+    public static TipoMetodo of(Integer value) {
+        switch (value) {
+            default:
+            case 0:
+                return TECNICA;
+            case 1:
+                return RECURSO;
+            case 2:
+                return INSTRUMENTO;
+        }
     }
 
     @Override
     public String toString() {
-        switch (tipo) {
+        switch (value) {
             default:
             case 0:
                 return "Técnica";

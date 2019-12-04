@@ -58,7 +58,7 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
      *
      * @param ids Os IDS estão divididos em quatro parâmetros:<br/>
      * <ul>
-     * <li>Param[0]: Número da semana letivo</li>
+     * <li>Param[0]: Número da semana letiva</li>
      * <li>Param[1]: Número do período letivo</li>
      * <li>Param[2]: Ano do calendário</li>
      * <li>Param[3]: ID do campus</li>
@@ -72,9 +72,9 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
         Integer ano = (Integer) ids[2];
         Integer campusId = (Integer) ids[3];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("%s[@numero=%d and @pNumero=%d and @ano=@d and @campusId=%d]",
+        String filter = String.format("%s[@numero=%d and @pNumero=%d and @ano=@d and @campusId=%d]",
                 getObjectExpression(), numero, nPeriodoLetivo, ano, campusId);
-        Node searched = getDataByExpression(expression);
+        Node searched = getDataByExpression(filter);
         if (searched != null) {
             return createObject((Element) searched);
         }

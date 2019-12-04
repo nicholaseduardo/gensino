@@ -12,19 +12,33 @@ package ensino.util.types;
 public enum Bimestre {
     PRIMEIRO(0), SEGUNDO(1), TERCEIRO(2), QUARTO(3);
 
-    private final int valor;
+    private final int value;
 
-    Bimestre(int valor) {
-        this.valor = valor;
+    Bimestre(int value) {
+        this.value = value;
     }
 
-    public int getValor() {
-        return valor;
+    public int getValue() {
+        return value;
+    }
+    
+    public static Bimestre of(int value) {
+        switch (value) {
+            default:
+            case 0:
+                return PRIMEIRO;
+            case 1:
+                return SEGUNDO;
+            case 2:
+                return TERCEIRO;
+            case 3:
+                return QUARTO;
+        }
     }
 
     @Override
     public String toString() {
-        switch (valor) {
+        switch (value) {
             default:
             case 0:
                 return "1.o Bimestre";

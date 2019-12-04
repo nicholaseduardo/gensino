@@ -31,7 +31,7 @@ public class PlanoDeEnsinoTableModel extends DefaultTableModel {
         PlanoDeEnsino plano = (PlanoDeEnsino) getRow(rowIndex);
         switch(columnIndex) {
             case 0: return plano.getId();
-            case 1: return plano.getCalendario().getDescricao();
+            case 1: return plano.getPeriodoLetivo().getCalendario().getDescricao();
             case 2: return plano.getPeriodoLetivo().getDescricao();
             case 3: return plano.getUnidadeCurricular().getNome();
             default: return null;

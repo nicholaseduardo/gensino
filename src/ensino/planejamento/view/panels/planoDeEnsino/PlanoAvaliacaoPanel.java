@@ -402,8 +402,8 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                              * Atribui somente o primeiro objetivo à avaliação
                              * sendo incluída
                              */
-                            if (!detalhe.getObjetivos().isEmpty()) {
-                                plano.setObjetivo(detalhe.getObjetivos().get(0));
+                            if (!detalhe.getObjetivoDetalhes().isEmpty()) {
+                                plano.setObjetivo(detalhe.getObjetivoDetalhes().get(0));
                             }
                             /**
                              * O método é um objeto da classe

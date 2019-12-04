@@ -5,22 +5,17 @@
  */
 package ensino.planejamento.model;
 
-import ensino.defaults.XMLInterface;
 import ensino.util.types.Turno;
 import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
  * @author nicho
  */
-public class HorarioAula implements XMLInterface {
+public class HorarioAula {
     /**
      * Atributo utilizado para identificar unicamente o
      * horário da aula.
@@ -64,59 +59,7 @@ public class HorarioAula implements XMLInterface {
     private PlanoDeEnsino planoDeEnsino;
     
     public HorarioAula() {
-        this(null, null, null, null);
-    }
-    
-    public HorarioAula(Integer id, DayOfWeek diaDaSemana, String horario,
-            Turno turno) {
-        this.id = id;
-        this.diaDaSemana = diaDaSemana;
-        this.horario = horario;
-        this.turno = turno;
-    }
-    
-    public HorarioAula(Element e, PlanoDeEnsino planoDeEnsino) {
-        this(
-                Integer.parseInt(e.getAttribute("id")),
-                null,
-                e.getAttribute("horario"), null
-        );
-        this.planoDeEnsino = planoDeEnsino;
-        String sSemana = e.getAttribute("diaDaSemana");
-        if (sSemana.matches("\\d+")) {
-            diaDaSemana = DayOfWeek.of(Integer.parseInt(sSemana));
-        }
-        String sTurno = e.getAttribute("turno");
-        if (sTurno.matches("\\d+")) {
-            turno = Turno.of(Integer.parseInt(sTurno));
-        }
-    }
-    
-    public HorarioAula(HashMap<String, Object> params) {
-        this((Integer) params.get("id"),
-                (DayOfWeek) params.get("diaDaSemana"),
-                (String) params.get("horario"),
-                (Turno) params.get("turno"));
-        this.planoDeEnsino = (PlanoDeEnsino) params.get("planoDeEnsino");
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = doc.createElement("horarioAula");
-        e.setAttribute("id", id.toString());
-        e.setAttribute("diaDaSemana", String.valueOf(diaDaSemana.getValue()));
-        e.setAttribute("horario", horario);
-        e.setAttribute("turno", String.valueOf(turno.getValue()));
-
-        return e;
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-        map.put("id", id);
-
-        return map;
+        
     }
 
     @Override

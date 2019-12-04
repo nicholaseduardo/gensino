@@ -6,8 +6,11 @@
 package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
-import ensino.planejamento.dao.PlanoAvaliacaoDao;
+import ensino.patterns.DaoPattern;
+import ensino.planejamento.dao.PlanoAvaliacaoDaoXML;
+import ensino.planejamento.model.Avaliacao;
 import ensino.planejamento.model.PlanoAvaliacao;
+import ensino.planejamento.model.PlanoAvaliacaoFactory;
 import java.io.IOException;
 import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
@@ -17,20 +20,20 @@ import javax.xml.transform.TransformerException;
  *
  * @author nicho
  */
-public class PlanoAvaliacaoController extends AbstractController {
+public class PlanoAvaliacaoController extends AbstractController<PlanoAvaliacao> {
     
     public PlanoAvaliacaoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new PlanoAvaliacaoDao());
+        super(new PlanoAvaliacaoDaoXML(), PlanoAvaliacaoFactory.getInstance());
     }
 
     @Override
-    public Object salvar(HashMap<String, Object> params) throws TransformerException {
-        return super.salvar(new PlanoAvaliacao(params));
-    }
-
-    @Override
-    public Object remover(HashMap<String, Object> params) throws TransformerException {
-        return super.remover(new PlanoAvaliacao(params));
+    public PlanoAvaliacao salvar(PlanoAvaliacao o) throws Exception {
+        o = super.salvar(o);
+        // Salvar cascade
+        AbstractController<Avaliacao> colAvaliacao = new AvaliacaoController();
+        colAvaliacao.salvarEmCascata(o.getAvaliacoes());
+        
+        return o;
     }
     
     /**
@@ -44,8 +47,8 @@ public class PlanoAvaliacaoController extends AbstractController {
      */
     public PlanoAvaliacao buscarPor(Integer sequencia, Integer planoId,
             Integer unidadeCurricularId, Integer cursoId, Integer campusId) {
-        PlanoAvaliacaoDao planoAtividadeDao = (PlanoAvaliacaoDao)super.getDao();
-        return planoAtividadeDao.findById(sequencia, planoId, unidadeCurricularId,
+        DaoPattern<PlanoAvaliacao> dao = super.getDao();
+        return dao.findById(sequencia, planoId, unidadeCurricularId,
                 cursoId, campusId);
     }
 }

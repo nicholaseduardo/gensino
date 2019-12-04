@@ -6,25 +6,18 @@
 package ensino.planejamento.model;
 
 import ensino.configuracoes.model.Estudante;
-import ensino.defaults.XMLInterface;
 import ensino.helpers.DateHelper;
 import ensino.util.types.TipoAula;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
  * @author nicho
  */
-public class Diario implements XMLInterface {
+public class Diario {
 
     /**
      * Atributo utilizado para identificar unicamente o lançamento de diário.
@@ -69,68 +62,7 @@ public class Diario implements XMLInterface {
     private List<DiarioFrequencia> frequencias;
 
     public Diario() {
-
-    }
-
-    public Diario(Integer id, Date data, String horario,
-            String observacoes, String conteudo) {
-        this.id = id;
-        this.data = data;
-        this.horario = horario;
-        this.observacoes = observacoes;
-        this.conteudo = conteudo;
         frequencias = new ArrayList<>();
-    }
-
-    public Diario(Element e, PlanoDeEnsino planoDeEnsino) throws ParseException {
-        this(
-                Integer.parseInt(e.getAttribute("id")),
-                DateHelper.stringToDate(e.getAttribute("data"), "dd/MM/yyyy"),
-                e.getAttribute("horario"),
-                e.getAttribute("obsevacoes"),
-                e.getAttribute("conteudo")
-        );
-        this.planoDeEnsino = planoDeEnsino;
-        this.tipoAula = TipoAula.of(e.getAttribute("tipoAula"));
-        if (e.hasChildNodes()) {
-            NodeList nodeList = e.getChildNodes();
-            for (int i = 0; i < nodeList.getLength(); i++) {
-                Node child = nodeList.item(i);
-                if ("diarioFrequencia".equals(child.getNodeName())) {
-                    addFrequencia(new DiarioFrequencia((Element) child, this));
-                }
-            }
-        }
-    }
-
-    public Diario(HashMap<String, Object> params) {
-        this((Integer) params.get("id"),
-                (Date) params.get("data"),
-                (String) params.get("horario"),
-                (String) params.get("observacoes"),
-                (String) params.get("conteudo"));
-        this.tipoAula = (TipoAula) params.get("tipoAula");
-        this.planoDeEnsino = (PlanoDeEnsino) params.get("planoDeEnsino");
-        this.frequencias = (List<DiarioFrequencia>) params.get("frequencias");
-    }
-
-    @Override
-    public Node toXml(Document doc) {
-        Element e = doc.createElement("diario");
-        e.setAttribute("id", id.toString());
-        e.setAttribute("data", DateHelper.dateToString(data, "dd/MM/yyyy"));
-        e.setAttribute("horario", horario);
-        e.setAttribute("observacoes", observacoes);
-        e.setAttribute("conteudo", conteudo);
-        e.setAttribute("tipoAula", tipoAula.getValue());
-
-        if (!frequencias.isEmpty()) {
-            frequencias.forEach((frequencia) -> {
-                e.appendChild(frequencia.toXml(doc));
-            });
-        }
-
-        return e;
     }
 
     public Integer getId() {
@@ -208,14 +140,6 @@ public class Diario implements XMLInterface {
     
     public boolean hasFrequencias() {
         return !frequencias.isEmpty();
-    }
-
-    @Override
-    public HashMap<String, Object> getKey() {
-        HashMap<String, Object> map = new HashMap();
-        map.put("id", id);
-
-        return map;
     }
 
     @Override

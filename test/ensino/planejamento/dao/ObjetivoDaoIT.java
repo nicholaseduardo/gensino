@@ -75,7 +75,7 @@ public class ObjetivoDaoIT {
             PlanoDeEnsino object = new PlanoDeEnsino(
                     null, "objetivo 1", "recuperacao 1", docente, unidade,
                     calendario, calendario.getPeriodosLetivos().get(0));
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             planoDao.save(object);
             planoDao.commit();
             
@@ -98,7 +98,7 @@ public class ObjetivoDaoIT {
             docenteDao.delete(docenteDao.findById(1));
             docenteDao.commit();
             
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             planoDao.delete(planoDao.findById(1));
             planoDao.commit();
         } catch (TransformerException | IOException ex) {
@@ -111,7 +111,7 @@ public class ObjetivoDaoIT {
     @Before
     public void setUp() {
         try {
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             plano = (PlanoDeEnsino)planoDao.findById(1);
         } catch (IOException ex) {
             Logger.getLogger(ObjetivoDaoIT.class.getName()).log(Level.SEVERE, null, ex);
@@ -127,14 +127,14 @@ public class ObjetivoDaoIT {
     }
 
     /**
-     * Test of list method, of class ObjetivoDao.
+     * Test of list method, of class ObjetivoDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            ObjetivoDao instance = new ObjetivoDao();
+            ObjetivoDaoXML instance = new ObjetivoDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -148,14 +148,14 @@ public class ObjetivoDaoIT {
     }
 
     /**
-     * Test of save method, of class ObjetivoDao.
+     * Test of save method, of class ObjetivoDaoXML.
      */
     @Test
     public void testSave() {
         try {
             System.out.println("save");
             Objetivo object = new Objetivo(null, "Objetivo 1", plano);
-            ObjetivoDao instance = new ObjetivoDao();
+            ObjetivoDaoXML instance = new ObjetivoDaoXML();
             instance.save(object);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -167,7 +167,7 @@ public class ObjetivoDaoIT {
     }
 
     /**
-     * Test of findById method, of class ObjetivoDao.
+     * Test of findById method, of class ObjetivoDaoXML.
      */
     @Test
     public void testFindById_Integer_Integer() {
@@ -175,7 +175,7 @@ public class ObjetivoDaoIT {
             System.out.println("findById");
             Integer sequencia = 1;
             Integer planoId = 1;
-            ObjetivoDao instance = new ObjetivoDao();
+            ObjetivoDaoXML instance = new ObjetivoDaoXML();
             
             Objetivo result = instance.findById(1, 1, 1, 1, 1);
             assertNotNull(result);
@@ -189,13 +189,13 @@ public class ObjetivoDaoIT {
     }
 
     /**
-     * Test of delete method, of class ObjetivoDao.
+     * Test of delete method, of class ObjetivoDaoXML.
      */
     @Test
     public void testDelete() {
         try {
             System.out.println("delete");
-            ObjetivoDao instance = new ObjetivoDao();
+            ObjetivoDaoXML instance = new ObjetivoDaoXML();
             Object object = instance.findById(1, 1,1,1,1);
             instance.delete(object);
         } catch (IOException ex) {
@@ -208,14 +208,14 @@ public class ObjetivoDaoIT {
     }
 
     /**
-     * Test of nextVal method, of class ObjetivoDao.
+     * Test of nextVal method, of class ObjetivoDaoXML.
      */
     @Test
     public void testNextVal() {
         try {
             System.out.println("nextVal");
             Integer planoId = 1;
-            ObjetivoDao instance = new ObjetivoDao();
+            ObjetivoDaoXML instance = new ObjetivoDaoXML();
             Integer expResult = 2;
             Integer result = instance.nextVal(1, 1, 1, 1);
             assertEquals(expResult, result);

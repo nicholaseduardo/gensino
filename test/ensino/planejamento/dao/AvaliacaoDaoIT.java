@@ -80,7 +80,7 @@ public class AvaliacaoDaoIT {
             PlanoDeEnsino object = new PlanoDeEnsino(
                     null, "objetivo 1", "recuperacao 1", docente, unidade,
                     calendario, calendario.getPeriodosLetivos().get(0));
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             planoDao.save(object);
             planoDao.commit();
             
@@ -107,7 +107,7 @@ public class AvaliacaoDaoIT {
             docenteDao.delete(docenteDao.findById(1));
             docenteDao.commit();
             
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             planoDao.delete(planoDao.findById(1));
             planoDao.commit();
         } catch (TransformerException | IOException ex) {
@@ -120,7 +120,7 @@ public class AvaliacaoDaoIT {
     @Before
     public void setUp() {
         try {
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             plano = (PlanoDeEnsino)planoDao.findById(1);
             
             InstrumentoAvaliacaoDaoXML instrumentoDao = new InstrumentoAvaliacaoDaoXML();
@@ -146,7 +146,7 @@ public class AvaliacaoDaoIT {
         try {
             System.out.println("list");
             String criteria = "";
-            PlanoAvaliacaoDao instance = new PlanoAvaliacaoDao();
+            PlanoAvaliacaoDaoXML instance = new PlanoAvaliacaoDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -171,7 +171,7 @@ public class AvaliacaoDaoIT {
                     Bimestre.PRIMEIRO, 1.0, 10.0, new Date());
             object.setPlanoDeEnsino(plano);
             object.setInstrumentoAvaliacao(instrumento);
-            PlanoAvaliacaoDao instance = new PlanoAvaliacaoDao();
+            PlanoAvaliacaoDaoXML instance = new PlanoAvaliacaoDaoXML();
             instance.save(object);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -191,7 +191,7 @@ public class AvaliacaoDaoIT {
             System.out.println("findById");
             Integer sequencia = 1;
             Integer planoId = 1;
-            PlanoAvaliacaoDao instance = new PlanoAvaliacaoDao();
+            PlanoAvaliacaoDaoXML instance = new PlanoAvaliacaoDaoXML();
             
             PlanoAvaliacao result = instance.findById(sequencia, planoId, 1, 1, 1);
             assertNotNull(result);
@@ -211,7 +211,7 @@ public class AvaliacaoDaoIT {
     public void testDelete() {
         try {
             System.out.println("delete");
-            PlanoAvaliacaoDao instance = new PlanoAvaliacaoDao();
+            PlanoAvaliacaoDaoXML instance = new PlanoAvaliacaoDaoXML();
             Object object = instance.findById(1, 1, 1, 1, 1);
             instance.delete(object);
             instance.commit();
@@ -231,7 +231,7 @@ public class AvaliacaoDaoIT {
         try {
             System.out.println("nextVal");
             Integer planoId = 1;
-            PlanoAvaliacaoDao instance = new PlanoAvaliacaoDao();
+            PlanoAvaliacaoDaoXML instance = new PlanoAvaliacaoDaoXML();
             Integer expResult = 1;
             Integer result = instance.nextVal(1, 1, 1, 1);
             assertEquals(expResult, result);

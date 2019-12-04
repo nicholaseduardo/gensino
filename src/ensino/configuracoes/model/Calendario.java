@@ -12,12 +12,10 @@ public class Calendario {
     private Campus campus;
     private List<Atividade> atividades;
     private List<PeriodoLetivo> periodosLetivos;
-    private List<PlanoDeEnsino> planosDeEnsino;
 
     public Calendario() {
         atividades = new ArrayList();
         periodosLetivos = new ArrayList();
-        planosDeEnsino = new ArrayList();
     }
 
     public Integer getAno() {
@@ -81,26 +79,6 @@ public class Calendario {
 
     public void setPeriodosLetivos(List<PeriodoLetivo> periodosLetivos) {
         this.periodosLetivos = periodosLetivos;
-    }
-
-    public void addPlanoDeEnsino(PlanoDeEnsino planoDeEnsino) {
-        planoDeEnsino.setCalendario(this);
-        planosDeEnsino.add(planoDeEnsino);
-    }
-
-    public void removePlanoDeEnsino(PlanoDeEnsino planoDeEnsino) {
-        planosDeEnsino.remove(planoDeEnsino);
-    }
-
-    public List<PlanoDeEnsino> getPlanosDeEnsino() {
-        return planosDeEnsino;
-    }
-
-    public void setPlanosDeEnsino(List<PlanoDeEnsino> planosDeEnsino) {
-        this.planosDeEnsino = planosDeEnsino;
-        this.planosDeEnsino.forEach((o) -> {
-            o.setCalendario(this);
-        });
     }
 
     @Override

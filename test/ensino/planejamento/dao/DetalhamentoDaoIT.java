@@ -78,13 +78,13 @@ public class DetalhamentoDaoIT {
                     null, "objetivo 1", "recuperacao 1", docente, unidade,
                     calendario, calendario.getPeriodosLetivos().get(0));
             
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             planoDao.save(plano);
             planoDao.commit();
             
             Objetivo objetivo = new Objetivo(null, "Objetivo 1", plano);
             plano.addObjetivo(objetivo);
-            ObjetivoDao objetivoDao = new ObjetivoDao();
+            ObjetivoDaoXML objetivoDao = new ObjetivoDaoXML();
             objetivoDao.save(objetivo);
             objetivoDao.commit();
 
@@ -106,7 +106,7 @@ public class DetalhamentoDaoIT {
             docenteDao.delete(docenteDao.findById(1));
             docenteDao.commit();
             
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             planoDao.delete(planoDao.findById(1));
             planoDao.commit();
         } catch (TransformerException | IOException ex) {
@@ -119,10 +119,10 @@ public class DetalhamentoDaoIT {
     @Before
     public void setUp() {
         try {
-            PlanoDeEnsinoDao planoDao = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML planoDao = new PlanoDeEnsinoDaoXML();
             plano = (PlanoDeEnsino)planoDao.findById(1);
             
-            ObjetivoDao objetivoDao = new ObjetivoDao();
+            ObjetivoDaoXML objetivoDao = new ObjetivoDaoXML();
             objetivo = (Objetivo) objetivoDao.findById(1, 1, 1, 1, 1);
         } catch (IOException ex) {
             Logger.getLogger(ObjetivoDaoIT.class.getName()).log(Level.SEVERE, null, ex);
@@ -138,14 +138,14 @@ public class DetalhamentoDaoIT {
     }
 
     /**
-     * Test of list method, of class DetalhamentoDao.
+     * Test of list method, of class DetalhamentoDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            DetalhamentoDao instance = new DetalhamentoDao();
+            DetalhamentoDaoXML instance = new DetalhamentoDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -159,7 +159,7 @@ public class DetalhamentoDaoIT {
     }
 
     /**
-     * Test of save method, of class DetalhamentoDao.
+     * Test of save method, of class DetalhamentoDaoXML.
      */
     @Test
     public void testSave() {
@@ -167,7 +167,7 @@ public class DetalhamentoDaoIT {
             System.out.println("save");
             Object object = new Detalhamento(
                     null, 30, 30, "Conteudo 1", "Observacao", plano, null);
-            DetalhamentoDao instance = new DetalhamentoDao();
+            DetalhamentoDaoXML instance = new DetalhamentoDaoXML();
             instance.save(object);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -179,7 +179,7 @@ public class DetalhamentoDaoIT {
     }
 
     /**
-     * Test of findById method, of class DetalhamentoDao.
+     * Test of findById method, of class DetalhamentoDaoXML.
      */
     @Test
     public void testFindById_Integer_Integer() {
@@ -187,7 +187,7 @@ public class DetalhamentoDaoIT {
             System.out.println("findById");
             Integer sequencia = 1;
             Integer planoId = 1;
-            DetalhamentoDao instance = new DetalhamentoDao();
+            DetalhamentoDaoXML instance = new DetalhamentoDaoXML();
             
             Detalhamento result = instance.findById(1, 1, 1, 1, 1);
             assertNotNull(result);
@@ -201,13 +201,13 @@ public class DetalhamentoDaoIT {
     }
 
     /**
-     * Test of delete method, of class DetalhamentoDao.
+     * Test of delete method, of class DetalhamentoDaoXML.
      */
     @Test
     public void testDelete() {
         try {
             System.out.println("delete");
-            DetalhamentoDao instance = new DetalhamentoDao();
+            DetalhamentoDaoXML instance = new DetalhamentoDaoXML();
             Object object = instance.findById(1, 1, 1, 1, 1);
             instance.delete(object);
             instance.commit();
@@ -220,14 +220,14 @@ public class DetalhamentoDaoIT {
     }
 
     /**
-     * Test of nextVal method, of class DetalhamentoDao.
+     * Test of nextVal method, of class DetalhamentoDaoXML.
      */
     @Test
     public void testNextVal() {
         try {
             System.out.println("nextVal");
             Integer planoId = 1;
-            DetalhamentoDao instance = new DetalhamentoDao();
+            DetalhamentoDaoXML instance = new DetalhamentoDaoXML();
             Integer expResult = 1;
             Integer result = instance.nextVal(1, 1, 1, 1);
             assertEquals(expResult, result);

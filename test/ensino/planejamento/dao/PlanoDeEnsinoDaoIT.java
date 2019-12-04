@@ -115,14 +115,14 @@ public class PlanoDeEnsinoDaoIT {
     }
 
     /**
-     * Test of list method, of class PlanoDeEnsinoDao.
+     * Test of list method, of class PlanoDeEnsinoDaoXML.
      */
     @Test
     public void testList() {
         try {
             System.out.println("list");
             String criteria = "";
-            PlanoDeEnsinoDao instance = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML instance = new PlanoDeEnsinoDaoXML();
             List expResult = new ArrayList();
             List result = instance.list(criteria);
             assertEquals(expResult, result);
@@ -136,7 +136,7 @@ public class PlanoDeEnsinoDaoIT {
     }
 
     /**
-     * Test of save method, of class PlanoDeEnsinoDao.
+     * Test of save method, of class PlanoDeEnsinoDaoXML.
      */
     @Test
     public void testSave() {
@@ -148,7 +148,7 @@ public class PlanoDeEnsinoDaoIT {
             PlanoDeEnsino object = new PlanoDeEnsino(
                     null, "objetivo 1", "recuperacao 1", docente, unidade,
                     calendario, calendario.getPeriodosLetivos().get(0));
-            PlanoDeEnsinoDao instance = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML instance = new PlanoDeEnsinoDaoXML();
             instance.save(object);
             instance.commit();
             assertEquals(1, instance.list().size());
@@ -160,14 +160,14 @@ public class PlanoDeEnsinoDaoIT {
     }
 
     /**
-     * Test of findById method, of class PlanoDeEnsinoDao.
+     * Test of findById method, of class PlanoDeEnsinoDaoXML.
      */
     @Test
     public void testFindById() {
         try {
             System.out.println("findById");
             Object id = 1;
-            PlanoDeEnsinoDao instance = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML instance = new PlanoDeEnsinoDaoXML();
 
             Object result = instance.findById(id);
             assertNotNull(result);
@@ -184,7 +184,7 @@ public class PlanoDeEnsinoDaoIT {
     public void testDelete() {
         try {
             System.out.println("delete");
-            PlanoDeEnsinoDao instance = new PlanoDeEnsinoDao();
+            PlanoDeEnsinoDaoXML instance = new PlanoDeEnsinoDaoXML();
             instance.delete(instance.findById(1));
             instance.commit();
             assertEquals(0, instance.list().size());

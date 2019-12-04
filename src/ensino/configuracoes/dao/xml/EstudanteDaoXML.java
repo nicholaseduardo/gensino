@@ -56,7 +56,7 @@ public class EstudanteDaoXML extends AbstractDaoXML<Estudante> {
     /**
      * Recupera um objeto da classe Turma de acorco com sua chave primária
      *
-     * @param ids Os IDS estão divididos em três parâmetros:<br/>
+     * @param ids Os IDS estão divididos em três parâmetros:<br>
      * <ul>
      * <li>Param[0]: ID do estudante</li>
      * <li>Param[1]: ID da turma</li>
@@ -72,7 +72,7 @@ public class EstudanteDaoXML extends AbstractDaoXML<Estudante> {
                 cursoId = (Integer) ids[2],
                 campusId = (Integer) ids[3];
         // Cria mecanismo para buscar o conteudo no xml
-        String filter = String.format("/%s[@id=%d @turmaId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@id=%d @turmaId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), id, cursoId, campusId);
         Node searched = getDataByExpression(filter);
         if (searched != null) {
