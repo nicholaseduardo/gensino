@@ -26,6 +26,17 @@ public class PeriodoLetivoTableModel extends DefaultTableModel {
         });
     }
     
+    /**
+     * Remoção lógica
+     * @param row 
+     */
+    @Override
+    public void removeRow(int row) {
+        PeriodoLetivo o = (PeriodoLetivo) lista.get(row);
+        o.delete();
+        updateRow(row, o);
+    }
+    
     @Override
     public List<PeriodoLetivo> getData() {
         return (List<PeriodoLetivo>)super.getData();

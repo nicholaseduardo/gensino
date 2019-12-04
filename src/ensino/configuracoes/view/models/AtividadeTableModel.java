@@ -26,6 +26,17 @@ public class AtividadeTableModel extends DefaultTableModel {
         });
     }
     
+    /**
+     * Remoção lógica
+     * @param row 
+     */
+    @Override
+    public void removeRow(int row) {
+        Atividade o = (Atividade) lista.get(row);
+        o.delete();
+        updateRow(row, o);
+    }
+    
     @Override
     public List<Atividade> getData() {
         return (List<Atividade>)super.getData();

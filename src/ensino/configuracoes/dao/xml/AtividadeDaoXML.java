@@ -84,11 +84,14 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
         Integer campusId = o.getCalendario().getCampus().getId();
         if (o.getId() == null) {
             o.setId(this.nextVal(ano, campusId));
+        } else if (o.isDeleted()) {
+            this.delete(o);
+        } else {
+            // cria a expressão de acordo com o código do campus
+            String filter = String.format("@id=%d and @ano=%d and @campusId=%d",
+                    o.getId(), ano, campusId);
+            super.save(o, filter);
         }
-        // cria a expressão de acordo com o código do campus
-        String filter = String.format("@id=%d and @ano=%d and @campusId=%d",
-                o.getId(), ano, campusId);
-        super.save(o, filter);
     }
 
     @Override

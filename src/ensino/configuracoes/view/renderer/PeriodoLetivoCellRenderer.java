@@ -36,6 +36,11 @@ public class PeriodoLetivoCellRenderer extends GenCellRenderer {
 
         PeriodoLetivoTableModel model = (PeriodoLetivoTableModel) table.getModel();
         PeriodoLetivo pl = (PeriodoLetivo) model.getRow(row);
+        // muda a cor da linha caso o objeto esteja marcado para exclusão
+        if (pl.isDeleted()) {
+            markAsDeleted();
+        }
+        
         GenJLabel lblTitle = createLabel(pl.getDescricao());
         
         GenJLabel lblPeriodo = createLabel(String.format("[Período: %s]", 

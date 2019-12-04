@@ -36,26 +36,29 @@ public class AtividadeCellRenderer extends GenCellRenderer {
 
         AtividadeTableModel model = (AtividadeTableModel) table.getModel();
         Atividade at = (Atividade) model.getRow(row);
+        if (at.isDeleted()) {
+            markAsDeleted();
+        }
         GenJLabel lblTitle = createLabel(at.getDescricao());
         lblTitle.toBold();
         lblTitle.setForeground(at.getLegenda().getCor());
-        
-        GenJLabel lblPeriodo = createLabel(String.format("[Período: %s]", 
+
+        GenJLabel lblPeriodo = createLabel(String.format("[Período: %s]",
                 at.getPeriodo().toString()));
         lblPeriodo.resetFontSize(12);
         lblPeriodo.setIcon(new ImageIcon(getClass().getResource("/img/calendar-image-png-15px.png")));
         lblPeriodo.toBold();
         lblPeriodo.setForeground(at.getLegenda().getCor());
-        
+
         JPanel panel = new JPanel(new GridLayout(2, 1));
-        
+
         panel.add(lblTitle);
         panel.add(lblPeriodo);
         panel.setBackground(getBack());
 
         table.setRowHeight(panel.getPreferredSize().height + 10);
         panel.setOpaque(true);
-        
+
         JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         p.add(panel);
         p.setBackground(getBack());

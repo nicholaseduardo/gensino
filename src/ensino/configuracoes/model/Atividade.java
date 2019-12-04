@@ -11,9 +11,14 @@ public class Atividade {
     private String descricao;
     private Calendario calendario;
     private Legenda legenda;
+    /**
+     * Atributo utilizado para marcar o objeto para remoção futura.
+     * Valor padrão: false
+     */
+    private Boolean deleted;
     
     public Atividade() {
-        
+        deleted = false;
     }
 
     public Integer getId() {
@@ -54,6 +59,14 @@ public class Atividade {
 
     public void setLegenda(Legenda legenda) {
         this.legenda = legenda;
+    }
+    
+    public void delete() {
+        deleted = true;
+    }
+
+    public Boolean isDeleted() {
+        return deleted;
     }
 
     @Override

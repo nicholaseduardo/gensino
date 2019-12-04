@@ -16,8 +16,14 @@ public class PeriodoLetivo {
     private Calendario calendario;
     // composition
     private List<SemanaLetiva> semanasLetivas;
+    /**
+     * Atributo utilizado para marcar o objeto para remoção futura.
+     * Valor padrão: false
+     */
+    private Boolean deleted;
 
     public PeriodoLetivo() {
+        deleted = false;
         semanasLetivas = new ArrayList<>();
     }
 
@@ -90,6 +96,14 @@ public class PeriodoLetivo {
             }
         }
         return lista;
+    }
+    
+    public void delete() {
+        deleted = true;
+    }
+
+    public Boolean isDeleted() {
+        return deleted;
     }
 
     @Override

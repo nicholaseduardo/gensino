@@ -95,11 +95,15 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
         Integer campusId = o.getCalendario().getCampus().getId();
         if (o.getNumero() == null) {
             o.setNumero(this.nextVal(ano, campusId));
+        } else if (o.isDeleted()) {
+            // está marcado para remoção, logo, deve ser deletado
+            this.delete(o);
+        } else {
+            // cria a expressão de acordo com o código do campus
+            String filter = String.format("@numero=%d and @ano=%d and @campusId=%d",
+                    o.getNumero(), ano, campusId);
+            super.save(o, filter);
         }
-        // cria a expressão de acordo com o código do campus
-        String filter = String.format("@numero=%d and @ano=%d and @campusId=%d",
-                o.getNumero(), ano, campusId);
-        super.save(o, filter);
     }
 
     @Override
