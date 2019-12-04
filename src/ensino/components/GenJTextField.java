@@ -6,6 +6,7 @@
 package ensino.components;
 
 import ensino.components.listener.GenFocusAdapter;
+import ensino.components.listener.GenKeyAdapter;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
@@ -40,6 +41,7 @@ public class GenJTextField extends JTextField {
         resetFontSize(16);
         super.setMargin(new Insets(6,6,6,6));
         super.addFocusListener(new GenFocusAdapter());
+        super.addKeyListener(new GenKeyAdapter());
     }
     
     /**

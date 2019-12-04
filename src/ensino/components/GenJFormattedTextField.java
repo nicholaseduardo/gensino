@@ -6,6 +6,7 @@
 package ensino.components;
 
 import ensino.components.listener.GenFocusAdapter;
+import ensino.components.listener.GenKeyAdapter;
 import java.awt.Font;
 import java.awt.Insets;
 import java.text.DecimalFormat;
@@ -34,7 +35,8 @@ public class GenJFormattedTextField extends JFormattedTextField {
     private void initComponents() {
         setMargin(new Insets(6, 6, 6, 6));
         
-        addFocusListener(new GenFocusAdapter());
+        super.addFocusListener(new GenFocusAdapter());
+        super.addKeyListener(new GenKeyAdapter());
         resetFontSize(16);
     }
 
