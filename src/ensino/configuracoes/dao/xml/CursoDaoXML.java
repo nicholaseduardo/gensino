@@ -9,6 +9,7 @@ import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoFactory;
 import ensino.configuracoes.model.Turma;
+import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
@@ -51,6 +52,11 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
             DaoPattern<Turma> turmaDao = new TurmaDaoXML();
             o.setTurmas(turmaDao.list(filter, o));
             
+            filter = String.format(formatter,
+                    "//UnidadeCurricular/unidadeCurricular", o.getId(), campusId);
+            DaoPattern<UnidadeCurricular> unidadeCurricularDao = new UnidadeCurricularDaoXML();
+            o.setUnidadesCurriculares(unidadeCurricularDao.list(filter, o));
+            
             return o;
         } catch (Exception ex) {
             Logger.getLogger(CursoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -73,7 +79,7 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
         Integer id = (Integer) ids[0];
         Integer campusId = (Integer) ids[1];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("/%s[@id=%d and @campusId=%d]",
+        String expression = String.format("%s[@id=%d and @campusId=%d]",
                 getObjectExpression(), id, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {
