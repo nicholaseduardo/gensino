@@ -29,6 +29,9 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -106,6 +109,21 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
             panelLeft.add(lblDe, c);
             txtDe = GenJFormattedTextField.createFormattedField("##/##/####", 1);
             txtDe.setColumns(8);
+            txtDe.addFocusListener(new FocusAdapter(){
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (txtDe.getValue() != null && txtAte.getValue() == null) {
+                        try {
+                            txtDe.commitEdit();
+                            txtAte.setValue(txtDe.getValue());
+                            txtAtividade.requestFocusInWindow();
+                        } catch (ParseException ex) {
+                            Logger.getLogger(CalendarioAtividadesPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                
+            });
             lblDe.setLabelFor(txtDe);
             GridLayoutHelper.set(c, 1, 1);
             c.fill = GridBagConstraints.HORIZONTAL;

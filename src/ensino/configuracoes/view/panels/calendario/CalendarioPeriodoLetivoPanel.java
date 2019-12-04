@@ -25,6 +25,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,6 +97,21 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
             panelLeft.add(lblDe, c);
             txtDe = GenJFormattedTextField.createFormattedField("##/##/####", 1);
             txtDe.setColumns(8);
+            txtDe.addFocusListener(new FocusAdapter(){
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (txtDe.getValue() != null && txtAte.getValue() == null) {
+                        try {
+                            txtDe.commitEdit();
+                            txtAte.setValue(txtDe.getValue());
+                            txtPeriodoLetivo.requestFocusInWindow();
+                        } catch (ParseException ex) {
+                            Logger.getLogger(CalendarioAtividadesPanel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                
+            });
             lblDe.setLabelFor(txtDe);
             GridLayoutHelper.set(c, 1, 1);
             c.fill = GridBagConstraints.HORIZONTAL;
@@ -223,10 +240,6 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
         if (object instanceof Calendario) {
             try {
                 Calendario calendario = (Calendario) object;
-//                PeriodoLetivoController col = new PeriodoLetivoController();
-//                calendario.setPeriodosLetivos(
-//                    col.listar(calendario.getAno(), 
-//                            calendario.getCampus().getId()));
                 setData(calendario.getPeriodosLetivos());
             } catch (Exception ex) {
                 Logger.getLogger(CalendarioPeriodoLetivoPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -313,6 +326,9 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
                             "Aviso", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
+                /**
+                 * Remoção lógica
+                 */
                 periodoLetivoTableModel.removeRow(selectedRow);
                 periodoLetivoTable.repaint();
                 btClear.doClick();
