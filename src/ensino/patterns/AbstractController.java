@@ -56,6 +56,12 @@ public abstract class AbstractController<T> {
         return object;
     }
 
+    /**
+     * Salvar em cascata.
+     * Esse método tem o objetivo de salvar a lista de objetos <code>T</code>
+     * @param l
+     * @throws Exception 
+     */
     public void salvarEmCascata(List<T> l) throws Exception {
         try {
             if (l != null) {
