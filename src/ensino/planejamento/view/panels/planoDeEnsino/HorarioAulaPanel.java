@@ -82,7 +82,7 @@ public class HorarioAulaPanel extends DefaultFieldsPanel {
     private JPanel createFields() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        txtId = new GenJTextField(5);
+        txtId = new GenJTextField(5, false);
         txtId.setEnabled(false);
         comboDiaDaSemana = new GenJComboBox(DayOfWeek.values());
 

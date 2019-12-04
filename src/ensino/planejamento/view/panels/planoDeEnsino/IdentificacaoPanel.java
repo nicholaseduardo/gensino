@@ -201,7 +201,7 @@ public class IdentificacaoPanel extends DefaultFieldsPanel {
 
             Curso curso = plano.getUnidadeCurricular().getCurso();
             comboCampus.setSelectedItem(curso.getCampus());
-            compoCalendario.setObjectValue(plano.getCalendario());
+            compoCalendario.setObjectValue(plano.getPeriodoLetivo().getCalendario());
             comboPeriodoLetivo.setSelectedItem(plano.getPeriodoLetivo());
             compoTurma.setObjectValue(plano.getTurma());
             compoCurso.setObjectValue(curso);

@@ -13,6 +13,7 @@ import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.planejamento.model.Detalhamento;
+import ensino.planejamento.model.DetalhamentoFactory;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.util.types.MesesDeAno;
@@ -209,7 +210,7 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
         for(int i = 0; i < detalhamentoCardPanel.getComponentCount(); i++) {
             if (detalhamentoCardPanel.getComponent(i) instanceof DetalhamentoFieldsPanel) {
                 DetalhamentoFieldsPanel panel = (DetalhamentoFieldsPanel) detalhamentoCardPanel.getComponent(i);
-                listaDetalhamentos.add(new Detalhamento(panel.getFieldValues()));
+                listaDetalhamentos.add(DetalhamentoFactory.getInstance().getObject(panel.getFieldValues()));
             }
         }
         HashMap<String, Object> map = new HashMap();
@@ -233,7 +234,7 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
         if (object instanceof PlanoDeEnsino) {
             PlanoDeEnsino plano = (PlanoDeEnsino) object;
             periodoLetivo = plano.getPeriodoLetivo();
-            listaAtividades = plano.getCalendario().getAtividades();
+            listaAtividades = plano.getPeriodoLetivo().getCalendario().getAtividades();
             listaObjetivos = plano.getObjetivos();
             listaDetalhamentos = plano.getDetalhamentos();
             loadTreeDetalhamento();

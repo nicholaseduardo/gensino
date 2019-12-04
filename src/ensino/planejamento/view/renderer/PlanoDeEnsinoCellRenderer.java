@@ -58,7 +58,7 @@ public class PlanoDeEnsinoCellRenderer extends GenCellRenderer {
 
         GenJLabel lblCalendario = createLabel(
                 String.format("Calendário: %s / Período letivo: %s",
-                        planoDeEnsino.getCalendario().getDescricao(),
+                        planoDeEnsino.getPeriodoLetivo().getCalendario().getDescricao(),
                         planoDeEnsino.getPeriodoLetivo().getDescricao()));
         lblCalendario.resetFontSize(12);
 

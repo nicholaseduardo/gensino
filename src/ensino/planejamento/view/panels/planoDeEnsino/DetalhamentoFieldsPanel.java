@@ -26,6 +26,7 @@ import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.view.models.MetodologiaTableModel;
 import ensino.planejamento.view.models.ObjetivoComboBoxModel;
+import ensino.planejamento.view.models.ObjetivoDetalheTableModel;
 import ensino.planejamento.view.models.ObjetivoTableModel;
 import ensino.planejamento.view.renderer.MetodologiaCellRenderer;
 import ensino.util.types.TipoMetodo;
@@ -82,7 +83,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
     private JTable metodologiaTable;
     private MetodologiaTableModel metodologiaTableModel;
     private JTable objetivosTable;
-    private ObjetivoTableModel objetivoTableModel;
+    private ObjetivoDetalheTableModel objetivoDetalheTableModel;
 
     private GenJButton btAddMetodo;
     private GenJButton btDelMetodo;
@@ -258,8 +259,8 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
         panelCombo.add(comboObjetivo, BorderLayout.PAGE_START);
         panelCombo.add(panelButtons, BorderLayout.CENTER);
 
-        objetivoTableModel = new ObjetivoTableModel();
-        objetivosTable = new JTable(objetivoTableModel);
+        objetivoDetalheTableModel = new ObjetivoDetalheTableModel();
+        objetivosTable = new JTable(objetivoDetalheTableModel);
         JScrollPane objetivosScroll = new JScrollPane();
         objetivosScroll.setViewportView(objetivosTable);
         objetivosScroll.setPreferredSize(new Dimension(450, 120));
@@ -282,7 +283,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
     }
 
     private void reloadObjetivoTable() {
-        objetivosTable.setModel(objetivoTableModel);
+        objetivosTable.setModel(objetivoDetalheTableModel);
         objetivosTable.repaint();
         objetivosTable.getColumnModel().getColumn(0).setCellRenderer(new TextAreaCellRenderer());
     }
@@ -301,7 +302,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
         map.put("nAulasTeoricas", txtNAulasT.getValue());
 
         map.put("metodologias", metodologiaTableModel.getData());
-        map.put("objetivos", objetivoTableModel.getData());
+        map.put("objetivos", objetivoDetalheTableModel.getData());
         return map;
     }
 
@@ -343,7 +344,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
             metodologiaTableModel = new MetodologiaTableModel(detalhe.getMetodologias());
             reloadMetodologiaTable();
-            objetivoTableModel = new ObjetivoTableModel(detalhe.getObjetivoDetalhes());
+            objetivoDetalheTableModel = new ObjetivoDetalheTableModel(detalhe.getObjetivoDetalhes());
             reloadObjetivoTable();
         }
     }
@@ -361,7 +362,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
         txtNAulasP.setValue(0);
         txtNAulasT.setValue(0);
         metodologiaTableModel = new MetodologiaTableModel(new ArrayList());
-        objetivoTableModel = new ObjetivoTableModel(new ArrayList());
+        objetivoDetalheTableModel = new ObjetivoDetalheTableModel(new ArrayList());
         reloadMetodologiaTable();
         reloadObjetivoTable();
     }
@@ -473,8 +474,8 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
             } else if (e.getSource() == btAddObjetivo) {
                 Objetivo obj = (Objetivo) comboObjetivo.getSelectedItem();
                 if (obj != null) {
-                    if (objetivoTableModel.exists(obj) == 0) {
-                        objetivoTableModel.addRow(obj);
+                    if (objetivoDetalheTableModel.exists(obj) == 0) {
+                        objetivoDetalheTableModel.addRow(obj);
                         reloadObjetivoTable();
                     } else {
                         JOptionPane.showMessageDialog(tabbedDetalhamento,

@@ -111,7 +111,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
         try {
             comboBimestre = new GenJComboBox(Bimestre.values());
 
-            txtNome = new GenJTextField(20);
+            txtNome = new GenJTextField(20, true);
             comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(new InstrumentoAvaliacaoController()));
             spinPeso = new GenJSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.1));
             spinPeso.setEditor(new JSpinner.NumberEditor(spinPeso, "0.0"));
@@ -403,7 +403,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                              * sendo incluída
                              */
                             if (!detalhe.getObjetivoDetalhes().isEmpty()) {
-                                plano.setObjetivo(detalhe.getObjetivoDetalhes().get(0));
+                                plano.setObjetivo(detalhe.getObjetivoDetalhes().get(0).getObjetivo());
                             }
                             /**
                              * O método é um objeto da classe
