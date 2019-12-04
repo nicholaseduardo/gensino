@@ -18,10 +18,10 @@ import javax.swing.table.DefaultTableCellRenderer;
  * @author nicho
  */
 public abstract class GenCellRenderer extends DefaultTableCellRenderer {
-    
+
     private Color back;
     private Color fore;
-    
+
     protected void setColors(Color fore, Color back) {
         this.back = back;
         this.fore = fore;
@@ -34,11 +34,11 @@ public abstract class GenCellRenderer extends DefaultTableCellRenderer {
     protected Color getFore() {
         return fore;
     }
-    
+
     protected GenJLabel createLabel(String text) {
         return createLabel(text, JLabel.LEFT);
     }
-    
+
     protected GenJLabel createLabel(String text, int position) {
         GenJLabel label = new GenJLabel(text, position);
         label.setForeground(this.fore);
@@ -52,5 +52,9 @@ public abstract class GenCellRenderer extends DefaultTableCellRenderer {
         panel.setBackground(getBack());
         return panel;
     }
-    
+
+    protected void markAsDeleted() {
+        setColors(new Color(0, 0, 0), new Color(150, 150, 150));
+    }
+
 }
