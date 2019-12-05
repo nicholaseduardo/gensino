@@ -11,9 +11,18 @@ public class ReferenciaBibliografica {
     private Integer tipo;
     private UnidadeCurricular unidadeCurricular;
     private Bibliografia bibliografia;
+    private Boolean deleted;
 
     public ReferenciaBibliografica() {
-        
+        deleted = false;
+    }
+    
+    public Boolean isDeleted() {
+        return deleted;
+    }
+    
+    public void delete() {
+        deleted = true;
     }
 
     public Integer getSequencia() {

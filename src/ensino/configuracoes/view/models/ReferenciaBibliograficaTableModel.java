@@ -22,8 +22,19 @@ public class ReferenciaBibliograficaTableModel extends DefaultTableModel {
     
     public ReferenciaBibliograficaTableModel(List<ReferenciaBibliografica> lista) {
         super(lista, new String[] {
-            "Sequencia", "Classificação", "Titulo", "Autor"
+            "Referência bibliográfica"
         });
+    }
+    
+    /**
+     * Remoção lógica
+     * @param row 
+     */
+    @Override
+    public void removeRow(int row) {
+        ReferenciaBibliografica o = (ReferenciaBibliografica) lista.get(row);
+        o.delete();
+        updateRow(row, o);
     }
 
     @Override
