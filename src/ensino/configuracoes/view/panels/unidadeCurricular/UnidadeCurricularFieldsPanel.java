@@ -170,7 +170,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         referenciaTableModel = new ReferenciaBibliograficaTableModel();
         referenciasTable = new JTable(referenciaTableModel);
         JScrollPane listReferenciasScroll = new JScrollPane(referenciasTable);
-        listReferenciasScroll.setPreferredSize(new Dimension(500, 200));
+        listReferenciasScroll.setPreferredSize(new Dimension(600, 300));
         GridLayoutHelper.set(c, 0, 3, 3, 1, GridBagConstraints.CENTER);
         panelReferencias.add(listReferenciasScroll, c);
 
