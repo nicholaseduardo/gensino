@@ -67,8 +67,9 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
                 p.get("ementa")
         );
         o.setCurso((Curso) p.get("curso"));
-        o.setReferenciasBibliograficas(
-                (List<ReferenciaBibliografica>) p.get("referenciasBibliograficas"));
+        ((List<ReferenciaBibliografica>) p.get("referenciasBibliograficas")).forEach((rb) -> {
+            o.addReferenciaBibliografica(rb);
+        });
         o.setPlanosDeEnsino(
                 (List<PlanoDeEnsino>) p.get("planosDeEnsino"));
         return o;
