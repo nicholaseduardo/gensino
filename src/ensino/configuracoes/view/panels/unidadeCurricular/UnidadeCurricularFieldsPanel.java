@@ -19,6 +19,7 @@ import ensino.configuracoes.view.models.CursoComboBoxListModel;
 import ensino.configuracoes.view.models.CursoListModel;
 import ensino.configuracoes.view.models.ReferenciaBibliograficaTableModel;
 import ensino.configuracoes.view.panels.filters.BibliografiaSearch;
+import ensino.configuracoes.view.renderer.ReferenciaBibliograficaCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import java.awt.Dimension;
@@ -37,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 /**
@@ -302,10 +304,13 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         referenciaTableModel = new ReferenciaBibliograficaTableModel(listReferencias);
         referenciasTable.setModel(referenciaTableModel);
         TableColumnModel tcm = referenciasTable.getColumnModel();
-        tcm.getColumn(0).setMaxWidth(50);
-        tcm.getColumn(1).setMaxWidth(100);
-        tcm.getColumn(2).setMinWidth(50);
-        tcm.getColumn(3).setMinWidth(50);
+        TableColumn tcReferencia = tcm.getColumn(0);
+        tcReferencia.setMinWidth(50);
+        tcReferencia.setCellRenderer(new ReferenciaBibliograficaCellRenderer());
+//        tcm.getColumn(0).setMaxWidth(50);
+//        tcm.getColumn(1).setMaxWidth(100);
+//        tcm.getColumn(2).setMinWidth(50);
+//        tcm.getColumn(3).setMinWidth(50);
         referenciasTable.repaint();
     }
 
