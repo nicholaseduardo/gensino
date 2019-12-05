@@ -34,7 +34,7 @@ public class BibliografiaController extends AbstractController<Bibliografia> {
         DaoPattern<Bibliografia> dao = getDao();
         String filter = String.format("%s[contains(@autor, '%s')]",
                 "//Bibliografia/bibliografia", autor);
-        return dao.list(filter);
+        return dao.list(filter, null);
     }
     
     /**
@@ -46,6 +46,6 @@ public class BibliografiaController extends AbstractController<Bibliografia> {
         DaoPattern<Bibliografia> dao = getDao();
         String filter = String.format("%s[contains(@titulo, '%s')]",
                 "//Bibliografia/bibliografia", titulo);
-        return dao.list(filter);
+        return dao.list(filter, null);
     }
 }
