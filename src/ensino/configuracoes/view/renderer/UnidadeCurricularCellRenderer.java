@@ -61,14 +61,16 @@ public class UnidadeCurricularCellRenderer extends GenCellRenderer {
                         und.getnAulasTeoricas(), und.getnAulasPraticas()));
         lblNAulas.resetFontSize(12);
 
-        JPanel panel = new JPanel(new GridLayout(0, 2, 10, 0));
+        JPanel panel = new JPanel(new GridLayout(0, 1, 10, 0));
         panel.add(createLayoutPanel(lblTitle, FlowLayout.LEFT));
-        panel.add(createLayoutPanel(createLabel(" "), FlowLayout.RIGHT));
-        panel.add(createLayoutPanel(lblCurso, FlowLayout.LEFT));
-        panel.add(createLayoutPanel(lblNAulas, FlowLayout.RIGHT));
-        panel.add(createLayoutPanel(lblCampus, FlowLayout.LEFT));
-        panel.add(createLayoutPanel(lblReferencias, FlowLayout.RIGHT));
-        panel.setBackground(getBack());
+        
+        JPanel panelColunas = new JPanel(new GridLayout(0, 2, 10, 0));
+        panelColunas.add(createLayoutPanel(lblCurso, FlowLayout.LEFT));
+        panelColunas.add(createLayoutPanel(lblNAulas, FlowLayout.RIGHT));
+        panelColunas.add(createLayoutPanel(lblCampus, FlowLayout.LEFT));
+        panelColunas.add(createLayoutPanel(lblReferencias, FlowLayout.RIGHT));
+        panelColunas.setBackground(getBack());
+        panel.add(panelColunas);
 
         table.setRowHeight(panel.getPreferredSize().height + 5);
         panel.setOpaque(true);
