@@ -134,7 +134,7 @@ public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibl
      */
     @Override
     public Integer nextVal(Object... p) {
-        String filter = String.format("%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@id",
+        String filter = String.format("%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@sequencia",
                 getObjectExpression(), p[0], p[1], p[2]);
         return super.nextVal(filter);
     }
