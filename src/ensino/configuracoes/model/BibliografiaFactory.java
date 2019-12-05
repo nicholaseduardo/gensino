@@ -43,7 +43,7 @@ public class BibliografiaFactory implements BeanFactory<Bibliografia> {
     @Override
     public Bibliografia getObject(Element e) {
         return getObject(
-                e.getAttribute("id"),
+                new Integer(e.getAttribute("id")),
                 e.getAttribute("titulo"),
                 e.getAttribute("autor"),
                 e.getAttribute("referencia")
