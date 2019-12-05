@@ -98,11 +98,21 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
         o.setPeriodoLetivo((PeriodoLetivo) p.get("periodoLetivo"));
         o.setTurma((Turma) p.get("turma"));
         
-        o.setObjetivos((List<Objetivo>) p.get("objetivos"));
-        o.setDetalhamentos((List<Detalhamento>) p.get("detalhamentos"));
-        o.setPlanosAvaliacoes((List<PlanoAvaliacao>) p.get("planoAvaliacoes"));
-        o.setHorarios((List<HorarioAula>) p.get("horarios"));
-        o.setDiarios((List<Diario>) p.get("diarios"));
+        ((List<Objetivo>) p.get("objetivos")).forEach((obj) -> {
+            o.addObjetivo(obj);
+        });
+        ((List<Detalhamento>) p.get("detalhamentos")).forEach((det) -> {
+            o.addDetalhamento(det);
+        });
+        ((List<PlanoAvaliacao>) p.get("planoAvaliacoes")).forEach((pl) -> {
+            o.addPlanoAvaliacao(pl);
+        });
+        ((List<HorarioAula>) p.get("horarios")).forEach((hor) -> {
+            o.addHorario(hor);
+        });
+        ((List<Diario>) p.get("diarios")).forEach((di) -> {
+            o.addDiario(di);
+        });
         
         return o;
     }
@@ -117,6 +127,7 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
         e.setAttribute("docenteId", o.getDocente().getId().toString());
         Calendario calendario = o.getPeriodoLetivo().getCalendario();
         e.setAttribute("nPeriodoLetivo", o.getPeriodoLetivo().getNumero().toString());
+        e.setAttribute("ano", o.getPeriodoLetivo().getCalendario().getAno().toString());
         e.setAttribute("turmaId", o.getTurma().getId().toString());
         e.setAttribute("cursoId", o.getTurma().getCurso().getId().toString());
         e.setAttribute("unidadeCurricularId", o.getUnidadeCurricular().getId().toString());

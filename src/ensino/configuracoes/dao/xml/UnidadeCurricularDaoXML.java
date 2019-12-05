@@ -76,7 +76,7 @@ public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
                 cursoId = (Integer) ids[1],
                 campusId = (Integer) ids[1];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("/%s[@id=%d and @cursoId=%d and @campusId=%d]",
+        String expression = String.format("%s[@id=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), id, cursoId, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {

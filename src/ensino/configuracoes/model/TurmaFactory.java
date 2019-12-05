@@ -52,7 +52,9 @@ public class TurmaFactory implements BeanFactory<Turma> {
                 (Integer) p.get("ano")
         );
         o.setCurso((Curso) p.get("curso"));
-        o.setEstudantes((List<Estudante>) p.get("estudantes"));
+        ((List<Estudante>) p.get("estudantes")).forEach((estudante) -> {
+            o.addEstudante(estudante);
+        });
         return o;
     }
 

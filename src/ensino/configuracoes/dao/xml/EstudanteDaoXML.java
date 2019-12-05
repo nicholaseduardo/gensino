@@ -127,7 +127,7 @@ public class EstudanteDaoXML extends AbstractDaoXML<Estudante> {
      */
     @Override
     public Integer nextVal(Object... p) {
-        String filter = String.format("%s[@turmaId=%d @cursoId=%d and @campusId=%d]/@id",
+        String filter = String.format("%s[@turmaId=%d and @cursoId=%d and @campusId=%d]/@id",
                 getObjectExpression(), p[0], p[1], p[2]);
         return super.nextVal(filter);
     }

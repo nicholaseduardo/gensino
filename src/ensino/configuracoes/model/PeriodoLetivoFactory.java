@@ -63,7 +63,9 @@ public class PeriodoLetivoFactory implements BeanFactory<PeriodoLetivo> {
                 params.get("descricao"),
                 params.get("periodo"));
         p.setCalendario((Calendario) params.get("calendario"));
-        p.setSemanasLetivas((List<SemanaLetiva>) params.get("semanasLetivas"));
+        ((List<SemanaLetiva>) params.get("semanasLetivas")).forEach((sem) -> {
+            p.addSemanaLetiva(sem);
+        });
         return p;
     }
 

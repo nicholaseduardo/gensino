@@ -76,7 +76,7 @@ public class TurmaDaoXML extends AbstractDaoXML<Turma> {
                 cursoId = (Integer) ids[1],
                 campusId = (Integer) ids[2];
         // Cria mecanismo para buscar o conteudo no xml
-        String filter = String.format("/%s[@id=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@id=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), id, cursoId, campusId);
         Node searched = getDataByExpression(filter);
         if (searched != null) {
