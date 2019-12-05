@@ -39,7 +39,6 @@ public class ReferenciaBibliograficaFactory implements BeanFactory<ReferenciaBib
         ReferenciaBibliografica o = new ReferenciaBibliografica();
         o.setSequencia((Integer) args[i++]);
         o.setTipo((Integer) args[i++]);
-        o.setBibliografia((Bibliografia) args[i++]);
         return o;
     }
 
