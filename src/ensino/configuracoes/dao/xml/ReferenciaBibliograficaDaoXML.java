@@ -49,7 +49,7 @@ public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibl
                 unidadeCurricular = dao.findById(cursoId, campusId);
             }
             unidadeCurricular.addReferenciaBibliografica(o);
-            
+
             return o;
         } catch (Exception ex) {
             Logger.getLogger(ReferenciaBibliograficaDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -76,7 +76,7 @@ public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibl
                 cursoId = (Integer) ids[2],
                 campusId = (Integer) ids[3];
         // Cria mecanismo para buscar o conteudo no xml
-        String filter = String.format("/%s[@sequencia=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@sequencia=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), sequencia, unidadeCurricularId, cursoId, campusId);
         Node searched = getDataByExpression(filter);
         if (searched != null) {
@@ -97,9 +97,13 @@ public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibl
         if (o.getSequencia() == null) {
             o.setSequencia(this.nextVal(undId, cursoId, campusId));
         }
-        String filter = String.format("@sequencia=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
-                o.getSequencia(), undId, cursoId, campusId);
-        super.save(o, filter);
+        if (o.isDeleted()) {
+            this.delete(o);
+        } else {
+            String filter = String.format("@sequencia=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getSequencia(), undId, cursoId, campusId);
+            super.save(o, filter);
+        }
     }
 
     @Override
@@ -110,7 +114,7 @@ public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibl
         Integer campusId = curso.getCampus().getId(),
                 cursoId = curso.getId(),
                 undId = und.getId();
-        
+
         String filter = String.format("@sequencia=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
                 o.getSequencia(), undId, cursoId, campusId);
         super.delete(filter);
@@ -120,7 +124,7 @@ public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibl
      * Próximo valor da sequencia. Busca o próximo valor da sequência do curso
      * de acordo com o ID do campus
      *
-     @param p Os IDS estão divididos em três parâmetros:<br>
+     * @param p Os IDS estão divididos em três parâmetros:<br>
      * <ul>
      * <li>Param[0]: ID da U.C.</li>
      * <li>Param[1]: ID do curso</li>
