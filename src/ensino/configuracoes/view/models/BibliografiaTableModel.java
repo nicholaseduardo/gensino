@@ -16,7 +16,7 @@ import java.util.List;
 public class BibliografiaTableModel extends DefaultTableModel {
      public BibliografiaTableModel(List<?> lista) {
         super(lista, new String[] {
-            "Código", "Título", "Autor"
+            "Bibliografia"
         });
     }
 

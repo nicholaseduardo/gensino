@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ensino.components.GenJTextArea;
+import ensino.configuracoes.view.renderer.BibliografiaCellRenderer;
 import ensino.helpers.GridLayoutHelper;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -30,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -92,10 +94,9 @@ public class BibliografiaPanel extends DefaultFormPanel {
     private void resizeTableColumns() {
         javax.swing.JTable table = getTable();
         javax.swing.table.TableColumnModel tcm = table.getColumnModel();
-
-        tcm.getColumn(0).setMaxWidth(50);
-        tcm.getColumn(1).setMinWidth(50);
-        tcm.getColumn(2).setMinWidth(50);
+        TableColumn tc = tcm.getColumn(0);
+        tc.setMinWidth(50);
+        tc.setCellRenderer(new BibliografiaCellRenderer());
     }
 
     @Override
