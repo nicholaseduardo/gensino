@@ -46,7 +46,7 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
         o.setNAulasTeoricas((Integer) args[i++]);
         o.setConteudo((String) args[i++]);
         o.setObservacao((String) args[i++]);
-        
+
         return o;
     }
 
@@ -59,14 +59,14 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
                     new Integer(e.getAttribute("nAulasTeoricas")),
                     e.getAttribute("conteudo"),
                     e.getAttribute("observacao"));
-            
+
             DaoPattern<SemanaLetiva> dao = new SemanaLetivaDaoXML();
             o.setSemanaLetiva(dao.findById(
                     new Integer(e.getAttribute("semanaLetivaId")),
                     new Integer(e.getAttribute("nPeriodoLetivo")),
                     new Integer(e.getAttribute("ano")),
                     new Integer(e.getAttribute("campusId"))));
-            
+
             return o;
         } catch (Exception ex) {
             Logger.getLogger(DetalhamentoFactory.class.getName()).log(Level.SEVERE, null, ex);
@@ -84,9 +84,16 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
                 p.get("observacao"));
         o.setPlanoDeEnsino((PlanoDeEnsino) p.get("planoDeEnsino"));
         o.setSemanaLetiva((SemanaLetiva) p.get("semanaLetiva"));
-        o.setMetodologias((List<Metodologia>) p.get("metodologias"));
-        o.setObjetivoDetalhes((List<ObjetivoDetalhe>) p.get("objetivoDetalhes"));
-        
+        if (p.get("metodologias") != null) {
+            ((List<Metodologia>) p.get("metodologias")).forEach((metodo) -> {
+                o.addMetodologia(metodo);
+            });
+        }
+        if (p.get("objetivoDetalhes") != null) {
+            ((List<ObjetivoDetalhe>) p.get("objetivoDetalhes")).forEach((obj) -> {
+                o.addObjetivoDetalhe(obj);
+            });
+        }
         return o;
     }
 
@@ -98,15 +105,16 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
         e.setAttribute("nAulasTeoricas", o.getNAulasTeoricas().toString());
         e.setAttribute("conteudo", o.getConteudo());
         e.setAttribute("observacao", o.getObservacao());
-        
+
         e.setAttribute("semanaLetivaId", o.getSemanaLetiva().getId().toString());
         PeriodoLetivo periodoLetivo = o.getSemanaLetiva().getPeriodoLetivo();
         e.setAttribute("nPeriodoLetivo", periodoLetivo.getNumero().toString());
+        e.setAttribute("ano", periodoLetivo.getCalendario().getAno().toString());
         e.setAttribute("planoDeEnsinoId", o.getPlanoDeEnsino().getId().toString());
         e.setAttribute("unidadeCurricularId", o.getPlanoDeEnsino().getUnidadeCurricular().getId().toString());
         e.setAttribute("cursoId", o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId().toString());
         e.setAttribute("campusId", periodoLetivo.getCalendario().getCampus().getId().toString());
-        
+
         return e;
     }
 }

@@ -11,7 +11,6 @@ import ensino.planejamento.dao.ObjetivoDaoXML;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.ObjetivoFactory;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 

@@ -72,7 +72,7 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
         Integer ano = (Integer) ids[2];
         Integer campusId = (Integer) ids[3];
         // Cria mecanismo para buscar o conteudo no xml
-        String filter = String.format("%s[@numero=%d and @pNumero=%d and @ano=@d and @campusId=%d]",
+        String filter = String.format("%s[@numero=%d and @pNumero=%d and @ano=%d and @campusId=%d]",
                 getObjectExpression(), numero, nPeriodoLetivo, ano, campusId);
         Node searched = getDataByExpression(filter);
         if (searched != null) {

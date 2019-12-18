@@ -6,22 +6,18 @@
 package ensino.configuracoes.dao.xml;
 
 import ensino.configuracoes.model.ReferenciaBibliografica;
-import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.ReferenciaBibliograficaFactory;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *

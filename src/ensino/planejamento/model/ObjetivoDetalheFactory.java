@@ -45,7 +45,7 @@ public class ObjetivoDetalheFactory implements BeanFactory<ObjetivoDetalhe> {
             
             DaoPattern<Objetivo> dao = new ObjetivoDaoXML();
             o.setObjetivo(dao.findById(
-                    new Integer(e.getAttribute("detalhamentoSequencia")),
+                    new Integer(e.getAttribute("objetivoSequencia")),
                     new Integer(e.getAttribute("planoDeEnsinoId")),
                     new Integer(e.getAttribute("unidadeCurricularId")),
                     new Integer(e.getAttribute("cursoId")),

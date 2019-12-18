@@ -6,14 +6,19 @@
  */
 package ensino.components.renderer;
 
+import ensino.components.GenJLabel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -25,7 +30,43 @@ import javax.swing.table.TableCellRenderer;
  */
 public class TextAreaCellRenderer extends JTextArea implements TableCellRenderer {
 
-    private final List<List<Integer>> rowAndCellHeights = new ArrayList<>();
+    private final List<List<Integer>> rowAndCellHeights = new ArrayList<>();private Color back;
+    private Color fore;
+
+    protected void setColors(Color fore, Color back) {
+        this.back = back;
+        this.fore = fore;
+    }
+
+    protected Color getBack() {
+        return back;
+    }
+
+    protected Color getFore() {
+        return fore;
+    }
+
+    protected GenJLabel createLabel(String text) {
+        return createLabel(text, JLabel.LEFT);
+    }
+
+    protected GenJLabel createLabel(String text, int position) {
+        GenJLabel label = new GenJLabel(text, position);
+        label.setForeground(this.fore);
+        label.setBackground(this.back);
+        return label;
+    }
+
+    protected JPanel createLayoutPanel(JComponent component, int orientation) {
+        JPanel panel = new JPanel(new FlowLayout(orientation, 10, 0));
+        panel.add(component);
+        panel.setBackground(getBack());
+        return panel;
+    }
+
+    protected void markAsDeleted() {
+        setColors(new Color(0, 0, 0), new Color(150, 150, 150));
+    }
 
     // public static class UIResource extends TextAreaCellRenderer implements UIResource {}
     @Override

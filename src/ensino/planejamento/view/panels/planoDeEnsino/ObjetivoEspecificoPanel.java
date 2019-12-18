@@ -7,12 +7,12 @@ package ensino.planejamento.view.panels.planoDeEnsino;
 
 import ensino.components.GenJButton;
 import ensino.components.GenJTextArea;
-import ensino.components.renderer.TextAreaCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.ObjetivoTableModel;
+import ensino.planejamento.view.renderer.ObjetivoCellRenderer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -28,7 +28,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
@@ -132,7 +131,7 @@ public class ObjetivoEspecificoPanel extends DefaultFieldsPanel {
 
     private void resizeTableColumns() {
         TableColumnModel tcm = objetivoTable.getColumnModel();
-        tcm.getColumn(0).setCellRenderer(new TextAreaCellRenderer());
+        tcm.getColumn(0).setCellRenderer(new ObjetivoCellRenderer());
         objetivoTable.repaint();
     }
 

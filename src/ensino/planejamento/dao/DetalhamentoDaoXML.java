@@ -11,6 +11,7 @@ import ensino.patterns.DaoPattern;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
 import ensino.planejamento.model.Metodologia;
+import ensino.planejamento.model.ObjetivoDetalhe;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
 import java.util.List;
@@ -52,11 +53,17 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
             // load children
             String formatter = "%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
             UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
+            
             // Cria mecanismo para buscar o conteudo no xml
             DaoPattern<Metodologia> dao = new MetodologiaDaoXML();
             String filter = String.format(formatter, "//Metodologia/metodologia", 
                     o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
             o.setMetodologias(dao.list(filter, o));
+            
+            DaoPattern<ObjetivoDetalhe> daoDetalhe = new ObjetivoDetalheDaoXML();
+            filter = String.format(formatter, "//ObjetivoDetalhe/objetivoDetalhe", 
+                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
+            o.setObjetivoDetalhes(daoDetalhe.list(filter, o));
             
             return o;
         } catch (Exception ex) {
@@ -159,7 +166,7 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
      */
     @Override
     public Integer nextVal(Object... p) {
-        String filter = String.format("%s[@planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@sequencia",
                 getObjectExpression(), p[0], p[1], p[2], p[3]);
         return super.nextVal(filter);
     }

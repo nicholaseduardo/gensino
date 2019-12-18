@@ -119,7 +119,7 @@ public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
                 cursoId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
         
-        String filter = String.format("%s[@sequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@sequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), o.getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
         super.delete(filter);
     }
@@ -139,7 +139,7 @@ public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
      */
     @Override
     public Integer nextVal(Object... p) {
-        String filter = String.format("%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@sequencia",
                 getObjectExpression(), p[0], p[1], p[2], p[3], p[4]);
         return super.nextVal(filter);
     }

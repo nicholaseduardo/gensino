@@ -11,7 +11,6 @@ import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.ObjetivoFactory;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,11 +41,11 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
                 DaoPattern<PlanoDeEnsino> dao = new PlanoDeEnsinoDaoXML();
-                planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
+                planoDeEnsino = dao.findById(planoDeEnsinoId, undId,
                         cursoId, campusId);
             }
             planoDeEnsino.addObjetivo(o);
-            
+
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -55,8 +54,7 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
     }
 
     /**
-     * Recupera um objeto de acorco com sua chave
-     * primária
+     * Recupera um objeto de acorco com sua chave primária
      *
      * @param ids Os IDS estão divididos em cinco parâmetros:<br>
      * <ul>
@@ -86,22 +84,7 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
 
         return null;
     }
-    
-    /**
-     * Recupera a lista de objetivos do plano de ensino por unidade curricular
-     * 
-     * @param planoDeEnsino         Identificação do plano de ensino
-     * @return 
-     */
-    public List<Objetivo> list(PlanoDeEnsino planoDeEnsino) {
-        String filter = String.format("%s[@planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), planoDeEnsino.getId(), 
-                planoDeEnsino.getUnidadeCurricular().getId(), 
-                planoDeEnsino.getUnidadeCurricular().getCurso().getId(),
-                planoDeEnsino.getUnidadeCurricular().getCurso().getCampus().getId());
-        return this.list(filter, planoDeEnsino);
-    }
-    
+
     @Override
     public void save(Objetivo o) {
         // cria a expressão de acordo com o código do campus
@@ -111,14 +94,19 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
         if (o.getSequencia() == null) {
-            o.setSequencia(this.nextVal(sequencia, planoId, undId, cursoId, campusId));
+            o.setSequencia(this.nextVal(planoId, undId, cursoId, campusId));
         }
-        
-        String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
-        super.save(o, filter);
+
+        if (o.isDeleted()) {
+            this.delete(o);
+        } else {
+
+            String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getSequencia(), planoId, undId, cursoId, campusId);
+            super.save(o, filter);
+        }
     }
-    
+
     @Override
     public void delete(Objetivo o) {
         // cria a expressão de acordo com o código do campus
@@ -127,7 +115,7 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
                 undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-        
+
         String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
         super.delete(filter);
@@ -147,7 +135,7 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
      */
     @Override
     public Integer nextVal(Object... p) {
-        String filter = String.format("%s[@planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@sequencia",
                 getObjectExpression(), p[0], p[1], p[2], p[3]);
         return super.nextVal(filter);
     }

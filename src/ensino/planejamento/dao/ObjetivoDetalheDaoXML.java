@@ -114,7 +114,7 @@ public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
                 cursoId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
         
-        String filter = String.format("%s[@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), o.getObjetivo().getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
         super.delete(filter);
     }
@@ -134,7 +134,7 @@ public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
      */
     @Override
     public Integer nextVal(Object... p) {
-        String filter = String.format("%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), p[0], p[1], p[2], p[3], p[4]);
         return super.nextVal(filter);
     }

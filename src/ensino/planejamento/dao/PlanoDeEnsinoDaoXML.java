@@ -10,9 +10,15 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
 import ensino.planejamento.model.Detalhamento;
+import ensino.planejamento.model.Diario;
+import ensino.planejamento.model.HorarioAula;
+import ensino.planejamento.model.Objetivo;
+import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.model.PlanoDeEnsinoFactory;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,17 +47,41 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
                     campusId = o.getUnidadeCurricular().getCurso().getCampus().getId();
             
             // load children
-            String formatter = "%s[@planoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
+            String formatter = "%s[@planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
 
             // Cria mecanismo para buscar o conteudo no xml
             DaoPattern<Detalhamento> detalhamentoDao = new DetalhamentoDaoXML();
             String filter = String.format(formatter, "//Detalhamento/detalhamento", 
                     id, undId, cursoId, campusId);
-            o.setDetalhamentos(detalhamentoDao.list(filter, o));
+            List<Detalhamento> l = detalhamentoDao.list(filter, o);
+            Collections.sort(l, new Comparator<Detalhamento>() {
+                @Override
+                public int compare(Detalhamento o1, Detalhamento o2) {
+                    return o1.getSequencia().compareTo(o2.getSequencia());
+                }
+                
+            });
+            o.setDetalhamentos(l);
             
-//            DaoPattern<Curso> cursoDao = new CursoDaoXML();
-//            filter = String.format(formatter, "//Curso/curso", id);
-//            o.setCursos(cursoDao.list(filter, o));
+            DaoPattern<Objetivo> objetivoDao = new ObjetivoDaoXML();
+            filter = String.format(formatter, "//Objetivo/objetivo", 
+                    id, undId, cursoId, campusId);
+            o.setObjetivos(objetivoDao.list(filter, o));
+            
+            DaoPattern<HorarioAula> horarioAulaDao = new HorarioAulaDaoXML();
+            filter = String.format(formatter, "//HorarioAula/horarioAula", 
+                    id, undId, cursoId, campusId);
+            o.setHorarios(horarioAulaDao.list(filter, o));
+            
+            DaoPattern<Diario> diarioDao = new DiarioDaoXML();
+            filter = String.format(formatter, "//Diario/diario", 
+                    id, undId, cursoId, campusId);
+            o.setDiarios(diarioDao.list(filter, o));
+            
+            DaoPattern<PlanoAvaliacao> planoAvaliacaoDao = new PlanoAvaliacaoDaoXML();
+            filter = String.format(formatter, "//PlanoAvaliacao/planoAvaliacao", 
+                    id, undId, cursoId, campusId);
+            o.setPlanosAvaliacoes(planoAvaliacaoDao.list(filter, o));
             
             return o;
         } catch (Exception ex) {
@@ -89,19 +119,6 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
         }
 
         return null;
-    }
-
-    /**
-     * Recupera a lista de planos de ensino por unidade curricular
-     *
-     * @param und Identificacao da unidade curricular
-     * @return
-     */
-    public List<PlanoDeEnsino> list(UnidadeCurricular und) {
-        String filter = String.format("%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), und.getId(), und.getCurso().getId(),
-                und.getCurso().getCampus().getId());
-        return this.list(filter, und);
     }
 
     @Override
@@ -146,7 +163,7 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
      */
     @Override
     public Integer nextVal(Object... p) {
-        String filter = String.format("%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@id",
                 getObjectExpression(), p[0], p[1], p[2]);
         return super.nextVal(filter);
     }

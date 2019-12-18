@@ -98,6 +98,7 @@ public class Detalhamento {
     }
     
     public void addObjetivoDetalhe(ObjetivoDetalhe objetivoDetalhe) {
+        objetivoDetalhe.setDetalhamento(this);
         this.objetivoDetalhes.add(objetivoDetalhe);
     }
     

@@ -5,8 +5,6 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.dao.xml.ConfiguracaoDaoXML;
-import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
@@ -17,8 +15,6 @@ import ensino.planejamento.model.DiarioFactory;
 import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,7 +23,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -157,7 +152,7 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
         }
 
         String filter = String.format("%s[@id=%d and and @planoDeEnsinoId=%d and"
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@id",
                 getObjectExpression(), o.getId(), planoId,
                 unidadeId, cursoId, campusId);
         super.save(o, filter);

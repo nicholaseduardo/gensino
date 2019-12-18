@@ -12,7 +12,6 @@ import ensino.components.GenJList;
 import ensino.components.GenJRadioButton;
 import ensino.components.GenJSpinner;
 import ensino.components.GenJTextArea;
-import ensino.components.renderer.TextAreaCellRenderer;
 import ensino.configuracoes.controller.InstrumentoAvaliacaoController;
 import ensino.configuracoes.controller.RecursoController;
 import ensino.configuracoes.controller.TecnicaController;
@@ -24,11 +23,13 @@ import ensino.patterns.BaseObject;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
+import ensino.planejamento.model.ObjetivoDetalhe;
+import ensino.planejamento.model.ObjetivoDetalheFactory;
 import ensino.planejamento.view.models.MetodologiaTableModel;
 import ensino.planejamento.view.models.ObjetivoComboBoxModel;
 import ensino.planejamento.view.models.ObjetivoDetalheTableModel;
-import ensino.planejamento.view.models.ObjetivoTableModel;
 import ensino.planejamento.view.renderer.MetodologiaCellRenderer;
+import ensino.planejamento.view.renderer.ObjetivoDetalheCellRenderer;
 import ensino.util.types.TipoMetodo;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -82,7 +83,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
     private JTable metodologiaTable;
     private MetodologiaTableModel metodologiaTableModel;
-    private JTable objetivosTable;
+    private JTable objetivosDetalheTable;
     private ObjetivoDetalheTableModel objetivoDetalheTableModel;
 
     private GenJButton btAddMetodo;
@@ -220,12 +221,12 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
 //        JPanel panelComboAddMetodo = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         JPanel panelComboAddMetodo = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        
+
         panelMetodologia.add(panelComboAddMetodo);
         comboMetodo = new GenJComboBox();
         btAddMetodo = new GenJButton("Adicionar", new ImageIcon(getClass().getResource(getImageSourceAdd())));
         btDelMetodo = new GenJButton("Remover", new ImageIcon(getClass().getResource(getImageSourceDel())));
-        
+
         GridLayoutHelper.set(c, 0, 0);
         c.fill = GridBagConstraints.VERTICAL;
         panelComboAddMetodo.add(comboMetodo, c);
@@ -248,30 +249,30 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
     private JPanel createPanelObjetivos() {
         objetivoComboModel = new ObjetivoComboBoxModel();
         comboObjetivo = new GenJComboBox(objetivoComboModel);
-        
+
         btAddObjetivo = new GenJButton("Adicionar", new ImageIcon(getClass().getResource(getImageSourceAdd())));
         btDelObjetivo = new GenJButton("Remover", new ImageIcon(getClass().getResource(getImageSourceDel())));
         JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panelButtons.add(btAddObjetivo);
         panelButtons.add(btDelObjetivo);
-        
+
         JPanel panelCombo = new JPanel(new BorderLayout(5, 5));
         panelCombo.add(comboObjetivo, BorderLayout.PAGE_START);
         panelCombo.add(panelButtons, BorderLayout.CENTER);
 
         objetivoDetalheTableModel = new ObjetivoDetalheTableModel();
-        objetivosTable = new JTable(objetivoDetalheTableModel);
-        JScrollPane objetivosScroll = new JScrollPane();
-        objetivosScroll.setViewportView(objetivosTable);
-        objetivosScroll.setPreferredSize(new Dimension(450, 120));
-        
+        objetivosDetalheTable = new JTable(objetivoDetalheTableModel);
+        JScrollPane objetivoDetalhesScroll = new JScrollPane();
+        objetivoDetalhesScroll.setViewportView(objetivosDetalheTable);
+        objetivoDetalhesScroll.setPreferredSize(new Dimension(450, 120));
+
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK), "Objetivos específicos",
                 TitledBorder.LEFT, TitledBorder.TOP));
 
         panel.add(panelCombo, BorderLayout.PAGE_START);
-        panel.add(objetivosScroll, BorderLayout.CENTER);
+        panel.add(objetivoDetalhesScroll, BorderLayout.CENTER);
 
         return panel;
     }
@@ -283,9 +284,9 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
     }
 
     private void reloadObjetivoTable() {
-        objetivosTable.setModel(objetivoDetalheTableModel);
-        objetivosTable.repaint();
-        objetivosTable.getColumnModel().getColumn(0).setCellRenderer(new TextAreaCellRenderer());
+        objetivosDetalheTable.setModel(objetivoDetalheTableModel);
+        objetivosDetalheTable.repaint();
+        objetivosDetalheTable.getColumnModel().getColumn(0).setCellRenderer(new ObjetivoDetalheCellRenderer());
     }
 
     @Override
@@ -302,7 +303,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
         map.put("nAulasTeoricas", txtNAulasT.getValue());
 
         map.put("metodologias", metodologiaTableModel.getData());
-        map.put("objetivos", objetivoDetalheTableModel.getData());
+        map.put("objetivoDetalhes", objetivoDetalheTableModel.getData());
         return map;
     }
 
@@ -422,15 +423,8 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
     private class ButtonAction implements ActionListener {
 
-        private int metodologiaSequencia;
-
         public ButtonAction() {
-            if (metodologiaTableModel.getRowCount() > 0) {
-                Metodologia m = (Metodologia) metodologiaTableModel.getRow(metodologiaTableModel.getRowCount() - 1);
-                metodologiaSequencia = m.getSequencia() + 1;
-            } else {
-                metodologiaSequencia = 1;
-            }
+
         }
 
         @Override
@@ -448,11 +442,10 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
                 BaseObject selected = (BaseObject) comboMetodo.getSelectedItem();
                 if (selected != null && tipoMetodo != null) {
                     Metodologia metodologia = new Metodologia();
-                    metodologia.setSequencia(metodologiaSequencia++);
                     metodologia.setTipo(tipoMetodo);
                     metodologia.setMetodo(selected);
 
-                    if (metodologiaTableModel.exists(metodologia) == 0) {
+                    if (metodologiaTableModel.exists(metodologia) < 0) {
                         metodologiaTableModel.addRow(metodologia);
                         reloadMetodologiaTable();
                     } else {
@@ -474,8 +467,10 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
             } else if (e.getSource() == btAddObjetivo) {
                 Objetivo obj = (Objetivo) comboObjetivo.getSelectedItem();
                 if (obj != null) {
-                    if (objetivoDetalheTableModel.exists(obj) == 0) {
-                        objetivoDetalheTableModel.addRow(obj);
+                    ObjetivoDetalhe odetalhe = ObjetivoDetalheFactory.getInstance().getObject();
+                    odetalhe.setObjetivo(obj);
+                    if (objetivoDetalheTableModel.exists(odetalhe) < 0) {
+                        objetivoDetalheTableModel.addRow(odetalhe);
                         reloadObjetivoTable();
                     } else {
                         JOptionPane.showMessageDialog(tabbedDetalhamento,
@@ -484,7 +479,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
                     }
                 }
             } else if (e.getSource() == btDelObjetivo) {
-                int selectedRow = objetivosTable.getSelectedRow();
+                int selectedRow = objetivosDetalheTable.getSelectedRow();
                 if (selectedRow == -1) {
                     JOptionPane.showMessageDialog(getParent(),
                             "Você não selecionou o Objetivo que será removido.\nFavor, clique sobre um Objetivo!",

@@ -36,17 +36,17 @@ public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
     public PlanoDeEnsino salvar(PlanoDeEnsino o) throws Exception {
         o = super.salvar(o);
         // Salvar cascade
+        AbstractController<Objetivo> colObjetivo = new ObjetivoController();
+        colObjetivo.salvarEmCascata(o.getObjetivos());
+        
         AbstractController<Detalhamento> colDetalhamento = new DetalhamentoController();
         colDetalhamento.salvarEmCascata(o.getDetalhamentos());
         
-        AbstractController<HorarioAula> colCurso = new HorarioAulaController();
-        colCurso.salvarEmCascata(o.getHorarios());
+        AbstractController<HorarioAula> colHorarioAula = new HorarioAulaController();
+        colHorarioAula.salvarEmCascata(o.getHorarios());
         
         AbstractController<Diario> colDiario = new DiarioController();
         colDiario.salvarEmCascata(o.getDiarios());
-        
-        AbstractController<Objetivo> colObjetivo = new ObjetivoController();
-        colObjetivo.salvarEmCascata(o.getObjetivos());
         
         AbstractController<PlanoAvaliacao> colPlanoAvaliacao = new PlanoAvaliacaoController();
         colPlanoAvaliacao.salvarEmCascata(o.getPlanosAvaliacoes());

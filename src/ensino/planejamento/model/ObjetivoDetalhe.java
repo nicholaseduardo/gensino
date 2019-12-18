@@ -14,6 +14,19 @@ import java.util.Objects;
 public class ObjetivoDetalhe {
     private Objetivo objetivo;
     private Detalhamento detalhamento;
+    private Boolean deleted;
+    
+    public ObjetivoDetalhe() {
+        deleted = false;
+    }
+    
+    public Boolean isDeleted() {
+        return deleted;
+    }
+    
+    public void delete() {
+        deleted = true;
+    }
 
     public Objetivo getObjetivo() {
         return objetivo;

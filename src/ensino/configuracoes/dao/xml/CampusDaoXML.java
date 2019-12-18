@@ -25,8 +25,17 @@ import org.w3c.dom.Element;
  */
 public class CampusDaoXML extends AbstractDaoXML<Campus> {
 
-    public CampusDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static CampusDaoXML instance = null;
+    
+    private CampusDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("campus", "Campus", "campus", CampusFactory.getInstance());
+    }
+    
+    public static CampusDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) {
+            instance = new CampusDaoXML();
+        }
+        return instance;
     }
 
     @Override

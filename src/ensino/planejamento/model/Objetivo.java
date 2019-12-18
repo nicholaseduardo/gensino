@@ -8,9 +8,18 @@ public class Objetivo {
     private String descricao;
     // parent
     private PlanoDeEnsino planoDeEnsino;
+    private Boolean deleted;
     
     public Objetivo() {
-        
+        deleted = false;
+    }
+    
+    public Boolean isDeleted() {
+        return deleted;
+    }
+    
+    public void delete() {
+        deleted = true;
     }
 
     public Integer getSequencia() {
@@ -39,7 +48,10 @@ public class Objetivo {
     
     @Override
     public String toString() {
-        return String.format("[%d] %s", this.sequencia, this.descricao.substring(0, 50));
+        int length = this.descricao.length();
+        if (length > 50)
+            length = 50;
+        return String.format("[%d] %s", this.sequencia, this.descricao.substring(0, length));
     }
 
     @Override

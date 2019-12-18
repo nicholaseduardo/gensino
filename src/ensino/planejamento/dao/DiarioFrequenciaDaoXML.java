@@ -173,7 +173,7 @@ public class DiarioFrequenciaDaoXML extends AbstractDaoXML<DiarioFrequencia> {
     @Override
     public Integer nextVal(Object... p) {
         String filter = String.format("%s[@diarioId=%d and @planoDeEnsinoId=%d and "
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@id",
                 getObjectExpression(), p[0], p[1], p[2], p[3], p[4]);
         return super.nextVal(filter);
     }

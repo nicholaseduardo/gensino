@@ -79,7 +79,7 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
         Integer ano = (Integer) ids[1];
         Integer campusId = (Integer) ids[2];
         // Cria mecanismo para buscar o conteudo no xml
-        String expression = String.format("%s[@numero=%d and @ano=@d and @campusId=%d]",
+        String expression = String.format("%s[@numero=%d and @ano=%d and @campusId=%d]",
                 getObjectExpression(), numero, ano, campusId);
         Node searched = getDataByExpression(expression);
         if (searched != null) {

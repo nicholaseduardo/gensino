@@ -5,8 +5,6 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.Campus;
-import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
@@ -15,8 +13,6 @@ import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoAvaliacaoFactory;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,7 +20,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -165,7 +160,7 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
      */
     @Override
     public Integer nextVal(Object... p) {
-        String filter = String.format("%s[@planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+        String filter = String.format("%s[@planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@sequencia",
                 getObjectExpression(), p[0], p[1], p[2], p[3]);
         return super.nextVal(filter);
     }
