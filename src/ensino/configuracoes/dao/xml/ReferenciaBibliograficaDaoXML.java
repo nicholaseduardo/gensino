@@ -25,9 +25,17 @@ import org.w3c.dom.Node;
  */
 public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibliografica> {
 
-    public ReferenciaBibliograficaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static ReferenciaBibliograficaDaoXML instance = null;
+    
+    private ReferenciaBibliograficaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("referenciaBibliografica", "ReferenciaBibliografica", "referenciaBibliografica",
                 ReferenciaBibliograficaFactory.getInstance());
+    }
+    
+    public static ReferenciaBibliograficaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new ReferenciaBibliograficaDaoXML();
+        return instance;
     }
 
     @Override
@@ -41,7 +49,7 @@ public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibl
             if (ref != null && ref instanceof UnidadeCurricular) {
                 unidadeCurricular = (UnidadeCurricular) ref;
             } else {
-                DaoPattern<UnidadeCurricular> dao = new UnidadeCurricularDaoXML();
+                DaoPattern<UnidadeCurricular> dao = UnidadeCurricularDaoXML.getInstance();
                 unidadeCurricular = dao.findById(cursoId, campusId);
             }
             unidadeCurricular.addReferenciaBibliografica(o);

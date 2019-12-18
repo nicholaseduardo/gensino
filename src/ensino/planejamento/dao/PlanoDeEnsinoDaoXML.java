@@ -5,6 +5,7 @@
  */
 package ensino.planejamento.dao;
 
+import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
@@ -33,8 +34,16 @@ import org.w3c.dom.Node;
  */
 public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
 
-    public PlanoDeEnsinoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static PlanoDeEnsinoDaoXML instance;
+    
+    private PlanoDeEnsinoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("planoDeEnsino", "PlanoDeEnsino", "planoDeEnsino", PlanoDeEnsinoFactory.getInstance());
+    }
+    
+    public static PlanoDeEnsinoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) 
+            instance = new PlanoDeEnsinoDaoXML();
+        return instance;
     }
 
     @Override
@@ -46,11 +55,20 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
                     cursoId = o.getUnidadeCurricular().getCurso().getId(),
                     campusId = o.getUnidadeCurricular().getCurso().getCampus().getId();
             
+            UnidadeCurricular und;
+            if (ref != null && ref instanceof UnidadeCurricular) {
+                und = (UnidadeCurricular) ref;
+            } else {
+                DaoPattern<UnidadeCurricular> dao = UnidadeCurricularDaoXML.getInstance();
+                und = dao.findById(undId, cursoId, campusId);
+            }
+            und.addPlanoDeEnsino(o);
+            
             // load children
             String formatter = "%s[@planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
 
             // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<Detalhamento> detalhamentoDao = new DetalhamentoDaoXML();
+            DaoPattern<Detalhamento> detalhamentoDao = DetalhamentoDaoXML.getInstance();
             String filter = String.format(formatter, "//Detalhamento/detalhamento", 
                     id, undId, cursoId, campusId);
             List<Detalhamento> l = detalhamentoDao.list(filter, o);
@@ -63,22 +81,22 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
             });
             o.setDetalhamentos(l);
             
-            DaoPattern<Objetivo> objetivoDao = new ObjetivoDaoXML();
+            DaoPattern<Objetivo> objetivoDao = ObjetivoDaoXML.getInstance();
             filter = String.format(formatter, "//Objetivo/objetivo", 
                     id, undId, cursoId, campusId);
             o.setObjetivos(objetivoDao.list(filter, o));
             
-            DaoPattern<HorarioAula> horarioAulaDao = new HorarioAulaDaoXML();
+            DaoPattern<HorarioAula> horarioAulaDao = HorarioAulaDaoXML.getInstance();
             filter = String.format(formatter, "//HorarioAula/horarioAula", 
                     id, undId, cursoId, campusId);
             o.setHorarios(horarioAulaDao.list(filter, o));
             
-            DaoPattern<Diario> diarioDao = new DiarioDaoXML();
+            DaoPattern<Diario> diarioDao = DiarioDaoXML.getInstance();
             filter = String.format(formatter, "//Diario/diario", 
                     id, undId, cursoId, campusId);
             o.setDiarios(diarioDao.list(filter, o));
             
-            DaoPattern<PlanoAvaliacao> planoAvaliacaoDao = new PlanoAvaliacaoDaoXML();
+            DaoPattern<PlanoAvaliacao> planoAvaliacaoDao = PlanoAvaliacaoDaoXML.getInstance();
             filter = String.format(formatter, "//PlanoAvaliacao/planoAvaliacao", 
                     id, undId, cursoId, campusId);
             o.setPlanosAvaliacoes(planoAvaliacaoDao.list(filter, o));

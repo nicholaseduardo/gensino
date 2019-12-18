@@ -11,7 +11,6 @@ import ensino.configuracoes.model.AtividadeFactory;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -23,7 +22,7 @@ import javax.xml.transform.TransformerException;
 public class AtividadeController extends AbstractController<Atividade> {
     
     public AtividadeController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new AtividadeDaoXML(), AtividadeFactory.getInstance());
+        super(AtividadeDaoXML.getInstance(), AtividadeFactory.getInstance());
     }
     
     /**

@@ -12,7 +12,6 @@ import ensino.configuracoes.model.Turma;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -24,7 +23,7 @@ import javax.xml.transform.TransformerException;
 public class EstudanteController extends AbstractController<Estudante> {
     
     public EstudanteController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new EstudanteDaoXML(), EstudanteFactory.getInstance());
+        super(EstudanteDaoXML.getInstance(), EstudanteFactory.getInstance());
     }
     
     /**

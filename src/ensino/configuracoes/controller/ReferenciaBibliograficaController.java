@@ -20,8 +20,17 @@ import javax.xml.transform.TransformerException;
  */
 public class ReferenciaBibliograficaController extends AbstractController<ReferenciaBibliografica> {
     
-    public ReferenciaBibliograficaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new ReferenciaBibliograficaDaoXML(), ReferenciaBibliograficaFactory.getInstance());
+    private static ReferenciaBibliograficaController instance = null;
+    
+    private ReferenciaBibliograficaController() throws IOException, ParserConfigurationException, TransformerException {
+        super(ReferenciaBibliograficaDaoXML.getInstance(), ReferenciaBibliograficaFactory.getInstance());
+    }
+    
+    public static ReferenciaBibliograficaController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) {
+            instance = new ReferenciaBibliograficaController();
+        }
+        return instance;
     }
     
     /**

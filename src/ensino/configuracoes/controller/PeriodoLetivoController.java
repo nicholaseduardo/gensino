@@ -23,7 +23,7 @@ import javax.xml.transform.TransformerException;
 public class PeriodoLetivoController extends AbstractController<PeriodoLetivo> {
     
     public PeriodoLetivoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new PeriodoLetivoDaoXML(), PeriodoLetivoFactory.getInstance());
+        super(PeriodoLetivoDaoXML.getInstance(), PeriodoLetivoFactory.getInstance());
     }
     
     /**

@@ -27,8 +27,17 @@ import org.w3c.dom.Node;
  */
 public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
 
-    public CalendarioDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static CalendarioDaoXML instance = null;
+    
+    private CalendarioDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("calendario", "Calendario", "calendario", CalendarioFactory.getInstance());
+    }
+    
+    public static CalendarioDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) {
+            instance = new CalendarioDaoXML();
+        }
+        return instance;
     }
 
     @Override
@@ -44,7 +53,7 @@ public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
                 campus = (Campus) ref;
             } else {
                 // se o campus não existe, ele deve ser recuperado
-                DaoPattern<Campus> dao = new CampusDaoXML();
+                DaoPattern<Campus> dao = CampusDaoXML.getInstance();
                 campus = dao.findById(campusId);
             }
             campus.addCalendario(o);
@@ -53,10 +62,10 @@ public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
             String formatter = "%s[@ano=%d and @campusId=%d]";
             String filter = String.format(formatter,
                     "//Atividade/atividade", ano, campusId);
-            DaoPattern<Atividade> atividadeDao = new AtividadeDaoXML();
+            DaoPattern<Atividade> atividadeDao = AtividadeDaoXML.getInstance();
             o.setAtividade(atividadeDao.list(filter, o));
 
-            DaoPattern<PeriodoLetivo> periodoLetivoDao = new PeriodoLetivoDaoXML();
+            DaoPattern<PeriodoLetivo> periodoLetivoDao = PeriodoLetivoDaoXML.getInstance();
             filter = String.format(formatter,
                     "//PeriodoLetivo/periodoLetivo", ano, campusId);
             o.setPeriodosLetivos(periodoLetivoDao.list(filter, o));

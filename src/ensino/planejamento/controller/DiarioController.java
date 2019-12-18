@@ -26,7 +26,7 @@ import javax.xml.transform.TransformerException;
 public class DiarioController extends AbstractController<Diario> {
     
     public DiarioController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new DiarioDaoXML(), DiarioFactory.getInstance());
+        super(DiarioDaoXML.getInstance(), DiarioFactory.getInstance());
     }
     
     @Override

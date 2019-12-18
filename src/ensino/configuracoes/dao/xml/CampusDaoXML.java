@@ -47,11 +47,11 @@ public class CampusDaoXML extends AbstractDaoXML<Campus> {
             String formatter = "%s[@campusId=%d]";
 
             // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<Calendario> calendarioDao = new CalendarioDaoXML();
+            DaoPattern<Calendario> calendarioDao = CalendarioDaoXML.getInstance();
             String filter = String.format(formatter, "//Calendario/calendario", id);
             o.setCalendarios(calendarioDao.list(filter, o));
             
-            DaoPattern<Curso> cursoDao = new CursoDaoXML();
+            DaoPattern<Curso> cursoDao = CursoDaoXML.getInstance();
             filter = String.format(formatter, "//Curso/curso", id);
             o.setCursos(cursoDao.list(filter, o));
             

@@ -22,7 +22,7 @@ import javax.xml.transform.TransformerException;
 public class BibliografiaController extends AbstractController<Bibliografia> {
     
     public BibliografiaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new BibliografiaDaoXML(), BibliografiaFactory.getInstance());
+        super(BibliografiaDaoXML.getInstance(), BibliografiaFactory.getInstance());
     }
     
     /**

@@ -228,7 +228,7 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
      */
     @Override
     public void startTransaction() {
-        loadXmlFile();
+//        loadXmlFile();
     }
 
     /**
@@ -320,7 +320,7 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
 
     @Override
     public List<T> list() {
-        return list("");
+        return list(null);
     }
 
     @Override

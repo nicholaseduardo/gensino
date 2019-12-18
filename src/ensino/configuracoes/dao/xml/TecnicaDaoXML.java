@@ -19,8 +19,16 @@ import org.w3c.dom.Element;
  */
 public class TecnicaDaoXML extends AbstractDaoXML<Tecnica> {
 
-    public TecnicaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static TecnicaDaoXML instance = null;
+    
+    private TecnicaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("tecnica", "Tecnica", "tecnica", TecnicaFactory.getInstance());
+    }
+    
+    public static TecnicaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new TecnicaDaoXML();
+        return instance;
     }
 
     @Override

@@ -26,8 +26,17 @@ import org.w3c.dom.Node;
  */
 public class CursoDaoXML extends AbstractDaoXML<Curso> {
 
-    public CursoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static CursoDaoXML instance;
+    
+    private CursoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("curso", "Curso", "curso", CursoFactory.getInstance());
+    }
+    
+    public static CursoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) {
+            instance = new CursoDaoXML();
+        }
+        return instance;
     }
 
     @Override
@@ -40,7 +49,7 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
             if (ref != null && ref instanceof Campus) {
                 campus = (Campus) ref;
             } else {
-                DaoPattern<Campus> dao = new CampusDaoXML();
+                DaoPattern<Campus> dao = CampusDaoXML.getInstance();
                 campus = dao.findById(campusId);
             }
             campus.addCurso(o);
@@ -49,12 +58,12 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
             String formatter = "%s[@cursoId=%d and @campusId=%d]";
             String filter = String.format(formatter,
                     "//Turma/turma", o.getId(), campusId);
-            DaoPattern<Turma> turmaDao = new TurmaDaoXML();
+            DaoPattern<Turma> turmaDao = TurmaDaoXML.getInstance();
             o.setTurmas(turmaDao.list(filter, o));
             
             filter = String.format(formatter,
                     "//UnidadeCurricular/unidadeCurricular", o.getId(), campusId);
-            DaoPattern<UnidadeCurricular> unidadeCurricularDao = new UnidadeCurricularDaoXML();
+            DaoPattern<UnidadeCurricular> unidadeCurricularDao = UnidadeCurricularDaoXML.getInstance();
             o.setUnidadesCurriculares(unidadeCurricularDao.list(filter, o));
             
             return o;

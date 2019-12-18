@@ -11,6 +11,8 @@ import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricularFactory;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
+import ensino.planejamento.dao.PlanoDeEnsinoDaoXML;
+import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,8 +27,16 @@ import org.w3c.dom.Node;
  */
 public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
 
-    public UnidadeCurricularDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static UnidadeCurricularDaoXML instance = null;
+    
+    private UnidadeCurricularDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("unidadeCurricular", "UnidadeCurricular", "unidadeCurricular", UnidadeCurricularFactory.getInstance());
+    }
+    
+    public static UnidadeCurricularDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new UnidadeCurricularDaoXML();
+        return instance;
     }
 
     @Override
@@ -40,7 +50,7 @@ public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
             if (ref != null && ref instanceof Curso) {
                 curso = (Curso) ref;
             } else {
-                DaoPattern<Curso> dao = new CursoDaoXML();
+                DaoPattern<Curso> dao = CursoDaoXML.getInstance();
                 curso = dao.findById(cursoId, campusId);
             }
             curso.addUnidadeCurricular(o);
@@ -49,8 +59,13 @@ public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
             String formatter = "%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
             String filter = String.format(formatter,
                     "//ReferenciaBibliografica/referenciaBibliografica", o.getId(), cursoId, campusId);
-            DaoPattern<ReferenciaBibliografica> dao = new ReferenciaBibliograficaDaoXML();
+            DaoPattern<ReferenciaBibliografica> dao = ReferenciaBibliograficaDaoXML.getInstance();
             o.setReferenciasBibliograficas(dao.list(filter, o));
+            
+            filter = "" + String.format(formatter,
+                    "//PlanoDeEnsino/planoDeEnsino", o.getId(), cursoId, campusId);
+            DaoPattern<PlanoDeEnsino> daoPlano = PlanoDeEnsinoDaoXML.getInstance();
+            o.setPlanosDeEnsino(daoPlano.list(filter, o));
             
             return o;
         } catch (Exception ex) {

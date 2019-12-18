@@ -9,16 +9,12 @@ import ensino.configuracoes.dao.xml.EstudanteDaoXML;
 import ensino.configuracoes.model.Estudante;
 import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.BeanFactory;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -53,7 +49,7 @@ public class AvaliacaoFactory implements BeanFactory<Avaliacao> {
         try {
             Avaliacao o = getObject(new Double(e.getAttribute("nota")));
             
-            DaoPattern<Estudante> dao = new EstudanteDaoXML();
+            DaoPattern<Estudante> dao = EstudanteDaoXML.getInstance();
             o.setEstudante(dao.findById(
                     new Integer(e.getAttribute("estudanteId")),
                     new Integer(e.getAttribute("turmaId")),

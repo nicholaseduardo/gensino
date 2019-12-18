@@ -28,8 +28,16 @@ import org.w3c.dom.Node;
  */
 public class DiarioFrequenciaDaoXML extends AbstractDaoXML<DiarioFrequencia> {
 
-    public DiarioFrequenciaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static DiarioFrequenciaDaoXML instance = null;
+    
+    private DiarioFrequenciaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("diarioFrequencia", "DiarioFrequencia", "diarioFrequencia", DiarioFrequenciaFactory.getInstance());
+    }
+    
+    public static DiarioFrequenciaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new DiarioFrequenciaDaoXML();
+        return instance;
     }
 
     @Override
@@ -45,7 +53,7 @@ public class DiarioFrequenciaDaoXML extends AbstractDaoXML<DiarioFrequencia> {
             if (ref != null && ref instanceof Diario) {
                 diario = (Diario) ref;
             } else {
-                DaoPattern<Diario> dao = new DiarioDaoXML();
+                DaoPattern<Diario> dao = DiarioDaoXML.getInstance();
                 diario = dao.findById(diarioId, planoDeEnsinoId, undId, 
                         cursoId, campusId);
             }

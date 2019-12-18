@@ -24,7 +24,7 @@ import javax.xml.transform.TransformerException;
  */
 public class CalendarioController extends AbstractController<Calendario> {
     public CalendarioController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new CalendarioDaoXML(), CalendarioFactory.getInstance());
+        super(CalendarioDaoXML.getInstance(), CalendarioFactory.getInstance());
     }
     
     /**

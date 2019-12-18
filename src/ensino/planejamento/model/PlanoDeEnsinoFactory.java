@@ -69,16 +69,13 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
                     e.getAttribute("objetivoGeral"),
                     e.getAttribute("recuperacao"));
             // recupera as associações
-            DaoPattern<Docente> docenteDao = new DocenteDaoXML();
+            DaoPattern<Docente> docenteDao = DocenteDaoXML.getInstance();
             o.setDocente(docenteDao.findById(new Integer(e.getAttribute("docenteId"))));
             
-            DaoPattern<UnidadeCurricular> undDao = new UnidadeCurricularDaoXML();
-            o.setUnidadeCurricular(undDao.findById(undId, cursoId, campusId));
-            
-            DaoPattern<PeriodoLetivo> periodoLetivoDao = new PeriodoLetivoDaoXML();
+            DaoPattern<PeriodoLetivo> periodoLetivoDao = PeriodoLetivoDaoXML.getInstance();
             o.setPeriodoLetivo(periodoLetivoDao.findById(periodoLetivoNumero, calenarioId, campusId));
             
-            DaoPattern<Turma> turmaDao = new TurmaDaoXML();
+            DaoPattern<Turma> turmaDao = TurmaDaoXML.getInstance();
             o.setTurma(turmaDao.findById(turmaId, cursoId, campusId));
             
             return o;

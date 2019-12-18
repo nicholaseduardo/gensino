@@ -59,9 +59,9 @@ public class MetodologiaFactory implements BeanFactory<Metodologia> {
             DaoPattern dao;
             switch(o.getTipo()) {
                 default:
-                case TECNICA: dao = new TecnicaDaoXML(); break;
-                case RECURSO: dao = new RecursoDaoXML(); break;
-                case INSTRUMENTO: dao = new InstrumentoAvaliacaoDaoXML(); break;
+                case TECNICA: dao = TecnicaDaoXML.getInstance(); break;
+                case RECURSO: dao = RecursoDaoXML.getInstance(); break;
+                case INSTRUMENTO: dao = InstrumentoAvaliacaoDaoXML.getInstance(); break;
             }
             o.setMetodo((BaseObject) dao.findById(new Integer(e.getAttribute("baseObjectId"))));
             

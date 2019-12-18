@@ -28,8 +28,16 @@ import org.w3c.dom.Node;
  */
 public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
 
-    public DetalhamentoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static DetalhamentoDaoXML instance = null;
+    
+    private DetalhamentoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("detalhamento", "Detalhamento", "detalhamento", DetalhamentoFactory.getInstance());
+    }
+    
+    public static DetalhamentoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new DetalhamentoDaoXML();
+        return instance;
     }
 
     @Override
@@ -44,7 +52,7 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
             if (ref != null && ref instanceof PlanoDeEnsino) {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
-                DaoPattern<PlanoDeEnsino> dao = new PlanoDeEnsinoDaoXML();
+                DaoPattern<PlanoDeEnsino> dao = PlanoDeEnsinoDaoXML.getInstance();
                 planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
                         cursoId, campusId);
             }
@@ -55,12 +63,12 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
             UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
             
             // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<Metodologia> dao = new MetodologiaDaoXML();
+            DaoPattern<Metodologia> dao = MetodologiaDaoXML.getInstance();
             String filter = String.format(formatter, "//Metodologia/metodologia", 
                     o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
             o.setMetodologias(dao.list(filter, o));
             
-            DaoPattern<ObjetivoDetalhe> daoDetalhe = new ObjetivoDetalheDaoXML();
+            DaoPattern<ObjetivoDetalhe> daoDetalhe = ObjetivoDetalheDaoXML.getInstance();
             filter = String.format(formatter, "//ObjetivoDetalhe/objetivoDetalhe", 
                     o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
             o.setObjetivoDetalhes(daoDetalhe.list(filter, o));

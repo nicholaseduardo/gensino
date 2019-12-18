@@ -25,7 +25,7 @@ import javax.xml.transform.TransformerException;
 public class CursoController extends AbstractController<Curso> {
     
     public CursoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new CursoDaoXML(), CursoFactory.getInstance());
+        super(CursoDaoXML.getInstance(), CursoFactory.getInstance());
     }
     
     /**

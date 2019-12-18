@@ -24,9 +24,18 @@ import org.w3c.dom.Node;
  * @author nicho
  */
 public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
+    
+    private static SemanaLetivaDaoXML instance = null;
 
-    public SemanaLetivaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private SemanaLetivaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("semanaLetiva", "SemanaLetiva", "semanaLetiva", SemanaLetivaFactory.getInstance());
+    }
+    
+    public static SemanaLetivaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) {
+            instance = new SemanaLetivaDaoXML();
+        }
+        return instance;
     }
 
     @Override
@@ -41,7 +50,7 @@ public class SemanaLetivaDaoXML extends AbstractDaoXML<SemanaLetiva> {
             if (ref != null && ref instanceof PeriodoLetivo) {
                 periodoLetivo = (PeriodoLetivo) ref;
             } else {
-                DaoPattern<PeriodoLetivo> dao = new PeriodoLetivoDaoXML();
+                DaoPattern<PeriodoLetivo> dao = PeriodoLetivoDaoXML.getInstance();
                 periodoLetivo = dao.findById(pNumero, ano, campusId);
             }
             periodoLetivo.addSemanaLetiva(o);

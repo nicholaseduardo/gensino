@@ -19,8 +19,17 @@ import org.w3c.dom.Element;
  */
 public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
     
-    public LegendaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static LegendaDaoXML instance = null;
+    
+    private LegendaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("legenda", "Legenda", "legenda", LegendaFactory.getInstance());
+    }
+    
+    public static LegendaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) {
+            instance = new LegendaDaoXML();
+        }
+        return instance;
     }
 
     @Override

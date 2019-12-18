@@ -11,7 +11,6 @@ import ensino.configuracoes.model.SemanaLetivaFactory;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -23,7 +22,7 @@ import javax.xml.transform.TransformerException;
 public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
     
     public SemanaLetivaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new SemanaLetivaDaoXML(), SemanaLetivaFactory.getInstance());
+        super(SemanaLetivaDaoXML.getInstance(), SemanaLetivaFactory.getInstance());
     }
     
     /**

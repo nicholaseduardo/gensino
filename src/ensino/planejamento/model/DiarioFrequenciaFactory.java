@@ -53,7 +53,7 @@ public class DiarioFrequenciaFactory implements BeanFactory<DiarioFrequencia> {
                     new Integer(e.getAttribute("id")),
                     Presenca.of(e.getAttribute("presenca")));
             
-            DaoPattern<Estudante> dao = new EstudanteDaoXML();
+            DaoPattern<Estudante> dao = EstudanteDaoXML.getInstance();
             o.setEstudante(dao.findById(
                     new Integer(e.getAttribute("estudanteId")),
                     new Integer(e.getAttribute("turmaId")),

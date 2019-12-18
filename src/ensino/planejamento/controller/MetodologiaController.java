@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 public class MetodologiaController extends AbstractController<Metodologia> {
     
     public MetodologiaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new MetodologiaDaoXML(), MetodologiaFactory.getInstance());
+        super(MetodologiaDaoXML.getInstance(), MetodologiaFactory.getInstance());
     }
     
     /**

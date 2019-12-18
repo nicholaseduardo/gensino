@@ -24,8 +24,16 @@ import org.w3c.dom.Node;
  */
 public class AvaliacaoDaoXML extends AbstractDaoXML<Avaliacao> {
 
-    public AvaliacaoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static AvaliacaoDaoXML instance = null;
+    
+    private AvaliacaoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("avaliacao", "Avaliacao", "avaliacao", AvaliacaoFactory.getInstance());
+    }
+    
+    public static AvaliacaoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new AvaliacaoDaoXML();
+        return instance;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class AvaliacaoDaoXML extends AbstractDaoXML<Avaliacao> {
             if (ref != null && ref instanceof PlanoAvaliacao) {
                 planoAvaliacao = (PlanoAvaliacao) ref;
             } else {
-                DaoPattern<PlanoAvaliacao> dao = new PlanoAvaliacaoDaoXML();
+                DaoPattern<PlanoAvaliacao> dao = PlanoAvaliacaoDaoXML.getInstance();
                 planoAvaliacao = dao.findById(planoAvaliacaoSequencia, planoDeEnsinoId,
                         undId, cursoId, campusId);
             }

@@ -25,8 +25,16 @@ import org.w3c.dom.Node;
  */
 public class EstudanteDaoXML extends AbstractDaoXML<Estudante> {
 
-    public EstudanteDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static EstudanteDaoXML instance = null;
+    
+    private EstudanteDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("estudante", "Estudante", "estudante", EstudanteFactory.getInstance());
+    }
+    
+    public static EstudanteDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new EstudanteDaoXML();
+        return instance;
     }
 
     @Override
@@ -41,7 +49,7 @@ public class EstudanteDaoXML extends AbstractDaoXML<Estudante> {
             if (ref != null && ref instanceof Turma) {
                 turma = (Turma) ref;
             } else {
-                DaoPattern<Turma> dao = new TurmaDaoXML();
+                DaoPattern<Turma> dao = TurmaDaoXML.getInstance();
                 turma = dao.findById(turmaId, cursoId, campusId);
             }
             turma.addEstudante(o);

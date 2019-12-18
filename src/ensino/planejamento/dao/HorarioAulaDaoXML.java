@@ -25,8 +25,16 @@ import org.w3c.dom.Node;
  */
 public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
 
-    public HorarioAulaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static HorarioAulaDaoXML instance = null;
+    
+    private HorarioAulaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("horarioAula", "HorarioAula", "horarioAula", HorarioAulaFactory.getInstance());
+    }
+    
+    public static HorarioAulaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new HorarioAulaDaoXML();
+        return instance;
     }
 
     @Override
@@ -41,7 +49,7 @@ public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
             if (ref != null && ref instanceof PlanoDeEnsino) {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
-                DaoPattern<PlanoDeEnsino> dao = new PlanoDeEnsinoDaoXML();
+                DaoPattern<PlanoDeEnsino> dao = PlanoDeEnsinoDaoXML.getInstance();
                 planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
                         cursoId, campusId);
             }

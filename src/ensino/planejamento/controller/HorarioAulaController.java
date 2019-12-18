@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 public class HorarioAulaController extends AbstractController<HorarioAula> {
     
     public HorarioAulaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new HorarioAulaDaoXML(), HorarioAulaFactory.getInstance());
+        super(HorarioAulaDaoXML.getInstance(), HorarioAulaFactory.getInstance());
     }
     
     /**

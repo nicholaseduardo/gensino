@@ -25,8 +25,16 @@ import org.w3c.dom.Node;
  */
 public class TurmaDaoXML extends AbstractDaoXML<Turma> {
 
-    public TurmaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static TurmaDaoXML instance = null;
+    
+    private TurmaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("turma", "Turma", "turma", TurmaFactory.getInstance());
+    }
+    
+    public static TurmaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new TurmaDaoXML();
+        return instance;
     }
 
     @Override
@@ -40,7 +48,7 @@ public class TurmaDaoXML extends AbstractDaoXML<Turma> {
             if (ref != null && ref instanceof Curso) {
                 curso = (Curso) ref;
             } else {
-                DaoPattern<Curso> dao = new CursoDaoXML();
+                DaoPattern<Curso> dao = CursoDaoXML.getInstance();
                 curso = dao.findById(cursoId, campusId);
             }
             curso.addTurma(o);
@@ -49,7 +57,7 @@ public class TurmaDaoXML extends AbstractDaoXML<Turma> {
             String formatter = "%s[@turmaId=%d and @cursoId=%d and @campusId=%d]";
             String filter = String.format(formatter,
                     "//Estudante/estudante", o.getId(), cursoId, campusId);
-            DaoPattern<Estudante> turmaDao = new EstudanteDaoXML();
+            DaoPattern<Estudante> turmaDao = EstudanteDaoXML.getInstance();
             o.setEstudantes(turmaDao.list(filter, o));
             
             return o;

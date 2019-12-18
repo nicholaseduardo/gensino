@@ -20,6 +20,6 @@ import javax.xml.transform.TransformerException;
 public class LegendaController extends AbstractController<Legenda> {
 
     public LegendaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new LegendaDaoXML(), LegendaFactory.getInstance());
+        super(LegendaDaoXML.getInstance(), LegendaFactory.getInstance());
     }
 }

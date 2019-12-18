@@ -27,8 +27,16 @@ import org.w3c.dom.Node;
  */
 public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
 
-    public PlanoAvaliacaoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static PlanoAvaliacaoDaoXML instance = null;
+    
+    private PlanoAvaliacaoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("planoAvaliacao", "PlanoAvaliacao", "planoAvaliacao", PlanoAvaliacaoFactory.getInstance());
+    }
+    
+    public static PlanoAvaliacaoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new PlanoAvaliacaoDaoXML();
+        return instance;
     }
 
     @Override
@@ -43,7 +51,7 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
             if (ref != null && ref instanceof PlanoDeEnsino) {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
-                DaoPattern<PlanoDeEnsino> dao = new PlanoDeEnsinoDaoXML();
+                DaoPattern<PlanoDeEnsino> dao = PlanoDeEnsinoDaoXML.getInstance();
                 planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
                         cursoId, campusId);
             }
@@ -53,7 +61,7 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
             String formatter = "%s[@planoAvaliacaoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
             UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
             // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<Avaliacao> dao = new AvaliacaoDaoXML();
+            DaoPattern<Avaliacao> dao = AvaliacaoDaoXML.getInstance();
             String filter = String.format(formatter, "//Avaliacao/avaliacao", 
                     o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
             o.setAvaliacoes(dao.list(filter, o));

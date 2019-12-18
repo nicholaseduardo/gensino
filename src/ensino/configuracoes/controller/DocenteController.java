@@ -18,8 +18,8 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class DocenteController extends AbstractController<Docente> {
-        
+
     public DocenteController() throws ParserConfigurationException, TransformerException, IOException {
-        super(new DocenteDaoXML(), DocenteFactory.getInstance());
+        super(DocenteDaoXML.getInstance(), DocenteFactory.getInstance());
     }
 }

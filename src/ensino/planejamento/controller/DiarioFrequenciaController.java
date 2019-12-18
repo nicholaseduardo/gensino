@@ -7,16 +7,12 @@ package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
-import ensino.planejamento.dao.DiarioDaoXML;
 import ensino.planejamento.dao.DiarioFrequenciaDaoXML;
 import ensino.planejamento.model.Diario;
-import ensino.planejamento.model.DiarioFactory;
 import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.DiarioFrequenciaFactory;
-import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -28,7 +24,7 @@ import javax.xml.transform.TransformerException;
 public class DiarioFrequenciaController extends AbstractController<DiarioFrequencia> {
     
     public DiarioFrequenciaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new DiarioFrequenciaDaoXML(), DiarioFrequenciaFactory.getInstance());
+        super(DiarioFrequenciaDaoXML.getInstance(), DiarioFrequenciaFactory.getInstance());
     }
     
     /**

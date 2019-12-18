@@ -64,10 +64,10 @@ public class PlanoAvaliacaoFactory implements BeanFactory<PlanoAvaliacao> {
                     new Double(e.getAttribute("peso")),
                     new Double(e.getAttribute("valor")),
                     DateHelper.stringToDate(e.getAttribute("data"), "dd/MM/yyyy"));
-            DaoPattern<InstrumentoAvaliacao> instrumentoDao = new InstrumentoAvaliacaoDaoXML();
+            DaoPattern<InstrumentoAvaliacao> instrumentoDao = InstrumentoAvaliacaoDaoXML.getInstance();
             o.setInstrumentoAvaliacao(instrumentoDao.findById(new Integer(e.getAttribute("instrumentoAvaliacaoId"))));
             
-            DaoPattern<Objetivo> objetivoDao = new ObjetivoDaoXML();
+            DaoPattern<Objetivo> objetivoDao = ObjetivoDaoXML.getInstance();
             o.setObjetivo(objetivoDao.findById(
                     new Integer(e.getAttribute("objetivoSequencia")),
                     new Integer(e.getAttribute("planoDeEnsinoId")),

@@ -19,8 +19,16 @@ import org.w3c.dom.Element;
  */
 public class BibliografiaDaoXML extends AbstractDaoXML<Bibliografia> {
     
-    public BibliografiaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static BibliografiaDaoXML instance = null;
+    
+    private BibliografiaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("bibliografia", "Bibliografia", "bibliografia", BibliografiaFactory.getInstance());
+    }
+    
+    public static BibliografiaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new BibliografiaDaoXML();
+        return instance;
     }
     
     @Override

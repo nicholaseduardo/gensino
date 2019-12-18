@@ -30,8 +30,16 @@ import org.w3c.dom.Node;
  */
 public class DiarioDaoXML extends AbstractDaoXML<Diario> {
 
-    public DiarioDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static DiarioDaoXML instance = null;
+    
+    private DiarioDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("diario", "Diario", "diario", DiarioFactory.getInstance());
+    }
+    
+    public static DiarioDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new DiarioDaoXML();
+        return instance;
     }
 
     @Override
@@ -46,7 +54,7 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
             if (ref != null && ref instanceof PlanoDeEnsino) {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
-                DaoPattern<PlanoDeEnsino> dao = new PlanoDeEnsinoDaoXML();
+                DaoPattern<PlanoDeEnsino> dao = PlanoDeEnsinoDaoXML.getInstance();
                 planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
                         cursoId, campusId);
             }
@@ -56,7 +64,7 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
             String formatter = "%s[@diarioId=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
             UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
             // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<DiarioFrequencia> dao = new DiarioFrequenciaDaoXML();
+            DaoPattern<DiarioFrequencia> dao = DiarioFrequenciaDaoXML.getInstance();
             String filter = String.format(formatter, "//DiarioFrequencia/diarioFrequencia", 
                     o.getId(), planoDeEnsinoId, undId, cursoId, campusId);
             o.setFrequencias(dao.list(filter, o));

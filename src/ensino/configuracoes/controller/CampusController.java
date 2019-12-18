@@ -22,7 +22,7 @@ import javax.xml.transform.TransformerException;
 public class CampusController extends AbstractController<Campus> {
         
     public CampusController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new CampusDaoXML(), CampusFactory.getInstance());
+        super(CampusDaoXML.getInstance(), CampusFactory.getInstance());
     }
     
     @Override

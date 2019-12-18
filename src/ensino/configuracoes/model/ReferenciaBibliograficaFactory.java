@@ -48,7 +48,7 @@ public class ReferenciaBibliograficaFactory implements BeanFactory<ReferenciaBib
             ReferenciaBibliografica o = getObject(new Integer(e.getAttribute("sequencia")),
                     new Integer(e.getAttribute("tipo")));
             // Recupear a bibliografia
-            DaoPattern<Bibliografia> dao = new BibliografiaDaoXML();
+            DaoPattern<Bibliografia> dao = BibliografiaDaoXML.getInstance();
             Bibliografia b = dao.findById(new Integer(e.getAttribute("bibliografiaId")));
             o.setBibliografia(b);
             return o;

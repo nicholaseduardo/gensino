@@ -60,7 +60,7 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
                     e.getAttribute("conteudo"),
                     e.getAttribute("observacao"));
 
-            DaoPattern<SemanaLetiva> dao = new SemanaLetivaDaoXML();
+            DaoPattern<SemanaLetiva> dao = SemanaLetivaDaoXML.getInstance();
             o.setSemanaLetiva(dao.findById(
                     new Integer(e.getAttribute("semanaLetivaId")),
                     new Integer(e.getAttribute("nPeriodoLetivo")),

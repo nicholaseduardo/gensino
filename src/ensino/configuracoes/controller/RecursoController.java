@@ -19,6 +19,6 @@ import javax.xml.transform.TransformerException;
 public class RecursoController extends AbstractController {
 
     public RecursoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new RecursoDaoXML(), RecursoFactory.getInstance());
+        super(RecursoDaoXML.getInstance(), RecursoFactory.getInstance());
     }
 }

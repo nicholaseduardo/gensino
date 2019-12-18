@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 public class AvaliacaoController extends AbstractController<Avaliacao> {
     
     public AvaliacaoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new AvaliacaoDaoXML(), AvaliacaoFactory.getInstance());
+        super(AvaliacaoDaoXML.getInstance(), AvaliacaoFactory.getInstance());
     }
     
     /**

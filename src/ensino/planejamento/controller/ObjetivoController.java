@@ -21,7 +21,7 @@ import javax.xml.transform.TransformerException;
 public class ObjetivoController extends AbstractController<Objetivo> {
     
     public ObjetivoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new ObjetivoDaoXML(), ObjetivoFactory.getInstance());
+        super(ObjetivoDaoXML.getInstance(), ObjetivoFactory.getInstance());
     }
     
     /**

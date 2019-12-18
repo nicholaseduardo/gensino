@@ -23,9 +23,18 @@ import org.w3c.dom.Node;
  * @author nicho
  */
 public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
+    
+    private static AtividadeDaoXML instance = null;
 
-    public AtividadeDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private AtividadeDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("atividade", "Atividade", "atividade", AtividadeFactory.getInstance());
+    }
+    
+    public static AtividadeDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) {
+            instance = new AtividadeDaoXML();
+        }
+        return instance;
     }
 
     @Override
@@ -37,7 +46,7 @@ public class AtividadeDaoXML extends AbstractDaoXML<Atividade> {
             if (ref != null && ref instanceof Calendario) {
                 calendario = (Calendario) ref;
             } else {
-                DaoPattern<Calendario> dao = new CalendarioDaoXML();
+                DaoPattern<Calendario> dao = CalendarioDaoXML.getInstance();
                 calendario = dao.findById(
                         new Integer(e.getAttribute("ano")),
                         new Integer(e.getAttribute("campusId"))

@@ -24,8 +24,16 @@ import org.w3c.dom.Node;
  */
 public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
 
-    public MetodologiaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static MetodologiaDaoXML instance = null;
+    
+    private MetodologiaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("metodologia", "Metodologia", "metodologia", MetodologiaFactory.getInstance());
+    }
+    
+    public static MetodologiaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new MetodologiaDaoXML();
+        return instance;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
             if (ref != null && ref instanceof Detalhamento) {
                 detalhamento = (Detalhamento) ref;
             } else {
-                DaoPattern<Detalhamento> dao = new DetalhamentoDaoXML();
+                DaoPattern<Detalhamento> dao = DetalhamentoDaoXML.getInstance();
                 detalhamento = dao.findById(detalhamentoSequencia, planoDeEnsinoId,
                         undId, cursoId, campusId);
             }

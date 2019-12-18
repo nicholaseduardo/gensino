@@ -20,8 +20,16 @@ import org.w3c.dom.Element;
  */
 public class DocenteDaoXML extends AbstractDaoXML<Docente> {
 
-    public DocenteDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static DocenteDaoXML instance = null;
+    
+    private DocenteDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("docente", "Docente", "docente", DocenteFactory.getInstance());
+    }
+    
+    public static DocenteDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new DocenteDaoXML();
+        return instance;
     }
 
     @Override

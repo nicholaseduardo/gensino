@@ -24,9 +24,18 @@ import org.w3c.dom.Node;
  * @author nicho
  */
 public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
+    
+    private static PeriodoLetivoDaoXML instance = null;
 
-    public PeriodoLetivoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private PeriodoLetivoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("periodoLetivo", "PeriodoLetivo", "periodoLetivo", PeriodoLetivoFactory.getInstance());
+    }
+    
+    public static PeriodoLetivoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) {
+            instance = new PeriodoLetivoDaoXML();
+        }
+        return instance;
     }
 
     @Override
@@ -38,7 +47,7 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
             if (ref != null && ref instanceof Calendario) {
                 calendario = (Calendario) ref;
             } else {
-                DaoPattern<Calendario> dao = new CalendarioDaoXML();
+                DaoPattern<Calendario> dao = CalendarioDaoXML.getInstance();
                 calendario = dao.findById(
                         new Integer(e.getAttribute("ano")),
                         new Integer(e.getAttribute("campusId"))
@@ -51,7 +60,7 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
             String formatter = "%s[@pNumero=%d and @ano=%d and @campusId=%d]";
             String filter = String.format(formatter,
                     "//SemanaLetiva/semanaLetiva", o.getNumero(), ano, campusId);
-            DaoPattern<SemanaLetiva> semanaLetivaDao = new SemanaLetivaDaoXML();
+            DaoPattern<SemanaLetiva> semanaLetivaDao = SemanaLetivaDaoXML.getInstance();
             o.setSemanasLetivas(semanaLetivaDao.list(filter, o));
 
             return o;

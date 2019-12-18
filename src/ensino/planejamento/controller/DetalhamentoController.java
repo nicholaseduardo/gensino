@@ -23,7 +23,7 @@ import javax.xml.transform.TransformerException;
 public class DetalhamentoController extends AbstractController<Detalhamento> {
     
     public DetalhamentoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new DetalhamentoDaoXML(), DetalhamentoFactory.getInstance());
+        super(DetalhamentoDaoXML.getInstance(), DetalhamentoFactory.getInstance());
     }
     
     @Override

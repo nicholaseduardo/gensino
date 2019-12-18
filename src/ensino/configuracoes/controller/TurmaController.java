@@ -24,7 +24,7 @@ import javax.xml.transform.TransformerException;
 public class TurmaController extends AbstractController<Turma> {
     
     public TurmaController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new TurmaDaoXML(), TurmaFactory.getInstance());
+        super(TurmaDaoXML.getInstance(), TurmaFactory.getInstance());
     }
     
     /**

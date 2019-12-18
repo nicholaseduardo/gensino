@@ -19,8 +19,16 @@ import org.w3c.dom.Element;
  */
 public class InstrumentoAvaliacaoDaoXML extends AbstractDaoXML<InstrumentoAvaliacao> {
 
-    public InstrumentoAvaliacaoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+    private static InstrumentoAvaliacaoDaoXML instance = null;
+    
+    private InstrumentoAvaliacaoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("instrumentoAvaliacao", "InstrumentoAvaliacao", "instrumentoAvaliacao", InstrumentoAvaliacaoFactory.getInstance());
+    }
+    
+    public static InstrumentoAvaliacaoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) 
+            instance = new InstrumentoAvaliacaoDaoXML();
+        return instance;
     }
 
     @Override

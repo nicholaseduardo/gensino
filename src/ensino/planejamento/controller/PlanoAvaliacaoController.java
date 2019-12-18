@@ -12,7 +12,6 @@ import ensino.planejamento.model.Avaliacao;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoAvaliacaoFactory;
 import java.io.IOException;
-import java.util.HashMap;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -23,7 +22,7 @@ import javax.xml.transform.TransformerException;
 public class PlanoAvaliacaoController extends AbstractController<PlanoAvaliacao> {
     
     public PlanoAvaliacaoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new PlanoAvaliacaoDaoXML(), PlanoAvaliacaoFactory.getInstance());
+        super(PlanoAvaliacaoDaoXML.getInstance(), PlanoAvaliacaoFactory.getInstance());
     }
 
     @Override

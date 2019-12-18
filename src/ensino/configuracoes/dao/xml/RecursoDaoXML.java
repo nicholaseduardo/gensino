@@ -19,8 +19,16 @@ import org.w3c.dom.Element;
  */
  public class RecursoDaoXML extends AbstractDaoXML<Recurso> {
 
-    public RecursoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
+     private static RecursoDaoXML instance = null;
+     
+    private RecursoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("recurso", "Recurso", "recurso", RecursoFactory.getInstance());
+    }
+    
+    public static RecursoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new RecursoDaoXML();
+        return instance;
     }
 
     @Override

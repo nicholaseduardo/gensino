@@ -58,7 +58,7 @@ public class AtividadeFactory implements BeanFactory<Atividade> {
             // Recupera a legenda
             String sLegendaId = e.getAttribute("legendaId");
             if (sLegendaId.matches("\\d+")) {
-                DaoPattern<Legenda> daoLegenda = new LegendaDaoXML();
+                DaoPattern<Legenda> daoLegenda = LegendaDaoXML.getInstance();
                 o.setLegenda(daoLegenda.findById(new Integer(sLegendaId)));
             }
             

@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
 public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
     
     public PlanoDeEnsinoController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new PlanoDeEnsinoDaoXML(), PlanoDeEnsinoFactory.getInstance());
+        super(PlanoDeEnsinoDaoXML.getInstance(), PlanoDeEnsinoFactory.getInstance());
     }
     
     @Override

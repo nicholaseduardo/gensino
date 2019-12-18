@@ -22,43 +22,47 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class UnidadeCurricularController extends AbstractController<UnidadeCurricular> {
-    
+
     public UnidadeCurricularController() throws IOException, ParserConfigurationException, TransformerException {
-        super(new UnidadeCurricularDaoXML(), UnidadeCurricularFactory.getInstance());
+        super(UnidadeCurricularDaoXML.getInstance(), UnidadeCurricularFactory.getInstance());
     }
-    
+
     /**
      * Buscar por id da unidade curricular
-     * @param id        Identificacao da unidade curricular
-     * @param cursoId   Identificação do curso ao qual a unidade curricular está vinculada
-     * @param campusId  Identificação do campos ao qual o curso está vinculado
-     * @return 
+     *
+     * @param id Identificacao da unidade curricular
+     * @param cursoId Identificação do curso ao qual a unidade curricular está
+     * vinculada
+     * @param campusId Identificação do campos ao qual o curso está vinculado
+     * @return
      */
     public UnidadeCurricular buscarPor(Integer id, Integer cursoId, Integer campusId) {
         DaoPattern<UnidadeCurricular> dao = super.getDao();
         return dao.findById(id, cursoId, campusId);
     }
-    
+
     /**
      * Listar unidades por curso e campus
-     * @param curso   Identificacao do curso
-     * @return 
+     *
+     * @param curso Identificacao do curso
+     * @return
      */
     public List<UnidadeCurricular> listar(Curso curso) {
         DaoPattern<UnidadeCurricular> dao = super.getDao();
-        String filter = String.format("//UnidadeCurricular/unidadeCurricular[@cursoId=%d and @campusId=%d]", 
+        String filter = String.format("//UnidadeCurricular/unidadeCurricular[@cursoId=%d and @campusId=%d]",
                 curso.getId(), curso.getCampus().getId());
         return dao.list(filter, curso);
     }
-    
+
     /**
      * Listar unidades por campus
-     * @param campusId  Identificacao do campus
-     * @return 
+     *
+     * @param campusId Identificacao do campus
+     * @return
      */
     public List<UnidadeCurricular> listar(Integer campusId) {
         DaoPattern<UnidadeCurricular> dao = super.getDao();
-        String filter = String.format("//UnidadeCurricular/unidadeCurricular[@campusId=%d]", 
+        String filter = String.format("//UnidadeCurricular/unidadeCurricular[@campusId=%d]",
                 campusId);
         return dao.list(filter);
     }
@@ -67,9 +71,9 @@ public class UnidadeCurricularController extends AbstractController<UnidadeCurri
     public UnidadeCurricular salvar(UnidadeCurricular o) throws Exception {
         o = super.salvar(o);
         //salvar cascade
-        AbstractController<ReferenciaBibliografica> col = new ReferenciaBibliograficaController();
+        AbstractController<ReferenciaBibliografica> col = ReferenciaBibliograficaController.getInstance();
         col.salvarEmCascata(o.getReferenciasBibliograficas());
-        
+
         return o;
     }
 }
