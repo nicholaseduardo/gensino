@@ -59,7 +59,7 @@ public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
                 o.getNumero(), 
                 o.getCalendario().getAno(), 
                 o.getCalendario().getCampus().getId());
-        return dao.list(filter);
+        return dao.list(filter, o);
     }
     
 }

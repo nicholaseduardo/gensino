@@ -80,8 +80,8 @@ public class EstudanteDaoXML extends AbstractDaoXML<Estudante> {
                 cursoId = (Integer) ids[2],
                 campusId = (Integer) ids[3];
         // Cria mecanismo para buscar o conteudo no xml
-        String filter = String.format("%s[@id=%d @turmaId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), id, cursoId, campusId);
+        String filter = String.format("%s[@id=%d and @turmaId=%d and @cursoId=%d and @campusId=%d]",
+                getObjectExpression(), id, turmaId, cursoId, campusId);
         Node searched = getDataByExpression(filter);
         if (searched != null) {
             return createObject((Element) searched);

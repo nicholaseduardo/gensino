@@ -62,6 +62,8 @@ public class PlanoAvaliacao {
 
     public PlanoAvaliacao() {
         this.avaliacoes = new ArrayList<>();
+        this.peso = 0.0;
+        this.valor = 0.0;
     }
 
     @Override

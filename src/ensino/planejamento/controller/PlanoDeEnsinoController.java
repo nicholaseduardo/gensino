@@ -42,6 +42,8 @@ public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
     
     @Override
     public PlanoDeEnsino salvar(PlanoDeEnsino o) throws Exception {
+        o.criarDiarios();
+        o.criarAvaliacoes();
         o = super.salvar(o);
         // Salvar cascade
         AbstractController<Objetivo> colObjetivo = ControllerFactory.createObjetivoController();

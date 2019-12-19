@@ -6,12 +6,16 @@
 package ensino.planejamento.model;
 
 import ensino.configuracoes.dao.xml.DocenteDaoXML;
+import ensino.configuracoes.dao.xml.EstudanteDaoXML;
 import ensino.configuracoes.dao.xml.PeriodoLetivoDaoXML;
+import ensino.configuracoes.dao.xml.SemanaLetivaDaoXML;
 import ensino.configuracoes.dao.xml.TurmaDaoXML;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Docente;
+import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.PeriodoLetivo;
+import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.DaoPattern;
@@ -73,10 +77,29 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
             o.setDocente(docenteDao.findById(new Integer(e.getAttribute("docenteId"))));
             
             DaoPattern<PeriodoLetivo> periodoLetivoDao = PeriodoLetivoDaoXML.getInstance();
-            o.setPeriodoLetivo(periodoLetivoDao.findById(periodoLetivoNumero, calenarioId, campusId));
+            PeriodoLetivo periodoLetivo = periodoLetivoDao.findById(periodoLetivoNumero, calenarioId, campusId);
+            o.setPeriodoLetivo(periodoLetivo);
+            /**
+             * Recupera as semanas letivas do período letivo vinculado ao
+             * plano de ensino
+             */
+            DaoPattern<SemanaLetiva> semanaLetivaDao = SemanaLetivaDaoXML.getInstance();
+            String filter = String.format("//SemanaLetiva/semanaLetiva[@pNumero=%d "
+                + "and @ano=%d and @campusId=%d]", 
+                periodoLetivoNumero, calenarioId, campusId);
+            periodoLetivo.setSemanasLetivas(semanaLetivaDao.list(filter, o.getPeriodoLetivo()));
             
             DaoPattern<Turma> turmaDao = TurmaDaoXML.getInstance();
-            o.setTurma(turmaDao.findById(turmaId, cursoId, campusId));
+            Turma turma = turmaDao.findById(turmaId, cursoId, campusId);
+            o.setTurma(turma);
+            /**
+             * Recupera os estudantes vinculados a turma
+             */
+            DaoPattern<Estudante> estudanteDao = EstudanteDaoXML.getInstance();
+            filter = String.format("//Estudante/estudante[@turmaId=%d and @cursoId=%d and @campusId=%d]", 
+                turma.getId(), turma.getCurso().getId(),
+                turma.getCurso().getCampus().getId());
+            turma.setEstudantes(estudanteDao.list(filter, turma));
             
             return o;
         } catch (Exception ex) {

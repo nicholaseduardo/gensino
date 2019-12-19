@@ -31,7 +31,7 @@ public class Avaliacao {
     private Double nota;
     
     public Avaliacao() {
-        
+        this.nota = 0.0;
     }
     
     public Avaliacao(Element e, PlanoAvaliacao planoAvaliacao) {

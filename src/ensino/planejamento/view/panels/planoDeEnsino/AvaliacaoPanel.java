@@ -7,6 +7,8 @@ package ensino.planejamento.view.panels.planoDeEnsino;
 
 import ensino.configuracoes.model.Estudante;
 import ensino.defaults.DefaultFieldsPanel;
+import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.AvaliacaoController;
 import ensino.planejamento.model.Avaliacao;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
@@ -19,6 +21,8 @@ import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -32,6 +36,7 @@ import javax.swing.table.TableColumnModel;
  * @author nicho
  */
 public class AvaliacaoPanel extends DefaultFieldsPanel {
+
     private List<PlanoAvaliacao> listaPlanoAvaliacoes;
 
     private JTable avaliacaoTable;
@@ -77,8 +82,9 @@ public class AvaliacaoPanel extends DefaultFieldsPanel {
         if (!listaPlanoAvaliacoes.isEmpty()) {
             /**
              * O número de colunas de registro de avaliações é equivalente ao
-             * número de planos de avaliações lançados no sistema. Considera mais uma unidade
-             * para adicionar a coluna com os dados do estudante
+             * número de planos de avaliações lançados no sistema. Considera
+             * mais uma unidade para adicionar a coluna com os dados do
+             * estudante
              */
             int columnCount = listaPlanoAvaliacoes.size() + 1;
             /**
@@ -91,7 +97,19 @@ public class AvaliacaoPanel extends DefaultFieldsPanel {
             aColumnNames[0] = "Estudante";
             for (int i = 0; i < listaPlanoAvaliacoes.size(); i++) {
                 PlanoAvaliacao planoAvaliacao = listaPlanoAvaliacoes.get(i);
-                aColumnNames[i+1] = planoAvaliacao.getNome();
+                aColumnNames[i + 1] = planoAvaliacao.getNome();
+
+                /**
+                 * Forçando a carga dos dados das avaliações para cada plano de
+                 * avaliações
+                 */
+                AvaliacaoController avaliacaoCol;
+                try {
+                    avaliacaoCol = ControllerFactory.createAvaliacaoController();
+                    planoAvaliacao.setAvaliacoes(avaliacaoCol.listar(planoAvaliacao));
+                } catch (Exception ex) {
+                    Logger.getLogger(AvaliacaoCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             /**
              * Variável criada para ser utilizada no processo de montagem da
@@ -136,7 +154,7 @@ public class AvaliacaoPanel extends DefaultFieldsPanel {
                 tc.setMinWidth(250);
             } else {
                 avaliacaoTable.setEditingColumn(i);
-                
+
                 tc.setHeaderRenderer(headerRenderer);
                 tc.setMaxWidth(50);
             }

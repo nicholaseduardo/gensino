@@ -12,15 +12,14 @@ import ensino.components.GenJList;
 import ensino.components.GenJRadioButton;
 import ensino.components.GenJSpinner;
 import ensino.components.GenJTextArea;
-import ensino.configuracoes.controller.InstrumentoAvaliacaoController;
-import ensino.configuracoes.controller.RecursoController;
-import ensino.configuracoes.controller.TecnicaController;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.BaseObject;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.MetodologiaController;
+import ensino.planejamento.controller.ObjetivoDetalheController;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
@@ -343,7 +342,18 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
             txtObservacao.setModel(new ObservacaoListModel(detalhe.getObservacao()));
             txtNAulasP.setValue(detalhe.getNAulasPraticas());
             txtNAulasT.setValue(detalhe.getNAulasTeoricas());
-
+            try {
+                /**
+                 * Recupera a lista de metodologias e os objetivos do detalhamento
+                 */
+                MetodologiaController metodologiaCol = ControllerFactory.createMetodologiaController();
+                detalhe.setMetodologias(metodologiaCol.listar(detalhe));
+                
+                ObjetivoDetalheController objetivoCol = ControllerFactory.createObjetivoDetalheController();
+                detalhe.setObjetivoDetalhes(objetivoCol.listar(detalhe));
+            } catch (Exception ex) {
+                Logger.getLogger(DetalhamentoFieldsPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
             metodologiaTableModel = new MetodologiaTableModel(detalhe.getMetodologias());
             reloadMetodologiaTable();
             objetivoDetalheTableModel = new ObjetivoDetalheTableModel(detalhe.getObjetivoDetalhes());

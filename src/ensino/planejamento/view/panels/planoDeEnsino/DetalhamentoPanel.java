@@ -7,11 +7,13 @@ package ensino.planejamento.view.panels.planoDeEnsino;
 
 import ensino.components.GenJTree;
 import ensino.components.ToolTipTreeNode;
+import ensino.configuracoes.controller.AtividadeController;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.defaults.DefaultFieldsPanel;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
 import ensino.planejamento.model.Objetivo;
@@ -22,10 +24,13 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -35,6 +40,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -234,7 +241,16 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
         if (object instanceof PlanoDeEnsino) {
             PlanoDeEnsino plano = (PlanoDeEnsino) object;
             periodoLetivo = plano.getPeriodoLetivo();
-            listaAtividades = plano.getPeriodoLetivo().getCalendario().getAtividades();
+            try {
+                /**
+                 * Carrega os dados das atividades de acordo com o calendário
+                 * do período
+                 */
+                AtividadeController atividadeCol = ControllerFactory.createAtividadeController();
+                listaAtividades = atividadeCol.listar(periodoLetivo.getCalendario());
+            } catch (Exception ex) {
+                Logger.getLogger(DetalhamentoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
             listaObjetivos = plano.getObjetivos();
             listaDetalhamentos = plano.getDetalhamentos();
             loadTreeDetalhamento();

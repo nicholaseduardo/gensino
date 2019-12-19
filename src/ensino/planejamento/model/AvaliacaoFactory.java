@@ -82,7 +82,7 @@ public class AvaliacaoFactory implements BeanFactory<Avaliacao> {
         e.setAttribute("unidadeCurricularId", o.getPlanoAvaliacao().getPlanoDeEnsino().getUnidadeCurricular().getId().toString());
         
         e.setAttribute("estudanteId", o.getEstudante().getId().toString());
-        e.setAttribute("turmaId", o.getEstudante().getTurma().toString());
+        e.setAttribute("turmaId", o.getEstudante().getTurma().getId().toString());
         e.setAttribute("cursoId", o.getEstudante().getTurma().getCurso().getId().toString());
         e.setAttribute("campusId", o.getEstudante().getTurma().getCurso().getCampus().getId().toString());
         

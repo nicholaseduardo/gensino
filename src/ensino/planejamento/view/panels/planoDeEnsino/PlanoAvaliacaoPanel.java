@@ -10,7 +10,6 @@ import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJSpinner;
 import ensino.components.GenJTextField;
-import ensino.configuracoes.controller.InstrumentoAvaliacaoController;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;

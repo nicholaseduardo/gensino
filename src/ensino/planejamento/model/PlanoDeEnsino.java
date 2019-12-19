@@ -198,8 +198,6 @@ public class PlanoDeEnsino {
                 && horarios != null && !horarios.isEmpty()
                 && turma != null && turma.hasEstudantes()
                 && (diarios == null || diarios.isEmpty())) {
-            diarios = new ArrayList<>();
-
             // Atributo utilizado para controlar os dias de aula
             Calendar cal = Calendar.getInstance();
             // ordena os horários de aulas pelo dia da semana
@@ -217,7 +215,7 @@ public class PlanoDeEnsino {
                      */
                     for (int h = 0; h < horarios.size(); h++) {
                         HorarioAula horarioAula = horarios.get(h);
-                        if (horarioAula.getDiaDaSemana().getValue() == cal.get(Calendar.DAY_OF_WEEK)) {
+                        if (horarioAula.getDiaDaSemana().getValue()+1 == cal.get(Calendar.DAY_OF_WEEK)) {
                             Diario diario = DiarioFactory.getInstance().getObject(
                                     idDiario, cal.getTime(),
                                     horarioAula.getHorario(), "", "",

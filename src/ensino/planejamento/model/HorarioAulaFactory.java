@@ -37,9 +37,9 @@ public class HorarioAulaFactory implements BeanFactory<HorarioAula> {
         int i = 0;
         HorarioAula o = new HorarioAula();
         o.setId((Integer) args[i++]);
-        o.setDiaDaSemana(DayOfWeek.of((Integer)args[i++]));
+        o.setDiaDaSemana((DayOfWeek)args[i++]);
         o.setHorario((String) args[i++]);
-        o.setTurno(Turno.of((Integer) args[i++]));
+        o.setTurno((Turno) args[i++]);
         
         return o;
     }

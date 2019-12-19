@@ -7,11 +7,20 @@ package ensino.planejamento.view.renderer;
 
 import ensino.configuracoes.view.renderer.*;
 import ensino.components.GenJLabel;
+import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.AvaliacaoController;
+import ensino.planejamento.model.PlanoAvaliacao;
+import ensino.planejamento.view.models.PlanoAvaliacaoTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
