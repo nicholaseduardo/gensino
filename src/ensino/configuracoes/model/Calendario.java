@@ -64,7 +64,7 @@ public class Calendario {
         return atividades;
     }
 
-    public void setAtividade(List<Atividade> atividades) {
+    public void setAtividades(List<Atividade> atividades) {
         this.atividades = atividades;
     }
 

@@ -18,6 +18,7 @@ import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.SemanaLetivaFactory;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.util.JCalendario;
 import ensino.util.types.MesesDeAno;
 import ensino.util.types.Periodo;
@@ -121,7 +122,7 @@ public class CalendarioFields extends DefaultFieldsPanel {
             /**
              * Prepara a lista dos campus cadastrados para vincular ao combobox
              */
-            CampusController campusController = new CampusController();
+            CampusController campusController = ControllerFactory.createCampusController();
             comboCampus = new GenJComboBox(campusController.listar().toArray());
             // seleciona o campus
             if (comboCampus.getModel().getSize() > 0) {

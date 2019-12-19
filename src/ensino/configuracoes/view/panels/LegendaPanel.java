@@ -26,6 +26,7 @@ import javax.swing.JButton;
 import ensino.components.GenJCheckBox;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.view.frame.FrameConfiguracao;
+import ensino.patterns.factory.ControllerFactory;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,8 +45,8 @@ public class LegendaPanel extends DefaultFormPanel {
         try {
             super.setName("panel.legenda");
             super.setTitlePanel("Dados de Legenda");
-            LegendaController legendaController = new LegendaController();
-            super.setController(legendaController);
+            
+            super.setController(ControllerFactory.createLegendaController());
             
             super.enableTablePanel();
             

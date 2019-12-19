@@ -10,7 +10,9 @@ import ensino.patterns.DaoPattern;
 import ensino.planejamento.dao.ObjetivoDaoXML;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.ObjetivoFactory;
+import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
+import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -19,9 +21,16 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class ObjetivoController extends AbstractController<Objetivo> {
+    private static ObjetivoController instance = null;
     
-    public ObjetivoController() throws IOException, ParserConfigurationException, TransformerException {
+    private ObjetivoController() throws IOException, ParserConfigurationException, TransformerException {
         super(ObjetivoDaoXML.getInstance(), ObjetivoFactory.getInstance());
+    }
+    
+    public static ObjetivoController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new ObjetivoController();
+        return instance;
     }
     
     /**
@@ -38,5 +47,16 @@ public class ObjetivoController extends AbstractController<Objetivo> {
         DaoPattern<Objetivo> dao = super.getDao();
         return dao.findById(sequencia, planoId, unidadeCurricularId,
                                     cursoId, campusId);
+    }
+    
+    public List<Objetivo> listar(PlanoDeEnsino o) {
+        DaoPattern<Objetivo> dao = super.getDao();
+        String filter = String.format("//Objetivo/objetivo[@planoDeEnsinoId=%d and "
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]", 
+                o.getId(),
+                o.getUnidadeCurricular().getId(),
+                o.getUnidadeCurricular().getCurso().getId(),
+                o.getUnidadeCurricular().getCurso().getCampus().getId());
+        return dao.list(filter, o);
     }
 }

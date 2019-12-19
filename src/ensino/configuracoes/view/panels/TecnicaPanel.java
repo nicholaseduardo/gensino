@@ -21,6 +21,7 @@ import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Tecnica;
 import ensino.configuracoes.view.models.TecnicaTableModel;
 import ensino.configuracoes.view.renderer.MetodoCellRenderer;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -44,8 +45,7 @@ public class TecnicaPanel extends DefaultFormPanel {
         try {
             super.setName("panel.tecnica");
             super.setTitlePanel("Dados do Tecnica");
-            TecnicaController campusController = new TecnicaController();
-            super.setController(campusController);
+            super.setController(ControllerFactory.createTecnicaController());
 
             super.enableTablePanel();
 

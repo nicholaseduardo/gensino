@@ -8,6 +8,7 @@ package ensino.planejamento.controller;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.dao.PlanoDeEnsinoDaoXML;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Diario;
@@ -27,28 +28,35 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
+    private static PlanoDeEnsinoController instance = null;
     
-    public PlanoDeEnsinoController() throws IOException, ParserConfigurationException, TransformerException {
+    private PlanoDeEnsinoController() throws IOException, ParserConfigurationException, TransformerException {
         super(PlanoDeEnsinoDaoXML.getInstance(), PlanoDeEnsinoFactory.getInstance());
+    }
+    
+    public static PlanoDeEnsinoController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new PlanoDeEnsinoController();
+        return instance;
     }
     
     @Override
     public PlanoDeEnsino salvar(PlanoDeEnsino o) throws Exception {
         o = super.salvar(o);
         // Salvar cascade
-        AbstractController<Objetivo> colObjetivo = new ObjetivoController();
+        AbstractController<Objetivo> colObjetivo = ControllerFactory.createObjetivoController();
         colObjetivo.salvarEmCascata(o.getObjetivos());
         
-        AbstractController<Detalhamento> colDetalhamento = new DetalhamentoController();
+        AbstractController<Detalhamento> colDetalhamento = ControllerFactory.createDetalhamentoController();
         colDetalhamento.salvarEmCascata(o.getDetalhamentos());
         
-        AbstractController<HorarioAula> colHorarioAula = new HorarioAulaController();
+        AbstractController<HorarioAula> colHorarioAula = ControllerFactory.createHorarioAulaController();
         colHorarioAula.salvarEmCascata(o.getHorarios());
         
-        AbstractController<Diario> colDiario = new DiarioController();
+        AbstractController<Diario> colDiario = ControllerFactory.createDiarioController();
         colDiario.salvarEmCascata(o.getDiarios());
         
-        AbstractController<PlanoAvaliacao> colPlanoAvaliacao = new PlanoAvaliacaoController();
+        AbstractController<PlanoAvaliacao> colPlanoAvaliacao = ControllerFactory.createPlanoAvaliacaoController();
         colPlanoAvaliacao.salvarEmCascata(o.getPlanosAvaliacoes());
         
         return o;
@@ -57,16 +65,16 @@ public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
     /**
      * Listagem de planos de ensino
      * 
-     * @param unidadeCurricular Identificação da unidade curricular
+     * @param o Identificação da unidade curricular
      * @return 
      */
-    public List<PlanoDeEnsino> listar(UnidadeCurricular unidadeCurricular) {
+    public List<PlanoDeEnsino> listar(UnidadeCurricular o) {
         DaoPattern<PlanoDeEnsino> dao = super.getDao();
         String filter = String.format("//PlanoDeEnsino/planoDeEnsino[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]", 
-                unidadeCurricular.getId(),
-                unidadeCurricular.getCurso().getId(),
-                unidadeCurricular.getCurso().getCampus().getId());
-        return dao.list(filter, unidadeCurricular);
+                o.getId(),
+                o.getCurso().getId(),
+                o.getCurso().getCampus().getId());
+        return dao.list(filter, o);
     }
     
     /**

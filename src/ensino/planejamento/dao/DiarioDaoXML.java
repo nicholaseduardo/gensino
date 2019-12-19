@@ -61,13 +61,13 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
             planoDeEnsino.addDiario(o);
             
             // load children
-            String formatter = "%s[@diarioId=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
-            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
-            // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<DiarioFrequencia> dao = DiarioFrequenciaDaoXML.getInstance();
-            String filter = String.format(formatter, "//DiarioFrequencia/diarioFrequencia", 
-                    o.getId(), planoDeEnsinoId, undId, cursoId, campusId);
-            o.setFrequencias(dao.list(filter, o));
+//            String formatter = "%s[@diarioId=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
+//            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
+//            // Cria mecanismo para buscar o conteudo no xml
+//            DaoPattern<DiarioFrequencia> dao = DiarioFrequenciaDaoXML.getInstance();
+//            String filter = String.format(formatter, "//DiarioFrequencia/diarioFrequencia", 
+//                    o.getId(), planoDeEnsinoId, undId, cursoId, campusId);
+//            o.setFrequencias(dao.list(filter, o));
             
             return o;
         } catch (Exception ex) {

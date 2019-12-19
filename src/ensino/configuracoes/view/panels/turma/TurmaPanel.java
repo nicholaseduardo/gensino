@@ -19,6 +19,7 @@ import ensino.configuracoes.view.panels.CursoPanel;
 import ensino.configuracoes.view.renderer.TurmaCellRenderer;
 import ensino.defaults.DefaultFormPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -64,7 +65,7 @@ public class TurmaPanel extends DefaultFormPanel {
             super.setName("panel.turma");
             super.setTitlePanel("Dados da Turma");
             // para capturar os dados do curso, usa-se a estrutura do campus
-            super.setController(new TurmaController());
+            super.setController(ControllerFactory.createTurmaController());
 
             super.enableTablePanel();
             super.setFieldsPanel(new TurmaFieldsPanel(curso));

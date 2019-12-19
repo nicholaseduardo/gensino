@@ -10,7 +10,9 @@ import ensino.patterns.DaoPattern;
 import ensino.planejamento.dao.HorarioAulaDaoXML;
 import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.HorarioAulaFactory;
+import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
+import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -19,9 +21,16 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class HorarioAulaController extends AbstractController<HorarioAula> {
+    private static HorarioAulaController instance = null;
     
-    public HorarioAulaController() throws IOException, ParserConfigurationException, TransformerException {
+    private HorarioAulaController() throws IOException, ParserConfigurationException, TransformerException {
         super(HorarioAulaDaoXML.getInstance(), HorarioAulaFactory.getInstance());
+    }
+    
+    public static HorarioAulaController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new HorarioAulaController();
+        return instance;
     }
     
     /**
@@ -38,5 +47,16 @@ public class HorarioAulaController extends AbstractController<HorarioAula> {
         DaoPattern<HorarioAula> dao = super.getDao();
         return dao.findById(id, planoId, unidadeCurricularId,
                                     cursoId, campusId);
+    }
+    
+    public List<HorarioAula> listar(PlanoDeEnsino o) {
+        DaoPattern<HorarioAula> dao = super.getDao();
+        String filter = String.format("//HorarioAula/horarioAula[@planoDeEnsinoId=%d and "
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]", 
+                o.getId(),
+                o.getUnidadeCurricular().getId(),
+                o.getUnidadeCurricular().getCurso().getId(),
+                o.getUnidadeCurricular().getCurso().getCampus().getId());
+        return dao.list(filter, o);
     }
 }

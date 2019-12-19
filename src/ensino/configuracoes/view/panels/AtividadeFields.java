@@ -15,6 +15,7 @@ import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Legenda;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.util.types.Periodo;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -94,7 +95,7 @@ public class AtividadeFields extends DefaultFieldsPanel {
             GenJLabel lblLegenda = new GenJLabel("Legenda: ", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 3);
             fieldsPanel.add(lblLegenda, c);
-            LegendaController legendaCol = new LegendaController();
+            LegendaController legendaCol = ControllerFactory.createLegendaController();
             comboLegenda = new GenJComboBox(legendaCol.listar().toArray());
             lblLegenda.setLabelFor(comboLegenda);
             GridLayoutHelper.set(c, 1, 3);

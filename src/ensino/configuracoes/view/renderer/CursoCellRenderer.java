@@ -6,16 +6,24 @@
 package ensino.configuracoes.view.renderer;
 
 import ensino.components.GenJLabel;
+import ensino.configuracoes.controller.TurmaController;
+import ensino.configuracoes.controller.UnidadeCurricularController;
 import ensino.configuracoes.view.models.CursoTableModel;
 import ensino.configuracoes.model.Curso;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -37,18 +45,34 @@ public class CursoCellRenderer extends GenCellRenderer {
         }
 
         CursoTableModel model = (CursoTableModel) table.getModel();
-        Curso curso = (Curso) model.getRow(row);
-        GenJLabel lblTitle = createLabel(curso.getNome());
+        Curso o = (Curso) model.getRow(row);
+        GenJLabel lblTitle = createLabel(o.getNome());
         
-        GenJLabel lblCampus = createLabel(String.format("[Campus: %s]", curso.getCampus().getNome()));
+        GenJLabel lblCampus = createLabel(String.format("[Campus: %s]", o.getCampus().getNome()));
         lblCampus.resetFontSize(12);
         lblCampus.setIcon(new ImageIcon(getClass().getResource("/img/university-icon-15px.png")));
-        
-        GenJLabel lblTurma = createLabel(String.format("Turmas: %d", curso.getTurmas().size()), JLabel.RIGHT);
+        try {
+            /**
+             * Recupera os dados das turmas
+             */
+            TurmaController turmaCol = ControllerFactory.createTurmaController();
+            o.setTurmas(turmaCol.listar(o));
+        } catch (Exception ex) {
+            Logger.getLogger(CursoCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        GenJLabel lblTurma = createLabel(String.format("Turmas: %d", o.getTurmas().size()), JLabel.RIGHT);
         lblTurma.resetFontSize(12);
         lblTurma.setIcon(new ImageIcon(getClass().getResource("/img/classroom-15px.png")));
-        
-        GenJLabel lblUnd = createLabel(String.format("Disciplinas: %d", curso.getUnidadesCurriculares().size()), JLabel.RIGHT);
+        try {
+            /**
+             * Recupera os dados das Disciplinas
+             */
+            UnidadeCurricularController unidadeCol = ControllerFactory.createUnidadeCurricularController();
+            o.setUnidadesCurriculares(unidadeCol.listar(o));
+        } catch (Exception ex) {
+            Logger.getLogger(CursoCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        GenJLabel lblUnd = createLabel(String.format("Disciplinas: %d", o.getUnidadesCurriculares().size()), JLabel.RIGHT);
         lblUnd.resetFontSize(12);
         lblUnd.setIcon(new ImageIcon(getClass().getResource("/img/school-icon-15px.png")));
         

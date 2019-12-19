@@ -8,9 +8,11 @@ package ensino.configuracoes.controller;
 import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDaoXML;
 import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.ReferenciaBibliograficaFactory;
+import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
+import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -44,6 +46,16 @@ public class ReferenciaBibliograficaController extends AbstractController<Refere
     public ReferenciaBibliografica buscarPor(Integer sequencia, Integer unidadeId, Integer cursoId, Integer campusId) {
         DaoPattern<ReferenciaBibliografica> dao = super.getDao();
         return dao.findById(sequencia, unidadeId, cursoId, campusId);
+    }
+    
+    public List<ReferenciaBibliografica> listar(UnidadeCurricular o) {
+        DaoPattern<ReferenciaBibliografica> dao = super.getDao();
+        String filter = String.format("//ReferenciaBibliografica/referenciaBibliografica["
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+                o.getId(), 
+                o.getCurso().getId(),
+                o.getCurso().getCampus().getId());
+        return dao.list(filter, o);
     }
 
     @Override

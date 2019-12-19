@@ -59,19 +59,19 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
             planoDeEnsino.addDetalhamento(o);
             
             // load children
-            String formatter = "%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
-            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
-            
-            // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<Metodologia> dao = MetodologiaDaoXML.getInstance();
-            String filter = String.format(formatter, "//Metodologia/metodologia", 
-                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
-            o.setMetodologias(dao.list(filter, o));
-            
-            DaoPattern<ObjetivoDetalhe> daoDetalhe = ObjetivoDetalheDaoXML.getInstance();
-            filter = String.format(formatter, "//ObjetivoDetalhe/objetivoDetalhe", 
-                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
-            o.setObjetivoDetalhes(daoDetalhe.list(filter, o));
+//            String formatter = "%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
+//            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
+//            
+//            // Cria mecanismo para buscar o conteudo no xml
+//            DaoPattern<Metodologia> dao = MetodologiaDaoXML.getInstance();
+//            String filter = String.format(formatter, "//Metodologia/metodologia", 
+//                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
+//            o.setMetodologias(dao.list(filter, o));
+//            
+//            DaoPattern<ObjetivoDetalhe> daoDetalhe = ObjetivoDetalheDaoXML.getInstance();
+//            filter = String.format(formatter, "//ObjetivoDetalhe/objetivoDetalhe", 
+//                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
+//            o.setObjetivoDetalhes(daoDetalhe.list(filter, o));
             
             return o;
         } catch (Exception ex) {

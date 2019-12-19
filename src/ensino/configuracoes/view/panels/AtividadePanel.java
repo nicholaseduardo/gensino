@@ -11,6 +11,7 @@ import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.defaults.DefaultFormPanel;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.util.JCalendario;
 import ensino.util.types.MesesDeAno;
 import java.awt.Component;
@@ -45,7 +46,7 @@ public class AtividadePanel extends DefaultFormPanel {
         try {
             setName("panel.atividade");
             setTitlePanel("Atividades");
-            setController(new AtividadeController());
+            setController(ControllerFactory.createAtividadeController());
 
             tabbedPane = new JTabbedPane();
             tabbedPane.addChangeListener(new ChangeListener() {
@@ -89,7 +90,7 @@ public class AtividadePanel extends DefaultFormPanel {
         if (selectedCalendario != null) {
             try {
                 // busca a lista de atividades
-                CalendarioController calCol = new CalendarioController();
+                CalendarioController calCol = ControllerFactory.createCalendarioController();
                 selectedCalendario = calCol.buscarPor(selectedCalendario.getAno(), selectedCalendario.getCampus().getId());
                 atividadesLis = selectedCalendario.getAtividades();
 

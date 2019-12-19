@@ -13,6 +13,7 @@ import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,8 +25,16 @@ import javax.xml.transform.TransformerException;
  */
 public class CursoController extends AbstractController<Curso> {
     
-    public CursoController() throws IOException, ParserConfigurationException, TransformerException {
+    private static CursoController instance = null;
+    
+    private CursoController() throws IOException, ParserConfigurationException, TransformerException {
         super(CursoDaoXML.getInstance(), CursoFactory.getInstance());
+    }
+    
+    public static CursoController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new CursoController();
+        return instance;
     }
     
     /**
@@ -54,10 +63,10 @@ public class CursoController extends AbstractController<Curso> {
     public Curso salvar(Curso o) throws Exception {
         o = super.salvar(o);
         // salvar cascade
-        AbstractController<Turma> turmaCol = new TurmaController();
+        AbstractController<Turma> turmaCol = ControllerFactory.createTurmaController();
         turmaCol.salvarEmCascata(o.getTurmas());
         
-        AbstractController<UnidadeCurricular> unidadeCurricularCol = new UnidadeCurricularController();
+        AbstractController<UnidadeCurricular> unidadeCurricularCol = ControllerFactory.createUnidadeCurricularController();
         unidadeCurricularCol.salvarEmCascata(o.getUnidadesCurriculares());
 
         return o;

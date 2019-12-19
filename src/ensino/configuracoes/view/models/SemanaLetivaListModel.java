@@ -9,6 +9,7 @@ import ensino.configuracoes.controller.SemanaLetivaController;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,7 +43,7 @@ public class SemanaLetivaListModel extends AbstractListModel {
 
     private void initComponents() {
         try {
-            semanaLetivaCol = new SemanaLetivaController();
+            semanaLetivaCol = ControllerFactory.createSemanaLetivaController();
             list = new ArrayList();
             refresh();
         } catch (IOException | ParserConfigurationException | TransformerException ex) {
@@ -55,9 +56,7 @@ public class SemanaLetivaListModel extends AbstractListModel {
             list = (List<SemanaLetiva>) semanaLetivaCol.listar();
         } else {
             Calendario cal = periodoLetivo.getCalendario();
-            list = semanaLetivaCol.listar(periodoLetivo.getNumero(),
-                    cal.getAno(),
-                    cal.getCampus().getId());
+            list = semanaLetivaCol.listar(periodoLetivo);
         }
         if (!list.isEmpty()) {
             list.sort(Comparator.comparing(SemanaLetiva::getDescricao));

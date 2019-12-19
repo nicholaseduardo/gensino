@@ -11,6 +11,7 @@ import ensino.configuracoes.controller.CalendarioController;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.view.panels.CalendarioPanel;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -130,7 +131,7 @@ public class CalendarioSearch extends JPanel {
                 return;
             }
             
-            CalendarioController col = new CalendarioController();
+            CalendarioController col = ControllerFactory.createCalendarioController();
             String sid = txtAno.getText();
             // nenhum codigo foi digitado
             if (e.getSource() == btSearch) {

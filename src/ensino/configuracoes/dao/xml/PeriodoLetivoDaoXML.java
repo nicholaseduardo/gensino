@@ -55,13 +55,13 @@ public class PeriodoLetivoDaoXML extends AbstractDaoXML<PeriodoLetivo> {
             }
             calendario.addPeriodoLetivo(o);
             // load children
-            Integer campusId = new Integer(e.getAttribute("campusId")),
-                    ano = new Integer(e.getAttribute("ano"));
-            String formatter = "%s[@pNumero=%d and @ano=%d and @campusId=%d]";
-            String filter = String.format(formatter,
-                    "//SemanaLetiva/semanaLetiva", o.getNumero(), ano, campusId);
-            DaoPattern<SemanaLetiva> semanaLetivaDao = SemanaLetivaDaoXML.getInstance();
-            o.setSemanasLetivas(semanaLetivaDao.list(filter, o));
+//            Integer campusId = new Integer(e.getAttribute("campusId")),
+//                    ano = new Integer(e.getAttribute("ano"));
+//            String formatter = "%s[@pNumero=%d and @ano=%d and @campusId=%d]";
+//            String filter = String.format(formatter,
+//                    "//SemanaLetiva/semanaLetiva", o.getNumero(), ano, campusId);
+//            DaoPattern<SemanaLetiva> semanaLetivaDao = SemanaLetivaDaoXML.getInstance();
+//            o.setSemanasLetivas(semanaLetivaDao.list(filter, o));
 
             return o;
         } catch (Exception ex) {

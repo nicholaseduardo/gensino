@@ -15,6 +15,7 @@ import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoAvaliacao;
@@ -112,7 +113,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
             comboBimestre = new GenJComboBox(Bimestre.values());
 
             txtNome = new GenJTextField(20, true);
-            comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(new InstrumentoAvaliacaoController()));
+            comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(ControllerFactory.createInstrumentoAvaliacaoController()));
             spinPeso = new GenJSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.1));
             spinPeso.setEditor(new JSpinner.NumberEditor(spinPeso, "0.0"));
             spinValor = new GenJSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.1));

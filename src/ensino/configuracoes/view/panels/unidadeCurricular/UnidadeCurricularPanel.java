@@ -19,6 +19,7 @@ import ensino.configuracoes.view.panels.CursoPanel;
 import ensino.configuracoes.view.renderer.UnidadeCurricularCellRenderer;
 import ensino.defaults.DefaultFormPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -65,7 +66,7 @@ public class UnidadeCurricularPanel extends DefaultFormPanel {
             super.setName("panel.unidadeCurricular");
             super.setTitlePanel("Dados da Unidade Curricular");
             // para capturar os dados do curso, usa-se a estrutura do campus
-            super.setController(new UnidadeCurricularController());
+            super.setController(ControllerFactory.createUnidadeCurricularController());
 
             super.enableTablePanel();
             super.setFieldsPanel(new UnidadeCurricularFieldsPanel());

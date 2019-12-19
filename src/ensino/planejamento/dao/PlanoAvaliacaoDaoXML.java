@@ -58,13 +58,13 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
             planoDeEnsino.addPlanoAvaliacao(o);
             
             // load children
-            String formatter = "%s[@planoAvaliacaoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
-            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
-            // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<Avaliacao> dao = AvaliacaoDaoXML.getInstance();
-            String filter = String.format(formatter, "//Avaliacao/avaliacao", 
-                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
-            o.setAvaliacoes(dao.list(filter, o));
+//            String formatter = "%s[@planoAvaliacaoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
+//            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
+//            // Cria mecanismo para buscar o conteudo no xml
+//            DaoPattern<Avaliacao> dao = AvaliacaoDaoXML.getInstance();
+//            String filter = String.format(formatter, "//Avaliacao/avaliacao", 
+//                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
+//            o.setAvaliacoes(dao.list(filter, o));
             
             return o;
         } catch (Exception ex) {

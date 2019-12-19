@@ -6,13 +6,13 @@
 package ensino.configuracoes.view.panels.filters;
 
 import ensino.components.GenJRadioButton;
-import ensino.configuracoes.controller.CalendarioController;
 import ensino.configuracoes.controller.CampusController;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import ensino.configuracoes.model.Campus;
 import ensino.defaults.DefaultFormPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class CampusFilter extends JPanel {
 
             setLayout(new GridBagLayout());
             GridBagConstraints cfilter = new GridBagConstraints();
-            CampusController campusCol = new CampusController();
+            CampusController campusCol = ControllerFactory.createCampusController();
             
             List listaCampus = campusCol.listar();
             for (int i = 0; i < listaCampus.size(); i++) {

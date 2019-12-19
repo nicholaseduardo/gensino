@@ -11,6 +11,7 @@ import ensino.configuracoes.controller.TurmaController;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.view.panels.turma.TurmaPanel;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -131,7 +132,7 @@ public class TurmaSearch extends JPanel {
                 return;
             }
             
-            TurmaController col = new TurmaController();
+            TurmaController col = ControllerFactory.createTurmaController();
             String sid = txtId.getText();
             // nenhum codigo foi digitado
             if (e.getSource() == btSearch) {

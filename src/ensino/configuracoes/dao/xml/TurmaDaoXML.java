@@ -54,11 +54,11 @@ public class TurmaDaoXML extends AbstractDaoXML<Turma> {
             curso.addTurma(o);
             
             // load children
-            String formatter = "%s[@turmaId=%d and @cursoId=%d and @campusId=%d]";
-            String filter = String.format(formatter,
-                    "//Estudante/estudante", o.getId(), cursoId, campusId);
-            DaoPattern<Estudante> turmaDao = EstudanteDaoXML.getInstance();
-            o.setEstudantes(turmaDao.list(filter, o));
+//            String formatter = "%s[@turmaId=%d and @cursoId=%d and @campusId=%d]";
+//            String filter = String.format(formatter,
+//                    "//Estudante/estudante", o.getId(), cursoId, campusId);
+//            DaoPattern<Estudante> turmaDao = EstudanteDaoXML.getInstance();
+//            o.setEstudantes(turmaDao.list(filter, o));
             
             return o;
         } catch (Exception ex) {

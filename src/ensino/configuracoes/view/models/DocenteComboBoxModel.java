@@ -7,6 +7,7 @@ package ensino.configuracoes.view.models;
 
 import ensino.configuracoes.controller.DocenteController;
 import ensino.configuracoes.model.Docente;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
@@ -33,7 +34,7 @@ public class DocenteComboBoxModel extends AbstractListModel implements ComboBoxM
     
     private void initComponents() {
         try {
-            docenteCol = new DocenteController();
+            docenteCol = ControllerFactory.createDocenteController();
             refresh();
         } catch (IOException | ParserConfigurationException | TransformerException ex) {
             Logger.getLogger(DocenteComboBoxModel.class.getName()).log(Level.SEVERE, null, ex);

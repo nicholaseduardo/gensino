@@ -33,6 +33,7 @@ import ensino.configuracoes.view.panels.filters.CampusFilter;
 import ensino.configuracoes.view.panels.filters.UnidadeCurricularSearch;
 import ensino.configuracoes.view.renderer.CursoCellRenderer;
 import ensino.configuracoes.view.renderer.UnidadeCurricularCellRenderer;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -67,7 +68,7 @@ public class CursoPanel extends DefaultFormPanel {
             setName("panel.curso");
             setTitlePanel("Dados de Cursos");
             // para capturar os dados do curso, usa-se a estrutura do campus
-            setController(new CursoController());
+            setController(ControllerFactory.createCursoController());
 
             enableTablePanel();
             setFieldsPanel(new CursoFields());
@@ -194,7 +195,7 @@ public class CursoPanel extends DefaultFormPanel {
                  * Prepara a lista dos campus cadastrados para vincular ao
                  * combobox
                  */
-                CampusController campusController = new CampusController();
+                CampusController campusController = ControllerFactory.createCampusController();
                 comboCampus = new GenJComboBox(campusController.listar().toArray());
                 // seleciona o campus
                 if (comboCampus.getModel().getSize() > 0) {

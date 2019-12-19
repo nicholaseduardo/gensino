@@ -11,6 +11,7 @@ import ensino.configuracoes.controller.CursoController;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.view.panels.CursoPanel;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -130,7 +131,7 @@ public class CursoSearch extends JPanel {
                 return;
             }
             
-            CursoController col = new CursoController();
+            CursoController col = ControllerFactory.createCursoController();
             String sid = txtId.getText();
             // nenhum codigo foi digitado
             if (e.getSource() == btSearch) {

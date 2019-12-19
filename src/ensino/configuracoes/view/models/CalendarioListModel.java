@@ -8,6 +8,7 @@ package ensino.configuracoes.view.models;
 import ensino.configuracoes.controller.CalendarioController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Calendario;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -41,7 +42,7 @@ public class CalendarioListModel extends AbstractListModel {
 
     private void initComponents() {
         try {
-            calendarioCol = new CalendarioController();
+            calendarioCol = ControllerFactory.createCalendarioController();
             list = new ArrayList();
             refresh();
         } catch (IOException | ParserConfigurationException | TransformerException ex) {

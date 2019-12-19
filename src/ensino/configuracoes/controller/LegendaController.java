@@ -18,8 +18,15 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class LegendaController extends AbstractController<Legenda> {
-
-    public LegendaController() throws IOException, ParserConfigurationException, TransformerException {
+    private static LegendaController instance = null;
+    
+    private LegendaController() throws IOException, ParserConfigurationException, TransformerException {
         super(LegendaDaoXML.getInstance(), LegendaFactory.getInstance());
+    }
+    
+    public static LegendaController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new LegendaController();
+        return instance;
     }
 }

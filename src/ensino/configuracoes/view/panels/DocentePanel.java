@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import ensino.components.GenJLabel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,8 +38,7 @@ public class DocentePanel extends DefaultFormPanel {
         try {
             setName("panel.docente");
             setTitlePanel("Dados do Docente");
-            DocenteController col = new DocenteController();
-            setController(col);
+            setController(ControllerFactory.createDocenteController());
 
             enableTablePanel();
             setFieldsPanel(new DocenteFields());

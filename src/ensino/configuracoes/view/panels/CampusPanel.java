@@ -28,6 +28,7 @@ import ensino.configuracoes.view.renderer.CalendarioCellRenderer;
 import ensino.configuracoes.view.renderer.CampusCellRenderer;
 import ensino.configuracoes.view.renderer.CursoCellRenderer;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -58,8 +59,7 @@ public class CampusPanel extends DefaultFormPanel {
         try {
             setName("panel.campus");
             setTitlePanel("Dados do Campus");
-            CampusController campusController = new CampusController();
-            setController(campusController);
+            setController(ControllerFactory.createCampusController());
 
             enableTablePanel();
             setFieldsPanel(new CampusFields());

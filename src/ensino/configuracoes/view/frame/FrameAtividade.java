@@ -12,12 +12,12 @@ import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.view.panels.AtividadeFields;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.defaults.DefaultFormPanel;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,7 +102,7 @@ public class FrameAtividade extends JDialog {
                 if (panelFields.isValidated()) {
                     HashMap<String, Object> params = panelFields.getFieldValues();
                     try {
-                        AtividadeController col = new AtividadeController();
+                        AtividadeController col = ControllerFactory.createAtividadeController();
                         Object object = col.salvar(params);
                         if (panelFields.getStatusPanel() == DefaultFieldsPanel.UPDATE_STATUS_PANEL) {
                             calendario.updAtividade((Atividade) object);

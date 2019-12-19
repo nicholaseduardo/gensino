@@ -6,17 +6,24 @@
 package ensino.configuracoes.view.renderer;
 
 import ensino.components.GenJLabel;
+import ensino.configuracoes.controller.ReferenciaBibliograficaController;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.view.models.UnidadeCurricularTableModel;
 import ensino.configuracoes.model.UnidadeCurricular;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -51,7 +58,15 @@ public class UnidadeCurricularCellRenderer extends GenCellRenderer {
         GenJLabel lblCampus = createLabel(String.format("[Campus: %s]", curso.getCampus().getNome()));
         lblCampus.resetFontSize(12);
         lblCampus.setIcon(new ImageIcon(getClass().getResource("/img/university-icon-15px.png")));
-
+        try {
+            /**
+             * Recupera os dados das referências bibliográficas
+             */
+            ReferenciaBibliograficaController referenciaCol = ControllerFactory.createReferenciaBibliograficaController();
+            und.setReferenciasBibliograficas(referenciaCol.listar(und));
+        } catch (Exception ex) {
+            Logger.getLogger(UnidadeCurricularCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         GenJLabel lblReferencias = createLabel(String.format("Referências bibliográficas: %d", und.getReferenciasBibliograficas().size()), JLabel.RIGHT);
         lblReferencias.resetFontSize(12);
         lblReferencias.setIcon(new ImageIcon(getClass().getResource("/img/library-icon-15px.png")));

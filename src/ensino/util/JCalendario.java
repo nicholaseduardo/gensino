@@ -14,6 +14,7 @@ import ensino.configuracoes.model.Legenda;
 import ensino.configuracoes.view.frame.FrameAtividade;
 import ensino.configuracoes.view.renderer.AtividadeListCellRenderer;
 import ensino.defaults.DefaultFormPanel;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -505,7 +506,7 @@ public class JCalendario extends JPanel {
                                     return;
                                 }
                                 Integer selectedIndex = listaAtividades.getSelectedIndex();
-                                AtividadeController col = new AtividadeController();
+                                AtividadeController col = ControllerFactory.createAtividadeController();
                                 col.remover(selectedItem);
                                 // remove o objeto da lista cuja linha já foi marcada como selecionada
                                 listaAtividades.remove(selectedIndex);

@@ -8,6 +8,7 @@ package ensino.configuracoes.controller;
 import ensino.configuracoes.dao.xml.AtividadeDaoXML;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeFactory;
+import ensino.configuracoes.model.Calendario;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;
@@ -21,8 +22,16 @@ import javax.xml.transform.TransformerException;
  */
 public class AtividadeController extends AbstractController<Atividade> {
     
-    public AtividadeController() throws IOException, ParserConfigurationException, TransformerException {
+    private static AtividadeController instance = null;
+    
+    private AtividadeController() throws IOException, ParserConfigurationException, TransformerException {
         super(AtividadeDaoXML.getInstance(), AtividadeFactory.getInstance());
+    }
+    
+    public static AtividadeController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null) 
+            instance = new AtividadeController();
+        return instance;
     }
     
     /**
@@ -39,14 +48,13 @@ public class AtividadeController extends AbstractController<Atividade> {
     
     /**
      * Lista as atividades do calendário do campus
-     * @param campusId  Identificação do campus
-     * @param ano       Ano do calendário
+     * @param o  Identificação do calendário
      * @return 
      */
-    public List<Atividade> listar(Integer campusId, Integer ano) {
+    public List<Atividade> listar(Calendario o) {
         DaoPattern<Atividade> dao = super.getDao();
         String filter = String.format("//Atividade/atividade[@ano=%d and @campusId=%d]",
-                ano, campusId);
-        return dao.list(filter);
+                o.getAno(), o.getCampus().getId());
+        return dao.list(filter, o);
     }
 }

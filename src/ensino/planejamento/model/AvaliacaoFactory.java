@@ -76,6 +76,11 @@ public class AvaliacaoFactory implements BeanFactory<Avaliacao> {
     public Node toXml(Document doc, Avaliacao o) {
         Element e = doc.createElement("avaliacao");
         e.setAttribute("nota", o.getNota().toString());
+        
+        e.setAttribute("planoAvaliacaoSequencia", o.getPlanoAvaliacao().getSequencia().toString());
+        e.setAttribute("planoDeEnsinoId", o.getPlanoAvaliacao().getPlanoDeEnsino().getId().toString());
+        e.setAttribute("unidadeCurricularId", o.getPlanoAvaliacao().getPlanoDeEnsino().getUnidadeCurricular().getId().toString());
+        
         e.setAttribute("estudanteId", o.getEstudante().getId().toString());
         e.setAttribute("turmaId", o.getEstudante().getTurma().toString());
         e.setAttribute("cursoId", o.getEstudante().getTurma().getCurso().getId().toString());

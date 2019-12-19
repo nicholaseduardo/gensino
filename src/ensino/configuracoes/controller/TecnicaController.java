@@ -17,8 +17,15 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class TecnicaController  extends AbstractController {
-
-    public TecnicaController() throws IOException, ParserConfigurationException, TransformerException {
+    private static TecnicaController instance = null;
+    
+    private TecnicaController() throws IOException, ParserConfigurationException, TransformerException {
         super(TecnicaDaoXML.getInstance(), TecnicaFactory.getInstance());
+    }
+    
+    public static TecnicaController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new TecnicaController();
+        return instance;
     }
 }

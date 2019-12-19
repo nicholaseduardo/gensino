@@ -5,8 +5,10 @@
  */
 package ensino.planejamento.dao;
 
+import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDaoXML;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Curso;
+import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
@@ -35,14 +37,15 @@ import org.w3c.dom.Node;
 public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
 
     private static PlanoDeEnsinoDaoXML instance;
-    
+
     private PlanoDeEnsinoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("planoDeEnsino", "PlanoDeEnsino", "planoDeEnsino", PlanoDeEnsinoFactory.getInstance());
     }
-    
+
     public static PlanoDeEnsinoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
-        if (instance == null) 
+        if (instance == null) {
             instance = new PlanoDeEnsinoDaoXML();
+        }
         return instance;
     }
 
@@ -51,56 +54,63 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
         try {
             PlanoDeEnsino o = getBeanFactory().getObject(e);
             Integer id = o.getId(),
-                    undId = o.getUnidadeCurricular().getId(),
-                    cursoId = o.getUnidadeCurricular().getCurso().getId(),
-                    campusId = o.getUnidadeCurricular().getCurso().getCampus().getId();
-            
+                    undId = new Integer(e.getAttribute("unidadeCurricularId")),
+                    cursoId = new Integer(e.getAttribute("cursoId")),
+                    campusId = new Integer(e.getAttribute("campusId"));
+
             UnidadeCurricular und;
             if (ref != null && ref instanceof UnidadeCurricular) {
                 und = (UnidadeCurricular) ref;
             } else {
                 DaoPattern<UnidadeCurricular> dao = UnidadeCurricularDaoXML.getInstance();
                 und = dao.findById(undId, cursoId, campusId);
+                /**
+                 * Recupera as referências bibliográficas da U.C.
+                 */
+                DaoPattern<ReferenciaBibliografica> daoRef = ReferenciaBibliograficaDaoXML.getInstance();
+                String filter = String.format("//ReferenciaBibliografica/referenciaBibliografica["
+                        + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+                        undId, cursoId, campusId);
+                
+                und.setReferenciasBibliograficas(daoRef.list(filter, o));
             }
             und.addPlanoDeEnsino(o);
-            
-            // load children
-            String formatter = "%s[@planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
 
-            // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<Detalhamento> detalhamentoDao = DetalhamentoDaoXML.getInstance();
-            String filter = String.format(formatter, "//Detalhamento/detalhamento", 
-                    id, undId, cursoId, campusId);
-            List<Detalhamento> l = detalhamentoDao.list(filter, o);
-            Collections.sort(l, new Comparator<Detalhamento>() {
-                @Override
-                public int compare(Detalhamento o1, Detalhamento o2) {
-                    return o1.getSequencia().compareTo(o2.getSequencia());
-                }
-                
-            });
-            o.setDetalhamentos(l);
-            
-            DaoPattern<Objetivo> objetivoDao = ObjetivoDaoXML.getInstance();
-            filter = String.format(formatter, "//Objetivo/objetivo", 
-                    id, undId, cursoId, campusId);
-            o.setObjetivos(objetivoDao.list(filter, o));
-            
-            DaoPattern<HorarioAula> horarioAulaDao = HorarioAulaDaoXML.getInstance();
-            filter = String.format(formatter, "//HorarioAula/horarioAula", 
-                    id, undId, cursoId, campusId);
-            o.setHorarios(horarioAulaDao.list(filter, o));
-            
-            DaoPattern<Diario> diarioDao = DiarioDaoXML.getInstance();
-            filter = String.format(formatter, "//Diario/diario", 
-                    id, undId, cursoId, campusId);
-            o.setDiarios(diarioDao.list(filter, o));
-            
-            DaoPattern<PlanoAvaliacao> planoAvaliacaoDao = PlanoAvaliacaoDaoXML.getInstance();
-            filter = String.format(formatter, "//PlanoAvaliacao/planoAvaliacao", 
-                    id, undId, cursoId, campusId);
-            o.setPlanosAvaliacoes(planoAvaliacaoDao.list(filter, o));
-            
+////             load children
+//            String formatter = "%s[@planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
+//
+//            DaoPattern<Objetivo> objetivoDao = ObjetivoDaoXML.getInstance();
+//            String filter = String.format(formatter, "//Objetivo/objetivo", 
+//                    id, undId, cursoId, campusId);
+//            o.setObjetivos(objetivoDao.list(filter, o));
+//            
+//            DaoPattern<HorarioAula> horarioAulaDao = HorarioAulaDaoXML.getInstance();
+//            filter = String.format(formatter, "//HorarioAula/horarioAula", 
+//                    id, undId, cursoId, campusId);
+//            o.setHorarios(horarioAulaDao.list(filter, o));
+//            
+//            // Cria mecanismo para buscar o conteudo no xml
+//            DaoPattern<Detalhamento> detalhamentoDao = DetalhamentoDaoXML.getInstance();
+//            filter = String.format(formatter, "//Detalhamento/detalhamento", 
+//                    id, undId, cursoId, campusId);
+//            List<Detalhamento> l = detalhamentoDao.list(filter, o);
+//            Collections.sort(l, new Comparator<Detalhamento>() {
+//                @Override
+//                public int compare(Detalhamento o1, Detalhamento o2) {
+//                    return o1.getSequencia().compareTo(o2.getSequencia());
+//                }
+//            });
+//            o.setDetalhamentos(l);
+//            
+//            DaoPattern<Diario> diarioDao = DiarioDaoXML.getInstance();
+//            filter = String.format(formatter, "//Diario/diario", 
+//                    id, undId, cursoId, campusId);
+//            o.setDiarios(diarioDao.list(filter, o));
+//            
+//            DaoPattern<PlanoAvaliacao> planoAvaliacaoDao = PlanoAvaliacaoDaoXML.getInstance();
+//            filter = String.format(formatter, "//PlanoAvaliacao/planoAvaliacao", 
+//                    id, undId, cursoId, campusId);
+//            o.setPlanosAvaliacoes(planoAvaliacaoDao.list(filter, o));;
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -109,8 +119,7 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
     }
 
     /**
-     * Recupera um objeto de acorco com sua chave
-     * primária
+     * Recupera um objeto de acorco com sua chave primária
      *
      * @param ids Os IDS estão divididos em seis parâmetros:<br>
      * <ul>

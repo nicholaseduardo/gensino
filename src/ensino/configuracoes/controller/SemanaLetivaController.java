@@ -6,6 +6,7 @@
 package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.SemanaLetivaDaoXML;
+import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.SemanaLetivaFactory;
 import ensino.patterns.AbstractController;
@@ -21,8 +22,16 @@ import javax.xml.transform.TransformerException;
  */
 public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
     
-    public SemanaLetivaController() throws IOException, ParserConfigurationException, TransformerException {
+    private static SemanaLetivaController instance = null;
+    
+    private SemanaLetivaController() throws IOException, ParserConfigurationException, TransformerException {
         super(SemanaLetivaDaoXML.getInstance(), SemanaLetivaFactory.getInstance());
+    }
+    
+    public static SemanaLetivaController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new SemanaLetivaController();
+        return instance;
     }
     
     /**
@@ -40,15 +49,16 @@ public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
     
     /**
      * Lista os periodoLetivos de um determinado calendario
-     * @param numero    Número do período letivo
-     * @param ano       Ano do calendário
-     * @param campusId  Identificação do campus
+     * @param o    Número do período letivo
      * @return 
      */
-    public List<SemanaLetiva> listar(Integer numero, Integer ano, Integer campusId) {
+    public List<SemanaLetiva> listar(PeriodoLetivo o) {
         DaoPattern<SemanaLetiva> dao = super.getDao();
-        String filter = String.format("//SemanaLetiva/semanaLetiva[@pNumero=%d and @ano=%d and @campusId=%d]", 
-                numero, ano, campusId);
+        String filter = String.format("//SemanaLetiva/semanaLetiva[@pNumero=%d "
+                + "and @ano=%d and @campusId=%d]", 
+                o.getNumero(), 
+                o.getCalendario().getAno(), 
+                o.getCalendario().getCampus().getId());
         return dao.list(filter);
     }
     

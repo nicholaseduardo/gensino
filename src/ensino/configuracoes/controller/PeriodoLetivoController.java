@@ -6,11 +6,13 @@
 package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.PeriodoLetivoDaoXML;
+import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.PeriodoLetivoFactory;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,8 +24,16 @@ import javax.xml.transform.TransformerException;
  */
 public class PeriodoLetivoController extends AbstractController<PeriodoLetivo> {
     
-    public PeriodoLetivoController() throws IOException, ParserConfigurationException, TransformerException {
+    private static PeriodoLetivoController instance = null;
+    
+    private PeriodoLetivoController() throws IOException, ParserConfigurationException, TransformerException {
         super(PeriodoLetivoDaoXML.getInstance(), PeriodoLetivoFactory.getInstance());
+    }
+    
+    public static PeriodoLetivoController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new PeriodoLetivoController();
+        return instance;
     }
     
     /**
@@ -40,22 +50,21 @@ public class PeriodoLetivoController extends AbstractController<PeriodoLetivo> {
     
     /**
      * Lista os periodoLetivos de um determinado calendario
-     * @param ano
-     * @param campusId  Identificação do campus
+     * @param o  Identificação do calendário
      * @return 
      */
-    public List<PeriodoLetivo> listar(Integer ano, Integer campusId) {
+    public List<PeriodoLetivo> listar(Calendario o) {
         DaoPattern<PeriodoLetivo> dao = super.getDao();
         String filter = String.format("//PeriodoLetivo/periodoLetivo[@ano=%d and @campusId=%d]", 
-                ano, campusId);
-        return dao.list(filter);
+                o.getAno(), o.getCampus().getId());
+        return dao.list(filter, o);
     }
     
     @Override
     public PeriodoLetivo salvar(PeriodoLetivo o) throws Exception {
         o = super.salvar(o);
         // salver cascade
-        AbstractController<SemanaLetiva> col = new SemanaLetivaController();
+        AbstractController<SemanaLetiva> col = ControllerFactory.createSemanaLetivaController();
         col.salvarEmCascata(o.getSemanasLetivas());
         return o;
     }

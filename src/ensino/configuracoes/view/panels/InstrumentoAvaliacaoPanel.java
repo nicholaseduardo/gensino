@@ -21,6 +21,7 @@ import ensino.components.GenJTextField;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.configuracoes.view.models.InstrumentoAvaliacaoTableModel;
 import ensino.configuracoes.view.renderer.MetodoCellRenderer;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -43,8 +44,8 @@ public class InstrumentoAvaliacaoPanel extends DefaultFormPanel {
         try {
             super.setName("panel.instrumento");
             super.setTitlePanel("Dados do Instrumento de Avaliação");
-            InstrumentoAvaliacaoController campusController = new InstrumentoAvaliacaoController();
-            super.setController(campusController);
+            
+            super.setController(ControllerFactory.createInstrumentoAvaliacaoController());
             super.enableTablePanel();
 
             super.setFieldsPanel(new InstrumentoAvaliacaoFields());

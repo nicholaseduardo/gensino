@@ -19,6 +19,7 @@ import ensino.configuracoes.view.panels.CalendarioPanel;
 import ensino.configuracoes.view.renderer.AtividadeCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.util.types.Periodo;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -152,7 +153,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
             GenJLabel lblLegenda = new GenJLabel("Legenda: ", JLabel.TRAILING);
             GridLayoutHelper.setRight(c, 0, 3);
             panelLeft.add(lblLegenda, c);
-            LegendaController legendaCol = new LegendaController();
+            LegendaController legendaCol = ControllerFactory.createLegendaController();
             comboLegenda = new GenJComboBox(legendaCol.listar().toArray());
             lblLegenda.setLabelFor(comboLegenda);
             GridLayoutHelper.set(c, 1, 3);
@@ -291,7 +292,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
                  * ela não vem preenchida no calendário
                  */
 //                AtividadeController col = new AtividadeController();
-//                calendario.setAtividade(
+//                calendario.setAtividades(
 //                    col.listar(calendario.getCampus().getId(), 
 //                            calendario.getAno()));
                 setData(calendario.getAtividades());

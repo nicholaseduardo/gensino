@@ -6,16 +6,24 @@
 package ensino.configuracoes.view.renderer;
 
 import ensino.components.GenJLabel;
+import ensino.configuracoes.controller.AtividadeController;
+import ensino.configuracoes.controller.PeriodoLetivoController;
 import ensino.configuracoes.view.models.CalendarioTableModel;
 import ensino.configuracoes.model.Calendario;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -44,11 +52,27 @@ public class CalendarioCellRenderer extends GenCellRenderer {
                 cal.getCampus().getNome()));
         lblCampus.resetFontSize(12);
         lblCampus.setIcon(new ImageIcon(getClass().getResource("/img/university-icon-15px.png")));
-        
+        try {
+            /**
+             * Recupera os dados das Atividades do Calendário
+             */
+            AtividadeController atividadeCol = ControllerFactory.createAtividadeController();
+            cal.setAtividades(atividadeCol.listar(cal));
+        } catch (Exception ex) {
+            Logger.getLogger(CalendarioCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         GenJLabel lblTasks = createLabel(String.format("Atividades: %d", cal.getAtividades().size()), JLabel.RIGHT);
         lblTasks.resetFontSize(12);
         lblTasks.setIcon(new ImageIcon(getClass().getResource("/img/tasks-icon-15px.png")));
-        
+        try {
+            /**
+             * Recupera os dados dos períodos letivos do calendário
+             */
+            PeriodoLetivoController periodoCol = ControllerFactory.createPeriodoLetivoController();
+            cal.setPeriodosLetivos(periodoCol.listar(cal));
+        } catch (Exception ex) {
+            Logger.getLogger(CalendarioCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         GenJLabel lblPeriodoEnsino = createLabel(String.format("Períodos de Ensino: %d", 
                 cal.getPeriodosLetivos().size()), JLabel.RIGHT);
         lblPeriodoEnsino.resetFontSize(12);

@@ -9,15 +9,30 @@ import ensino.configuracoes.view.renderer.*;
 import ensino.components.GenJLabel;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
+import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.DetalhamentoController;
+import ensino.planejamento.controller.DiarioController;
+import ensino.planejamento.controller.HorarioAulaController;
+import ensino.planejamento.controller.ObjetivoController;
+import ensino.planejamento.controller.PlanoAvaliacaoController;
+import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.PlanoDeEnsinoTableModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -62,11 +77,38 @@ public class PlanoDeEnsinoCellRenderer extends GenCellRenderer {
                         planoDeEnsino.getPeriodoLetivo().getDescricao()));
         lblCalendario.resetFontSize(12);
 
+        try {
+            /**
+             * Recupera os dados dos Objetivos do plano de ensino e
+             * planos de avaliações, horários de aulas e detalhamentos
+             */
+            ObjetivoController objetivoCol = ControllerFactory.createObjetivoController();
+            planoDeEnsino.setObjetivos(objetivoCol.listar(planoDeEnsino));
+            
+            HorarioAulaController horarioCol = ControllerFactory.createHorarioAulaController();
+            planoDeEnsino.setHorarios(horarioCol.listar(planoDeEnsino));
+            
+            DetalhamentoController detalhamentoCol = ControllerFactory.createDetalhamentoController();
+            List<Detalhamento> l = detalhamentoCol.listar(planoDeEnsino);
+            Collections.sort(l, (Detalhamento o1, Detalhamento o2) -> o1.getSequencia().compareTo(o2.getSequencia()));
+            
+            planoDeEnsino.setDetalhamentos(l);
+            
+            DiarioController diarioCol = ControllerFactory.createDiarioController();
+            planoDeEnsino.setDiarios(diarioCol.listar(planoDeEnsino));
+            
+            PlanoAvaliacaoController planoAvaliacaoCol = ControllerFactory.createPlanoAvaliacaoController();
+            planoDeEnsino.setPlanosAvaliacoes(planoAvaliacaoCol.listar(planoDeEnsino));
+            
+        } catch (Exception ex) {
+            Logger.getLogger(PlanoDeEnsinoCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         GenJLabel lblDetalhamentos = createLabel(
                 String.format("Detalhamento: %d semanas letivas",
                         planoDeEnsino.getDetalhamentos().size()));
         lblDetalhamentos.resetFontSize(12);
-
+        
         GenJLabel lblObjetivos = createLabel(
                 String.format("N.o de Objetivos: %d / "
                         + "N.o de Avaliaçoes: %d",

@@ -6,17 +6,23 @@
 package ensino.configuracoes.view.renderer;
 
 import ensino.components.GenJLabel;
+import ensino.configuracoes.controller.EstudanteController;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.view.models.TurmaTableModel;
 import ensino.configuracoes.model.Turma;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -51,7 +57,15 @@ public class TurmaCellRenderer extends GenCellRenderer {
         GenJLabel lblCampus = createLabel(String.format("[Campus: %s]", curso.getCampus().getNome()));
         lblCampus.resetFontSize(12);
         lblCampus.setIcon(new ImageIcon(getClass().getResource("/img/university-icon-15px.png")));
-
+        try {
+            /**
+             * Recupera os dados dos estudantes
+             */
+            EstudanteController eCol = ControllerFactory.createEstudanteController();
+            turma.setEstudantes(eCol.listar(turma));
+        } catch (Exception ex) {
+            Logger.getLogger(TurmaCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         GenJLabel lblNEstudantes = createLabel(String.format("[Estudantes: %d]",
                         turma.getEstudantes().size()));
         lblNEstudantes.resetFontSize(12);

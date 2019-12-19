@@ -12,6 +12,7 @@ import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.TurmaFactory;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,8 +24,16 @@ import javax.xml.transform.TransformerException;
  */
 public class TurmaController extends AbstractController<Turma> {
     
-    public TurmaController() throws IOException, ParserConfigurationException, TransformerException {
+    private static TurmaController instance = null;
+    
+    private TurmaController() throws IOException, ParserConfigurationException, TransformerException {
         super(TurmaDaoXML.getInstance(), TurmaFactory.getInstance());
+    }
+    
+    public static TurmaController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new TurmaController();
+        return instance;
     }
     
     /**
@@ -55,7 +64,7 @@ public class TurmaController extends AbstractController<Turma> {
     public Turma salvar(Turma o) throws Exception {
         o = super.salvar(o);
         // salvar cascade
-        AbstractController<Estudante> estudanteCon = new EstudanteController();
+        AbstractController<Estudante> estudanteCon = ControllerFactory.createEstudanteController();
         estudanteCon.salvarEmCascata(o.getEstudantes());
 
         return o;

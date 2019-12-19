@@ -10,6 +10,7 @@ import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.BibliografiaController;
 import ensino.configuracoes.model.Bibliografia;
 import ensino.configuracoes.view.panels.BibliografiaPanel;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -99,7 +100,7 @@ public class BibliografiaSearch extends JPanel {
 
     public void onSearchListener(AWTEvent e) {
         try {
-            BibliografiaController col = new BibliografiaController();
+            BibliografiaController col = ControllerFactory.createBibliografiaController();
             String sid = txtId.getText();
             // nenhum codigo foi digitado
             if (e.getSource() == btSearch) {

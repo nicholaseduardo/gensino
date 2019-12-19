@@ -17,8 +17,15 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class InstrumentoAvaliacaoController  extends AbstractController {
-
-    public InstrumentoAvaliacaoController() throws IOException, ParserConfigurationException, TransformerException {
+    private static InstrumentoAvaliacaoController instance = null;
+    
+    private InstrumentoAvaliacaoController() throws IOException, ParserConfigurationException, TransformerException {
         super(InstrumentoAvaliacaoDaoXML.getInstance(), InstrumentoAvaliacaoFactory.getInstance());
+    }
+    
+    public static InstrumentoAvaliacaoController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new InstrumentoAvaliacaoController();
+        return instance;
     }
 }

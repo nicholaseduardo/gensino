@@ -6,18 +6,25 @@
 package ensino.configuracoes.view.renderer;
 
 import ensino.components.GenJLabel;
+import ensino.configuracoes.controller.CalendarioController;
+import ensino.configuracoes.controller.CursoController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.view.models.CampusTableModel;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -42,11 +49,27 @@ public class CampusCellRenderer extends GenCellRenderer {
         Campus campus = (Campus) model.getRow(row);
         GenJLabel lblTitle = createLabel(campus.getNome());
         lblTitle.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
-        
+        try {
+            /**
+             * Recupera os dados dos cursos
+             */
+            CursoController cursoCol = ControllerFactory.createCursoController();
+            campus.setCursos(cursoCol.listar(campus));
+        } catch (Exception ex) {
+            Logger.getLogger(CampusCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         GenJLabel lblCurso = createLabel(String.format("Cursos: %d", campus.getCursos().size()), JLabel.RIGHT);
         lblCurso.resetFontSize(12);
         lblCurso.setIcon(new ImageIcon(getClass().getResource("/img/courses-icon-15px.png")));
-        
+        try {
+            /**
+             * Recupera os dados dos calendários
+             */
+            CalendarioController calendarioCol = ControllerFactory.createCalendarioController();
+            campus.setCalendarios(calendarioCol.listar(campus));
+        } catch (Exception ex) {
+            Logger.getLogger(CampusCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         GenJLabel lblCal = createLabel(String.format("Calendários: %d", campus.getCalendarios().size()), JLabel.RIGHT);
         lblCal.resetFontSize(12);
         lblCal.setIcon(new ImageIcon(getClass().getResource("/img/calendar-image-png-15px.png")));

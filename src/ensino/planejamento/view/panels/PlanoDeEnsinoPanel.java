@@ -16,6 +16,7 @@ import ensino.configuracoes.view.models.CursoListModel;
 import ensino.configuracoes.view.panels.filters.UnidadeCurricularSearch;
 import ensino.defaults.DefaultFormPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.PlanoDeEnsinoController;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.PlanoDeEnsinoTableModel;
@@ -89,7 +90,7 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
         try {
             setName("panel.planoDeEnsino");
             setTitlePanel("Dados de Planos de Ensino");
-            setController(new PlanoDeEnsinoController());
+            setController(ControllerFactory.createPlanoDeEnsinoController());
 
             enableTablePanel();
             setFieldsPanel(new PlanoDeEnsinoPanelFields());

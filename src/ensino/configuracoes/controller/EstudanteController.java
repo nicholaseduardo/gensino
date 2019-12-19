@@ -22,8 +22,16 @@ import javax.xml.transform.TransformerException;
  */
 public class EstudanteController extends AbstractController<Estudante> {
     
-    public EstudanteController() throws IOException, ParserConfigurationException, TransformerException {
+    private static EstudanteController instance = null;
+    
+    private EstudanteController() throws IOException, ParserConfigurationException, TransformerException {
         super(EstudanteDaoXML.getInstance(), EstudanteFactory.getInstance());
+    }
+    
+    public static EstudanteController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new EstudanteController();
+        return instance;
     }
     
     /**

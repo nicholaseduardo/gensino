@@ -21,6 +21,7 @@ import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Recurso;
 import ensino.configuracoes.view.models.RecursoTableModel;
 import ensino.configuracoes.view.renderer.MetodoCellRenderer;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import java.util.List;
 import javax.swing.JButton;
@@ -44,8 +45,7 @@ public class RecursoPanel extends DefaultFormPanel {
         try {
             super.setName("panel.recurso");
             super.setTitlePanel("Dados do Recurso");
-            RecursoController recursoController = new RecursoController();
-            super.setController(recursoController);
+            super.setController(ControllerFactory.createRecursoController());
 
             super.enableTablePanel();
             super.setFieldsPanel(new RecursoFields());

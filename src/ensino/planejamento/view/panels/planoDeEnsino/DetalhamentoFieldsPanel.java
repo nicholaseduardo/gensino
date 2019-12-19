@@ -20,6 +20,7 @@ import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.BaseObject;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
@@ -407,11 +408,11 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
             try {
                 if (aModel.isSelected()) {
                     if (e.getSource() == checkTecnica) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(new TecnicaController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createTecnicaController()));
                     } else if (e.getSource() == checkRecurso) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(new RecursoController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createRecursoController()));
                     } else if (e.getSource() == checkInstrumento) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(new InstrumentoAvaliacaoController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createInstrumentoAvaliacaoController()));
                     }
                 }
             } catch (IOException | ParserConfigurationException | TransformerException ex) {

@@ -11,6 +11,7 @@ import ensino.configuracoes.controller.UnidadeCurricularController;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularPanel;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
@@ -130,7 +131,7 @@ public class UnidadeCurricularSearch extends JPanel {
                 return;
             }
             
-            UnidadeCurricularController col = new UnidadeCurricularController();
+            UnidadeCurricularController col = ControllerFactory.createUnidadeCurricularController();
             String sid = txtId.getText();
             // nenhum codigo foi digitado
             if (e.getSource() == btSearch) {

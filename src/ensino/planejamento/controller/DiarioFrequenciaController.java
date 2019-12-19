@@ -22,9 +22,16 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class DiarioFrequenciaController extends AbstractController<DiarioFrequencia> {
+    private static DiarioFrequenciaController instance = null;
     
-    public DiarioFrequenciaController() throws IOException, ParserConfigurationException, TransformerException {
+    private DiarioFrequenciaController() throws IOException, ParserConfigurationException, TransformerException {
         super(DiarioFrequenciaDaoXML.getInstance(), DiarioFrequenciaFactory.getInstance());
+    }
+    
+    public static DiarioFrequenciaController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new DiarioFrequenciaController();
+        return instance;
     }
     
     /**
@@ -48,11 +55,19 @@ public class DiarioFrequenciaController extends AbstractController<DiarioFrequen
     /**
      * Listagem de diários por data
      * 
-     * @param diario         Identificação do diário
+     * @param o         Identificação do diário
      * @return 
      */
-    public List<DiarioFrequencia> list(Diario diario) {
+    public List<DiarioFrequencia> list(Diario o) {
         DaoPattern<DiarioFrequencia> dao = super.getDao();
-        return dao.list(diario);
+        String filter = String.format("//DiarioFrequencia/diarioFrequencia"
+                + "[@diarioId=%d and @planoDeEnsinoId=%d and "
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]", 
+                o.getId(),
+                o.getPlanoDeEnsino().getId(),
+                o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
+                o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
+                o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId());
+        return dao.list(filter, o);
     }
 }

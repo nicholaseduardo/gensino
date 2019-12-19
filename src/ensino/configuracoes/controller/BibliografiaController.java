@@ -21,8 +21,16 @@ import javax.xml.transform.TransformerException;
  */
 public class BibliografiaController extends AbstractController<Bibliografia> {
     
-    public BibliografiaController() throws IOException, ParserConfigurationException, TransformerException {
+    private static BibliografiaController instance = null;
+    
+    private BibliografiaController() throws IOException, ParserConfigurationException, TransformerException {
         super(BibliografiaDaoXML.getInstance(), BibliografiaFactory.getInstance());
+    }
+    
+    public static BibliografiaController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new BibliografiaController();
+        return instance;
     }
     
     /**

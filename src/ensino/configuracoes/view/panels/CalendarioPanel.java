@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import ensino.configuracoes.view.panels.calendario.CalendarioFields;
 import ensino.configuracoes.view.panels.filters.CampusFilter;
 import ensino.configuracoes.view.renderer.CalendarioCellRenderer;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -49,8 +50,8 @@ public class CalendarioPanel extends DefaultFormPanel {
         try {
             setName("panel.calendario");
             setTitlePanel("Dados do Calendario");
-            CalendarioController calendarioController = new CalendarioController();
-            setController(calendarioController);
+            
+            setController(ControllerFactory.createCalendarioController());
 
             enableTablePanel();
             reloadTableData();

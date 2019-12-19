@@ -8,6 +8,7 @@ package ensino.configuracoes.view.models;
 import ensino.configuracoes.controller.CursoController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -41,7 +42,7 @@ public class CursoListModel extends AbstractListModel {
 
     private void initComponents() {
         try {
-            cursoCol = new CursoController();
+            cursoCol = ControllerFactory.createCursoController();
             list = new ArrayList();
             refresh();
         } catch (IOException | ParserConfigurationException | TransformerException ex) {

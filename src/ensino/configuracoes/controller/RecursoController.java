@@ -17,8 +17,15 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class RecursoController extends AbstractController {
-
-    public RecursoController() throws IOException, ParserConfigurationException, TransformerException {
+    private static RecursoController instance = null;
+    
+    private RecursoController() throws IOException, ParserConfigurationException, TransformerException {
         super(RecursoDaoXML.getInstance(), RecursoFactory.getInstance());
+    }
+    
+    public static RecursoController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new RecursoController();
+        return instance;
     }
 }

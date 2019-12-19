@@ -15,6 +15,7 @@ import ensino.configuracoes.view.panels.TecnicaPanel;
 import ensino.defaults.DefaultFormPanel;
 import ensino.patterns.AbstractController;
 import ensino.patterns.BaseObject;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.util.types.TipoMetodo;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;
@@ -140,15 +141,15 @@ public class MetodologiaSearch extends JPanel {
             switch (tipoMetodo) {
                 default:
                 case TECNICA:
-                    col = new TecnicaController();
+                    col = ControllerFactory.createTecnicaController();
                     bPanel = new TecnicaPanel(dialog);
                     break;
                 case RECURSO:
-                    col = new RecursoController();
+                    col = ControllerFactory.createRecursoController();
                     bPanel = new RecursoPanel(dialog);
                     break;
                 case INSTRUMENTO:
-                    col = new RecursoController();
+                    col = ControllerFactory.createInstrumentoAvaliacaoController();
                     bPanel = new InstrumentoAvaliacaoPanel(dialog);
                     break;
             }

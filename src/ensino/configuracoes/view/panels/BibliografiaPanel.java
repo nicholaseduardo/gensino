@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import ensino.components.GenJTextArea;
 import ensino.configuracoes.view.renderer.BibliografiaCellRenderer;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -52,8 +53,8 @@ public class BibliografiaPanel extends DefaultFormPanel {
         try {
             setName("panel.bibliografia");
             setTitlePanel("Dados de Bibliografia");
-            BibliografiaController bibliografiaController = new BibliografiaController();
-            setController(bibliografiaController);
+            
+            setController(ControllerFactory.createBibliografiaController());
 
             enableTablePanel();
 

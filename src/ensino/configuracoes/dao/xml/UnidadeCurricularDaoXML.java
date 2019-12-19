@@ -56,16 +56,16 @@ public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
             curso.addUnidadeCurricular(o);
             
             // load children
-            String formatter = "%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
-            String filter = String.format(formatter,
-                    "//ReferenciaBibliografica/referenciaBibliografica", o.getId(), cursoId, campusId);
-            DaoPattern<ReferenciaBibliografica> dao = ReferenciaBibliograficaDaoXML.getInstance();
-            o.setReferenciasBibliograficas(dao.list(filter, o));
-            
-            filter = "" + String.format(formatter,
-                    "//PlanoDeEnsino/planoDeEnsino", o.getId(), cursoId, campusId);
-            DaoPattern<PlanoDeEnsino> daoPlano = PlanoDeEnsinoDaoXML.getInstance();
-            o.setPlanosDeEnsino(daoPlano.list(filter, o));
+//            String formatter = "%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
+//            String filter = String.format(formatter,
+//                    "//ReferenciaBibliografica/referenciaBibliografica", o.getId(), cursoId, campusId);
+//            DaoPattern<ReferenciaBibliografica> dao = ReferenciaBibliograficaDaoXML.getInstance();
+//            o.setReferenciasBibliograficas(dao.list(filter, o));
+//            
+//            filter = "" + String.format(formatter,
+//                    "//PlanoDeEnsino/planoDeEnsino", o.getId(), cursoId, campusId);
+//            DaoPattern<PlanoDeEnsino> daoPlano = PlanoDeEnsinoDaoXML.getInstance();
+//            o.setPlanosDeEnsino(daoPlano.list(filter, o));
             
             return o;
         } catch (Exception ex) {

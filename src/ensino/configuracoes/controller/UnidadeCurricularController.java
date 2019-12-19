@@ -12,6 +12,7 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.UnidadeCurricularFactory;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,8 +24,16 @@ import javax.xml.transform.TransformerException;
  */
 public class UnidadeCurricularController extends AbstractController<UnidadeCurricular> {
 
-    public UnidadeCurricularController() throws IOException, ParserConfigurationException, TransformerException {
+    private static UnidadeCurricularController instance = null;
+    
+    private UnidadeCurricularController() throws IOException, ParserConfigurationException, TransformerException {
         super(UnidadeCurricularDaoXML.getInstance(), UnidadeCurricularFactory.getInstance());
+    }
+    
+    public static UnidadeCurricularController getInstance() throws IOException, ParserConfigurationException, TransformerException {
+        if (instance == null)
+            instance = new UnidadeCurricularController();
+        return instance;
     }
 
     /**
@@ -71,7 +80,7 @@ public class UnidadeCurricularController extends AbstractController<UnidadeCurri
     public UnidadeCurricular salvar(UnidadeCurricular o) throws Exception {
         o = super.salvar(o);
         //salvar cascade
-        AbstractController<ReferenciaBibliografica> col = ReferenciaBibliograficaController.getInstance();
+        AbstractController<ReferenciaBibliografica> col = ControllerFactory.createReferenciaBibliograficaController();
         col.salvarEmCascata(o.getReferenciasBibliograficas());
 
         return o;

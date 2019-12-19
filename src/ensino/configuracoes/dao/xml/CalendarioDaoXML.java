@@ -59,16 +59,16 @@ public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
             campus.addCalendario(o);
 
             // load children
-            String formatter = "%s[@ano=%d and @campusId=%d]";
-            String filter = String.format(formatter,
-                    "//Atividade/atividade", ano, campusId);
-            DaoPattern<Atividade> atividadeDao = AtividadeDaoXML.getInstance();
-            o.setAtividade(atividadeDao.list(filter, o));
-
-            DaoPattern<PeriodoLetivo> periodoLetivoDao = PeriodoLetivoDaoXML.getInstance();
-            filter = String.format(formatter,
-                    "//PeriodoLetivo/periodoLetivo", ano, campusId);
-            o.setPeriodosLetivos(periodoLetivoDao.list(filter, o));
+//            String formatter = "%s[@ano=%d and @campusId=%d]";
+//            String filter = String.format(formatter,
+//                    "//Atividade/atividade", ano, campusId);
+//            DaoPattern<Atividade> atividadeDao = AtividadeDaoXML.getInstance();
+//            o.setAtividades(atividadeDao.list(filter, o));
+//
+//            DaoPattern<PeriodoLetivo> periodoLetivoDao = PeriodoLetivoDaoXML.getInstance();
+//            filter = String.format(formatter,
+//                    "//PeriodoLetivo/periodoLetivo", ano, campusId);
+//            o.setPeriodosLetivos(periodoLetivoDao.list(filter, o));
 
             return o;
         } catch (Exception ex) {

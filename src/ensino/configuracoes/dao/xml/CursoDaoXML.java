@@ -55,16 +55,16 @@ public class CursoDaoXML extends AbstractDaoXML<Curso> {
             campus.addCurso(o);
             
             // load children
-            String formatter = "%s[@cursoId=%d and @campusId=%d]";
-            String filter = String.format(formatter,
-                    "//Turma/turma", o.getId(), campusId);
-            DaoPattern<Turma> turmaDao = TurmaDaoXML.getInstance();
-            o.setTurmas(turmaDao.list(filter, o));
-            
-            filter = String.format(formatter,
-                    "//UnidadeCurricular/unidadeCurricular", o.getId(), campusId);
-            DaoPattern<UnidadeCurricular> unidadeCurricularDao = UnidadeCurricularDaoXML.getInstance();
-            o.setUnidadesCurriculares(unidadeCurricularDao.list(filter, o));
+//            String formatter = "%s[@cursoId=%d and @campusId=%d]";
+//            String filter = String.format(formatter,
+//                    "//Turma/turma", o.getId(), campusId);
+//            DaoPattern<Turma> turmaDao = TurmaDaoXML.getInstance();
+//            o.setTurmas(turmaDao.list(filter, o));
+//            
+//            filter = String.format(formatter,
+//                    "//UnidadeCurricular/unidadeCurricular", o.getId(), campusId);
+//            DaoPattern<UnidadeCurricular> unidadeCurricularDao = UnidadeCurricularDaoXML.getInstance();
+//            o.setUnidadesCurriculares(unidadeCurricularDao.list(filter, o));
             
             return o;
         } catch (Exception ex) {

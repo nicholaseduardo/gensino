@@ -46,14 +46,14 @@ public class CampusDaoXML extends AbstractDaoXML<Campus> {
             // load children
             String formatter = "%s[@campusId=%d]";
 
-            // Cria mecanismo para buscar o conteudo no xml
-            DaoPattern<Calendario> calendarioDao = CalendarioDaoXML.getInstance();
-            String filter = String.format(formatter, "//Calendario/calendario", id);
-            o.setCalendarios(calendarioDao.list(filter, o));
-            
-            DaoPattern<Curso> cursoDao = CursoDaoXML.getInstance();
-            filter = String.format(formatter, "//Curso/curso", id);
-            o.setCursos(cursoDao.list(filter, o));
+//            // Cria mecanismo para buscar o conteudo no xml
+//            DaoPattern<Calendario> calendarioDao = CalendarioDaoXML.getInstance();
+//            String filter = String.format(formatter, "//Calendario/calendario", id);
+//            o.setCalendarios(calendarioDao.list(filter, o));
+//            
+//            DaoPattern<Curso> cursoDao = CursoDaoXML.getInstance();
+//            filter = String.format(formatter, "//Curso/curso", id);
+//            o.setCursos(cursoDao.list(filter, o));
             
             return o;
         } catch (Exception ex) {
