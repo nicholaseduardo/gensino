@@ -5,12 +5,9 @@
  */
 package ensino.configuracoes.dao.xml;
 
-import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.CampusFactory;
-import ensino.configuracoes.model.Curso;
 import ensino.connection.AbstractDaoXML;
-import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
