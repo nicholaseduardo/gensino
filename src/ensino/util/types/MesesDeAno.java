@@ -22,6 +22,11 @@ public enum MesesDeAno {
         return value;
     }
     
+    /**
+     * Retorna uma instância do enum
+     * @param value Zero (0) inicia em Janeiro.
+     * @return 
+     */
     public static MesesDeAno of(int value) {
         switch(value) {
             default:
