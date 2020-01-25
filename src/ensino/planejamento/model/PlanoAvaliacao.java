@@ -59,11 +59,24 @@ public class PlanoAvaliacao {
      * por estudante
      */
     private List<Avaliacao> avaliacoes;
+    /**
+     * Atributo utilizado para marcar o objeto para exclusão
+     */
+    private Boolean deleted;
 
     public PlanoAvaliacao() {
         this.avaliacoes = new ArrayList<>();
         this.peso = 0.0;
         this.valor = 0.0;
+        this.deleted = false;
+    }
+    
+    public Boolean isDeleted() { 
+        return this.deleted;
+    }
+    
+    public void delete() {
+        this.deleted = true;
     }
 
     @Override
