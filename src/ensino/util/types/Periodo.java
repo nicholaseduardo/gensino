@@ -109,6 +109,17 @@ public class Periodo {
         // Existirá ao menos 1 semana
         return ChronoUnit.WEEKS.between(lde, late) + 1;
     }
+    
+    /**
+     * Retorna uma instancia de enunm do <code>MesesDeAno</code> 
+     * referente a data De.
+     * @return 
+     */
+    public MesesDeAno getMesDoAno() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(de);
+        return MesesDeAno.of(cal.get(Calendar.MONTH));
+    }
 
     @Override
     public int hashCode() {
