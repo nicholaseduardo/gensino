@@ -226,7 +226,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new MainFrame().setVisible(true);
+            MainFrame m = new MainFrame();
+            m.setLocationRelativeTo(null);
+            m.setVisible(true);
         });
     }
 

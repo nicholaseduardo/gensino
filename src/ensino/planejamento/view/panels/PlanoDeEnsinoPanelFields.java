@@ -18,6 +18,7 @@ import ensino.planejamento.view.panels.planoDeEnsino.DetalhamentoPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.EmentaPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.FrequenciaPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.HorarioAulaPanel;
+import ensino.planejamento.view.panels.planoDeEnsino.HtmlPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.IdentificacaoPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.ObjetivoEspecificoPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.ObjetivoPanel;
@@ -66,6 +67,7 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
     private ConteudoPanel conteudoPanel;
     private FrequenciaPanel frequenciaPanel;
     private AvaliacaoPanel avaliacaoPanel;
+    private HtmlPanel htmlPanel;
 
     // tree nodes
     private DefaultMutableTreeNode nodeIdentificacao = new DefaultMutableTreeNode(TabsPlano.IDEN.toString());
@@ -80,6 +82,7 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
     private DefaultMutableTreeNode nodeCon = new DefaultMutableTreeNode(TabsPlano.CON.toString());
     private DefaultMutableTreeNode nodeFreq = new DefaultMutableTreeNode(TabsPlano.FREQ.toString());
     private DefaultMutableTreeNode nodeAva = new DefaultMutableTreeNode(TabsPlano.AVA.toString());
+    private DefaultMutableTreeNode nodeView = new DefaultMutableTreeNode(TabsPlano.VIEW.toString());
 
     public PlanoDeEnsinoPanelFields() {
         this(null);
@@ -117,6 +120,7 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
         conteudoPanel = new ConteudoPanel();
         frequenciaPanel = new FrequenciaPanel();
         avaliacaoPanel = new AvaliacaoPanel();
+        htmlPanel = new HtmlPanel();
 
         // Adiciona um painel vazio
         JPanel panelNulo = new JPanel();
@@ -134,15 +138,19 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
         planoDeEnsinoCardPanel.add(frequenciaPanel, frequenciaPanel.getName());
         planoDeEnsinoCardPanel.add(conteudoPanel, conteudoPanel.getName());
         planoDeEnsinoCardPanel.add(avaliacaoPanel, avaliacaoPanel.getName());
+        planoDeEnsinoCardPanel.add(htmlPanel, htmlPanel.getName());
 
         DefaultMutableTreeNode noRaiz = new DefaultMutableTreeNode("Plano de Ensino");
         DefaultMutableTreeNode noPlanejamento = new DefaultMutableTreeNode("Planejamento");
         DefaultMutableTreeNode noExecucao = new DefaultMutableTreeNode("Execução");
+        DefaultMutableTreeNode noImpressao = new DefaultMutableTreeNode("Impressão");
         
-        int rowRoot = 0, rowPlanejamento = 0, rowExecucao = 0, rowIdentificacao = 0;
+        int rowRoot = 0, rowPlanejamento = 0, rowExecucao = 0, rowIdentificacao = 0,
+                rowImpressao = 0;
         DefaultTreeModel treeModel = new DefaultTreeModel(noRaiz);
         treeModel.insertNodeInto(noPlanejamento, noRaiz, rowRoot++);
         treeModel.insertNodeInto(noExecucao, noRaiz, rowRoot++);
+        treeModel.insertNodeInto(noImpressao, noRaiz, rowRoot++);
 
         nodeIdentificacao = new DefaultMutableTreeNode(TabsPlano.IDEN.toString());
         treeModel.insertNodeInto(nodeIdentificacao, noPlanejamento, rowPlanejamento++);
@@ -157,6 +165,7 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
         treeModel.insertNodeInto(nodeFreq, noExecucao, rowExecucao++);
         treeModel.insertNodeInto(nodeCon, noExecucao, rowExecucao++);
         treeModel.insertNodeInto(nodeAva, noExecucao, rowExecucao++);
+        treeModel.insertNodeInto(nodeView, noImpressao, rowImpressao++);
 
         treePlanoDeEnsino.setModel(treeModel);
         treePlanoDeEnsino.expandRow(1);
@@ -257,6 +266,7 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
         conteudoPanel.setFieldValues(object);
         frequenciaPanel.setFieldValues(object);
         avaliacaoPanel.setFieldValues(object);
+        htmlPanel.setFieldValues(object);
     }
 
     @Override
@@ -320,7 +330,7 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
 
     private enum TabsPlano {
         IDEN(0), EMEN(1), REF(2), REC(3), OBJ(4), ESP(5), DET(6), PAVA(7), HOR(8),
-        CON(9), FREQ(10), AVA(11);
+        CON(9), FREQ(10), AVA(11), VIEW(12);
 
         private final int index;
 
@@ -359,6 +369,8 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
                     return "Frequência";
                 case 11:
                     return "Avaliações";
+                case 12:
+                    return "Visualizar";
             }
             return null;
         }
@@ -416,6 +428,8 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
                 layout.show(planoDeEnsinoCardPanel, frequenciaPanel.getName());
             } else if (lastPath.equals(TabsPlano.AVA.toString())) {
                 layout.show(planoDeEnsinoCardPanel, avaliacaoPanel.getName());
+            } else if (lastPath.equals(TabsPlano.VIEW .toString())) {
+                layout.show(planoDeEnsinoCardPanel, htmlPanel.getName());
             } else {
                 layout.show(planoDeEnsinoCardPanel, "panel.nulo");
             }
