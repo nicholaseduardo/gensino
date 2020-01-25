@@ -12,14 +12,17 @@ import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.view.models.PeriodoLetivoTreeModel;
 import ensino.configuracoes.view.models.SemanaLetivaTableModel;
+import ensino.configuracoes.view.renderer.PeriodoLetivoCellRenderer;
 import ensino.configuracoes.view.renderer.SemanaLetivaCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
+import ensino.patterns.factory.ControllerFactory;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -179,21 +184,16 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
             DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tp.getLastPathComponent();
             PeriodoLetivo periodoLetivo = (PeriodoLetivo) selectedNode.getUserObject();
             lblPeriodoSelecionado.setText("Período selecionado: " + periodoLetivo.getDescricao());
-            /**
-             * Verifica se existem semanas vinculadas ao período. Do contrário,
-             * busca-se do arquivo e vincula ao periodo
-             */
-//            if (periodoLetivo.getSemanasLetivas().isEmpty()) {
-//                try {
-//                    SemanaLetivaController col = new SemanaLetivaController();
-//                    periodoLetivo.setSemanasLetivas(
-//                            col.listar(periodoLetivo.getNumero(),
-//                                    periodoLetivo.getCalendario().getAno(),
-//                                    periodoLetivo.getCalendario().getCampus().getId()));
-//                } catch (Exception ex) {
-//                    Logger.getLogger(CalendarioSemanaLetivaPanel.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
+            try {
+                /**
+                 * Recupera os dados das semanas letivas para o período em
+                 * questão
+                 */
+                SemanaLetivaController semanaCol = ControllerFactory.createSemanaLetivaController();
+                periodoLetivo.setSemanasLetivas(semanaCol.listar(periodoLetivo));
+            } catch (IOException | ParserConfigurationException | TransformerException ex) {
+                Logger.getLogger(PeriodoLetivoCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            }
             setData(periodoLetivo.getSemanasLetivas());
         }
 
