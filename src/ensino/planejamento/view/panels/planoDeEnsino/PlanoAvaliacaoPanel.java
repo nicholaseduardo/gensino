@@ -364,6 +364,8 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                     return;
                 }
                 planoAvaliacaoTableModel.removeRow(selectedRow);
+                planoAvaliacaoTable.repaint();
+                clearFields();
             } else if (source == btImportar) {
                 // verifica se existem dados na lista de detalhamento
                 if (listaDetalhamento.isEmpty()) {
