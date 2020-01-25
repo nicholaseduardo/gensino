@@ -26,6 +26,17 @@ public class PlanoAvaliacaoTableModel extends DefaultTableModel {
         });
     }
     
+    /**
+     * Remoção lógica
+     * @param row 
+     */
+    @Override
+    public void removeRow(int row) {
+        PlanoAvaliacao o = (PlanoAvaliacao) lista.get(row);
+        o.delete();
+        updateRow(row, o);
+    }
+    
     @Override
     public List<PlanoAvaliacao> getData() {
         return (List<PlanoAvaliacao>)super.getData();
