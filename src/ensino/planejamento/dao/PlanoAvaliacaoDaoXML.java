@@ -5,10 +5,8 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
-import ensino.planejamento.model.Avaliacao;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoAvaliacaoFactory;
 import ensino.planejamento.model.PlanoDeEnsino;
@@ -28,14 +26,15 @@ import org.w3c.dom.Node;
 public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
 
     private static PlanoAvaliacaoDaoXML instance = null;
-    
+
     private PlanoAvaliacaoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("planoAvaliacao", "PlanoAvaliacao", "planoAvaliacao", PlanoAvaliacaoFactory.getInstance());
     }
-    
+
     public static PlanoAvaliacaoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
-        if (instance == null)
+        if (instance == null) {
             instance = new PlanoAvaliacaoDaoXML();
+        }
         return instance;
     }
 
@@ -52,11 +51,11 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
                 DaoPattern<PlanoDeEnsino> dao = PlanoDeEnsinoDaoXML.getInstance();
-                planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
+                planoDeEnsino = dao.findById(planoDeEnsinoId, undId,
                         cursoId, campusId);
             }
             planoDeEnsino.addPlanoAvaliacao(o);
-            
+
             // load children
 //            String formatter = "%s[@planoAvaliacaoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
 //            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
@@ -65,7 +64,6 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
 //            String filter = String.format(formatter, "//Avaliacao/avaliacao", 
 //                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
 //            o.setAvaliacoes(dao.list(filter, o));
-            
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -74,8 +72,7 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
     }
 
     /**
-     * Recupera um objeto de acorco com sua chave
-     * primária
+     * Recupera um objeto de acorco com sua chave primária
      *
      * @param ids Os IDS estão divididos em cinco parâmetros:<br>
      * <ul>
@@ -110,18 +107,18 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
      * Recupera a lista dos planos de avaliação do plano de ensino por unidade
      * curricular
      *
-     * @param planoDeEnsino               Identificação do plano de ensino
+     * @param planoDeEnsino Identificação do plano de ensino
      * @return
      */
     public List<PlanoAvaliacao> list(PlanoDeEnsino planoDeEnsino) {
         String filter = String.format("%s[@planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), planoDeEnsino.getId(), 
-                planoDeEnsino.getUnidadeCurricular().getId(), 
+                getObjectExpression(), planoDeEnsino.getId(),
+                planoDeEnsino.getUnidadeCurricular().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getCampus().getId());
         return this.list(filter, planoDeEnsino);
     }
-    
+
     @Override
     public void save(PlanoAvaliacao o) {
         Integer planoId = o.getPlanoDeEnsino().getId(),
@@ -132,12 +129,15 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
         if (o.getSequencia() == null) {
             o.setSequencia(this.nextVal(planoId, undId, cursoId, campusId));
         }
-        
-        String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
-        super.save(o, filter);
+        if (o.isDeleted()) {
+            this.delete(o);
+        } else {
+            String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+                    getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
+            super.save(o, filter);
+        }
     }
-    
+
     @Override
     public void delete(PlanoAvaliacao o) {
         Integer planoId = o.getPlanoDeEnsino().getId(),
@@ -145,10 +145,7 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
                 undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-        if (o.getSequencia() == null) {
-            o.setSequencia(this.nextVal(planoId, undId, cursoId, campusId));
-        }
-        
+
         String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
         super.delete(filter);
