@@ -474,6 +474,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
                             "Aviso", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
+                metodologiaTableModel.removeRow(selectedRow);
                 reloadMetodologiaTable();
             } else if (e.getSource() == btAddObjetivo) {
                 Objetivo obj = (Objetivo) comboObjetivo.getSelectedItem();
@@ -497,6 +498,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
                             "Aviso", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
+                objetivoDetalheTableModel.removeRow(selectedRow);
                 reloadObjetivoTable();
             }
         }

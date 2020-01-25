@@ -8,26 +8,35 @@ package ensino.planejamento.view.panels.planoDeEnsino;
 import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
+import ensino.helpers.DateHelper;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.DetalhamentoController;
+import ensino.planejamento.controller.MetodologiaController;
 import ensino.planejamento.controller.ObjetivoController;
+import ensino.planejamento.controller.PlanoAvaliacaoController;
 import ensino.planejamento.controller.PlanoDeEnsinoController;
+import ensino.planejamento.model.Detalhamento;
+import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
+import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
+import ensino.util.types.Bimestre;
+import ensino.util.types.MesesDeAno;
+import ensino.util.types.Periodo;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -115,6 +124,157 @@ public class HtmlPanel extends DefaultFieldsPanel {
         return null;
     }
 
+    private String avaliacaoToHtml(PlanoDeEnsino plano) {
+        /**
+         * Recupera a lista de avaliações caso ela não esteja disponível
+         */
+        if (plano.getPlanosAvaliacoes().isEmpty()) {
+            try {
+                PlanoAvaliacaoController planoAvaliacaoCol = ControllerFactory.createPlanoAvaliacaoController();
+                plano.setPlanosAvaliacoes(planoAvaliacaoCol.listar(plano));
+            } catch (IOException | ParserConfigurationException | TransformerException ex) {
+                Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        // Considera-se que são quatro bimestres
+        int nAvaliacoesPorBimestre[] = {0, 0, 0, 0};
+        List<PlanoAvaliacao> listaAvaliacoes = plano.getPlanosAvaliacoes();
+        listaAvaliacoes.sort(new Comparator<PlanoAvaliacao>() {
+            @Override
+            public int compare(PlanoAvaliacao o1, PlanoAvaliacao o2) {
+                return o1.getSequencia() - o2.getSequencia();
+            }
+        });
+        LinkedHashMap<Bimestre, String> mapLinhas = new LinkedHashMap<>();
+        String sColunas = "";
+        for (int i = 0; i < listaAvaliacoes.size(); i++) {
+            PlanoAvaliacao pa = listaAvaliacoes.get(i);
+            // registra o número de avaliações por bimestre
+            nAvaliacoesPorBimestre[pa.getBimestre().getValue()]++;
+
+            String sAvaliacao = "";
+            if (mapLinhas.containsKey(pa.getBimestre())) {
+                sColunas = "<tr><td>%s</td><td>%s</td><td>%s</td><td>%.2f</td><td>%.2f</td></tr>";
+                sAvaliacao += mapLinhas.get(pa.getBimestre());
+                sAvaliacao += String.format(sColunas, pa.getNome(),
+                        pa.getInstrumentoAvaliacao().getNome(),
+                        DateHelper.dateToString(pa.getData(), "dd/MM/yyyy"),
+                        pa.getPeso(), pa.getValor());
+            } else {
+                sColunas = "<tr><td rowspan='_nlinhas_'>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%.2f</td><td>%.2f</td></tr>";
+                sAvaliacao += String.format(sColunas,
+                        pa.getBimestre().toString(),
+                        pa.getNome(),
+                        pa.getInstrumentoAvaliacao().getNome(),
+                        DateHelper.dateToString(pa.getData(), "dd/MM/yyyy"),
+                        pa.getPeso(), pa.getValor());
+            }
+
+            // registra o mapa das linhas de avaliações
+            mapLinhas.put(pa.getBimestre(), sAvaliacao);
+        }
+        StringBuilder sData = new StringBuilder();
+        for (Map.Entry<Bimestre, String> entry : mapLinhas.entrySet()) {
+            Bimestre key = entry.getKey();
+            String value = entry.getValue();
+            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorBimestre[key.getValue()])));
+        }
+        return sData.toString();
+    }
+
+    private String detalhamentoToHtml(PlanoDeEnsino plano) {
+        /**
+         * Variável utilizada para armazenar a quantidade de semanas por mês
+         */
+        LinkedHashMap<MesesDeAno, Integer> mapNumeroSemanasPorMes = new LinkedHashMap<>();
+        /**
+         * Variável utilizada para armazenar os dados das linhas do detalhamento
+         * por semana/mês
+         */
+        LinkedHashMap<MesesDeAno, String> mapLinhaSemanasPorMes = new LinkedHashMap<>();
+        /**
+         * Variável utilizada para armazenar as observações das 
+         * linhas de detalhamento
+         */
+        LinkedHashMap<MesesDeAno, String> mapObservacoesSemanasPorMes = new LinkedHashMap<>();
+        
+        /**
+         * Recupera o detalhamento caso ele não esteja disponível
+         */
+        if (plano.getDetalhamentos().isEmpty()) {
+            try {
+                DetalhamentoController detalhamentoCol = ControllerFactory.createDetalhamentoController();
+                plano.setDetalhamentos(detalhamentoCol.listar(plano));
+            } catch (IOException | ParserConfigurationException | TransformerException ex) {
+                Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        List<Detalhamento> listaDetalha = plano.getDetalhamentos();
+        listaDetalha.sort(new Comparator<Detalhamento>() {
+            @Override
+            public int compare(Detalhamento o1, Detalhamento o2) {
+                return o1.getSequencia() - o2.getSequencia();
+            }
+        });
+        String sColunas = "";
+        Calendar cal = Calendar.getInstance();
+        for (int i = 0; i < listaDetalha.size(); i++) {
+            Detalhamento o = listaDetalha.get(i);
+            StringBuilder sMetodologias = new StringBuilder();
+            List<Metodologia> listaMetodologia = o.getMetodologias();
+            /**
+             * Carrega a metodologia caso ela não tenha sido feita antes
+             */
+            if (listaMetodologia.isEmpty()) {
+                try {
+                    MetodologiaController metodologiaCol = ControllerFactory.createMetodologiaController();
+                    o.setMetodologias(metodologiaCol.listar(o));
+                } catch (IOException | ParserConfigurationException | TransformerException ex) {
+                    Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            for(int j = 0; j < listaMetodologia.size(); j++) {
+                Metodologia oMetodologia = listaMetodologia.get(j);
+                sMetodologias.append(oMetodologia.getMetodo().getNome());
+                sMetodologias.append("<br/>");
+            }
+            int contSemanas = 1;
+            String sDetalhamento = "", sObservacao = "";
+            Periodo p = o.getSemanaLetiva().getPeriodo();
+            MesesDeAno mesAno = p.getMesDoAno();
+            if (mapNumeroSemanasPorMes.containsKey(mesAno)) {
+                contSemanas = mapNumeroSemanasPorMes.get(mesAno);
+                contSemanas++;
+                
+                sColunas = "<tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>";
+                sDetalhamento += mapLinhaSemanasPorMes.get(mesAno);
+                sObservacao += mapObservacoesSemanasPorMes.get(mesAno);
+            } else {
+                sColunas = "<tr><td rowspan='_nlinhas_'>_observacao_</td><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>";
+            }
+            mapNumeroSemanasPorMes.put(p.getMesDoAno(), contSemanas);
+            sDetalhamento += String.format(sColunas, 
+                        p.toString(),
+                        o.getNAulasTeoricas(), o.getNAulasPraticas(), "",
+                        o.getConteudo(), sMetodologias.toString());
+            mapLinhaSemanasPorMes.put(p.getMesDoAno(), sDetalhamento);
+            sObservacao += o.getObservacao() + ("".equals(o.getObservacao()) ? "" : "<br/>");
+            mapObservacoesSemanasPorMes.put(mesAno, sObservacao);
+        }
+        
+        StringBuilder sData = new StringBuilder();
+        for (Map.Entry<MesesDeAno, String> entry : mapLinhaSemanasPorMes.entrySet()) {
+            MesesDeAno key = entry.getKey();
+            String value = entry.getValue();
+            value = value.replaceAll("_nlinhas_", String.valueOf(mapNumeroSemanasPorMes.get(key)));
+            value = value.replaceAll("_observacao_", key.toString() + "<br/>" + 
+                    mapObservacoesSemanasPorMes.get(key));
+            sData.append(value);
+        }
+        return sData.toString();
+    }
+
     private void loadHtml(PlanoDeEnsino plano) {
         try {
             // cria uma cópia dos dados do arquivo html
@@ -145,7 +305,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
             objEsp.append("</ol>");
 
             copyString = copyString.replaceAll("%objetivos-especificos%", objEsp.toString());
-            copyString = copyString.replaceAll("%avaliacao-aprendizagem%", "");
+            copyString = copyString.replaceAll("%avaliacao-aprendizagem%", avaliacaoToHtml(plano));
             copyString = copyString.replaceAll("%recuperacao%", plano.getRecuperacao());
 
             StringBuilder refBasica = new StringBuilder(), refComp = new StringBuilder();
@@ -164,6 +324,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
             copyString = copyString.replaceAll("%referencias-basicas%", refBasica.toString());
             copyString = copyString.replaceAll("%referencias-complementares%", refComp.toString());
             copyString = copyString.replaceAll("%ementa%", und.getEmenta());
+            copyString = copyString.replaceAll("%detalhamento%", detalhamentoToHtml(plano));
 
             // create a document, set it on the jeditorpane, then add the html
             Document doc = kit.createDefaultDocument();
@@ -217,7 +378,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
         try {
             PlanoDeEnsinoController col = ControllerFactory.createPlanoDeEnsinoController();
             PlanoDeEnsino plano = col.buscarPor(1, 1, 1, 1);
-            
+
             ObjetivoController objCol = ControllerFactory.createObjetivoController();
             plano.setObjetivos(objCol.listar(plano));
 

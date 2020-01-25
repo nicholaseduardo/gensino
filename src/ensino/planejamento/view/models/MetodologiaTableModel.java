@@ -26,6 +26,17 @@ public class MetodologiaTableModel extends DefaultTableModel {
         });
     }
     
+    /**
+     * Remoção lógica
+     * @param row 
+     */
+    @Override
+    public void removeRow(int row) {
+        Metodologia o = (Metodologia) lista.get(row);
+        o.delete();
+        updateRow(row, o);
+    }
+    
     @Override
     public List<Metodologia> getData() {
         return (List<Metodologia>)super.getData();

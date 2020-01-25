@@ -111,6 +111,10 @@ public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
             o.setSequencia(this.nextVal(detalhamentoSeq, planoId, undId, cursoId, campusId));
         }
         
+        if (o.isDeleted()) {
+            this.delete(o);
+        }
+        
         String filter = String.format("@sequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
                 o.getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
         super.save(o, filter);

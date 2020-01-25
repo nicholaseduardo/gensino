@@ -36,6 +36,9 @@ public class MetodologiaCellRenderer extends GenCellRenderer {
         }
         DefaultTableModel model = (DefaultTableModel)table.getModel();
         Metodologia metodologia = (Metodologia) model.getRow(row);
+        if (metodologia.isDeleted()) {
+            markAsDeleted();
+        }
         
         GenJLabel label = createLabel(metodologia.toString());
         

@@ -26,6 +26,17 @@ public class ObjetivoDetalheTableModel extends DefaultTableModel {
         });
     }
     
+    /**
+     * Remoção lógica
+     * @param row 
+     */
+    @Override
+    public void removeRow(int row) {
+        ObjetivoDetalhe o = (ObjetivoDetalhe) lista.get(row);
+        o.delete();
+        updateRow(row, o);
+    }
+    
     @Override
     public List<ObjetivoDetalhe> getData() {
         return (List<ObjetivoDetalhe>)super.getData();

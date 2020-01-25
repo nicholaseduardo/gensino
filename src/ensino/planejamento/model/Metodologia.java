@@ -12,9 +12,22 @@ public class Metodologia {
     private Detalhamento detalhamento;
     // child
     private BaseObject metodo;
+    /**
+     * Atributo utilizado para marcar a instância do objeto
+     * para exclusão;
+     */
+    private Boolean deleted;
 
     public Metodologia() {
-        
+        deleted = false;
+    }
+    
+    public void delete() {
+        deleted = true;
+    }
+    
+    public Boolean isDeleted() {
+        return deleted;
     }
 
     public Integer getSequencia() {
