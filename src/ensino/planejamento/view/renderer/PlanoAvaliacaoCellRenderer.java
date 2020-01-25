@@ -40,6 +40,13 @@ public class PlanoAvaliacaoCellRenderer extends GenCellRenderer {
         PlanoAvaliacaoTableModel model = (PlanoAvaliacaoTableModel) table.getModel();
         PlanoAvaliacao planoAvaliacao = (PlanoAvaliacao) model.getRow(row);
 
+        /**
+         * muda a cor da linha caso o objeto esteja marcado para exclusão
+         */
+        if (planoAvaliacao.isDeleted()) {
+            markAsDeleted();
+        }
+
         GenJLabel lblTitle = createLabel(planoAvaliacao.getNome());
         
         GenJLabel lblBimestre = createLabel(String.format("[%s - %s]",
@@ -65,7 +72,7 @@ public class PlanoAvaliacaoCellRenderer extends GenCellRenderer {
         panel.add(createLayoutPanel(lblBimestre, FlowLayout.LEFT));
         panel.add(createLayoutPanel(lblValores, FlowLayout.RIGHT));
         panel.setBackground(getBack());
-
+        
         table.setRowHeight(panel.getPreferredSize().height + 10);
         panel.setOpaque(true);
         return panel;
