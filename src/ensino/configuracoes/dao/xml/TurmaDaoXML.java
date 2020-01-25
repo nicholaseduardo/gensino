@@ -6,7 +6,6 @@
 package ensino.configuracoes.dao.xml;
 
 import ensino.configuracoes.model.Curso;
-import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.TurmaFactory;
 import ensino.connection.AbstractDaoXML;
