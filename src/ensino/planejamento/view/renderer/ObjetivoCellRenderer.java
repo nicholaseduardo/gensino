@@ -33,6 +33,16 @@ public class ObjetivoCellRenderer extends TextAreaCellRenderer {
                             ? new Color(table.getBackground().getRGB())
                             : new Color(240, 240, 240)));
         }
+        
+        ObjetivoTableModel model = (ObjetivoTableModel) table.getModel();
+        Objetivo objetivo = (Objetivo) model.getRow(row);
+        /**
+         * Marca o objeto que está registrado para exclusão
+         */
+        if (objetivo.isDeleted()) {
+            markAsDeleted();
+        }
+        
         GenJLabel labelData = createLabel((String) value);
 
         JPanel panel;
@@ -41,11 +51,7 @@ public class ObjetivoCellRenderer extends TextAreaCellRenderer {
         } else {
             panel = createLayoutPanel(labelData, FlowLayout.CENTER);
         }
-        ObjetivoTableModel model = (ObjetivoTableModel) table.getModel();
-        Objetivo objetivo = (Objetivo) model.getRow(row);
-        if (objetivo.isDeleted()) {
-            markAsDeleted();
-        }
+        
         table.setRowHeight(panel.getPreferredSize().height + 5);
         panel.setOpaque(true);
         return panel;
