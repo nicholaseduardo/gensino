@@ -123,9 +123,9 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
 
-        String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
-        super.delete(filter);
+        String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getSequencia(), planoId, undId, cursoId, campusId);
+            super.delete(filter);
     }
 
     /**

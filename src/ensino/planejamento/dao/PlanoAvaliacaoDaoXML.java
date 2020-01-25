@@ -132,8 +132,8 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
         if (o.isDeleted()) {
             this.delete(o);
         } else {
-            String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                    getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
+            String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getSequencia(), planoId, undId, cursoId, campusId);
             super.save(o, filter);
         }
     }
@@ -146,8 +146,8 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
 
-        String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
+        String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getSequencia(), planoId, undId, cursoId, campusId);
         super.delete(filter);
     }
 

@@ -159,10 +159,9 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
             o.setId(nextVal(planoId, unidadeId, cursoId,campusId));
         }
 
-        String filter = String.format("%s[@id=%d and and @planoDeEnsinoId=%d and"
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@id",
-                getObjectExpression(), o.getId(), planoId,
-                unidadeId, cursoId, campusId);
+        String filter = String.format("@id=%d and @planoDeEnsinoId=%d and "
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                o.getId(), planoId, unidadeId, cursoId, campusId);
         super.save(o, filter);
     }
     
@@ -175,14 +174,9 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
                 cursoId = curso.getId(),
                 unidadeId = und.getId(), planoId = planoDeEnsino.getId();
 
-        if (o.getId()== null) {
-            o.setId(nextVal(planoId, unidadeId, cursoId,campusId));
-        }
-
-        String filter = String.format("%s[@id=%d and and @planoDeEnsinoId=%d and"
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getId(), planoId,
-                unidadeId, cursoId, campusId);
+        String filter = String.format("@id=%d and @planoDeEnsinoId=%d and "
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                o.getId(), planoId, unidadeId, cursoId, campusId);
         super.delete(filter);
     }
 
@@ -201,7 +195,7 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
     @Override
     public Integer nextVal(Object... p) {
         String filter = String.format("%s[@planoDeEnsinoId=%d and "
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]/@id",
                 getObjectExpression(), p[0], p[1], p[2], p[3]);
         return super.nextVal(filter);
     }

@@ -5,13 +5,10 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
-import ensino.planejamento.model.Metodologia;
-import ensino.planejamento.model.ObjetivoDetalhe;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
 import java.util.List;
@@ -141,8 +138,8 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
             o.setSequencia(this.nextVal(planoId, undId, cursoId, campusId));
         }
         
-        String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
+        String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                o.getSequencia(), planoId, undId, cursoId, campusId);
         super.save(o, filter);
     }
 
@@ -155,8 +152,8 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
         
-        String filter = String.format("%s[@sequencia=%d and @planoDeEnsinoId=@d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getSequencia(), planoId, undId, cursoId, campusId);
+        String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                o.getSequencia(), planoId, undId, cursoId, campusId);
         super.delete(filter);
     }
 

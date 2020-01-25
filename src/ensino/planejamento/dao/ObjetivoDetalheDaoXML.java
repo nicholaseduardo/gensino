@@ -108,8 +108,8 @@ public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
                 cursoId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
         
-        String filter = String.format("%s[@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getObjetivo().getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
+        String filter = String.format("@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                o.getObjetivo().getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
         super.save(o, filter);
     }
 
@@ -122,8 +122,8 @@ public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
                 cursoId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
         
-        String filter = String.format("%s[@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getObjetivo().getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
+        String filter = String.format("@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                o.getObjetivo().getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
         super.delete(filter);
     }
 

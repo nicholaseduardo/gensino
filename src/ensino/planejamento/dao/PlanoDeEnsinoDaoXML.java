@@ -151,8 +151,8 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
         if (o.getId() == null) {
             o.setId(nextVal(campusId, cursoId, unidadeId));
         }
-        String filter = String.format("%s[@id=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getId(), unidadeId, cursoId, campusId);
+        String filter = String.format("@id=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                o.getId(), unidadeId, cursoId, campusId);
         super.save(o, filter);
     }
 
@@ -164,8 +164,8 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
                 cursoId = curso.getId(),
                 unidadeId = und.getId();
 
-        String filter = String.format("%s[@id=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getId(), unidadeId, cursoId, campusId);
+        String filter = String.format("@id=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                o.getId(), unidadeId, cursoId, campusId);
         super.delete(filter);
     }
 
