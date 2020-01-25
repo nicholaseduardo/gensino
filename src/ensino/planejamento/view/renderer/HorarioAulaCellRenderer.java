@@ -38,6 +38,9 @@ public class HorarioAulaCellRenderer extends GenCellRenderer {
 
         HorarioAulaTableModel model = (HorarioAulaTableModel) table.getModel();
         HorarioAula horarioAula = (HorarioAula) model.getRow(row);
+        if (horarioAula.isDeleted()) {
+            markAsDeleted();
+        }
 
         GenJLabel lblTitle = createLabel(horarioAula.getDiaDaSemana().toString());
         

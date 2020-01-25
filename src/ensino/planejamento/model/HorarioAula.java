@@ -57,9 +57,18 @@ public class HorarioAula {
      * de ensino serão registrados os dados do diário.
      */
     private PlanoDeEnsino planoDeEnsino;
+    private Boolean deleted;
     
     public HorarioAula() {
-        
+        deleted = false;
+    }
+    
+    public void delete() {
+        this.deleted = true;
+    }
+    
+    public Boolean isDeleted() {
+        return this.deleted;
     }
 
     @Override

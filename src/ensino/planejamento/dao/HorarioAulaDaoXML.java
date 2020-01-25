@@ -26,14 +26,15 @@ import org.w3c.dom.Node;
 public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
 
     private static HorarioAulaDaoXML instance = null;
-    
+
     private HorarioAulaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("horarioAula", "HorarioAula", "horarioAula", HorarioAulaFactory.getInstance());
     }
-    
+
     public static HorarioAulaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
-        if (instance == null)
+        if (instance == null) {
             instance = new HorarioAulaDaoXML();
+        }
         return instance;
     }
 
@@ -50,11 +51,11 @@ public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
                 DaoPattern<PlanoDeEnsino> dao = PlanoDeEnsinoDaoXML.getInstance();
-                planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
+                planoDeEnsino = dao.findById(planoDeEnsinoId, undId,
                         cursoId, campusId);
             }
             planoDeEnsino.addHorario(o);
-            
+
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -63,8 +64,7 @@ public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
     }
 
     /**
-     * Recupera um objeto de acorco com sua chave
-     * primária
+     * Recupera um objeto de acorco com sua chave primária
      *
      * @param ids Os IDS estão divididos em cinco parâmetros:<br>
      * <ul>
@@ -99,18 +99,18 @@ public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
      * Recupera a lista dos planos de avaliação do plano de ensino por unidade
      * curricular
      *
-     * @param planoDeEnsino 
+     * @param planoDeEnsino
      * @return
      */
     public List<HorarioAula> list(PlanoDeEnsino planoDeEnsino) {
         String filter = String.format("%s[@planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), planoDeEnsino.getId(), 
-                planoDeEnsino.getUnidadeCurricular().getId(), 
+                getObjectExpression(), planoDeEnsino.getId(),
+                planoDeEnsino.getUnidadeCurricular().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getCampus().getId());
         return this.list(filter, planoDeEnsino);
     }
-    
+
     @Override
     public void save(HorarioAula o) {
         // cria a expressão de acordo com o código do campus
@@ -119,15 +119,19 @@ public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
                 undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-        if (o.getId()== null) {
+        if (o.getId() == null) {
             o.setId(this.nextVal(id, planoId, undId, cursoId, campusId));
         }
-        
-        String filter = String.format("%s[@id=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), o.getId(), planoId, undId, cursoId, campusId);
-        super.save(o, filter);
+
+        if (o.isDeleted()) {
+            this.delete(o);
+        } else {
+            String filter = String.format("%s[@id=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
+                    getObjectExpression(), o.getId(), planoId, undId, cursoId, campusId);
+            super.save(o, filter);
+        }
     }
-    
+
     @Override
     public void delete(HorarioAula o) {
         Integer planoId = o.getPlanoDeEnsino().getId(),
@@ -135,7 +139,7 @@ public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
                 undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-        
+
         String filter = String.format("%s[@id=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), o.getId(), planoId, undId, cursoId, campusId);
         super.delete(filter);

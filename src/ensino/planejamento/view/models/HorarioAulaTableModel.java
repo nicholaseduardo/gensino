@@ -26,6 +26,17 @@ public class HorarioAulaTableModel extends DefaultTableModel {
         });
     }
     
+    /**
+     * Remoção lógica
+     * @param row 
+     */
+    @Override
+    public void removeRow(int row) {
+        HorarioAula o = (HorarioAula) lista.get(row);
+        o.delete();
+        updateRow(row, o);
+    }
+    
     @Override
     public List<HorarioAula> getData() {
         return (List<HorarioAula>)super.getData();
