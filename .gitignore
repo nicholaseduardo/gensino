@@ -2,3 +2,4 @@
 desktop.ini
 build*
 dist
+*.xml
