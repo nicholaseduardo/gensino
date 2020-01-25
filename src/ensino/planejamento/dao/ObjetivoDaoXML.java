@@ -108,7 +108,6 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
         if (o.isDeleted()) {
             this.delete(o);
         } else {
-
             String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
                     o.getSequencia(), planoId, undId, cursoId, campusId);
             super.save(o, filter);
