@@ -125,11 +125,12 @@ public class ObjetivoEspecificoPanel extends DefaultFieldsPanel {
      */
     public void setData(List<Objetivo> data) {
         objetivoTableModel = new ObjetivoTableModel(data);
-        objetivoTable.setModel(objetivoTableModel);
-        resizeTableColumns();
+        refreshTable();
     }
-
-    private void resizeTableColumns() {
+    
+    private void refreshTable() {
+        objetivoTable.setModel(objetivoTableModel);
+        
         TableColumnModel tcm = objetivoTable.getColumnModel();
         tcm.getColumn(0).setCellRenderer(new ObjetivoCellRenderer());
         objetivoTable.repaint();
@@ -203,7 +204,7 @@ public class ObjetivoEspecificoPanel extends DefaultFieldsPanel {
                     return;
                 }
                 objetivoTableModel.removeRow(selectedRow);
-                objetivoTable.repaint();
+                refreshTable();
                 btClear.doClick();
             } else if (e.getSource() == btClear) {
                 txtObjetivo.setText("");
