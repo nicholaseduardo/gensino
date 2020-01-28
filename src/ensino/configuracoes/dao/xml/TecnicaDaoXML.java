@@ -9,6 +9,7 @@ import ensino.configuracoes.model.Tecnica;
 import ensino.configuracoes.model.TecnicaFactory;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
@@ -29,6 +30,10 @@ public class TecnicaDaoXML extends AbstractDaoXML<Tecnica> {
         if (instance == null)
             instance = new TecnicaDaoXML();
         return instance;
+    }
+    
+    public TecnicaDaoXML(URL url) throws IOException, ParserConfigurationException, TransformerException {
+        super("tecnica", url, "Tecnica", "tecnica", TecnicaFactory.getInstance());
     }
 
     @Override

@@ -9,6 +9,7 @@ import ensino.configuracoes.dao.xml.TecnicaDaoXML;
 import ensino.configuracoes.model.TecnicaFactory;
 import ensino.patterns.AbstractController;
 import java.io.IOException;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -27,5 +28,9 @@ public class TecnicaController  extends AbstractController {
         if (instance == null)
             instance = new TecnicaController();
         return instance;
+    }
+    
+    public TecnicaController(URL url) throws IOException, ParserConfigurationException, TransformerException {
+        super(new TecnicaDaoXML(url), TecnicaFactory.getInstance());
     }
 }

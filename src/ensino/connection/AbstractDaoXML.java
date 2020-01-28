@@ -10,6 +10,7 @@ import ensino.patterns.factory.BeanFactory;
 import ensino.util.helper.XMLHelper;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,6 +38,12 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
      * qual os dados estão armazenados
      */
     private String filename;
+    /**
+     * Endereço eletrônico de um arquivo.
+     * Atributo utilizado para indicar o endereço remoto do arquivo
+     * ao qual os dados serão lidos apenas
+     */
+    private URL url;
     /**
      * Instancia do arquivo aberto. Atributo utilizado para identificar a
      * referência de memória do arquivo
@@ -88,6 +95,18 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
 
         this.loadXmlFile();
     }
+    
+    public AbstractDaoXML(String fileName, URL url, String xmlGroup,
+            String nodeName, BeanFactory beanFactory) throws IOException, ParserConfigurationException, TransformerException {
+        this.url = url;
+        this.pathObject = "";
+        this.xmlGroup = xmlGroup;
+        this.nodeName = nodeName;
+        this.filename = fileName;
+        this.beanFactory = beanFactory;
+
+        this.loadXmlFile();
+    }
 
     /**
      * Cria a classe e abre o arquivo xml sem considerar o PATH completo do
@@ -108,23 +127,27 @@ public abstract class AbstractDaoXML<T> implements DaoPattern<T> {
 
     protected void loadXmlFile() {
         try {
-            String source = "data/" + filename + ".xml";
-            resource = new File(source);
-            if (!resource.exists()) {
-                // cria o diretorio
-                File directory = new File("data/");
-                if (!directory.exists()) {
-                    directory.mkdir();                
-                }
-                doc = XMLHelper.newDocument();
-                String rootName = filename.substring(0, 1).toUpperCase();
-                rootName += filename.substring(1, filename.length());
-                Element root = doc.createElement(rootName);
-                doc.appendChild(root);
-                XMLHelper.save(resource, doc);
-
+            if (url != null) {
+                doc = XMLHelper.open(url.openStream());
             } else {
-                doc = XMLHelper.open(resource);
+                String source = "data/" + filename + ".xml";
+                resource = new File(source);
+                if (!resource.exists()) {
+                    // cria o diretorio
+                    File directory = new File("data/");
+                    if (!directory.exists()) {
+                        directory.mkdir();                
+                    }
+                    doc = XMLHelper.newDocument();
+                    String rootName = filename.substring(0, 1).toUpperCase();
+                    rootName += filename.substring(1, filename.length());
+                    Element root = doc.createElement(rootName);
+                    doc.appendChild(root);
+                    XMLHelper.save(resource, doc);
+
+                } else {
+                    doc = XMLHelper.open(resource);
+                }
             }
         } catch (ParserConfigurationException | SAXException | IOException | TransformerException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);

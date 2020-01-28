@@ -9,6 +9,7 @@ import ensino.configuracoes.model.Legenda;
 import ensino.configuracoes.model.LegendaFactory;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
@@ -23,6 +24,10 @@ public class LegendaDaoXML extends AbstractDaoXML<Legenda> {
     
     private LegendaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("legenda", "Legenda", "legenda", LegendaFactory.getInstance());
+    }
+    
+    public LegendaDaoXML(URL url) throws IOException, ParserConfigurationException, TransformerException {
+        super("legenda", url, "Legenda", "legenda", LegendaFactory.getInstance());
     }
     
     public static LegendaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {

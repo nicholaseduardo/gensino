@@ -10,6 +10,7 @@ import ensino.configuracoes.model.Legenda;
 import ensino.configuracoes.model.LegendaFactory;
 import ensino.patterns.AbstractController;
 import java.io.IOException;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -28,5 +29,9 @@ public class LegendaController extends AbstractController<Legenda> {
         if (instance == null)
             instance = new LegendaController();
         return instance;
+    }
+    
+    public LegendaController(URL url) throws IOException, ParserConfigurationException, TransformerException {
+        super(new LegendaDaoXML(url), LegendaFactory.getInstance());
     }
 }
