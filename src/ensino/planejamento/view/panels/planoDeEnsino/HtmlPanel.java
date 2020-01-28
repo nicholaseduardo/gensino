@@ -5,6 +5,11 @@
  */
 package ensino.planejamento.view.panels.planoDeEnsino;
 
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
+import com.itextpdf.layout.font.FontProvider;
+import ensino.components.GenJButton;
 import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
@@ -23,13 +28,22 @@ import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.util.types.Bimestre;
 import ensino.util.types.MesesDeAno;
 import ensino.util.types.Periodo;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -40,7 +54,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -60,6 +76,8 @@ public class HtmlPanel extends DefaultFieldsPanel {
     private JEditorPane jEditorPane;
     private HTMLEditorKit kit;
     private String htmlString;
+    private GenJButton btPdf;
+    private GenJButton btHtml;
 
     public HtmlPanel() {
         super();
@@ -70,6 +88,24 @@ public class HtmlPanel extends DefaultFieldsPanel {
         setName("plano.html");
         setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
         setBorder(BorderFactory.createEtchedBorder());
+        setLayout(new BorderLayout());
+        
+        ButtonAction btAction = new ButtonAction();
+        /**
+         * Adiciona o botão para geração do PDF
+         */
+        ImageIcon icon = new ImageIcon(getClass().getResource("/img/pdf-button-25px.png"));
+        btPdf = new GenJButton("Salvar como PDF", icon);
+        btPdf.addActionListener(btAction);
+        
+        icon = new ImageIcon(getClass().getResource("/img/html-button-25px.png"));
+        btHtml = new GenJButton("Salvar como HTML", icon);
+        btHtml.addActionListener(btAction);
+        
+        JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelButton.add(btHtml);
+        panelButton.add(btPdf);
+        this.add(panelButton, BorderLayout.NORTH);
         // carrega os dados do arquivo HTML para o atributo
         htmlString = loadHTMLStringFile();
 
@@ -85,7 +121,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
 
         JPanel panel = new JPanel();
         panel.add(scrollPane);
-        this.add(panel);
+        this.add(panel, BorderLayout.CENTER);
 
         // add an html editor kit
         kit = new HTMLEditorKit();
@@ -96,6 +132,32 @@ public class HtmlPanel extends DefaultFieldsPanel {
         URL url = getClass().getResource("/img/templates/plano-de-ensino.css");
         styleSheet.importStyleSheet(url);
         kit.setStyleSheet(styleSheet);
+    }
+
+    private String loadCSSStringFile() {
+        InputStreamReader reader = null;
+        try {
+            InputStream is = getClass().getResourceAsStream("/img/templates/plano-de-ensino.css");
+            reader = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(reader);
+            StringBuilder sb = new StringBuilder();
+            while (br.ready()) {
+                sb.append(br.readLine());
+            }
+            br.close();
+            return sb.toString();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
     }
 
     private String loadHTMLStringFile() {
@@ -193,11 +255,11 @@ public class HtmlPanel extends DefaultFieldsPanel {
          */
         LinkedHashMap<MesesDeAno, String> mapLinhaSemanasPorMes = new LinkedHashMap<>();
         /**
-         * Variável utilizada para armazenar as observações das 
-         * linhas de detalhamento
+         * Variável utilizada para armazenar as observações das linhas de
+         * detalhamento
          */
         LinkedHashMap<MesesDeAno, String> mapObservacoesSemanasPorMes = new LinkedHashMap<>();
-        
+
         /**
          * Recupera o detalhamento caso ele não esteja disponível
          */
@@ -209,7 +271,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
                 Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         List<Detalhamento> listaDetalha = plano.getDetalhamentos();
         listaDetalha.sort(new Comparator<Detalhamento>() {
             @Override
@@ -234,7 +296,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
                     Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            for(int j = 0; j < listaMetodologia.size(); j++) {
+            for (int j = 0; j < listaMetodologia.size(); j++) {
                 Metodologia oMetodologia = listaMetodologia.get(j);
                 sMetodologias.append(oMetodologia.getMetodo().getNome());
                 sMetodologias.append("<br/>");
@@ -246,7 +308,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
             if (mapNumeroSemanasPorMes.containsKey(mesAno)) {
                 contSemanas = mapNumeroSemanasPorMes.get(mesAno);
                 contSemanas++;
-                
+
                 sColunas = "<tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>";
                 sDetalhamento += mapLinhaSemanasPorMes.get(mesAno);
                 sObservacao += mapObservacoesSemanasPorMes.get(mesAno);
@@ -254,22 +316,22 @@ public class HtmlPanel extends DefaultFieldsPanel {
                 sColunas = "<tr><td rowspan='_nlinhas_'>_observacao_</td><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td></tr>";
             }
             mapNumeroSemanasPorMes.put(p.getMesDoAno(), contSemanas);
-            sDetalhamento += String.format(sColunas, 
-                        p.toString(),
-                        o.getNAulasTeoricas(), o.getNAulasPraticas(), "",
-                        o.getConteudo(), sMetodologias.toString());
+            sDetalhamento += String.format(sColunas,
+                    p.toString(),
+                    o.getNAulasTeoricas(), o.getNAulasPraticas(), "",
+                    o.getConteudo(), sMetodologias.toString());
             mapLinhaSemanasPorMes.put(p.getMesDoAno(), sDetalhamento);
             sObservacao += o.getObservacao() + ("".equals(o.getObservacao()) ? "" : "<br/>");
             mapObservacoesSemanasPorMes.put(mesAno, sObservacao);
         }
-        
+
         StringBuilder sData = new StringBuilder();
         for (Map.Entry<MesesDeAno, String> entry : mapLinhaSemanasPorMes.entrySet()) {
             MesesDeAno key = entry.getKey();
             String value = entry.getValue();
             value = value.replaceAll("_nlinhas_", String.valueOf(mapNumeroSemanasPorMes.get(key)));
-            value = value.replaceAll("_observacao_", key.toString() + "<br/>" + 
-                    mapObservacoesSemanasPorMes.get(key));
+            value = value.replaceAll("_observacao_", key.toString() + "<br/>"
+                    + mapObservacoesSemanasPorMes.get(key));
             sData.append(value);
         }
         return sData.toString();
@@ -278,11 +340,12 @@ public class HtmlPanel extends DefaultFieldsPanel {
     private void loadHtml(PlanoDeEnsino plano) {
         try {
             // cria uma cópia dos dados do arquivo html
-            String copyString = htmlString;
+            String copyString = htmlString, sDetalhamento = detalhamentoToHtml(plano);
             // substitui os caracteres especiais colocados no arquivo html
             UnidadeCurricular und = plano.getUnidadeCurricular();
             String imageSource = getClass().getResource("/img/templates/report-header-image.jpg").toString();
             copyString = copyString.replaceAll("%image-source%", imageSource);
+            copyString = copyString.replaceAll("%style%", loadCSSStringFile());
             copyString = copyString.replaceAll("%campus%", und.getCurso().getCampus().getNome());
             copyString = copyString.replaceAll("%periodo-letivo%", plano.getPeriodoLetivo().getDescricao());
             copyString = copyString.replaceAll("%curso%", und.getCurso().getNome());
@@ -324,7 +387,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
             copyString = copyString.replaceAll("%referencias-basicas%", refBasica.toString());
             copyString = copyString.replaceAll("%referencias-complementares%", refComp.toString());
             copyString = copyString.replaceAll("%ementa%", und.getEmenta());
-            copyString = copyString.replaceAll("%detalhamento%", detalhamentoToHtml(plano));
+            copyString = copyString.replaceAll("%detalhamento%", sDetalhamento);
 
             // create a document, set it on the jeditorpane, then add the html
             Document doc = kit.createDefaultDocument();
@@ -394,6 +457,64 @@ public class HtmlPanel extends DefaultFieldsPanel {
             f.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void saveFile(int type) {
+        String sType = (type == 0 ? "HTML" : "PDF");
+        
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Salvar como " + sType);
+        
+        int nUserSelection = fileChooser.showSaveDialog(this);
+        if (nUserSelection == JFileChooser.APPROVE_OPTION) {
+            try {
+                File fileToSave = fileChooser.getSelectedFile();
+                if (type == 0 && !fileToSave.getName().matches(".+(.html)")) {
+                    fileToSave = new File(fileToSave.toString() + ".html");  // append .xml if "foo.jpg.xml" is OK
+                } else if (type == 1 && !fileToSave.getName().matches(".+(.pdf)")) {
+                    fileToSave = new File(fileToSave.toString() + ".pdf");  // append .xml if "foo.jpg.xml" is OK
+                }
+
+                /**
+                 * Cria temporariamente um arquivo html com base nos dados
+                 * armazenados no editor HTML.
+                 */
+                File htmlFile = new File(fileToSave.getPath().replaceAll(".pdf", ".html"));
+                htmlFile.createNewFile();
+                FileOutputStream fos = new FileOutputStream(htmlFile);
+                BufferedOutputStream os = new BufferedOutputStream(fos);
+                os.write(jEditorPane.getText().getBytes());
+                os.close();
+                fos.close();
+                
+                if (type == 1) {
+                    ConverterProperties converterProperties = new ConverterProperties();
+                    FontProvider fp = new DefaultFontProvider(true, true, false);
+                    converterProperties.setFontProvider(fp);
+                    HtmlConverter.convertToPdf(htmlFile, fileToSave, converterProperties);
+                    /**
+                     * Remove o arquivo temporário
+                     */
+                    htmlFile.delete();
+                }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private class ButtonAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == btHtml) {
+                saveFile(0);
+            } else if (e.getSource() == btPdf) {
+                saveFile(1);
+            }
         }
     }
 
