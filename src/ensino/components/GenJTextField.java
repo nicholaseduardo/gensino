@@ -34,10 +34,10 @@ public class GenJTextField extends JTextField {
     }
     
     private void initComponents() {
-//        if (required) {
-//            Border lineBorder = BorderFactory.createLineBorder(Color.RED);
-//            super.setBorder(lineBorder);
-//        }
+        if (required) {
+            Border lineBorder = BorderFactory.createLineBorder(Color.RED);
+            super.setBorder(lineBorder);
+        }
         resetFontSize(16);
         super.setMargin(new Insets(6,6,6,6));
         super.addFocusListener(new GenFocusAdapter());
@@ -48,7 +48,7 @@ public class GenJTextField extends JTextField {
      * Cria um objeto da classe <code>Border</code>
      * @param label     Texto que será colocado como título do campo 
      */
-    protected void setLabelFor(String label) {
+    public void setLabelFor(String label) {
         Border lineBorder = BorderFactory.createLineBorder(required ? Color.RED : Color.BLACK);
         setBorder(BorderFactory.createTitledBorder(
                 lineBorder, label, 
@@ -60,7 +60,7 @@ public class GenJTextField extends JTextField {
      * Atualiza o tamanho da fonte do TextField
      * @param size 
      */
-    private void resetFontSize(int size) {
+    public void resetFontSize(int size) {
         Font fieldFont = getFont();
         Font font = new Font(fieldFont.getFontName(), 
                         fieldFont.getStyle(), size);
