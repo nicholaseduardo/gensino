@@ -7,12 +7,9 @@ package ensino.configuracoes.dao.xml;
 
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.Curso;
-import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricularFactory;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
-import ensino.planejamento.dao.PlanoDeEnsinoDaoXML;
-import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,7 +86,7 @@ public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
     public UnidadeCurricular findById(Object... ids) {
         Integer id = (Integer) ids[0],
                 cursoId = (Integer) ids[1],
-                campusId = (Integer) ids[1];
+                campusId = (Integer) ids[2];
         // Cria mecanismo para buscar o conteudo no xml
         String expression = String.format("%s[@id=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), id, cursoId, campusId);
