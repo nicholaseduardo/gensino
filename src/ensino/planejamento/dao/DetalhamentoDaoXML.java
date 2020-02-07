@@ -26,14 +26,15 @@ import org.w3c.dom.Node;
 public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
 
     private static DetalhamentoDaoXML instance = null;
-    
+
     private DetalhamentoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("detalhamento", "Detalhamento", "detalhamento", DetalhamentoFactory.getInstance());
     }
-    
+
     public static DetalhamentoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
-        if (instance == null)
+        if (instance == null) {
             instance = new DetalhamentoDaoXML();
+        }
         return instance;
     }
 
@@ -50,11 +51,11 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
                 DaoPattern<PlanoDeEnsino> dao = PlanoDeEnsinoDaoXML.getInstance();
-                planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
+                planoDeEnsino = dao.findById(planoDeEnsinoId, undId,
                         cursoId, campusId);
             }
             planoDeEnsino.addDetalhamento(o);
-            
+
             // load children
 //            String formatter = "%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
 //            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
@@ -69,7 +70,6 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
 //            filter = String.format(formatter, "//ObjetivoDetalhe/objetivoDetalhe", 
 //                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
 //            o.setObjetivoDetalhes(daoDetalhe.list(filter, o));
-            
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -78,8 +78,7 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
     }
 
     /**
-     * Recupera um objeto de acorco com sua chave
-     * primária
+     * Recupera um objeto de acorco com sua chave primária
      *
      * @param ids Os IDS estão divididos em cinco parâmetros:<br>
      * <ul>
@@ -119,8 +118,8 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
      */
     public List<Detalhamento> list(PlanoDeEnsino planoDeEnsino) {
         String filter = String.format("%s[@planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), planoDeEnsino.getId(), 
-                planoDeEnsino.getUnidadeCurricular().getId(), 
+                getObjectExpression(), planoDeEnsino.getId(),
+                planoDeEnsino.getUnidadeCurricular().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getCampus().getId());
         return this.list(filter, planoDeEnsino);
@@ -137,7 +136,7 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
         if (o.getSequencia() == null) {
             o.setSequencia(this.nextVal(planoId, undId, cursoId, campusId));
         }
-        
+
         String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
                 o.getSequencia(), planoId, undId, cursoId, campusId);
         super.save(o, filter);
@@ -145,16 +144,35 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
 
     @Override
     public void delete(Detalhamento o) {
-        // cria a expressão de acordo com o código do campus
-        Integer planoId = o.getPlanoDeEnsino().getId(),
-                sequencia = o.getSequencia(),
-                undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
-                cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
-                campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-        
-        String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
-                o.getSequencia(), planoId, undId, cursoId, campusId);
-        super.delete(filter);
+        try {
+            /**
+             * Remoção dos objetos com relação por composição
+             */
+            ObjetivoDetalheDaoXML oDetDao = ObjetivoDetalheDaoXML.getInstance();
+            o.getObjetivoDetalhes().forEach((odet) -> {
+                oDetDao.delete(odet);
+            });
+            
+            MetodologiaDaoXML metodoDao = MetodologiaDaoXML.getInstance();
+            o.getMetodologias().forEach((met) -> {
+                metodoDao.delete(met);
+            });
+            
+            Integer planoId = o.getPlanoDeEnsino().getId(),
+                    sequencia = o.getSequencia(),
+                    undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
+                    cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
+                    campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
+            String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getSequencia(), planoId, undId, cursoId, campusId);
+            super.delete(filter);
+        } catch (IOException ex) {
+            Logger.getLogger(DetalhamentoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(DetalhamentoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TransformerException ex) {
+            Logger.getLogger(DetalhamentoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

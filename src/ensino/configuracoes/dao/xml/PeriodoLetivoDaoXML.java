@@ -8,7 +8,6 @@ package ensino.configuracoes.dao.xml;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.PeriodoLetivoFactory;
-import ensino.configuracoes.model.SemanaLetiva;
 import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
 import java.io.IOException;

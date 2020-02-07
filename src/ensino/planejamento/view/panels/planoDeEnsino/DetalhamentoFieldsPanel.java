@@ -88,6 +88,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
     private GenJButton btAddMetodo;
     private GenJButton btDelMetodo;
+    private GenJButton btReplicarMetodo;
 
     private GenJRadioButton checkTecnica;
     private GenJRadioButton checkRecurso;
@@ -100,9 +101,15 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
     private ObjetivoComboBoxModel objetivoComboModel;
 
     private JTabbedPane tabbedDetalhamento;
+    private DetalhamentoPanel parent;
 
     public DetalhamentoFieldsPanel() {
+        this(null);
+    }
+    
+    public DetalhamentoFieldsPanel(DetalhamentoPanel parent) {
         super("Detalhamento das atividades da semana");
+        this.parent = parent;
         initComponents();
     }
 
@@ -136,6 +143,7 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
         ButtonAction buttonAction = new ButtonAction();
         btAddMetodo.addActionListener(buttonAction);
         btDelMetodo.addActionListener(buttonAction);
+        btReplicarMetodo.addActionListener(buttonAction);
         btAddObjetivo.addActionListener(buttonAction);
         btDelObjetivo.addActionListener(buttonAction);
 
@@ -198,12 +206,14 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
         panel.setBorder(createTitleBorder("Metodologias"));
 
-        JPanel panelMetodologia = new JPanel(new GridLayout(2, 1, 5, 5));
+        JPanel panelMetodologia = new JPanel(new GridBagLayout());
         panel.add(panelMetodologia, BorderLayout.PAGE_START);
 
         // definir a posição
         JPanel panelMetodos = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        panelMetodologia.add(panelMetodos);
+        GridBagConstraints cMetodologia = new GridBagConstraints();
+        GridLayoutHelper.set(cMetodologia, 0, 0);
+        panelMetodologia.add(panelMetodos, cMetodologia);
         panelMetodos.setBorder(createTitleBorder("Selecione um método"));
 
         CheckBoxChangeListener cbcl = new CheckBoxChangeListener();
@@ -220,20 +230,25 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
 //        JPanel panelComboAddMetodo = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         JPanel panelComboAddMetodo = new JPanel(new GridBagLayout());
+        GridLayoutHelper.set(cMetodologia, 0, 1);
+        panelMetodologia.add(panelComboAddMetodo, cMetodologia);
+        
         GridBagConstraints c = new GridBagConstraints();
-
-        panelMetodologia.add(panelComboAddMetodo);
         comboMetodo = new GenJComboBox();
         btAddMetodo = new GenJButton("Adicionar", new ImageIcon(getClass().getResource(getImageSourceAdd())));
         btDelMetodo = new GenJButton("Remover", new ImageIcon(getClass().getResource(getImageSourceDel())));
+        btReplicarMetodo = new GenJButton("Replicar metodologias");
 
-        GridLayoutHelper.set(c, 0, 0);
+        GridLayoutHelper.set(c, 0, 0, 3, 1, GridBagConstraints.LINE_START);
         c.fill = GridBagConstraints.VERTICAL;
         panelComboAddMetodo.add(comboMetodo, c);
-        GridLayoutHelper.set(c, 1, 0);
+        
+        GridLayoutHelper.set(c, 0, 1);
         panelComboAddMetodo.add(btAddMetodo, c);
-        GridLayoutHelper.set(c, 2, 0);
+        GridLayoutHelper.set(c, 1, 1);
         panelComboAddMetodo.add(btDelMetodo, c);
+        GridLayoutHelper.set(c, 2, 1);
+        panelComboAddMetodo.add(btReplicarMetodo, c);
 
         metodologiaTableModel = new MetodologiaTableModel();
         metodologiaTable = new JTable(metodologiaTableModel);
@@ -275,6 +290,11 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
         panel.add(objetivoDetalhesScroll, BorderLayout.CENTER);
 
         return panel;
+    }
+    
+    public void setMetodologias(List<Metodologia> lista) {
+        metodologiaTableModel = new MetodologiaTableModel(lista);
+        reloadMetodologiaTable();
     }
 
     private void reloadMetodologiaTable() {
@@ -388,6 +408,8 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
         comboMetodo.setEnabled(active);
         btAddMetodo.setEnabled(active);
         btDelMetodo.setEnabled(active);
+        btReplicarMetodo.setEnabled(active && sequencia == 1);
+        
         comboObjetivo.setEnabled(active);
         btAddObjetivo.setEnabled(active);
         btDelObjetivo.setEnabled(active);
@@ -476,6 +498,26 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
                 }
                 metodologiaTableModel.removeRow(selectedRow);
                 reloadMetodologiaTable();
+            } else if (e.getSource() == btReplicarMetodo) {
+                if (metodologiaTableModel.isEmpty()) {
+                    JOptionPane.showMessageDialog(getParent(),
+                            "Não é possível importar dados pois a tabela de metodologias"
+                                    + " está vazia.",
+                            "Aviso", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                int confirmForm = JOptionPane.showConfirmDialog(DetalhamentoFieldsPanel.this, 
+                        "Confirma a replicação das metodologias para todas as demais"
+                                + " semanas?", "Confirmação", JOptionPane.OK_CANCEL_OPTION, 
+                                JOptionPane.QUESTION_MESSAGE);
+                if (confirmForm == JOptionPane.OK_OPTION) {
+                    parent.replicarMetodologiasParaTodosOsDetalhamentos(metodologiaTableModel.getData());
+                    
+                    JOptionPane.showMessageDialog(getParent(),
+                            "A replicação das metodologias foi realizada com sucesso.",
+                            "Informação", JOptionPane.INFORMATION_MESSAGE);
+                }
             } else if (e.getSource() == btAddObjetivo) {
                 Objetivo obj = (Objetivo) comboObjetivo.getSelectedItem();
                 if (obj != null) {

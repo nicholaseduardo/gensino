@@ -5,10 +5,13 @@
  */
 package ensino.mvc.view.main;
 
-import ensino.configuracoes.dao.xml.RecursoDaoXML;
-import ensino.configuracoes.model.Recurso;
+import ensino.configuracoes.controller.DocenteController;
+import ensino.instalacao.PanelInformacao;
+import ensino.patterns.factory.ControllerFactory;
 import java.io.IOException;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -17,7 +20,51 @@ import javax.xml.transform.TransformerException;
  * @author nicho
  */
 public class Inicializacao {
-    public static void main(String args[]) throws IOException, ParserConfigurationException, TransformerException {
-        
+
+    public static void main(String args[]) {
+        try {
+            /**
+             * Abre o programa que fará a inicialização do sistema. Será
+             * executado somente se o docente ainda não tenha sido cadastrado no
+             * sistema
+             */
+            DocenteController col = ControllerFactory.createDocenteController();
+            if (col.listar().isEmpty()) {
+                PanelInformacao info = new PanelInformacao();
+                info.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                info.setLocationRelativeTo(null);
+                info.pack();
+                info.setVisible(true);
+            } else {
+
+                /* Set the Nimbus look and feel */
+                //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+                /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+                 */
+                try {
+                    for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                        if ("Nimbus".equals(info.getName())) {
+                            javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                            break;
+                        }
+                    }
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+                    java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+                //</editor-fold>
+
+                //</editor-fold>
+
+                /* Create and display the form */
+                java.awt.EventQueue.invokeLater(() -> {
+                    MainFrame m = new MainFrame();
+                    m.setLocationRelativeTo(null);
+                    m.setVisible(true);
+                });
+            }
+        } catch (IOException | ParserConfigurationException | TransformerException ex) {
+            Logger.getLogger(Inicializacao.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

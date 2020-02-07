@@ -140,15 +140,33 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
 
     @Override
     public void delete(PlanoAvaliacao o) {
-        Integer planoId = o.getPlanoDeEnsino().getId(),
-                sequencia = o.getSequencia(),
-                undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
-                cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
-                campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-
-        String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+        try {
+            /**
+             * Remoção dos objetos com relação por composição
+             */
+            AvaliacaoDaoXML avaDao = AvaliacaoDaoXML.getInstance();
+            o.getAvaliacoes().forEach((a) -> {
+                avaDao.delete(a);
+            });
+            
+            /**
+             * Exclusão do objeo PlanoAvaliacao
+             */
+            Integer planoId = o.getPlanoDeEnsino().getId(),
+                    sequencia = o.getSequencia(),
+                    undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
+                    cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
+                    campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
+            String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
                     o.getSequencia(), planoId, undId, cursoId, campusId);
-        super.delete(filter);
+            super.delete(filter);
+        } catch (IOException ex) {
+            Logger.getLogger(PlanoAvaliacaoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(PlanoAvaliacaoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TransformerException ex) {
+            Logger.getLogger(PlanoAvaliacaoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

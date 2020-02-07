@@ -1,0 +1,4 @@
+https://raw.githubusercontent.com/nicholaseduardo/gensino/master/data/legenda.xml
+https://raw.githubusercontent.com/nicholaseduardo/gensino/master/data/recurso.xml
+https://raw.githubusercontent.com/nicholaseduardo/gensino/master/data/tecnica.xml
+https://raw.githubusercontent.com/nicholaseduardo/gensino/master/data/instrumentoAvaliacao.xml

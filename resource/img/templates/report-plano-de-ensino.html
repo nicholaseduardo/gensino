@@ -5,12 +5,11 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
-    <!--    <head>
-            <title>TODO supply a title</title>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" type="text/css" href="plano-de-ensino.css">
-        </head>-->
+    <head>
+        <style type="text/css">
+            %style%
+        </style>
+    </head>
     <body>
         <div class="pagina">
             <div id="cabecalho">
@@ -61,25 +60,29 @@ and open the template in the editor.
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <div>
-                                <span class="field-name">Carga horária UC:</span>
-                                <span class="field-value">%carga-horaria% h/a</span>
-                            </div>
-                            <div>
-                                <span class="field-name">N.o de Semanas:</span>
-                                <span class="field-value">%semanas-letivas%</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div>
-                                <span class="field-name">N.o aulas teóricas:</span>
-                                <span class="field-value">%n-aulas-teoricas%</span>
-                            </div>
-                            <div>
-                                <span class="field-name">N.o aulas práticas:</span>
-                                <span class="field-value">%n-aulas-praticas%</span>
-                            </div>
+                        <td colspan="2">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">Carga horária UC:</span>
+                                        <span class="field-value">%carga-horaria% h/a</span>
+                                    </td>
+                                    <td>
+                                        <span class="field-name">N.o aulas teóricas:</span>
+                                        <span class="field-value">%n-aulas-teoricas%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">N.o de Semanas:</span>
+                                        <span class="field-value">%semanas-letivas%</span>
+                                    </td>
+                                    <td>
+                                        <span class="field-name">N.o aulas práticas:</span>
+                                        <span class="field-value">%n-aulas-praticas%</span>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>

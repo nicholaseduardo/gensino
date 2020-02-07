@@ -25,14 +25,15 @@ import org.w3c.dom.Node;
 public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
 
     private static ObjetivoDetalheDaoXML instance = null;
-    
+
     private ObjetivoDetalheDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("objetivoDetalhe", "ObjetivoDetalhe", "objetivoDetalhe", ObjetivoDetalheFactory.getInstance());
     }
-    
+
     public static ObjetivoDetalheDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
-        if (instance == null)
+        if (instance == null) {
             instance = new ObjetivoDetalheDaoXML();
+        }
         return instance;
     }
 
@@ -55,7 +56,7 @@ public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
                         undId, cursoId, campusId);
             }
             detalhamento.addObjetivoDetalhe(o);
-            
+
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,8 +65,7 @@ public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
     }
 
     /**
-     * Recupera um objeto de acorco com sua chave
-     * primária
+     * Recupera um objeto de acorco com sua chave primária
      *
      * @param ids Os IDS estão divididos em seis parâmetros:<br>
      * <ul>
@@ -107,14 +107,14 @@ public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
                 undId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getId(),
                 cursoId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-        
+
         if (o.isDeleted()) {
             this.delete(o);
+        } else {
+            String filter = String.format("@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getObjetivo().getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
+            super.save(o, filter);
         }
-        
-        String filter = String.format("@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
-                o.getObjetivo().getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
-        super.save(o, filter);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class ObjetivoDetalheDaoXML extends AbstractDaoXML<ObjetivoDetalhe> {
                 undId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getId(),
                 cursoId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-        
+
         String filter = String.format("@objetivoSequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
                 o.getObjetivo().getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
         super.delete(filter);

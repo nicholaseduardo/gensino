@@ -9,6 +9,7 @@ import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.configuracoes.model.InstrumentoAvaliacaoFactory;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
@@ -29,6 +30,10 @@ public class InstrumentoAvaliacaoDaoXML extends AbstractDaoXML<InstrumentoAvalia
         if (instance == null) 
             instance = new InstrumentoAvaliacaoDaoXML();
         return instance;
+    }
+    
+    public InstrumentoAvaliacaoDaoXML(URL url) throws IOException, ParserConfigurationException, TransformerException {
+        super("instrumentoAvaliacao", url, "InstrumentoAvaliacao", "instrumentoAvaliacao", InstrumentoAvaliacaoFactory.getInstance());
     }
 
     @Override

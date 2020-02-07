@@ -25,14 +25,15 @@ import org.w3c.dom.Node;
 public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
 
     private static MetodologiaDaoXML instance = null;
-    
+
     private MetodologiaDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("metodologia", "Metodologia", "metodologia", MetodologiaFactory.getInstance());
     }
-    
+
     public static MetodologiaDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
-        if (instance == null)
+        if (instance == null) {
             instance = new MetodologiaDaoXML();
+        }
         return instance;
     }
 
@@ -55,7 +56,7 @@ public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
                         undId, cursoId, campusId);
             }
             detalhamento.addMetodologia(o);
-            
+
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -64,8 +65,7 @@ public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
     }
 
     /**
-     * Recupera um objeto de acorco com sua chave
-     * primária
+     * Recupera um objeto de acorco com sua chave primária
      *
      * @param ids Os IDS estão divididos em seis parâmetros:<br>
      * <ul>
@@ -110,19 +110,19 @@ public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
         if (o.getSequencia() == null) {
             o.setSequencia(this.nextVal(detalhamentoSeq, planoId, undId, cursoId, campusId));
         }
-        
+
         if (o.isDeleted()) {
             this.delete(o);
+        } else {
+            String filter = String.format("@sequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
+            super.save(o, filter);
         }
-        
-        String filter = String.format("@sequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
-                o.getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
-        super.save(o, filter);
     }
 
     @Override
     public void delete(Metodologia o) {
-        
+
         // cria a expressão de acordo com o código do campus
         Detalhamento detalhamento = o.getDetalhamento();
         Integer planoId = detalhamento.getPlanoDeEnsino().getId(),
@@ -130,7 +130,7 @@ public class MetodologiaDaoXML extends AbstractDaoXML<Metodologia> {
                 undId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getId(),
                 cursoId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
                 campusId = detalhamento.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-        
+
         String filter = String.format("@sequencia=%d and @detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
                 o.getSequencia(), detalhamentoSeq, planoId, undId, cursoId, campusId);
         super.delete(filter);

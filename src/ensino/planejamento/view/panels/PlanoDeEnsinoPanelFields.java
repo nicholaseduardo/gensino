@@ -12,6 +12,8 @@ import ensino.planejamento.model.Avaliacao;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.PlanoAvaliacao;
+import ensino.planejamento.model.PlanoDeEnsino;
+import ensino.planejamento.model.PlanoDeEnsinoFactory;
 import ensino.planejamento.view.panels.planoDeEnsino.AvaliacaoPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.ConteudoPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.DetalhamentoPanel;
@@ -168,8 +170,8 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
         treeModel.insertNodeInto(nodeView, noImpressao, rowImpressao++);
 
         treePlanoDeEnsino.setModel(treeModel);
-        treePlanoDeEnsino.expandRow(1);
-        treePlanoDeEnsino.setSelectionRow(1);
+        expandAllNodes(treePlanoDeEnsino, 0, treePlanoDeEnsino.getRowCount());
+        treePlanoDeEnsino.setSelectionRow(2);
     }
 
     @Override
@@ -429,6 +431,11 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
             } else if (lastPath.equals(TabsPlano.AVA.toString())) {
                 layout.show(planoDeEnsinoCardPanel, avaliacaoPanel.getName());
             } else if (lastPath.equals(TabsPlano.VIEW .toString())) {
+                /**
+                 * Recupera os dados já publicados na tela
+                 */
+                PlanoDeEnsino plano = PlanoDeEnsinoFactory.getInstance().getObject(getFieldValues());
+                htmlPanel.setFieldValues(plano);
                 layout.show(planoDeEnsinoCardPanel, htmlPanel.getName());
             } else {
                 layout.show(planoDeEnsinoCardPanel, "panel.nulo");

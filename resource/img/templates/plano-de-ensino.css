@@ -8,6 +8,10 @@ and open the template in the editor.
     Author     : nicho
 */
 
+/*body {
+    font-family: Helvetica, Times New Roman;
+}*/
+
 .pagina {
     border: 2px solid black;
     padding: 20px;
@@ -17,7 +21,6 @@ and open the template in the editor.
 
 .titulo {
     font-size: 110%;
-    font-family: Helvetica, Arial, sans-serif;
     font-weight: bold;
     text-align: center;
 }
@@ -56,15 +59,15 @@ table {
 }
 
 th {
-    display: table-header-group;
+    /*display: table-header-group;*/
     text-align: left;
     background-color: #cccccc;
     font-weight: bold;
 }
 
-td {
+/*td {
     display: table-column;
-}
+}*/
 
 ol {
     margin-left: 15px;

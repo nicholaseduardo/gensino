@@ -9,6 +9,7 @@ import ensino.configuracoes.dao.xml.RecursoDaoXML;
 import ensino.configuracoes.model.RecursoFactory;
 import ensino.patterns.AbstractController;
 import java.io.IOException;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -27,5 +28,9 @@ public class RecursoController extends AbstractController {
         if (instance == null)
             instance = new RecursoController();
         return instance;
+    }
+    
+    public RecursoController(URL url) throws IOException, ParserConfigurationException, TransformerException {
+        super(new RecursoDaoXML(url), RecursoFactory.getInstance());
     }
 }

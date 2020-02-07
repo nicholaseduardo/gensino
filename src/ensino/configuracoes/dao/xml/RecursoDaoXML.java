@@ -9,6 +9,7 @@ import ensino.configuracoes.model.Recurso;
 import ensino.configuracoes.model.RecursoFactory;
 import ensino.connection.AbstractDaoXML;
 import java.io.IOException;
+import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.w3c.dom.Element;
@@ -24,13 +25,17 @@ import org.w3c.dom.Element;
     private RecursoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("recurso", "Recurso", "recurso", RecursoFactory.getInstance());
     }
+     
+    public RecursoDaoXML(URL url) throws IOException, ParserConfigurationException, TransformerException {
+        super("recurso", url, "Recurso", "recurso", RecursoFactory.getInstance());
+    }
     
     public static RecursoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
         if (instance == null)
             instance = new RecursoDaoXML();
         return instance;
     }
-
+    
     @Override
     protected Recurso createObject(Element e, Object ref) {
         return getBeanFactory().getObject(e);
