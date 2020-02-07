@@ -8,7 +8,7 @@ package ensino.planejamento.view.panels.planoDeEnsino;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
-import com.itextpdf.layout.font.FontProvider;
+//import com.itextpdf.layout.font.FontProvider;
 import ensino.components.GenJButton;
 import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
@@ -460,14 +460,14 @@ public class HtmlPanel extends DefaultFieldsPanel {
                 fos.close();
                 
                 if (type == 1) {
-                    ConverterProperties converterProperties = new ConverterProperties();
-                    FontProvider fp = new DefaultFontProvider(true, true, false);
-                    converterProperties.setFontProvider(fp);
-                    HtmlConverter.convertToPdf(htmlFile, fileToSave, converterProperties);
-                    /**
-                     * Remove o arquivo temporário
-                     */
-                    htmlFile.delete();
+//                    ConverterProperties converterProperties = new ConverterProperties();
+//                    FontProvider fp = new DefaultFontProvider(true, true, false);
+//                    converterProperties.setFontProvider(fp);
+//                    HtmlConverter.convertToPdf(htmlFile, fileToSave, converterProperties);
+//                    /**
+//                     * Remove o arquivo temporário
+//                     */
+//                    htmlFile.delete();
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
