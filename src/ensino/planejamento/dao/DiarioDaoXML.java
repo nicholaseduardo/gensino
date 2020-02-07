@@ -12,7 +12,6 @@ import ensino.helpers.DateHelper;
 import ensino.patterns.DaoPattern;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.DiarioFactory;
-import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
 import java.util.Date;
@@ -31,14 +30,15 @@ import org.w3c.dom.Node;
 public class DiarioDaoXML extends AbstractDaoXML<Diario> {
 
     private static DiarioDaoXML instance = null;
-    
+
     private DiarioDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("diario", "Diario", "diario", DiarioFactory.getInstance());
     }
-    
+
     public static DiarioDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
-        if (instance == null)
+        if (instance == null) {
             instance = new DiarioDaoXML();
+        }
         return instance;
     }
 
@@ -55,11 +55,11 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
                 planoDeEnsino = (PlanoDeEnsino) ref;
             } else {
                 DaoPattern<PlanoDeEnsino> dao = PlanoDeEnsinoDaoXML.getInstance();
-                planoDeEnsino = dao.findById(planoDeEnsinoId, undId, 
+                planoDeEnsino = dao.findById(planoDeEnsinoId, undId,
                         cursoId, campusId);
             }
             planoDeEnsino.addDiario(o);
-            
+
             // load children
 //            String formatter = "%s[@diarioId=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
 //            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
@@ -68,7 +68,6 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
 //            String filter = String.format(formatter, "//DiarioFrequencia/diarioFrequencia", 
 //                    o.getId(), planoDeEnsinoId, undId, cursoId, campusId);
 //            o.setFrequencias(dao.list(filter, o));
-            
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -77,8 +76,7 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
     }
 
     /**
-     * Recupera um objeto de acorco com sua chave
-     * primária
+     * Recupera um objeto de acorco com sua chave primária
      *
      * @param ids Os IDS estão divididos em cinco parâmetros:<br>
      * <ul>
@@ -110,18 +108,17 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
     }
 
     /**
-     * Recupera a lista dos diários do plano de ensino por unidade
-     * curricular
+     * Recupera a lista dos diários do plano de ensino por unidade curricular
      *
-     * @param planoDeEnsino               Identificação referente plano de ensino
+     * @param planoDeEnsino Identificação referente plano de ensino
      * @return
      */
     public List<Diario> list(PlanoDeEnsino planoDeEnsino) {
         String filter = String.format("%s[@planoDeEnsinoId=%d and "
                 + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                getObjectExpression(), 
-                planoDeEnsino.getId(), 
-                planoDeEnsino.getUnidadeCurricular().getId(), 
+                getObjectExpression(),
+                planoDeEnsino.getId(),
+                planoDeEnsino.getUnidadeCurricular().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getCampus().getId());
         return this.list(filter, planoDeEnsino);
@@ -131,21 +128,21 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
      * Recupera uma lista de objetos da classe <code>Diario</code> de acorco com
      * a data informada
      *
-     * @param data                  Data dos diãrios
-     * @param planoDeEnsino               Número de identificação do plano de ensino
+     * @param data Data dos diãrios
+     * @param planoDeEnsino Número de identificação do plano de ensino
      * @return
      */
     public List<Diario> list(Date data, PlanoDeEnsino planoDeEnsino) {
         String filter = String.format("%s[@data=%s and @planoDeEnsinoId=%d and "
                 + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                 getObjectExpression(), DateHelper.dateToString(data, "dd/MM/yyyy"),
-                planoDeEnsino.getId(), 
-                planoDeEnsino.getUnidadeCurricular().getId(), 
+                planoDeEnsino.getId(),
+                planoDeEnsino.getUnidadeCurricular().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getId(),
                 planoDeEnsino.getUnidadeCurricular().getCurso().getCampus().getId());
         return this.list(filter, planoDeEnsino);
     }
-    
+
     @Override
     public void save(Diario o) {
         PlanoDeEnsino planoDeEnsino = o.getPlanoDeEnsino();
@@ -155,8 +152,8 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
                 cursoId = curso.getId(),
                 unidadeId = und.getId(), planoId = planoDeEnsino.getId();
 
-        if (o.getId()== null) {
-            o.setId(nextVal(planoId, unidadeId, cursoId,campusId));
+        if (o.getId() == null) {
+            o.setId(nextVal(planoId, unidadeId, cursoId, campusId));
         }
 
         String filter = String.format("@id=%d and @planoDeEnsinoId=%d and "
@@ -164,20 +161,37 @@ public class DiarioDaoXML extends AbstractDaoXML<Diario> {
                 o.getId(), planoId, unidadeId, cursoId, campusId);
         super.save(o, filter);
     }
-    
+
     @Override
     public void delete(Diario o) {
-        PlanoDeEnsino planoDeEnsino = o.getPlanoDeEnsino();
-        UnidadeCurricular und = planoDeEnsino.getUnidadeCurricular();
-        Curso curso = und.getCurso();
-        Integer campusId = curso.getCampus().getId(),
-                cursoId = curso.getId(),
-                unidadeId = und.getId(), planoId = planoDeEnsino.getId();
-
-        String filter = String.format("@id=%d and @planoDeEnsinoId=%d and "
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
-                o.getId(), planoId, unidadeId, cursoId, campusId);
-        super.delete(filter);
+        try {
+            /**
+             * Remoção dos objetos com relação por composição
+             */
+            DiarioFrequenciaDaoXML freqDao = DiarioFrequenciaDaoXML.getInstance();
+            o.getFrequencias().forEach((d) -> {
+                freqDao.delete(d);
+            });
+            /**
+             * Exclusão do objeo Diario
+             */
+            PlanoDeEnsino planoDeEnsino = o.getPlanoDeEnsino();
+            UnidadeCurricular und = planoDeEnsino.getUnidadeCurricular();
+            Curso curso = und.getCurso();
+            Integer campusId = curso.getCampus().getId(),
+                    cursoId = curso.getId(),
+                    unidadeId = und.getId(), planoId = planoDeEnsino.getId();
+            String filter = String.format("@id=%d and @planoDeEnsinoId=%d and "
+                    + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getId(), planoId, unidadeId, cursoId, campusId);
+            super.delete(filter);
+        } catch (IOException ex) {
+            Logger.getLogger(DiarioDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(DiarioDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TransformerException ex) {
+            Logger.getLogger(DiarioDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
