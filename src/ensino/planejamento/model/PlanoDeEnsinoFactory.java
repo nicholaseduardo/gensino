@@ -10,7 +10,6 @@ import ensino.configuracoes.dao.xml.EstudanteDaoXML;
 import ensino.configuracoes.dao.xml.PeriodoLetivoDaoXML;
 import ensino.configuracoes.dao.xml.SemanaLetivaDaoXML;
 import ensino.configuracoes.dao.xml.TurmaDaoXML;
-import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Docente;
 import ensino.configuracoes.model.Estudante;
