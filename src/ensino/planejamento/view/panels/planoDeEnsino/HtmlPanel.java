@@ -17,9 +17,7 @@ import ensino.helpers.DateHelper;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.DetalhamentoController;
 import ensino.planejamento.controller.MetodologiaController;
-import ensino.planejamento.controller.ObjetivoController;
 import ensino.planejamento.controller.PlanoAvaliacaoController;
-import ensino.planejamento.controller.PlanoDeEnsinoController;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
@@ -36,14 +34,11 @@ import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -57,7 +52,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -437,29 +431,6 @@ public class HtmlPanel extends DefaultFieldsPanel {
 
     }
 
-    public static void main(String args[]) {
-        try {
-            PlanoDeEnsinoController col = ControllerFactory.createPlanoDeEnsinoController();
-            PlanoDeEnsino plano = col.buscarPor(1, 1, 1, 1);
-
-            ObjetivoController objCol = ControllerFactory.createObjetivoController();
-            plano.setObjetivos(objCol.listar(plano));
-
-            JFrame f = new JFrame();
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            HtmlPanel p = new HtmlPanel();
-            p.setFieldValues(plano);
-            f.getContentPane().add(p);
-//            f.setSize(800, 600);
-            f.pack();
-            f.setLocationRelativeTo(null);
-            f.setVisible(true);
-        } catch (Exception ex) {
-            Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     private void saveFile(int type) {
         String sType = (type == 0 ? "HTML" : "PDF");
         
@@ -517,5 +488,28 @@ public class HtmlPanel extends DefaultFieldsPanel {
             }
         }
     }
+
+//    public static void main(String args[]) {
+//        try {
+//            PlanoDeEnsinoController col = ControllerFactory.createPlanoDeEnsinoController();
+//            PlanoDeEnsino plano = col.buscarPor(1, 1, 1, 1);
+//
+//            ObjetivoController objCol = ControllerFactory.createObjetivoController();
+//            plano.setObjetivos(objCol.listar(plano));
+//
+//            JFrame f = new JFrame();
+//            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//            HtmlPanel p = new HtmlPanel();
+//            p.setFieldValues(plano);
+//            f.getContentPane().add(p);
+////            f.setSize(800, 600);
+//            f.pack();
+//            f.setLocationRelativeTo(null);
+//            f.setVisible(true);
+//        } catch (Exception ex) {
+//            Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
 }
