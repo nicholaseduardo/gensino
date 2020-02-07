@@ -184,15 +184,17 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
             DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tp.getLastPathComponent();
             PeriodoLetivo periodoLetivo = (PeriodoLetivo) selectedNode.getUserObject();
             lblPeriodoSelecionado.setText("Período selecionado: " + periodoLetivo.getDescricao());
-            try {
-                /**
-                 * Recupera os dados das semanas letivas para o período em
-                 * questão
-                 */
-                SemanaLetivaController semanaCol = ControllerFactory.createSemanaLetivaController();
-                periodoLetivo.setSemanasLetivas(semanaCol.listar(periodoLetivo));
-            } catch (IOException | ParserConfigurationException | TransformerException ex) {
-                Logger.getLogger(PeriodoLetivoCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+            if (periodoLetivo.getSemanasLetivas().isEmpty()) {
+                try {
+                    /**
+                     * Recupera os dados das semanas letivas para o período em
+                     * questão caso eles ainda não tenham sido atribuídos
+                     */
+                    SemanaLetivaController semanaCol = ControllerFactory.createSemanaLetivaController();
+                    periodoLetivo.setSemanasLetivas(semanaCol.listar(periodoLetivo));
+                } catch (IOException | ParserConfigurationException | TransformerException ex) {
+                    Logger.getLogger(PeriodoLetivoCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             setData(periodoLetivo.getSemanasLetivas());
         }
