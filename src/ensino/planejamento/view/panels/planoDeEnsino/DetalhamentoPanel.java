@@ -16,6 +16,7 @@ import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
+import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.util.types.MesesDeAno;
@@ -33,7 +34,6 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -145,7 +145,7 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
                     // O primeiro componente é nulo
                     if (!componentsCreated) {
                         // Cria o formulário com os campos do detalhamento
-                        detalhamentoFields = new DetalhamentoFieldsPanel();
+                        detalhamentoFields = new DetalhamentoFieldsPanel(this);
                         // armazena cada formulário no cardpanel
                         detalhamentoCardPanel.add(detalhamentoFields, String.format("%d", semanaLetiva.getId()));
                         // adiciona o conteúdo do detalhamento caso exista
@@ -195,16 +195,6 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
         }
 
         return listaSemanas;
-    }
-
-    private void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
-        for (int i = startingIndex; i < rowCount; ++i) {
-            tree.expandRow(i);
-        }
-
-        if (tree.getRowCount() != rowCount) {
-            expandAllNodes(tree, rowCount, tree.getRowCount());
-        }
     }
 
     @Override
@@ -284,6 +274,16 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
     @Override
     public void initFocus() {
 
+    }
+    
+    public void replicarMetodologiasParaTodosOsDetalhamentos(List<Metodologia> lista) {
+        // verifica os componentes dos campos de detalhamento
+        for(int i = 0; i < detalhamentoCardPanel.getComponentCount(); i++) {
+            if (detalhamentoCardPanel.getComponent(i) instanceof DetalhamentoFieldsPanel) {
+                DetalhamentoFieldsPanel panel = (DetalhamentoFieldsPanel) detalhamentoCardPanel.getComponent(i);
+                panel.setMetodologias(lista);
+            }
+        }
     }
 
     private class DetalhamentoTreeSelectionListener implements TreeSelectionListener {
