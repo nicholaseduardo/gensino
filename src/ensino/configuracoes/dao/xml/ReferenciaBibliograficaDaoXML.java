@@ -44,13 +44,14 @@ public class ReferenciaBibliograficaDaoXML extends AbstractDaoXML<ReferenciaBibl
             ReferenciaBibliografica o = getBeanFactory().getObject(e);
             // Identifica o objeto Pai (Campus)
             Integer campusId = new Integer(e.getAttribute("campusId")),
-                    cursoId = new Integer(e.getAttribute("cursoId"));
+                    cursoId = new Integer(e.getAttribute("cursoId")),
+                    undId = new Integer(e.getAttribute("unidadeCurricularId"));
             UnidadeCurricular unidadeCurricular;
             if (ref != null && ref instanceof UnidadeCurricular) {
                 unidadeCurricular = (UnidadeCurricular) ref;
             } else {
                 DaoPattern<UnidadeCurricular> dao = UnidadeCurricularDaoXML.getInstance();
-                unidadeCurricular = dao.findById(cursoId, campusId);
+                unidadeCurricular = dao.findById(undId, cursoId, campusId);
             }
             unidadeCurricular.addReferenciaBibliografica(o);
 
