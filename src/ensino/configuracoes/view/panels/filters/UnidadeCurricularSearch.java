@@ -7,6 +7,7 @@ package ensino.configuracoes.view.panels.filters;
 
 import ensino.components.GenJButton;
 import ensino.components.GenJTextField;
+import ensino.configuracoes.controller.ReferenciaBibliograficaController;
 import ensino.configuracoes.controller.UnidadeCurricularController;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.Curso;
@@ -106,10 +107,18 @@ public class UnidadeCurricularSearch extends JPanel {
 
     public void setObjectValue(UnidadeCurricular unidade) {
         if (unidade != null) {
-            this.objectValue = unidade;
-            txtId.setText(unidade.getId().toString());
-            txtNome.setText(unidade.getNome());
-            btSearch.requestFocusInWindow();
+            try {
+                // Busca as referencias bibliograficas
+                ReferenciaBibliograficaController col = ControllerFactory.createReferenciaBibliograficaController();
+                unidade.setReferenciasBibliograficas(col.listar(unidade));
+                
+                this.objectValue = unidade;
+                txtId.setText(unidade.getId().toString());
+                txtNome.setText(unidade.getNome());
+                btSearch.requestFocusInWindow();
+            } catch (IOException | ParserConfigurationException | TransformerException ex) {
+                Logger.getLogger(UnidadeCurricularSearch.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             this.objectValue = null;
             txtId.setText("");
