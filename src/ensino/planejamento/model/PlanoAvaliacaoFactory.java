@@ -112,7 +112,7 @@ public class PlanoAvaliacaoFactory implements BeanFactory<PlanoAvaliacao> {
         e.setAttribute("data", DateHelper.dateToString(o.getData(), "dd/MM/yyyy"));
         
         e.setAttribute("instrumentoAvaliacaoId", o.getInstrumentoAvaliacao().getId().toString());
-        e.setAttribute("objetivoSequencia", o.getObjetivo().getSequencia().toString());
+        e.setAttribute("objetivoSequencia", o.getObjetivo() != null ? o.getObjetivo().getSequencia().toString() : "0");
         e.setAttribute("planoDeEnsinoId", o.getPlanoDeEnsino().getId().toString());
         e.setAttribute("unidadeCurricularId", o.getPlanoDeEnsino().getUnidadeCurricular().getId().toString());
         e.setAttribute("cursoId", o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId().toString());
