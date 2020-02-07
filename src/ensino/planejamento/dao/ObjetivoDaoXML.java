@@ -9,8 +9,10 @@ import ensino.connection.AbstractDaoXML;
 import ensino.patterns.DaoPattern;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.ObjetivoFactory;
+import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,14 +27,15 @@ import org.w3c.dom.Node;
 public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
 
     private static ObjetivoDaoXML instance = null;
-    
+
     private ObjetivoDaoXML() throws IOException, ParserConfigurationException, TransformerException {
         super("objetivo", "Objetivo", "objetivo", ObjetivoFactory.getInstance());
     }
-    
+
     public static ObjetivoDaoXML getInstance() throws IOException, ParserConfigurationException, TransformerException {
-        if (instance == null)
+        if (instance == null) {
             instance = new ObjetivoDaoXML();
+        }
         return instance;
     }
 
@@ -116,16 +119,32 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
 
     @Override
     public void delete(Objetivo o) {
-        // cria a expressão de acordo com o código do campus
-        Integer planoId = o.getPlanoDeEnsino().getId(),
-                sequencia = o.getSequencia(),
-                undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
-                cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
-                campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
-
-        String filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+        try {
+            Integer planoId = o.getPlanoDeEnsino().getId(),
+                    sequencia = o.getSequencia(),
+                    undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId(),
+                    cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId(),
+                    campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
+            String filter = "";
+            /**
+             * Verifica se não existe dependência em outros objetos
+             */
+            PlanoAvaliacaoDaoXML pDao = PlanoAvaliacaoDaoXML.getInstance();
+            filter = String.format("%s[@objetivoSequencia=%d]", getObjectExpression(),
+                    o.getSequencia());
+            String errorMessage = "O Objetivo %d, não pode ser excluído."
+                    + "Ele está vinculado %s %d.";
+            List<PlanoAvaliacao> l = pDao.list(filter, null);
+            if (l != null && !l.isEmpty()) {
+                System.err.println(String.format(errorMessage,
+                        o.getSequencia(), "ao Plano de Avaliações",
+                        l.get(0).getSequencia()));
+            }   filter = String.format("@sequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
                     o.getSequencia(), planoId, undId, cursoId, campusId);
             super.delete(filter);
+        } catch (IOException | ParserConfigurationException | TransformerException ex) {
+            Logger.getLogger(ObjetivoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

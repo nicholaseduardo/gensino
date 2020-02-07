@@ -64,7 +64,7 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
                         + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
                         undId, cursoId, campusId);
                 
-                und.setReferenciasBibliograficas(daoRef.list(filter, o));
+                und.setReferenciasBibliograficas(daoRef.list(filter, und));
             }
             und.addPlanoDeEnsino(o);
 
@@ -158,15 +158,53 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
 
     @Override
     public void delete(PlanoDeEnsino o) {
-        UnidadeCurricular und = o.getUnidadeCurricular();
-        Curso curso = und.getCurso();
-        Integer campusId = curso.getCampus().getId(),
-                cursoId = curso.getId(),
-                unidadeId = und.getId();
-
-        String filter = String.format("@id=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
-                o.getId(), unidadeId, cursoId, campusId);
-        super.delete(filter);
+        try {
+            /**
+             * Remoção dos objetos com relação por composição
+             */
+            HorarioAulaDaoXML aulaDao = HorarioAulaDaoXML.getInstance();
+            o.getHorarios().forEach((h) -> {
+                aulaDao.delete(h);
+            });
+            
+            PlanoAvaliacaoDaoXML planoAvalDao = PlanoAvaliacaoDaoXML.getInstance();
+            o.getPlanosAvaliacoes().forEach((p) -> {
+                planoAvalDao.delete(p);
+            });
+            
+            DiarioDaoXML diarioDao = DiarioDaoXML.getInstance();
+            o.getDiarios().forEach((d) -> {
+                diarioDao.delete(d);
+            });
+            
+            DetalhamentoDaoXML detalhaDao = DetalhamentoDaoXML.getInstance();
+            o.getDetalhamentos().forEach((d) -> {
+                detalhaDao.delete(d);
+            });
+            
+            ObjetivoDaoXML objDao = ObjetivoDaoXML.getInstance();
+            o.getObjetivos().forEach((obj) -> {
+                objDao.delete(obj);
+            });
+            
+            /**
+             * Exclusão do objeo PlanoDeEnsino
+             */
+            UnidadeCurricular und = o.getUnidadeCurricular();
+            Curso curso = und.getCurso();
+            Integer campusId = curso.getCampus().getId(),
+                    cursoId = curso.getId(),
+                    unidadeId = und.getId();
+            String filter = String.format("@id=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d",
+                    o.getId(), unidadeId, cursoId, campusId);
+            super.delete(filter);
+        } catch (IOException ex) {
+            Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParserConfigurationException ex) {
+            Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TransformerException ex) {
+            Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
