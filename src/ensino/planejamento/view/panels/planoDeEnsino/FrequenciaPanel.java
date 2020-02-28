@@ -98,8 +98,12 @@ public class FrequenciaPanel extends DefaultFieldsPanel {
     }
 
     private void createFrequenciasTable() {
-        List<Object> lista = new ArrayList();
         if (!listaDiarios.isEmpty()) {
+            /**
+             * Variável criada para armazenar a lista de estudantes com suas
+             * respectivas frequências por diário
+             */
+            List<Object> lista = new ArrayList();
             /**
              * O número de colunas de registro de frequência é equivalente ao
              * número de diários lançados no sistema. Considera mais uma unidade
@@ -125,28 +129,40 @@ public class FrequenciaPanel extends DefaultFieldsPanel {
              * Variável criada para ser utilizada no processo de montagem da
              * matriz bidimensional por estudante
              */
-            List<Estudante> lEstudantes = listaDiarios.get(0).getPlanoDeEnsino().getTurma().getEstudantes();
+            List<Estudante> listaEstudantes = listaDiarios.get(0).getPlanoDeEnsino().getTurma().getEstudantes();
             /**
              * O número de linhas de registro de frequência é equivalente ao
              * número de estudantes da turma vinculada ao plano de ensino
              */
-            int rowCount = lEstudantes.size();
+            int rowCount = listaEstudantes.size();
             for (int i = 0; i < rowCount; i++) {
-                Estudante estudante = lEstudantes.get(i);
-                List<Object> inList = new ArrayList();
-                lista.add(inList);
-                inList.add(estudante);
+                Estudante estudante = listaEstudantes.get(i);
+                /**
+                 * Variável criada para armazenar uma lista contendo um
+                 * estudante e o registro de frequências desse estudante.
+                 */
+                List<Object> listaFrequenciasEstudante = new ArrayList();
+                lista.add(listaFrequenciasEstudante);
+                listaFrequenciasEstudante.add(estudante);
                 for (int j = 0; j < columnCount - 1; j++) {
                     Diario diario = listaDiarios.get(j);
                     if (!diario.hasFrequencias()) {
-                        diario.criarFrequencia(lEstudantes);
+                        /**
+                         * Caso o diário não tenha registro de frequência da
+                         * lista de estudantes, este deve ser criado com valores
+                         * padrões.
+                         */
+                        diario.criarFrequencia(listaEstudantes);
                     }
+                    /**
+                     * Variável temporária utilizada para armazenar as
+                     * frequências dos estudantes existentes no diário
+                     */
                     List<DiarioFrequencia> lFrequencias = diario.getFrequencias();
-
                     for (int k = 0; k < lFrequencias.size(); k++) {
                         DiarioFrequencia freq = lFrequencias.get(k);
                         if (estudante.equals(freq.getEstudante())) {
-                            inList.add(freq);
+                            listaFrequenciasEstudante.add(freq);
                             break;
                         }
                     }
