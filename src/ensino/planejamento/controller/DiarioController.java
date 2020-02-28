@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -45,6 +47,26 @@ public class DiarioController extends AbstractController<Diario> {
         colDiarioFrequencia.salvarEmCascata(o.getFrequencias());
         
         return o;
+    }
+    
+    /**
+     *
+     * @param o
+     * @return
+     */
+    @Override
+    public Diario salvarSemCommit(Diario o) {
+        try {
+            o = super.salvarSemCommit(o);
+            // Salvar cascade
+            AbstractController<DiarioFrequencia> colDiarioFrequencia = ControllerFactory.createDiarioFrequenciaController();
+            colDiarioFrequencia.salvarEmCascataSemCommit(o.getFrequencias());
+            
+            return o;
+        } catch (Exception ex) {
+            Logger.getLogger(DiarioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
     
     /**

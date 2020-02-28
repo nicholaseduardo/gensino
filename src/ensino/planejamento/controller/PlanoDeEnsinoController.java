@@ -12,6 +12,7 @@ import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.dao.PlanoDeEnsinoDaoXML;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Diario;
+import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoAvaliacao;
@@ -56,7 +57,14 @@ public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
         colHorarioAula.salvarEmCascata(o.getHorarios());
         
         AbstractController<Diario> colDiario = ControllerFactory.createDiarioController();
-        colDiario.salvarEmCascata(o.getDiarios());
+        colDiario.salvarEmCascataSemCommit(o.getDiarios());
+        /**
+         * A controller da frequencia foi utilizada para realizar apenas o COMMIT
+         * visto que os dados do diário foram salvos sem o COMMIT.
+         */
+        colDiario.commit();
+        AbstractController<DiarioFrequencia> colFrequencia = ControllerFactory.createDiarioFrequenciaController();
+        colFrequencia.commit();
         
         AbstractController<PlanoAvaliacao> colPlanoAvaliacao = ControllerFactory.createPlanoAvaliacaoController();
         colPlanoAvaliacao.salvarEmCascata(o.getPlanosAvaliacoes());
