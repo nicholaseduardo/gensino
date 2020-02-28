@@ -137,7 +137,7 @@ public class Diario {
     public void setFrequencias(List<DiarioFrequencia> frequencias) {
         this.frequencias = frequencias;
     }
-    
+
     public boolean hasFrequencias() {
         return !frequencias.isEmpty();
     }
@@ -184,19 +184,22 @@ public class Diario {
         }
         return true;
     }
-    
+
     @Override
     public String toString() {
         return DateHelper.dateToString(data, "dd/MM/yyyy");
     }
-    
+
     public void criarFrequencia(List<Estudante> estudantes) {
-        estudantes.forEach((estudante) -> {
+        int seqId = 1;
+        for (int i = 0; i < estudantes.size(); i++) {
+            Estudante estudante = estudantes.get(i);
             DiarioFrequencia df = new DiarioFrequencia();
             df.setDiario(this);
             df.setEstudante(estudante);
+            df.setId(seqId++);
             addFrequencia(df);
-        });
+        }
     }
 
 }
