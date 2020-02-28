@@ -82,8 +82,10 @@ public class DiarioFrequenciaFactory implements BeanFactory<DiarioFrequencia> {
         Element e = doc.createElement("diarioFrequencia");
         e.setAttribute("id", o.getId().toString());
         e.setAttribute("presenca", o.getPresenca().getValue());
-        e.setAttribute("diarioId", o.getDiario().getId().toString());
-        e.setAttribute("planoDeEnsinoId", o.getDiario().getPlanoDeEnsino().getId().toString());
+        Diario d = o.getDiario();
+        e.setAttribute("diarioId", d.getId().toString());
+        e.setAttribute("planoDeEnsinoId", d.getPlanoDeEnsino().getId().toString());
+        e.setAttribute("unidadeCurricularId", d.getPlanoDeEnsino().getUnidadeCurricular().getId().toString());
         e.setAttribute("estudanteId", o.getEstudante().getId().toString());
         e.setAttribute("turmaId", o.getEstudante().getTurma().getId().toString());
         e.setAttribute("cursoId", o.getEstudante().getTurma().getCurso().getId().toString());
