@@ -45,7 +45,17 @@ public abstract class AbstractController<T> {
     }
 
     public T salvar(T object) throws Exception {
+        salvarSemCommit(object);
+        commit();
+        return object;
+    }
+
+    public T salvarSemCommit(T object) {
         dao.save(object);
+        return object;
+    }
+
+    public void commit() throws Exception {
         try {
             dao.commit();
         } catch (Exception ex) {
@@ -53,14 +63,14 @@ public abstract class AbstractController<T> {
             dao.rollback();
             throw ex;
         }
-        return object;
     }
 
     /**
-     * Salvar em cascata.
-     * Esse método tem o objetivo de salvar a lista de objetos <code>T</code>
+     * Salvar em cascata. Esse método tem o objetivo de salvar a lista de
+     * objetos <code>T</code>
+     *
      * @param l
-     * @throws Exception 
+     * @throws Exception
      */
     public void salvarEmCascata(List<T> l) throws Exception {
         try {
@@ -75,19 +85,28 @@ public abstract class AbstractController<T> {
         }
     }
 
+    /**
+     * Salvar em cascata. Esse método tem o objetivo de salvar a lista de
+     * objetos <code>T</code> sem realizar o COMMIT
+     *
+     * @param l
+     */
+    public void salvarEmCascataSemCommit(List<T> l) throws Exception {
+        if (l != null) {
+            for (int i = 0; i < l.size(); i++) {
+                this.salvarSemCommit(l.get(i));
+            }
+        }
+    }
+
     public T remover(HashMap<String, Object> params) throws Exception {
         return this.remover(beanFactory.getObject(params));
     }
 
     public T remover(T object) throws Exception {
         dao.delete(object);
-        try {
-            dao.commit();
-        } catch (Exception ex) {
-            Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
-            dao.rollback();
-            throw ex;
-        }
+        this.commit();
+
         return object;
     }
 
