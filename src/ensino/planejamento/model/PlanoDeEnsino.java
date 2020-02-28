@@ -217,7 +217,7 @@ public class PlanoDeEnsino {
                         HorarioAula horarioAula = horarios.get(h);
                         if (horarioAula.getDiaDaSemana().getValue()+1 == cal.get(Calendar.DAY_OF_WEEK)) {
                             Diario diario = DiarioFactory.getInstance().getObject(
-                                    idDiario, cal.getTime(),
+                                    idDiario++, cal.getTime(),
                                     horarioAula.getHorario(), "", "",
                                     TipoAula.NORMAL);
                             diario.setPlanoDeEnsino(this);
