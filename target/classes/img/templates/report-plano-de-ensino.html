@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <style type="text/css">
+            %w%
+        </style>
+    </head>
+    <body>
+        <div class="pagina">
+            <div id="cabecalho">
+                <img src="%image-source%" width="790" height="120" />
+            </div>
+            <div class="titulo">
+                <div class="painted-box">
+                    PLANO DE ENSINO
+                </div>
+            </div>
+            <div class="header">
+                <table>
+                    <tr>
+                        <th colspan="2">
+                            1. IDENTIFICAÇÃO
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="field-name">Campus:</span>
+                            <span class="field-value-without-wrap">%campus%</span>    
+                        </td>
+                        <td>
+                            <span class="field-name">Ano/Semestre:</span>
+                            <span class="field-value">%periodo-letivo%</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="field-name">Curso:</span>
+                            <span class="field-value">%curso%</span>
+                        </td>
+                        <td>
+                            <span class="field-name">Turma:</span>
+                            <span class="field-value">%turma%</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="field-name">Unidade Curricular:</span>
+                            <span class="field-value">%uc%</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <span class="field-name">Professor:</span>
+                            <span class="field-value">%professor%</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">Carga horária UC:</span>
+                                        <span class="field-value">%carga-horaria% h/a</span>
+                                    </td>
+                                    <td>
+                                        <span class="field-name">N.o aulas teóricas:</span>
+                                        <span class="field-value">%n-aulas-teoricas%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="field-name">N.o de Semanas:</span>
+                                        <span class="field-value">%semanas-letivas%</span>
+                                    </td>
+                                    <td>
+                                        <span class="field-name">N.o aulas práticas:</span>
+                                        <span class="field-value">%n-aulas-praticas%</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="header">
+                <table>
+                    <tr>
+                        <th>2. EMENTA</th>
+                    </tr>
+                    <tr>
+                        <td>%ementa%</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="header">
+                <table>
+                    <tr><th>3. OBJETIVO GERAL DA UNIDADE CURRICULAR</th></tr>
+                    <tr>
+                        <td>%objetivo%</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="header">
+                <table>
+                    <tr><th>4. OBJETIVOS ESPECÍFICOS DA UNIDADE CURRICULAR</th></tr>
+                    <tr>
+                        <td>%objetivos-especificos%</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="header">
+                <table>
+                    <tr><th colspan="6">5. AVALIAÇÃO DA APRENDIZAGEM</th></tr>
+                    <tr>
+                        <th>Bimestre</th>
+                        <th>Descrição</th>
+                        <th>Instrumento de avaliação</th>
+                        <th>Data prevista</th>
+                        <th>Peso</th>
+                        <th>Valor</th>
+                    </tr>
+                    %avaliacao-aprendizagem%
+                </table>
+            </div>
+            <div class="header">
+                <table>
+                    <tr><th>6. RECUPERAÇÃO DA APRENDIZAGEM</th></tr>
+                    <tr>
+                        <td>%recuperacao%</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="header">
+                <table>
+                    <tr><th>7. REFERÊNCIAS</th></tr>
+                    <tr>
+                        <td>
+                            <div class="col-header-2">BIBLIOGRAFIA BÁSICA</div>
+                            <div>%referencias-basicas%</div>
+                            <div class="col-header-2">BIBLIOGRAFIA COMPLEMENTAR</div>
+                            <div>%referencias-complementares%</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="header">
+                <table>
+                    <tr><th colspan="7">8. DETALHAMENTO DA PROPOSTA DE TRABALHO</th></tr>
+                    <tr>
+                        <th>Mês</th>
+                        <th>Período</th>
+                        <th>N.o Aulas Teóricas</th>
+                        <th>N.o Aulas Práticas</th>
+                        <th>Observações</th>
+                        <th>Conteúdo a ser desenvolvido</th>
+                        <th>Metodologia</th>
+                    </tr>
+                    %detalhamento%
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
