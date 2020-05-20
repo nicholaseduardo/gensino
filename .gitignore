@@ -4,3 +4,6 @@ target/*
 resources/data
 resources/data/
 resources/data/*
+resources/reports
+resources/reports/
+resources/reports/*
