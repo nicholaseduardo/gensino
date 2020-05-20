@@ -9,7 +9,10 @@ import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
 import com.itextpdf.layout.font.FontProvider;
+
 import ensino.components.GenJButton;
+import ensino.configuracoes.model.EtapaEnsino;
+import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
@@ -17,13 +20,11 @@ import ensino.helpers.DateHelper;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.DetalhamentoController;
 import ensino.planejamento.controller.MetodologiaController;
-import ensino.planejamento.controller.PlanoAvaliacaoController;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.util.types.Bimestre;
 import ensino.util.types.MesesDeAno;
 import ensino.util.types.Periodo;
 import java.awt.BorderLayout;
@@ -39,7 +40,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -57,12 +57,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
+
 /**
  *
  * @author nicho
  */
 public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
+    
+    public static String BASEURI = "resources/templates/";
 
     private PlanoDeEnsino planoDeEnsino;
     private JEditorPane jEditorPane;
@@ -81,7 +83,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
         setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
         setBorder(BorderFactory.createEtchedBorder());
         setLayout(new BorderLayout());
-        
+
         ButtonAction btAction = new ButtonAction();
         /**
          * Adiciona o botão para geração do PDF
@@ -89,11 +91,11 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
         ImageIcon icon = new ImageIcon(getClass().getResource("/img/pdf-button-25px.png"));
         btPdf = new GenJButton("Salvar como PDF", icon);
         btPdf.addActionListener(btAction);
-        
+
         icon = new ImageIcon(getClass().getResource("/img/html-button-25px.png"));
         btHtml = new GenJButton("Salvar como HTML", icon);
         btHtml.addActionListener(btAction);
-        
+
         JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelButton.add(btHtml);
         panelButton.add(btPdf);
@@ -118,18 +120,12 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
         // add an html editor kit
         kit = new HTMLEditorKit();
         jEditorPane.setEditorKit(kit);
-
-        // add some styles to the html
-        StyleSheet styleSheet = new StyleSheet();
-        URL url = getClass().getResource("/img/templates/plano-de-ensino.css");
-        styleSheet.importStyleSheet(url);
-        kit.setStyleSheet(styleSheet);
     }
 
     private String loadCSSStringFile() {
         InputStreamReader reader = null;
         try {
-            InputStream is = getClass().getResourceAsStream("/img/templates/plano-de-ensino.css");
+            InputStream is = getClass().getResourceAsStream("/templates/css/plano-de-ensino.css");
             reader = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(reader);
             StringBuilder sb = new StringBuilder();
@@ -155,7 +151,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
     private String loadHTMLStringFile() {
         InputStreamReader reader = null;
         try {
-            InputStream is = getClass().getResourceAsStream("/img/templates/report-plano-de-ensino.html");
+            InputStream is = getClass().getResourceAsStream("/templates/report-plano-de-ensino.html");
             reader = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(reader);
             StringBuilder sb = new StringBuilder();
@@ -182,18 +178,18 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
         // Considera-se que são quatro bimestres
         int nAvaliacoesPorBimestre[] = {0, 0, 0, 0};
         List<PlanoAvaliacao> listaAvaliacoes = plano.getPlanosAvaliacoes();
-        
-        LinkedHashMap<Bimestre, String> mapLinhas = new LinkedHashMap<>();
+
+        LinkedHashMap<EtapaEnsino, String> mapLinhas = new LinkedHashMap<>();
         String sColunas = "";
         for (int i = 0; i < listaAvaliacoes.size(); i++) {
             PlanoAvaliacao pa = listaAvaliacoes.get(i);
-            // registra o número de avaliações por bimestre
-            nAvaliacoesPorBimestre[pa.getBimestre().getValue()]++;
+            // registra o número de avaliações por etapa de ensino
+            nAvaliacoesPorBimestre[pa.getEtapaEnsino().getId().getId()-1]++;
 
             String sAvaliacao = "";
-            if (mapLinhas.containsKey(pa.getBimestre())) {
+            if (mapLinhas.containsKey(pa.getEtapaEnsino())) {
                 sColunas = "<tr><td>%s</td><td>%s</td><td>%s</td><td>%.2f</td><td>%.2f</td></tr>";
-                sAvaliacao += mapLinhas.get(pa.getBimestre());
+                sAvaliacao += mapLinhas.get(pa.getEtapaEnsino());
                 sAvaliacao += String.format(sColunas, pa.getNome(),
                         pa.getInstrumentoAvaliacao().getNome(),
                         DateHelper.dateToString(pa.getData(), "dd/MM/yyyy"),
@@ -201,7 +197,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
             } else {
                 sColunas = "<tr><td rowspan='_nlinhas_'>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%.2f</td><td>%.2f</td></tr>";
                 sAvaliacao += String.format(sColunas,
-                        pa.getBimestre().toString(),
+                        pa.getEtapaEnsino().getNome(),
                         pa.getNome(),
                         pa.getInstrumentoAvaliacao().getNome(),
                         DateHelper.dateToString(pa.getData(), "dd/MM/yyyy"),
@@ -209,13 +205,13 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
             }
 
             // registra o mapa das linhas de avaliações
-            mapLinhas.put(pa.getBimestre(), sAvaliacao);
+            mapLinhas.put(pa.getEtapaEnsino(), sAvaliacao);
         }
         StringBuilder sData = new StringBuilder();
-        for (Map.Entry<Bimestre, String> entry : mapLinhas.entrySet()) {
-            Bimestre key = entry.getKey();
+        for (Map.Entry<EtapaEnsino, String> entry : mapLinhas.entrySet()) {
+            EtapaEnsino key = entry.getKey();
             String value = entry.getValue();
-            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorBimestre[key.getValue()])));
+            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorBimestre[key.getId().getId()-1])));
         }
         return sData.toString();
     }
@@ -319,7 +315,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
             String copyString = htmlString, sDetalhamento = detalhamentoToHtml(plano);
             // substitui os caracteres especiais colocados no arquivo html
             UnidadeCurricular und = plano.getUnidadeCurricular();
-            String imageSource = getClass().getResource("/img/templates/report-header-image.jpg").toString();
+            String imageSource = getClass().getResource("/templates/img/report-header-image.jpg").toString();
             copyString = copyString.replaceAll("%image-source%", imageSource);
             copyString = copyString.replaceAll("%style%", loadCSSStringFile());
             copyString = copyString.replaceAll("%campus%", und.getCurso().getCampus().getNome());
@@ -414,19 +410,30 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
     }
 
     private void saveFile(int type) {
-        String sType = (type == 0 ? "HTML" : "PDF");
+        String sType = (type == 0 ? "HTML" : "PDF"),
+                sFilename = "", sExtensao = "";
+        PeriodoLetivo pl = planoDeEnsino.getPeriodoLetivo();
+        sFilename = String.format("%s.%s",
+                pl.getDescricao().replaceAll("/", "_"),
+                planoDeEnsino.getUnidadeCurricular().getNome());
+        if (type == 0) {
+            sExtensao = ".html";
+        } else if (type == 1) {
+            sExtensao = ".pdf";
+        }
         
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Salvar como " + sType);
-        
+        fileChooser.setSelectedFile(new File(sFilename + sExtensao));
+
         int nUserSelection = fileChooser.showSaveDialog(this);
         if (nUserSelection == JFileChooser.APPROVE_OPTION) {
             try {
                 File fileToSave = fileChooser.getSelectedFile();
-                if (type == 0 && !fileToSave.getName().matches(".+(.html)")) {
-                    fileToSave = new File(fileToSave.toString() + ".html");  // append .xml if "foo.jpg.xml" is OK
-                } else if (type == 1 && !fileToSave.getName().matches(".+(.pdf)")) {
-                    fileToSave = new File(fileToSave.toString() + ".pdf");  // append .xml if "foo.jpg.xml" is OK
+                sFilename = fileToSave.getName();
+                if ((type == 0 && !sFilename.matches(".+(.html)")) ||
+                        (type == 1 && !sFilename.matches(".+(.pdf)"))){
+                    fileToSave = new File(sFilename + sExtensao);
                 }
 
                 /**
@@ -440,12 +447,15 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
                 os.write(jEditorPane.getText().getBytes());
                 os.close();
                 fos.close();
-                
+
                 if (type == 1) {
-                    ConverterProperties converterProperties = new ConverterProperties();
+                    ConverterProperties properties = new ConverterProperties();
+                    properties.setBaseUri(BASEURI);
                     FontProvider fp = new DefaultFontProvider(true, true, false);
-                    converterProperties.setFontProvider(fp);
-                    HtmlConverter.convertToPdf(htmlFile, fileToSave, converterProperties);
+                    properties.setFontProvider(fp);
+                    
+                    HtmlConverter.convertToPdf(htmlFile, fileToSave, properties);
+
                     /**
                      * Remove o arquivo temporário
                      */
@@ -474,15 +484,12 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
 //    public static void main(String args[]) {
 //        try {
 //            PlanoDeEnsinoController col = ControllerFactory.createPlanoDeEnsinoController();
-//            PlanoDeEnsino plano = col.buscarPor(1, 1, 1, 1);
-//
-//            ObjetivoController objCol = ControllerFactory.createObjetivoController();
-//            plano.setObjetivos(objCol.listar(plano));
+//            PlanoDeEnsino plano = col.buscarPorId(1);
 //
 //            JFrame f = new JFrame();
 //            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //
-//            HtmlPanel p = new HtmlPanel();
+//            PlanoDeEnsinoHtmlPanel p = new PlanoDeEnsinoHtmlPanel();
 //            p.setFieldValues(plano);
 //            f.getContentPane().add(p);
 ////            f.setSize(800, 600);

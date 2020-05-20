@@ -14,6 +14,8 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -30,6 +32,10 @@ public class Curso implements Serializable {
     
     @Column(name = "nome", length = 255)
     private String nome;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "nivelEnsino_id")
+    private NivelEnsino nivelEnsino;
     
     @OneToMany(mappedBy = "id.curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Turma> turmas;
@@ -61,6 +67,14 @@ public class Curso implements Serializable {
     
     public Campus getCampus() {
         return id.getCampus();
+    }
+
+    public NivelEnsino getNivelEnsino() {
+        return nivelEnsino;
+    }
+
+    public void setNivelEnsino(NivelEnsino nivelEnsino) {
+        this.nivelEnsino = nivelEnsino;
     }
     
     public void addUnidadeCurricular(UnidadeCurricular unidadeCurricular) {
@@ -112,9 +126,10 @@ public class Curso implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = 7;
         hash = 59 * hash + Objects.hashCode(this.id);
         hash = 59 * hash + Objects.hashCode(this.nome);
+        hash = 59 * hash + Objects.hashCode(this.nivelEnsino);
         return hash;
     }
 
@@ -136,9 +151,11 @@ public class Curso implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
+        if (!Objects.equals(this.nivelEnsino, other.nivelEnsino)) {
+            return false;
+        }
         return true;
     }
-
     
     @Override
     public String toString() {

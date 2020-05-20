@@ -3,11 +3,11 @@ package ensino.planejamento.model;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -19,7 +19,8 @@ public class Objetivo implements Serializable {
     @EmbeddedId
     private ObjetivoId id;
 
-    @Column(name = "descricao")
+    @Lob
+    @Column(name = "descricao", columnDefinition = "CLOB")
     private String descricao;
     
     /**
@@ -50,6 +51,10 @@ public class Objetivo implements Serializable {
 
     public void setId(ObjetivoId id) {
         this.id = id;
+    }
+    
+    public String getShortName() {
+        return String.format("Obj. [id: %d]", id.getSequencia());
     }
     
     public PlanoDeEnsino getPlanoDeEnsino() {
@@ -85,8 +90,9 @@ public class Objetivo implements Serializable {
     public String toString() {
         int length = this.descricao.length();
         if (length > 50)
-            length = 50;
+            length = 70;
         return String.format("[%d] %s", this.id.getSequencia(), this.descricao.substring(0, length));
+//        return String.format("[%d] %s", this.id.getSequencia(), this.descricao);
     }
 
     @Override

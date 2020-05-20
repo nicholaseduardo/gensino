@@ -5,7 +5,7 @@
  */
 package ensino.planejamento.view.renderer;
 
-import ensino.configuracoes.view.renderer.*;
+import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.view.models.PlanoAvaliacaoTableModel;
@@ -51,7 +51,8 @@ public class PlanoAvaliacaoCellRenderer extends GenCellRenderer {
         
         GenJLabel lblBimestre = createLabel(String.format("[%s - %s]",
                 planoAvaliacao.getInstrumentoAvaliacao().toString(),
-                planoAvaliacao.getBimestre().toString()));
+                planoAvaliacao.getEtapaEnsino() != null ?
+                        planoAvaliacao.getEtapaEnsino().getNome() : ""));
         lblBimestre.resetFontSize(12);
 
         GenJLabel lblValores = createLabel(String.format("[Valor: %.2f - Peso: %.2f] Nota: %.2f",

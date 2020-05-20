@@ -27,6 +27,7 @@ import ensino.planejamento.view.panels.planoDeEnsino.ObjetivoPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.PlanoAvaliacaoPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.RecuperacaoPanel;
 import ensino.planejamento.view.panels.planoDeEnsino.ReferenciasPanel;
+import ensino.planejamento.view.renderer.ConfigTreeCellRenderer;
 import ensino.util.types.TabsPlano;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -77,15 +78,15 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
     private DefaultMutableTreeNode nodeEmen = new DefaultMutableTreeNode(TabsPlano.EMEN.toString());
     private DefaultMutableTreeNode nodeRef = new DefaultMutableTreeNode(TabsPlano.REF.toString());
     private DefaultMutableTreeNode nodeRec = new DefaultMutableTreeNode(TabsPlano.REC.toString());
-    private DefaultMutableTreeNode nodeEsp = new DefaultMutableTreeNode(TabsPlano.ESP.toString());
+    private DefaultMutableTreeNode nodeEsp = new DefaultMutableTreeNode(TabsPlano.ESP);
     private DefaultMutableTreeNode nodeObj = new DefaultMutableTreeNode(TabsPlano.OBJ.toString());
-    private DefaultMutableTreeNode nodeDet = new DefaultMutableTreeNode(TabsPlano.DET.toString());
-    private DefaultMutableTreeNode nodePava = new DefaultMutableTreeNode(TabsPlano.PAVA.toString());
-    private DefaultMutableTreeNode nodeHor = new DefaultMutableTreeNode(TabsPlano.HOR.toString());
-    private DefaultMutableTreeNode nodeCon = new DefaultMutableTreeNode(TabsPlano.CON.toString());
-    private DefaultMutableTreeNode nodeFreq = new DefaultMutableTreeNode(TabsPlano.FREQ.toString());
-    private DefaultMutableTreeNode nodeAva = new DefaultMutableTreeNode(TabsPlano.AVA.toString());
-    private DefaultMutableTreeNode nodeView = new DefaultMutableTreeNode(TabsPlano.VIEW.toString());
+    private DefaultMutableTreeNode nodeDet = new DefaultMutableTreeNode(TabsPlano.DET);
+    private DefaultMutableTreeNode nodePava = new DefaultMutableTreeNode(TabsPlano.PAVA);
+    private DefaultMutableTreeNode nodeHor = new DefaultMutableTreeNode(TabsPlano.HOR);
+    private DefaultMutableTreeNode nodeCon = new DefaultMutableTreeNode(TabsPlano.CON);
+    private DefaultMutableTreeNode nodeFreq = new DefaultMutableTreeNode(TabsPlano.FREQ);
+    private DefaultMutableTreeNode nodeAva = new DefaultMutableTreeNode(TabsPlano.AVA);
+    private DefaultMutableTreeNode nodeView = new DefaultMutableTreeNode(TabsPlano.VIEW_PLAN.toString());
 
     public PlanoDeEnsinoPanelFields() {
         this(null);
@@ -103,6 +104,7 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
         add(panel);
         JScrollPane customTreeScroll = new JScrollPane();
         treePlanoDeEnsino = new GenJTree();
+        treePlanoDeEnsino.setCellRenderer(new ConfigTreeCellRenderer());
         treePlanoDeEnsino.setBorder(BorderFactory.createCompoundBorder());
         treePlanoDeEnsino.addTreeSelectionListener(new PlanoDeEnsinoTreeSelectionListener());
         treePlanoDeEnsino.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -380,7 +382,7 @@ public class PlanoDeEnsinoPanelFields extends DefaultFieldsPanel {
                 layout.show(planoDeEnsinoCardPanel, frequenciaPanel.getName());
             } else if (lastPath.equals(TabsPlano.AVA.toString())) {
                 layout.show(planoDeEnsinoCardPanel, avaliacaoPanel.getName());
-            } else if (lastPath.equals(TabsPlano.VIEW .toString())) {
+            } else if (lastPath.equals(TabsPlano.VIEW_PLAN .toString())) {
                 /**
                  * Recupera os dados já publicados na tela
                  */

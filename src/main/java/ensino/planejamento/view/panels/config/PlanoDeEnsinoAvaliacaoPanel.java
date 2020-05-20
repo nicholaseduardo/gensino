@@ -17,8 +17,7 @@ import ensino.planejamento.view.models.AvaliacaoTableModel;
 import ensino.planejamento.view.renderer.AvaliacaoCellRenderer;
 import ensino.util.VerticalTableHeaderCellRenderer;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -83,8 +82,8 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
         if (!listaPlanoAvaliacoes.isEmpty()) {
             /**
              * O número de colunas de registro de avaliações é equivalente ao
-             * número de planos de avaliações lançados no sistema. Considera
-             * mais uma unidade para adicionar a coluna com os dados do
+             * número de planos de avaliações lançados no sistema.
+             * Considera mais uma unidade para adicionar a coluna com os dados do
              * estudante
              */
             int columnCount = listaPlanoAvaliacoes.size() + 1;
@@ -100,7 +99,10 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
             int i = 1;
             while (itPlanoAvaliacao.hasNext()) {
                 PlanoAvaliacao planoAvaliacao = itPlanoAvaliacao.next();
-                aColumnNames[i++] = planoAvaliacao.getNome();
+                String colName = String.format("%s [%s]", 
+                        planoAvaliacao.getNome(),
+                        planoAvaliacao.getEtapaEnsino().getNome());
+                aColumnNames[i++] = colName;
             }
             /**
              * Variável criada para ser utilizada no processo de montagem da
@@ -120,15 +122,8 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
                 itPlanoAvaliacao = listaPlanoAvaliacoes.iterator();
                 while (itPlanoAvaliacao.hasNext()) {
                     PlanoAvaliacao planoAvaliacao = itPlanoAvaliacao.next();
-                    // Recupera a lista de avaliações vinculadas ao plano
-                    List<Avaliacao> lAvaliacoes = planoAvaliacao.getAvaliacoes();
-                    for (int k = 0; k < lAvaliacoes.size(); k++) {
-                        Avaliacao avaliacao = lAvaliacoes.get(k);
-                        if (estudante.equals(avaliacao.getEstudante())) {
-                            inList.add(avaliacao);
-                            break;
-                        }
-                    }
+                    
+                    inList.add(planoAvaliacao.getAvaliacaoDo(estudante));
                 }
             }
             avaliacaoTableModel = new AvaliacaoTableModel(lista, aColumnNames);
@@ -148,8 +143,8 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
             } else {
                 avaliacaoTable.setEditingColumn(i);
                 try {
-                    GenJFormattedTextField textField;
-                    textField = GenJFormattedTextField.createFormattedField("", 0);
+                    GenJFormattedTextField textField = GenJFormattedTextField.createFormattedField("", 0);
+                    textField.setMargin(new Insets(0, 0, 0, 0));
                     textField.addActionListener(textAction);
                     tc.setCellEditor(new DefaultCellEditor(textField));
                 } catch (ParseException ex) {

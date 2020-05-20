@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -41,6 +42,7 @@ public class GenJComboBox extends JComboBox {
     private void initComponents() {
         setEditor(new GenJComboBoxItemEditor());
         resetFontSize(16);
+        setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 0));
     }
 
     /**

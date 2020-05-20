@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.configuracoes.view.models.InstrumentoAvaliacaoTableModel;
-import ensino.configuracoes.view.renderer.MetodoCellRenderer;
+import ensino.configuracoes.view.renderer.BaseObjectCellRenderer;
 import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
 import javax.swing.JButton;
@@ -55,7 +55,7 @@ public class InstrumentoAvaliacaoPanel extends DefaultFormPanel {
     private void resizeTableColumns() {
         javax.swing.JTable table = getTable();
         javax.swing.table.TableColumnModel tcm = table.getColumnModel();
-        tcm.getColumn(0).setCellRenderer(new MetodoCellRenderer());
+        tcm.getColumn(0).setCellRenderer(new BaseObjectCellRenderer());
     }
 
     @Override

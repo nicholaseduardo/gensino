@@ -137,7 +137,7 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
                 /**
                  * Adição da hierarquia das semanas letivas
                  */
-                List<SemanaLetiva> semanas = getSemanasDoMes(periodoLetivo, mes);
+                List<SemanaLetiva> semanas = periodoLetivo.getSemanasDoMes(mes);
                 Integer nSemanas = semanas.size();
 
                 for (int j = 0; j < nSemanas; j++) {
@@ -175,27 +175,6 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
             }
             expandAllNodes(treeDetalhamento, 0, treeDetalhamento.getRowCount());
         }
-    }
-
-    private List<SemanaLetiva> getSemanasDoMes(PeriodoLetivo periodoLetivo,
-            MesesDeAno mes) {
-        List<SemanaLetiva> listaSemanas = new ArrayList();
-        Calendar cal = Calendar.getInstance();
-
-        List<SemanaLetiva> lista = periodoLetivo.getSemanasLetivas();
-        for (int i = 0; i < lista.size(); i++) {
-            SemanaLetiva semana = lista.get(i);
-            Periodo periodo = semana.getPeriodo();
-            cal.setTime(periodo.getDe());
-            MesesDeAno semanaMes = MesesDeAno.of(cal.get(Calendar.MONTH));
-            if (mes.equals(semanaMes)) {
-                listaSemanas.add(semana);
-            } else if (mes.compareTo(mes) > 0) {
-                break;
-            }
-        }
-
-        return listaSemanas;
     }
 
     @Override

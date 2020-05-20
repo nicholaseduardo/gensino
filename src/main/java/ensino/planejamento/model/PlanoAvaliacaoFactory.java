@@ -6,6 +6,7 @@
 package ensino.planejamento.model;
 
 import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDaoXML;
+import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.helpers.DateHelper;
 import ensino.patterns.DaoPattern;
@@ -50,7 +51,7 @@ public class PlanoAvaliacaoFactory implements BeanFactory<PlanoAvaliacao> {
             o.getId().setSequencia((Integer) args[i++]);
         }
         o.setNome((String) args[i++]);
-        o.setBimestre((Bimestre) args[i++]);
+        o.setEtapaEnsino((EtapaEnsino) args[i++]);
         o.setPeso((Double) args[i++]);
         o.setValor((Double) args[i++]);
         o.setData((Date) args[i++]);
@@ -66,22 +67,22 @@ public class PlanoAvaliacaoFactory implements BeanFactory<PlanoAvaliacao> {
     public PlanoAvaliacao getObject(Element e) {
         try {
             PlanoAvaliacao o = createObject(
-                    new Integer(e.getAttribute("sequencia")),
+                    Integer.parseInt(e.getAttribute("sequencia")),
                     e.getAttribute("nome"),
-                    Bimestre.of(new Integer(e.getAttribute("bimestre"))),
-                    new Double(e.getAttribute("peso")),
-                    new Double(e.getAttribute("valor")),
+                    Bimestre.of(Integer.parseInt(e.getAttribute("bimestre"))),
+                    Double.parseDouble(e.getAttribute("peso")),
+                    Double.parseDouble(e.getAttribute("valor")),
                     DateHelper.stringToDate(e.getAttribute("data"), "dd/MM/yyyy"));
             DaoPattern<InstrumentoAvaliacao> instrumentoDao = InstrumentoAvaliacaoDaoXML.getInstance();
-            o.setInstrumentoAvaliacao(instrumentoDao.findById(new Integer(e.getAttribute("instrumentoAvaliacaoId"))));
+            o.setInstrumentoAvaliacao(instrumentoDao.findById(Integer.parseInt(e.getAttribute("instrumentoAvaliacaoId"))));
 
             DaoPattern<Objetivo> objetivoDao = ObjetivoDaoXML.getInstance();
             o.setObjetivo(objetivoDao.findById(
-                    new Integer(e.getAttribute("objetivoSequencia")),
-                    new Integer(e.getAttribute("planoDeEnsinoId")),
-                    new Integer(e.getAttribute("unidadeCurricularId")),
-                    new Integer(e.getAttribute("cursoId")),
-                    new Integer(e.getAttribute("campusId"))
+                    Integer.parseInt(e.getAttribute("objetivoSequencia")),
+                    Integer.parseInt(e.getAttribute("planoDeEnsinoId")),
+                    Integer.parseInt(e.getAttribute("unidadeCurricularId")),
+                    Integer.parseInt(e.getAttribute("cursoId")),
+                    Integer.parseInt(e.getAttribute("campusId"))
             ));
 
             return o;
@@ -96,7 +97,7 @@ public class PlanoAvaliacaoFactory implements BeanFactory<PlanoAvaliacao> {
         PlanoAvaliacao o = createObject(
                 p.get("sequencia"),
                 p.get("nome"),
-                p.get("bimestre"),
+                p.get("etapaEnsino"),
                 p.get("peso"),
                 p.get("valor"),
                 p.get("data")
@@ -114,7 +115,7 @@ public class PlanoAvaliacaoFactory implements BeanFactory<PlanoAvaliacao> {
         Element e = doc.createElement("planoAvaliacao");
         e.setAttribute("sequencia", o.getId().getSequencia().toString());
         e.setAttribute("nome", o.getNome());
-        e.setAttribute("bimestre", String.valueOf(o.getBimestre().getValue()));
+//        e.setAttribute("bimestre", String.valueOf(o.getBimestre().getValue()));
         e.setAttribute("peso", o.getPeso().toString());
         e.setAttribute("valor", o.getValor().toString());
         e.setAttribute("data", DateHelper.dateToString(o.getData(), "dd/MM/yyyy"));

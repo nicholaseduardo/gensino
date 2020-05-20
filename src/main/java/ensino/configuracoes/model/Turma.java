@@ -1,7 +1,9 @@
 package ensino.configuracoes.model;
 
+import ensino.util.types.SituacaoEstudante;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -10,6 +12,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -26,6 +29,7 @@ public class Turma implements Serializable {
     private Integer ano;
     
     @OneToMany(mappedBy = "id.turma", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OrderBy("nome ASC")
     private List<Estudante> estudantes;
 
     public Turma() {
@@ -48,6 +52,13 @@ public class Turma implements Serializable {
     public void setNome(String nome) {
         this.nome = nome;
     }
+    
+    public Curso getCurso() {
+        if (id != null) {
+            return id.getCurso();
+        }
+        return null;
+    }
 
     public Integer getAno() {
         return ano;
@@ -62,7 +73,6 @@ public class Turma implements Serializable {
     }
 
     public void addEstudante(Estudante estudante) {
-        estudante.getId().setTurma(this);
         estudantes.add(estudante);
     }
 
@@ -80,11 +90,26 @@ public class Turma implements Serializable {
     }
 
     public List<Estudante> getEstudantes() {
+        estudantes.sort(Comparator.comparing(Estudante::getNome));
         return estudantes;
     }
 
     public void setEstudantes(List<Estudante> estudantes) {
         this.estudantes = estudantes;
+    }
+    
+    public Integer getNumeroDeEstudatesPor(SituacaoEstudante situacao) {
+        if (!estudantes.isEmpty()) {
+            Integer count = 0;
+            for (int i = 0; i < estudantes.size(); i++) {
+                Estudante e = estudantes.get(i);
+                if (situacao.equals(e.getSituacaoEstudante())) {
+                    count++;
+                }
+            }
+            return count;
+        }
+        return 0;
     }
 
     @Override

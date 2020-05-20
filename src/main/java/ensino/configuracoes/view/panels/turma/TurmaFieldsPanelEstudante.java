@@ -6,31 +6,42 @@
 package ensino.configuracoes.view.panels.turma;
 
 import ensino.components.GenJButton;
+import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
+import ensino.components.GenJSpinner;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.EstudanteFactory;
+import ensino.configuracoes.model.EstudanteId;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.view.models.EstudanteTableModel;
+import ensino.configuracoes.view.renderer.EstudanteCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import java.awt.Dimension;
+import ensino.reports.ChartsFactory;
+import ensino.util.types.AcoesBotoes;
+import ensino.util.types.SituacaoEstudante;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerDateModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumnModel;
@@ -41,9 +52,13 @@ import javax.swing.table.TableColumnModel;
  */
 public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
 
+    private Turma turma;
+
     private GenJTextField txtId;
     private GenJTextField txtNome;
     private GenJTextField txtRegistro;
+    private GenJComboBox comboSituacao;
+    private GenJSpinner spinData;
 
     private GenJButton btAdicionar;
     private GenJButton btRemover;
@@ -60,89 +75,105 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
     }
 
     private void initComponents() {
-        setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        add(createEstudantePanel());
+        setName("estudante.cadastro");
+        setLayout(new BorderLayout(5, 5));
+        setBorder(BorderFactory.createEtchedBorder());
+
+        backColor = ChartsFactory.lightBlue;
+        foreColor = ChartsFactory.ardoziaBlueColor;
+        setBackground(backColor);
+
+        add(createEstudanteFieldsPanel(), BorderLayout.PAGE_START);
+        add(createEstudanteListaPanel(), BorderLayout.CENTER);
     }
 
-    public JPanel createEstudantePanel() {
-        JPanel panel = new JPanel(new GridBagLayout());
+    public JPanel createEstudanteFieldsPanel() {
+
+        GenJLabel lblId = new GenJLabel("Código: ", JLabel.TRAILING);
+        txtId = new GenJTextField(5, false);
+        txtId.setEnabled(false);
+        lblId.setLabelFor(txtId);
+
+        GenJLabel lblRegistro = new GenJLabel("Número R.A.: ", JLabel.TRAILING);
+        txtRegistro = new GenJTextField(10, false);
+        lblRegistro.setLabelFor(txtRegistro);
+
+        GenJLabel lblNome = new GenJLabel("Nome: ", JLabel.TRAILING);
+        txtNome = new GenJTextField(30, false);
+        lblNome.setLabelFor(txtNome);
+
+        GenJLabel lblIngresso = new GenJLabel("Data de Ingresso: ", JLabel.TRAILING);
+        Calendar cal = Calendar.getInstance();
+        spinData = new GenJSpinner(new SpinnerDateModel(cal.getTime(),
+                null, null, Calendar.DATE));
+        spinData.setEditor(new JSpinner.DateEditor(spinData, "dd/MM/yyyy"));
+        lblIngresso.setLabelFor(spinData);
+
+        GenJLabel lblSituacao = new GenJLabel("Situação: ", JLabel.TRAILING);
+        comboSituacao = new GenJComboBox(SituacaoEstudante.values());
+        lblSituacao.setLabelFor(comboSituacao);
+
+        JPanel panelFields = createPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
         int col = 0, row = 0;
-        GenJLabel lblId = new GenJLabel("Código: ", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
-        panel.add(lblId, c);
-
-        txtId = new GenJTextField(5, false);
-        lblId.setLabelFor(txtId);
+        panelFields.add(lblId, c);
         GridLayoutHelper.set(c, col++, row);
-        panel.add(txtId, c);
+        panelFields.add(txtId, c);
 
-        GenJLabel lblRegistro = new GenJLabel("Número R.A.: ", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
-        panel.add(lblRegistro, c);
+        panelFields.add(lblRegistro, c);
+        GridLayoutHelper.set(c, col++, row);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panelFields.add(txtRegistro, c);
 
-        txtRegistro = new GenJTextField(10, false);
-        lblRegistro.setLabelFor(txtRegistro);
+        GridLayoutHelper.setRight(c, col++, row);
+        panelFields.add(lblSituacao, c);
         GridLayoutHelper.set(c, col, row++);
-        panel.add(txtRegistro, c);
+        panelFields.add(comboSituacao, c);
 
         col = 0;
-        GenJLabel lblNome = new GenJLabel("Nome: ", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
-        panel.add(lblNome, c);
+        panelFields.add(lblNome, c);
+        GridLayoutHelper.set(c, col++, row, 3, 1, GridBagConstraints.LINE_START);
+        panelFields.add(txtNome, c);
+        GridLayoutHelper.setRight(c, col+=2, row);
+        panelFields.add(lblIngresso, c);
+        GridLayoutHelper.set(c, ++col, row);
+        panelFields.add(spinData, c);
 
-        txtNome = new GenJTextField(30, true);
-        lblNome.setLabelFor(txtNome);
-        GridLayoutHelper.set(c, col, row++, 3, 1, GridBagConstraints.LINE_START);
-        panel.add(txtNome, c);
+        btNovo = createButton(new ActionHandler(AcoesBotoes.NEW), backColor, foreColor);
+        btAdicionar = createButton(new ActionHandler(AcoesBotoes.ADD), backColor, foreColor);
+        btRemover = createButton(new ActionHandler(AcoesBotoes.DELETE), backColor, foreColor);
+        btImportar = createButton(new ActionHandler(AcoesBotoes.IMPORT), backColor, foreColor);
+        btAtualizar = createButton(new ActionHandler(AcoesBotoes.EDIT), backColor, foreColor);
 
-        btNovo = new GenJButton("Novo", new ImageIcon(getClass().getResource(String.format("/img/%s", "view-button-25px.png"))));
-        btAdicionar = new GenJButton("Adicionar", new ImageIcon(getClass().getResource(getImageSourceAdd())));
-        btRemover = new GenJButton("Remover", new ImageIcon(getClass().getResource(getImageSourceDel())));
-        btImportar = new GenJButton("Importar", new ImageIcon(getClass().getResource(getImageSourceImport())));
-
-        String source = String.format("/img/%s", "update-button-25px.png");
-        btAtualizar = new GenJButton("Alterar", new ImageIcon(getClass().getResource(source)));
-
-        ButtonAction btAction = new ButtonAction();
-        btAdicionar.addActionListener(btAction);
-        btRemover.addActionListener(btAction);
-        btNovo.addActionListener(btAction);
-        btImportar.addActionListener(btAction);
-        btAtualizar.addActionListener(btAction);
-
-        col = 0;
-        JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
         panelButton.add(btNovo);
         panelButton.add(btAdicionar);
         panelButton.add(btAtualizar);
         panelButton.add(btRemover);
         panelButton.add(btImportar);
-        GridLayoutHelper.set(c, col, row++, 4, 1, GridBagConstraints.LINE_START);
-        panel.add(panelButton, c);
-
-        GridLayoutHelper.set(c, col, row, 4, 1, GridBagConstraints.LINE_START);
-        panel.add(createEstudanteListaPanel(), c);
+        
+        JPanel panel = createPanel(new BorderLayout());
+        panel.add(panelFields, BorderLayout.CENTER);
+        panel.add(panelButton, BorderLayout.PAGE_END);
 
         return panel;
     }
 
-    private JPanel createEstudanteListaPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        panel.setBorder(createTitleBorder("Lista de estudantes"));
+    private JScrollPane createEstudanteListaPanel() {
 
         estudanteTable = new JTable(estudanteTableModel);
         ListSelectionModel cellSelectionModel = estudanteTable.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         cellSelectionModel.addListSelectionListener(new EstudanteListSelectionListener());
 
-        setData(new ArrayList()
-        );
+        setData(new ArrayList());
         JScrollPane scrollEstudante = new JScrollPane(estudanteTable);
-        scrollEstudante.setPreferredSize(new Dimension(500, 200));
-        panel.add(scrollEstudante);
-        return panel;
+        scrollEstudante.setBorder(createTitleBorder("Lista de estudantes"));
+        return scrollEstudante;
     }
 
     @Override
@@ -161,25 +192,30 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(Object object) {
         if (object instanceof Turma) {
-            Turma turma = (Turma) object;
+            turma = (Turma) object;
             setData(turma.getEstudantes());
+            clear();
         } else if (object instanceof Estudante) {
             Estudante o = (Estudante) object;
             txtId.setText(o.getId().getId().toString());
             txtNome.setText(o.getNome());
             txtRegistro.setText(o.getRegistro());
+            comboSituacao.setSelectedItem(o.getSituacaoEstudante());
+            if (o.getIngresso() != null) {
+                spinData.setValue(o.getIngresso());
+            }
         }
     }
 
     private void setData(List<Estudante> data) {
+        data.sort(Comparator.comparing(Estudante::getNome));
+
         estudanteTableModel = new EstudanteTableModel(data);
         estudanteTable.setModel(estudanteTableModel);
         estudanteTable.repaint();
 
         TableColumnModel tcm = estudanteTable.getColumnModel();
-        tcm.getColumn(0).setMaxWidth(50);
-        tcm.getColumn(1).setMinWidth(100);
-        tcm.getColumn(2).setMaxWidth(150);
+        tcm.getColumn(0).setCellRenderer(new EstudanteCellRenderer());
     }
 
     @Override
@@ -187,13 +223,16 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
         String msg = "O campo [%s] não foi informado!";
         String campo = "";
         if ("".equals(txtNome.getText())) {
-            campo = "Nome";
+            campo = "NOME";
             txtNome.requestFocusInWindow();
+        }
+        if (spinData.getValue() == null) {
+            campo = "DATA DE INGRESSO";
+            spinData.requestFocusInWindow();
         } else {
             return true;
         }
-        JOptionPane.showMessageDialog(this, String.format(msg, campo),
-                "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        showInformationMessage(String.format(msg, campo));
         return false;
     }
 
@@ -207,6 +246,9 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
         txtId.setText("");
         txtNome.setText("");
         txtRegistro.setText("");
+        comboSituacao.setSelectedItem(null);
+        Calendar cal = Calendar.getInstance();
+        spinData.setValue(cal.getTime());
     }
 
     @Override
@@ -214,7 +256,10 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
         txtId.setEnabled(false);
         txtNome.setEnabled(active);
         txtRegistro.setEnabled(active);
+        comboSituacao.setEnabled(active);
+        spinData.setEnabled(active);
         estudanteTable.setEnabled(active);
+
         enableLocalButtons(active);
         clearLocalFields();
     }
@@ -224,7 +269,7 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
 
         btAdicionar.setEnabled(active && status);
         btNovo.setEnabled(active && !status);
-        btImportar.setEnabled(active && !status);
+        btImportar.setEnabled(active && status);
         btAtualizar.setEnabled(active && !status);
         btRemover.setEnabled(active && !status);
     }
@@ -234,80 +279,101 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
         txtNome.requestFocusInWindow();
     }
 
-    private class ButtonAction implements ActionListener {
+    private void clear() {
+        clearLocalFields();
+        enableLocalButtons(Boolean.TRUE);
+        initFocus();
+    }
 
-        private void clear() {
-            clearLocalFields();
-            enableLocalButtons(Boolean.TRUE);
-            initFocus();
+    private Estudante createEstudanteFromFields() {
+        Integer id = null;
+        String sId = txtId.getText();
+        if (sId.matches("\\d+")) {
+            id = Integer.parseInt(sId);
         }
+        Estudante estudante = EstudanteFactory.getInstance()
+                .createObject(new EstudanteId(id, turma),
+                        txtNome.getText(),
+                        txtRegistro.getText(),
+                        comboSituacao.getSelectedItem(),
+                        spinData.getValue());
+        return estudante;
+    }
 
-        private Estudante createEstudanteFromFields() {
-            Integer id = null;
-            String sId = txtId.getText();
-            if (sId.matches("\\d+")) {
-                id = Integer.parseInt(sId);
-            }
-            Estudante estudante = EstudanteFactory.getInstance()
-                    .createObject(id, txtNome.getText(),
-                            txtRegistro.getText());
-            return estudante;
-        }
+    @Override
+    public void onImportAction(ActionEvent e) {
+        TurmaFieldsPanelEstudanteImportar dialog = new TurmaFieldsPanelEstudanteImportar();
+        List<HashMap<String, Object>> dadosImportados = dialog.getData();
+        if (!dadosImportados.isEmpty()) {
+            setData(new ArrayList());
+            int id = 1;
+            for (int i = 0; i < dadosImportados.size(); i++) {
+                HashMap<String, Object> mapValue = dadosImportados.get(i);
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object source = e.getSource();
-            if (source == btAtualizar && isValidated()) {
-                int selectedRow = estudanteTable.getSelectedRow();
-                estudanteTableModel.updateRow(selectedRow, createEstudanteFromFields());
-            } else if (source == btAdicionar && isValidated()) {
-                Integer id = 1;
-
-                if (!estudanteTableModel.isEmpty()) {
-                    /**
-                     * Procedimento realizado para gerar a chave única de cada
-                     * estudante para cada turma
-                     */
-                    Estudante eTemp = estudanteTableModel.getMax(Comparator.comparing(est -> est.getId().getId()));
-                    id = eTemp.getId().getId() + 1;
-                }
+                Estudante estudante = EstudanteFactory.getInstance()
+                        .getObject(mapValue);
                 /**
-                 * atribui o valor do ID ao campo para reaproveitar o método de
-                 * criação do objeto Estudante
+                 * Na importação não vem a identificação da turma, logo ela será
+                 * adicionada aqui.
                  */
-                txtId.setText(id.toString());
-                estudanteTableModel.addRow(createEstudanteFromFields());
-            } else if (source == btRemover) {
-                int selectedRow = estudanteTable.getSelectedRow();
-                if (selectedRow == -1) {
-                    JOptionPane.showMessageDialog(getParent(),
-                            "Você não selecionou o Estudante que será removida.\n"
-                            + "Favor, clique sobre um Estudante!",
-                            "Aviso", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                estudanteTableModel.removeRow(selectedRow);
-                estudanteTable.repaint();
-            } else if (source == btImportar) {
-                TurmaFieldsPanelEstudanteImportar dialog = new TurmaFieldsPanelEstudanteImportar();
-                List<HashMap<String, String>> dadosImportados = dialog.getData();
-                if (!dadosImportados.isEmpty()) {
-                    estudanteTableModel = new EstudanteTableModel();
-                    int id = 1;
-                    for (int i = 0; i < dadosImportados.size(); i++) {
-                        HashMap<String, String> mapValue = dadosImportados.get(i);
+                estudante.getId().setTurma(turma);
 
-                        Estudante estudante = new Estudante();
-                        estudante.getId().setId(id++);
-                        estudante.setNome(mapValue.get("nome"));
-                        estudante.setRegistro(mapValue.get("registro"));
-                        estudanteTableModel.addRow(estudante);
-                    }
-                }
+                estudanteTableModel.addRow(estudante);
             }
             clear();
         }
+    }
 
+    @Override
+    public void onNewAction(ActionEvent e, Object o) {
+        clear();
+    }
+
+    @Override
+    public void onAddAction(ActionEvent e, Object o) {
+        if (isValidated()) {
+            Integer id = 1;
+
+            if (!estudanteTableModel.isEmpty()) {
+                /**
+                 * Procedimento realizado para gerar a chave única de cada
+                 * estudante para cada turma
+                 */
+                Estudante eTemp = estudanteTableModel.getMax(Comparator.comparing(est -> est.getId().getId()));
+                id = eTemp.getId().getId() + 1;
+            }
+            /**
+             * atribui o valor do ID ao campo para reaproveitar o método de
+             * criação do objeto Estudante
+             */
+            txtId.setText(id.toString());
+            estudanteTableModel.addRow(createEstudanteFromFields());
+            clear();
+        }
+    }
+
+    @Override
+    public void onEditAction(ActionEvent e, Object o) {
+        if (isValidated()) {
+            int selectedRow = estudanteTable.getSelectedRow();
+            estudanteTableModel.updateRow(selectedRow, createEstudanteFromFields());
+            clear();
+        }
+    }
+
+    @Override
+    public void onDelAction(ActionEvent e, Object o) {
+        int selectedRow = estudanteTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(getParent(),
+                    "Você não selecionou o Estudante que será removida.\n"
+                    + "Favor, clique sobre um Estudante!",
+                    "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        estudanteTableModel.removeRow(selectedRow);
+        estudanteTable.repaint();
+        clear();
     }
 
     private class EstudanteListSelectionListener implements ListSelectionListener {

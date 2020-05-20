@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.view.renderer;
 
+import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
 import ensino.configuracoes.view.models.AtividadeTableModel;
 import ensino.configuracoes.model.Atividade;

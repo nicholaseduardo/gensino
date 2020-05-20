@@ -11,7 +11,7 @@ package ensino.util.types;
  */
 public enum TabsPlano {
     IDEN(0), EMEN(1), REF(2), REC(3), OBJ(4), ESP(5), DET(6), PAVA(7), HOR(8),
-    CON(9), FREQ(10), AVA(11), VIEW(12);
+    CON(9), FREQ(10), AVA(11), VIEW_PLAN(12), NOTAS(13), CONTROLE(14), PE(15);
 
     private final int index;
 
@@ -21,6 +21,44 @@ public enum TabsPlano {
 
     public int toInt() {
         return index;
+    }
+    
+    public static TabsPlano of(int value) {
+        switch(value) {
+            default:
+            case 0:
+                return IDEN;
+            case 1:
+                return EMEN;
+            case 2:
+                return REF;
+            case 3:
+                return REC;
+            case 4:
+                return OBJ;
+            case 5:
+                return ESP;
+            case 6:
+                return DET;
+            case 7:
+                return PAVA;
+            case 8:
+                return HOR;
+            case 9:
+                return CON;
+            case 10:
+                return FREQ;
+            case 11:
+                return AVA;
+            case 12:
+                return VIEW_PLAN;
+            case 13:
+                return NOTAS;
+            case 14:
+                return CONTROLE;
+            case 15:
+                return PE;
+        }
     }
 
     @Override
@@ -51,7 +89,13 @@ public enum TabsPlano {
             case 11:
                 return "Avaliações";
             case 12:
-                return "Visualizar";
+                return "Plano de Ensino";
+            case 13:
+                return "Notas do Diário";
+            case 14:
+                return "Painel de Controle";
+            case 15:
+                return "Permanência Estudantil";
         }
         return null;
     }

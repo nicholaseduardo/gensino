@@ -36,15 +36,15 @@ public class CampusDaoSQL extends AbstractDaoSQL<Campus> {
 
     @Override
     public List<Campus> list(Object ref) {
-        return this.list("", ref);
+        return this.list(ref.toString(), ref);
     }
 
     @Override
     public List<Campus> list(String criteria, Object ref) {
-        String sql = "SELECT c FROM Campus c";
+        String sql = "SELECT c FROM Campus c ";
 
         if (!"".equals(criteria)) {
-            sql += "WHERE c.id > 0 " + criteria;
+            sql += " WHERE c.id > 0 " + criteria;
         }
 
         // order

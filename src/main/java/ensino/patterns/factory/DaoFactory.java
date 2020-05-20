@@ -12,8 +12,10 @@ import ensino.configuracoes.dao.sqlite.CampusDaoSQL;
 import ensino.configuracoes.dao.sqlite.CursoDaoSQL;
 import ensino.configuracoes.dao.sqlite.DocenteDaoSQL;
 import ensino.configuracoes.dao.sqlite.EstudanteDaoSQL;
+import ensino.configuracoes.dao.sqlite.EtapaEnsinoDaoSQL;
 import ensino.configuracoes.dao.sqlite.InstrumentoAvaliacaoDaoSQL;
 import ensino.configuracoes.dao.sqlite.LegendaDaoSQL;
+import ensino.configuracoes.dao.sqlite.NivelEnsinoDaoSQL;
 import ensino.configuracoes.dao.sqlite.PeriodoLetivoDaoSQL;
 import ensino.configuracoes.dao.sqlite.RecursoDaoSQL;
 import ensino.configuracoes.dao.sqlite.ReferenciaBibliograficaDaoSQL;
@@ -28,8 +30,10 @@ import ensino.configuracoes.dao.xml.CampusDaoXML;
 import ensino.configuracoes.dao.xml.CursoDaoXML;
 import ensino.configuracoes.dao.xml.DocenteDaoXML;
 import ensino.configuracoes.dao.xml.EstudanteDaoXML;
+import ensino.configuracoes.dao.xml.EtapaEnsinoDaoXML;
 import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDaoXML;
 import ensino.configuracoes.dao.xml.LegendaDaoXML;
+import ensino.configuracoes.dao.xml.NivelEnsinoDaoXML;
 import ensino.configuracoes.dao.xml.PeriodoLetivoDaoXML;
 import ensino.configuracoes.dao.xml.RecursoDaoXML;
 import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDaoXML;
@@ -38,6 +42,7 @@ import ensino.configuracoes.dao.xml.TecnicaDaoXML;
 import ensino.configuracoes.dao.xml.TurmaDaoXML;
 import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
 import ensino.patterns.DaoPattern;
+import ensino.planejamento.dao.AtendimentoEstudanteDaoSQL;
 import ensino.planejamento.dao.AvaliacaoDaoSQL;
 import ensino.planejamento.dao.AvaliacaoDaoXML;
 import ensino.planejamento.dao.DetalhamentoDaoSQL;
@@ -54,6 +59,7 @@ import ensino.planejamento.dao.ObjetivoDaoSQL;
 import ensino.planejamento.dao.ObjetivoDaoXML;
 import ensino.planejamento.dao.ObjetivoDetalheDaoSQL;
 import ensino.planejamento.dao.ObjetivoDetalheDaoXML;
+import ensino.planejamento.dao.PermanenciaEstudantilDaoSQL;
 import ensino.planejamento.dao.PlanoAvaliacaoDaoSQL;
 import ensino.planejamento.dao.PlanoAvaliacaoDaoXML;
 import ensino.planejamento.dao.PlanoDeEnsinoDaoSQL;
@@ -139,6 +145,16 @@ public class DaoFactory {
                 TecnicaDaoSQL.getInstance();
     }
     
+    public static DaoPattern createNivelEnsinoDao() throws Exception {
+         return isXML() ? NivelEnsinoDaoXML.getInstance() :
+                NivelEnsinoDaoSQL.getInstance();
+    }
+    
+    public static DaoPattern createEtapaEnsinoDao() throws Exception {
+         return isXML() ? EtapaEnsinoDaoXML.getInstance() :
+                EtapaEnsinoDaoSQL.getInstance();
+    }
+    
     public static DaoPattern createUnidadeCurricularDao() throws Exception {
          return isXML() ? UnidadeCurricularDaoXML.getInstance() :
                 new UnidadeCurricularDaoSQL();
@@ -157,6 +173,14 @@ public class DaoFactory {
     public static DaoPattern createDiarioDao() throws Exception {
          return isXML() ? DiarioDaoXML.getInstance() :
                 new DiarioDaoSQL();
+    }
+    
+    public static DaoPattern createPermanenciaEstudantilDao() throws Exception {
+         return new PermanenciaEstudantilDaoSQL();
+    }
+    
+    public static DaoPattern createAtendimentoEstudanteDao() throws Exception {
+         return new AtendimentoEstudanteDaoSQL();
     }
     
     public static DaoPattern createPlanoAvaliacaoDao() throws Exception {

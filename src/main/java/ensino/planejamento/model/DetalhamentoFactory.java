@@ -77,6 +77,25 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
         }
         return null;
     }
+    
+    public Detalhamento updateObject(Detalhamento o, HashMap<String, Object> p) {
+        o.setNAulasPraticas((Integer) p.get("nAulasPraticas"));
+        o.setNAulasTeoricas((Integer) p.get("nAulasTeoricas"));
+        o.setConteudo((String) p.get("conteudo"));
+        o.setObservacao((String) p.get("observacao"));
+        
+        if (p.get("metodologias") != null) {
+            ((List<Metodologia>) p.get("metodologias")).forEach((metodo) -> {
+                o.addMetodologia(metodo);
+            });
+        }
+        if (p.get("objetivoDetalhes") != null) {
+            ((List<ObjetivoDetalhe>) p.get("objetivoDetalhes")).forEach((obj) -> {
+                o.addObjetivoDetalhe(obj);
+            });
+        }
+        return o;
+    }
 
     @Override
     public Detalhamento getObject(HashMap<String, Object> p) {

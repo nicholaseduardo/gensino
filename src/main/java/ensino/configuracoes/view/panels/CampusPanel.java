@@ -6,6 +6,7 @@
 package ensino.configuracoes.view.panels;
 
 import ensino.components.GenJButton;
+import ensino.components.GenJComboBox;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.view.models.CampusTableModel;
@@ -27,6 +28,7 @@ import ensino.configuracoes.view.renderer.CampusCellRenderer;
 import ensino.configuracoes.view.renderer.CursoCellRenderer;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.util.types.StatusCampus;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -50,7 +52,7 @@ import javax.swing.table.TableColumnModel;
  * @author nicho
  */
 public class CampusPanel extends DefaultFormPanel {
-    
+
     private JButton btSearch;
 
     public CampusPanel(JInternalFrame iframe) {
@@ -86,7 +88,7 @@ public class CampusPanel extends DefaultFormPanel {
         JPanel panel = getFilterPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        
+
         btSearch = createButton("search", "Buscar", 0);
         btSearch.setEnabled(true);
         GridLayoutHelper.set(c, 0, 0);
@@ -107,7 +109,7 @@ public class CampusPanel extends DefaultFormPanel {
 
     @Override
     public void createSelectButton() {
-        
+
     }
 
     @Override
@@ -119,6 +121,7 @@ public class CampusPanel extends DefaultFormPanel {
 
         private GenJTextField txtId;
         private GenJTextField txtNome;
+        private GenJComboBox comboStatus;
 
         private CursoSearch compoCursoSearch;
         private GenJButton btAddCurso;
@@ -142,38 +145,55 @@ public class CampusPanel extends DefaultFormPanel {
         }
 
         private void initComponents() {
+            setLayout(new BorderLayout(5, 5));
+
+            add(createFieldsPanel(), BorderLayout.PAGE_START);
+
+            tabbedPane = new JTabbedPane();
+            tabbedPane.addTab("Cursos", createCursoPanel());
+            tabbedPane.addTab("Calendários", createCalendarioPanel());
+            add(tabbedPane, BorderLayout.CENTER);
+        }
+
+        private JPanel createFieldsPanel() {
             JPanel fieldsPanel = new JPanel(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
 
+            int col = 0, row = 0;
+
             GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
-            GridLayoutHelper.setRight(c, 0, 0);
+            GridLayoutHelper.setRight(c, col++, row);
             fieldsPanel.add(lblId, c);
 
             txtId = new GenJTextField(10, false);
             txtId.setFocusable(true);
             lblId.setLabelFor(txtId);
-            GridLayoutHelper.set(c, 1, 0);
+            GridLayoutHelper.set(c, col++, row);
             fieldsPanel.add(txtId, c);
 
+            GenJLabel lblStatus = new GenJLabel("Status:", JLabel.TRAILING);
+            GridLayoutHelper.setRight(c, col++, row);
+            fieldsPanel.add(lblStatus, c);
+
+            comboStatus = new GenJComboBox(StatusCampus.values());
+            comboStatus.setFocusable(true);
+            lblStatus.setLabelFor(comboStatus);
+            GridLayoutHelper.set(c, col++, row++);
+            fieldsPanel.add(comboStatus, c);
+
+            col = 0;
             GenJLabel lblNome = new GenJLabel("Nome:", JLabel.TRAILING);
-            GridLayoutHelper.setRight(c, 0, 1);
+            GridLayoutHelper.setRight(c, col++, row);
             fieldsPanel.add(lblNome, c);
-            txtNome = new GenJTextField(30, true);
+            txtNome = new GenJTextField(30, false);
             lblNome.setLabelFor(txtNome);
-            GridLayoutHelper.set(c, 1, 1);
+            GridLayoutHelper.set(c, col, row, 3, 1, GridBagConstraints.BASELINE);
             fieldsPanel.add(txtNome, c);
-
-            JTabbedPane panelChilds = new JTabbedPane();
-            panelChilds.addTab("Cursos", createCursoPanel());
-            panelChilds.addTab("Calendários", createCalendarioPanel());
-            GridLayoutHelper.set(c, 0, 2, 2, 1, GridBagConstraints.CENTER);
-            fieldsPanel.add(panelChilds, c);
-
-            add(fieldsPanel);
+            return fieldsPanel;
         }
 
         private JPanel createCursoPanel() {
-            JPanel panel = new JPanel(new BorderLayout());
+            JPanel panel = new JPanel(new BorderLayout(5, 5));
 
             JPanel panelTitle = new JPanel(new GridBagLayout());
             panel.add(panelTitle, BorderLayout.PAGE_START);
@@ -191,7 +211,7 @@ public class CampusPanel extends DefaultFormPanel {
             GridLayoutHelper.set(c, 0, 2, 2, 1, GridBagConstraints.BASELINE);
             panelTitle.add(panelButtons, c);
             String source = String.format("/img/%s", "add-icon-png-25px.png");
-            btAddCurso = new GenJButton("Adicionar Curso", new ImageIcon(getClass().getResource(source)));
+            btAddCurso = new GenJButton("Adicionar", new ImageIcon(getClass().getResource(source)));
             btAddCurso.addActionListener((ActionEvent e) -> {
                 Curso curso = compoCursoSearch.getObjectValue();
                 if (curso != null) {
@@ -207,7 +227,7 @@ public class CampusPanel extends DefaultFormPanel {
                 }
             });
             source = String.format("/img/%s", "del-button-png-25px.png");
-            btDelCurso = new GenJButton("Remover Curso", new ImageIcon(getClass().getResource(source)));
+            btDelCurso = new GenJButton("Remover", new ImageIcon(getClass().getResource(source)));
             btDelCurso.addActionListener((ActionEvent e) -> {
                 int selectedRow = cursoTable.getSelectedRow();
                 if (selectedRow == -1) {
@@ -233,7 +253,7 @@ public class CampusPanel extends DefaultFormPanel {
         }
 
         private JPanel createCalendarioPanel() {
-            JPanel panel = new JPanel(new BorderLayout());
+            JPanel panel = new JPanel(new BorderLayout(5, 5));
 
             JPanel panelTitle = new JPanel(new GridBagLayout());
             panel.add(panelTitle, BorderLayout.PAGE_START);
@@ -300,18 +320,20 @@ public class CampusPanel extends DefaultFormPanel {
             map.put("id", ("".equals(txtId.getText()) ? null
                     : Integer.parseInt(txtId.getText())));
             map.put("nome", txtNome.getText());
+            map.put("status", comboStatus.getSelectedItem());
             map.put("cursos", (List<Curso>) cursoTableModel.getData());
             map.put("calendarios", (List<Calendario>) calendarioTableModel.getData());
 
             return map;
         }
 
-        private void setFieldValues(Integer codigo, String nome,
-                List<Curso> cursoList, 
+        private void setFieldValues(Integer codigo, String nome, StatusCampus status,
+                List<Curso> cursoList,
                 List<Calendario> calendarioList
         ) {
             txtId.setText(codigo.toString());
             txtNome.setText(nome);
+            comboStatus.setSelectedItem(status);
 
             cursoTableModel = new CursoTableModel(cursoList);
             cursoTable.setModel(cursoTableModel);
@@ -336,7 +358,7 @@ public class CampusPanel extends DefaultFormPanel {
         @Override
         public void setFieldValues(HashMap<String, Object> mapValues) {
             Integer codigo = (Integer) mapValues.get("id");
-            setFieldValues(codigo, (String) mapValues.get("nome"),
+            setFieldValues(codigo, (String) mapValues.get("nome"), null,
                     (List<Curso>) mapValues.get("cursos"),
                     (List<Calendario>) mapValues.get("calendarios")
             );
@@ -348,7 +370,7 @@ public class CampusPanel extends DefaultFormPanel {
                 Campus campus = (Campus) object;
                 compoCursoSearch.setSelectedCampus(campus);
                 compoCalendarioSearch.setSelectedCampus(campus);
-                setFieldValues(campus.getId(), campus.getNome(),
+                setFieldValues(campus.getId(), campus.getNome(), campus.getStatus(),
                         campus.getCursos(), campus.getCalendarios()
                 );
             }
@@ -363,6 +385,7 @@ public class CampusPanel extends DefaultFormPanel {
         public void clearFields() {
             txtId.setText("");
             txtNome.setText("");
+            comboStatus.setSelectedItem(null);
 
             compoCursoSearch.setObjectValue(null);
             compoCalendarioSearch.setObjectValue(null);
@@ -372,6 +395,7 @@ public class CampusPanel extends DefaultFormPanel {
         public void enableFields(boolean active) {
             txtId.setEnabled(false);
             txtNome.setEnabled(active);
+            comboStatus.setEnabled(active);
 
             boolean activeSearch = active && !"".equals(txtId.getText());
             compoCursoSearch.setEnable(activeSearch);

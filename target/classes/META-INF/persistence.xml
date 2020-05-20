@@ -16,10 +16,17 @@ and open the template in the editor.
             <property name="javax.persistence.jdbc.url"                 value="jdbc:hsqldb:file:resources/data/gensino" />
             <property name="javax.persistence.jdbc.user"                value="sa" />
             <property name="javax.persistence.jdbc.password"            value="" />
+            
             <property name="hibernate.dialect"                          value="org.hibernate.dialect.HSQLDialect"/>
             <property name="show_sql"                                   value="true"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults"  value="false"/>
-            <!--<property name="hibernate.hbm2ddl.auto"                     value="update" />-->
+            <property name="hibernate.hbm2ddl.auto"                     value="update" />
+            
+            <property name="hibernate.format_sql"                       value="true"/>
+            <property name="hibernate.cache.provider_class"             value="org.hibernate.cache.NoCacheProvider"/>
+            
+            
+<!--            <property name="hibernate.temp.use_jdbc_metadata_defaults"  value="true"/>-->
+            
             <!--            <property name="dialect" value="org.hibernate.dialect.SQLiteDialect" />
             <property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
             <property name="javax.persistence.jdbc.url" value="jdbc:sqlite:database.db" />

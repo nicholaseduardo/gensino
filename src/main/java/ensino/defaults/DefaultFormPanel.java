@@ -5,10 +5,12 @@
  */
 package ensino.defaults;
 
+import ensino.components.GenJPanel;
 import ensino.patterns.AbstractController;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,7 +48,7 @@ import javax.swing.border.TitledBorder;
  *
  * @author nicho
  */
-public abstract class DefaultFormPanel extends JPanel implements ActionListener,
+public abstract class DefaultFormPanel extends GenJPanel implements ActionListener,
         ComponentListener {
 
     public static final String CARD_FICHA = "ficha";
@@ -117,11 +119,11 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
 
     private void initComponents() {
         BorderLayout centerLayout = new BorderLayout();
-        panelCenter = new JPanel(centerLayout);
+        panelCenter = createPanel(centerLayout);
         addTitlePanel();
         // adiciona o painel principal
         add(panelCenter, BorderLayout.CENTER);
-        cardPanel = new JPanel(new CardLayout());
+        cardPanel = createPanel(new CardLayout());
         panelCenter.add(cardPanel, BorderLayout.CENTER);
         centerLayout.setVgap(10);
 
@@ -229,7 +231,7 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
      */
     public void enableTablePanel(JComponent component) {
         // cria o painel 
-        tablePanel = new JPanel(new BorderLayout());
+        tablePanel = createPanel(new BorderLayout());
         tablePanel.addComponentListener(this);
         scrollPane = new JScrollPane();
         if (component instanceof JTable) {
@@ -238,11 +240,12 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
             // adiciona a tabela no centro do painel de tabela
             tablePanel.add(scrollPane, BorderLayout.CENTER);
         } else {
+            scrollPane.setViewportView(component);
             tablePanel.add(component, BorderLayout.CENTER);
         }
 
         // adiciona os filtros ao cabeçalho do painel de tabela
-        filterPanel = new JPanel();
+        filterPanel = createPanel();
         TitledBorder title = BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(),
                 "Filtros de pesquisa", TitledBorder.LEFT, TitledBorder.TOP);
@@ -424,10 +427,10 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
                     onClearButton(e);
                     break;
                 case "add":
-                    onAddButton(e);
+                    onAddAction(e);
                     break;
                 case "edit":
-                    onEditButton(e);
+                    onEditAction(e);
                     break;
                 case "view":
                     onViewButton(e);
@@ -439,7 +442,7 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
                     onExitButton(e);
                     break;
                 case "save":
-                    onSaveButton(e);
+                    onSaveAction(e);
                     break;
                 case "cancel":
                     onCancelButton(e);
@@ -544,7 +547,7 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
         }
     }
 
-    public void onAddButton(ActionEvent e) {
+    public void onAddAction(ActionEvent e) {
         fieldsPanel.clearFields();
         fieldsPanel.setStatusPanel(DefaultFieldsPanel.INSERT_STATUS_PANEL);
         componentsControl(1);
@@ -554,7 +557,7 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
         showPanelInCard(CARD_FICHA);
     }
 
-    public void onEditButton(ActionEvent e) {
+    public void onEditAction(ActionEvent e) {
         int selectedRow = table.getSelectedRow();
         if (selectedRow < 0) {
             JOptionPane.showMessageDialog(frame,
@@ -588,7 +591,7 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
         loadView(selectedRow);
     }
 
-    public void onSaveButton(ActionEvent e) {
+    public void onSaveAction(ActionEvent e) {
         if (fieldsPanel.isValidated()) {
             HashMap<String, Object> params = fieldsPanel.getFieldValues();
             try {
@@ -698,17 +701,17 @@ public abstract class DefaultFormPanel extends JPanel implements ActionListener,
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             if (source == btAdd) {
-                onAddButton(e);
+                onAddAction(e);
             } else if (source == btCancel) {
                 onCancelButton(e);
             } else if (source == btDelete) {
                 onDeleteButton(e);
             } else if (source == btEdit) {
-                onEditButton(e);
+                onEditAction(e);
             } else if (source == btView) {
                 onViewButton(e);
             } else if (source == btSave) {
-                onSaveButton(e);
+                onSaveAction(e);
             } else if (source == btExit) {
                 onExitButton(e);
             } else if (source == btExport) {

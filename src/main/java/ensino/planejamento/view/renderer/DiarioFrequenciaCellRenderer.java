@@ -5,6 +5,7 @@
  */
 package ensino.planejamento.view.renderer;
 
+import ensino.components.renderer.GenCellRenderer;
 import ensino.configuracoes.view.renderer.*;
 import ensino.components.GenJLabel;
 import java.awt.Color;

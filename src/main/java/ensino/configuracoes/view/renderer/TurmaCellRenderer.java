@@ -5,19 +5,15 @@
  */
 package ensino.configuracoes.view.renderer;
 
+import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
-import ensino.configuracoes.controller.EstudanteController;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.view.models.TurmaTableModel;
 import ensino.configuracoes.model.Turma;
-import ensino.patterns.factory.ControllerFactory;
-import ensino.patterns.factory.DaoFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTable;

@@ -77,20 +77,18 @@ public class PlanoDeEnsinoConteudoPanel extends DefaultFieldsPanel {
 
     private void initComponents() {
         setName("conteudo.programatico");
-        setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        setLayout(new BorderLayout(5, 5));
         /**
          * A tabela foi criada antes por questões de processo lógico da
          * construção da ação dos botões.
          */
-        panel.add(createTablePane(), BorderLayout.CENTER);
+        add(createTablePane(), BorderLayout.CENTER);
 
         JPanel panelDados = new JPanel(new BorderLayout(5, 5));
         panelDados.add(createFields(), BorderLayout.CENTER);
         panelDados.add(createButtonPanel(), BorderLayout.PAGE_END);
 
-        panel.add(panelDados, BorderLayout.PAGE_START);
-        add(panel);
+        add(panelDados, BorderLayout.PAGE_START);
     }
 
     private JPanel createFields() {

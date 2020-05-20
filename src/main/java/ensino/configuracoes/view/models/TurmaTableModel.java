@@ -6,7 +6,6 @@
 package ensino.configuracoes.view.models;
 
 import ensino.configuracoes.model.Turma;
-import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.List;

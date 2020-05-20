@@ -6,14 +6,12 @@
 package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.configuracoes.model.Calendario;
 import ensino.patterns.AbstractController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.CampusFactory;
-import ensino.configuracoes.model.Curso;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.patterns.factory.DaoFactory;
 import java.net.URL;
+import java.util.List;
 
 /**
  *
@@ -32,12 +30,7 @@ public class CampusController extends AbstractController<Campus> {
     @Override
     public Campus salvar(Campus o) throws Exception {
         o = super.salvar(o);
-        // Salvar cascade
-        AbstractController<Calendario> colCalendario = ControllerFactory.createCalendarioController();
-        colCalendario.salvarEmCascata(o.getCalendarios());
         
-        AbstractController<Curso> colCurso = ControllerFactory.createCursoController();
-        colCurso.salvarEmCascata(o.getCursos());
         return o;
     }
     
@@ -45,5 +38,19 @@ public class CampusController extends AbstractController<Campus> {
     public Campus remover(Campus o) throws Exception {
         o = super.remover(o);
         return o;
+    }
+    
+    public Campus getCampusVigente() {
+        List<Campus> l = super.listar(" AND c.status = 'V' ");
+        /**
+         * Se encontrar, retorna o campus
+         */
+        if (l.size() == 1) {
+            return l.get(0);
+        }
+        /**
+         * Se não encontrar, retorna null
+         */
+        return null;
     }
 }

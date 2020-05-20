@@ -5,6 +5,7 @@
  */
 package ensino.planejamento.model;
 
+import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.Docente;
 import ensino.configuracoes.model.Estudante;
@@ -16,8 +17,10 @@ import ensino.util.types.TipoAula;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,9 +30,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -44,10 +50,30 @@ public class PlanoDeEnsino implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "objetivoGeral")
+    /**
+     * Data de criação.
+     * Atributo utilizado para registrar da data de horário do
+     * cadastro do plano de ensino
+     */
+    @Column(name = "criacao", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date criacao;
+
+    /**
+     * Data de fechamento.
+     * Atributo utilizado para registrar da data de horário do
+     * cadastro do plano de ensino
+     */
+    @Column(name = "fechamento", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechamento;
+
+    @Lob
+    @Column(name = "objetivoGeral", columnDefinition = "CLOB")
     private String objetivoGeral;
 
-    @Column(name = "recuperacao", length = 2000)
+    @Lob
+    @Column(name = "recuperacao", columnDefinition = "CLOB")
     private String recuperacao;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -80,7 +106,7 @@ public class PlanoDeEnsino implements Serializable {
 
     @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
     private List<Objetivo> objetivos;
-
+    
     @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
     private List<Detalhamento> detalhamentos;
 
@@ -93,12 +119,18 @@ public class PlanoDeEnsino implements Serializable {
     @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
     private List<Diario> diarios;
 
+    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
+    private List<PermanenciaEstudantil> permanencias;
+
     public PlanoDeEnsino() {
         this.objetivos = new ArrayList();
         this.detalhamentos = new ArrayList();
         this.planoAvaliacoes = new ArrayList();
         this.horarios = new ArrayList();
         this.diarios = new ArrayList();
+        this.permanencias = new ArrayList();
+        
+        criacao = new Date();
     }
 
     public Integer getId() {
@@ -107,6 +139,18 @@ public class PlanoDeEnsino implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Date getCriacao() {
+        return criacao;
+    }
+
+    public Date getFechamento() {
+        return fechamento;
+    }
+
+    public void fechar() {
+        this.fechamento = new Date();
     }
 
     public String getObjetivoGeral() {
@@ -241,18 +285,47 @@ public class PlanoDeEnsino implements Serializable {
     public void setDiarios(List<Diario> diarios) {
         this.diarios = diarios;
     }
+    
+    public void clearPermanencias() {
+        this.permanencias.clear();
+    }
+
+    public List<PermanenciaEstudantil> getPermanencias() {
+        return permanencias;
+    }
+
+    public void setPermanencias(List<PermanenciaEstudantil> permanencias) {
+        this.permanencias = permanencias;
+    }
+
+    public void addPermanencia(PermanenciaEstudantil o) {
+        o.getId().setPlanoDeEnsino(this);
+        permanencias.add(o);
+    }
+
+    public void removePermanencia(PermanenciaEstudantil o) {
+        permanencias.remove(o);
+    }
 
     /**
      * Método criado para construir os diários. Os diários são construídos
-     * somente eles estiverem vazios.
+     * somente eles estiverem vazios ou serão sobreescritos.
      */
     public void criarDiarios() {
         if (detalhamentos != null && !detalhamentos.isEmpty()
                 && periodoLetivo != null
                 && horarios != null && !horarios.isEmpty()
-                && turma != null && turma.hasEstudantes()
-                && (diarios == null || diarios.isEmpty())) {
-            // Atributo utilizado para controlar os dias de aula
+                && turma != null && turma.hasEstudantes()) {
+            /**
+             * Caso exista algum lançamento, eles serão eliminados
+             */
+            diarios.clear();
+            /**
+             * Variável utilizada para verificar se o dia é letivo
+             */
+            Calendario calendario = periodoLetivo.getCalendario();
+            
+            // Campo utilizado para controlar os dias de aula
             Calendar cal = Calendar.getInstance();
 
             // variável utilizada para controlar o ID de sequência dos diários
@@ -262,7 +335,7 @@ public class PlanoDeEnsino implements Serializable {
                 Detalhamento detalhe = itDetalhamento.next();
                 Periodo periodo = detalhe.getSemanaLetiva().getPeriodo();
                 cal.setTime(periodo.getDe());
-                for (int j = 0; j < periodo.getDiasEntrePeriodo(); j++) {
+                for (int j = 0; j < periodo.getDiasEntrePeriodo() + 1; j++) {
                     /**
                      * Identifica os dias da semana que devem ter aula de acordo
                      * com os horários de aula definidos no plano de ensino
@@ -270,7 +343,13 @@ public class PlanoDeEnsino implements Serializable {
                     Iterator<HorarioAula> itHorarioAula = horarios.iterator();
                     while (itHorarioAula.hasNext()) {
                         HorarioAula horarioAula = itHorarioAula.next();
-                        if (horarioAula.getDiaDaSemana().getValue() + 1 == cal.get(Calendar.DAY_OF_WEEK)) {
+                        if (horarioAula.getDiaDaSemana().getValue() + 1 == cal.get(Calendar.DAY_OF_WEEK)
+                                && calendario.isDiaLetivo(cal.getTime())) {
+                            /**
+                             * Antes de criar o diário, deve-se verificar se a
+                             * data é um dia letivo
+                             */
+                            
                             Diario diario = DiarioFactory.getInstance().createObject(
                                     new DiarioId(idDiario++, this), cal.getTime(),
                                     horarioAula.getHorario(), "", "",
@@ -328,10 +407,92 @@ public class PlanoDeEnsino implements Serializable {
         }
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.criacao);
+        hash = 97 * hash + Objects.hashCode(this.fechamento);
+        hash = 97 * hash + Objects.hashCode(this.objetivoGeral);
+        hash = 97 * hash + Objects.hashCode(this.recuperacao);
+        hash = 97 * hash + Objects.hashCode(this.unidadeCurricular);
+        hash = 97 * hash + Objects.hashCode(this.docente);
+        hash = 97 * hash + Objects.hashCode(this.periodoLetivo);
+        hash = 97 * hash + Objects.hashCode(this.turma);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PlanoDeEnsino other = (PlanoDeEnsino) obj;
+        if (!Objects.equals(this.objetivoGeral, other.objetivoGeral)) {
+            return false;
+        }
+        if (!Objects.equals(this.recuperacao, other.recuperacao)) {
+            return false;
+        }
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.criacao, other.criacao)) {
+            return false;
+        }
+        if (!Objects.equals(this.fechamento, other.fechamento)) {
+            return false;
+        }
+        if (!Objects.equals(this.unidadeCurricular, other.unidadeCurricular)) {
+            return false;
+        }
+        if (!Objects.equals(this.docente, other.docente)) {
+            return false;
+        }
+        if (!Objects.equals(this.periodoLetivo, other.periodoLetivo)) {
+            return false;
+        }
+        if (!Objects.equals(this.turma, other.turma)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public String toString() {
         return String.format("[%d] Plano de Ensino [%s | %s]",
                 id, turma != null ? turma.getNome() : "",
                 periodoLetivo != null ? periodoLetivo.getDescricao() : "");
+    }
+    
+    public PlanoDeEnsino clone() {
+        PlanoDeEnsino o = PlanoDeEnsinoFactory.getInstance().createObject(
+                null, objetivoGeral, recuperacao);
+        
+        o.setDocente(docente);
+        o.setUnidadeCurricular(unidadeCurricular);
+        o.setPeriodoLetivo(periodoLetivo);
+        o.setTurma(turma);
+        o.criarDetalhamentos();
+        List<Detalhamento> lclone = o.getDetalhamentos();
+        for(int i = 0; i < detalhamentos.size(); i++) {
+            Detalhamento d = detalhamentos.get(i);
+            Detalhamento clone = lclone.get(i);
+            
+            clone.setConteudo(d.getConteudo());
+            clone.setObservacao(d.getObservacao());
+            clone.setMetodologias(d.getMetodologias());
+            clone.setNAulasPraticas(d.getNAulasPraticas());
+            clone.setNAulasTeoricas(d.getNAulasTeoricas());
+        }
+        
+        return o;
     }
 
 }

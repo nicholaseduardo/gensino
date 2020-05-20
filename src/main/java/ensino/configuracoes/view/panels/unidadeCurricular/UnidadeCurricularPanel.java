@@ -15,7 +15,7 @@ import ensino.configuracoes.view.models.CampusComboBoxModel;
 import ensino.configuracoes.view.models.CursoComboBoxListModel;
 import ensino.configuracoes.view.models.CursoListModel;
 import ensino.configuracoes.view.models.UnidadeCurricularTableModel;
-import ensino.configuracoes.view.panels.CursoPanel;
+import ensino.configuracoes.view.panels.curso.CursoPanel;
 import ensino.configuracoes.view.renderer.UnidadeCurricularCellRenderer;
 import ensino.defaults.DefaultFormPanel;
 import ensino.helpers.GridLayoutHelper;

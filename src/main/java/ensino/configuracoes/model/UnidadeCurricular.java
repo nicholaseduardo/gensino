@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -31,7 +32,8 @@ public class UnidadeCurricular implements Serializable {
     @Column(name = "cargaHoraria")
     private Integer cargaHoraria;
     
-    @Column(name = "ementa")
+    @Lob
+    @Column(name = "ementa", columnDefinition = "CLOB")
     private String ementa;
     
     @OneToMany(mappedBy = "id.unidadeCurricular", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)

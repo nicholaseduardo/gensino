@@ -25,6 +25,15 @@ public enum Presenca {
             case "F": return FALTA;
         }
     }
+    
+    public static Presenca of(Integer value) {
+        switch(value) {
+            default:
+            case 0: return PRESENTE;
+            case 1: return PRESENTE;
+            case 2: return FALTA;
+        }
+    }
 
     public String getValue() {
         return value;

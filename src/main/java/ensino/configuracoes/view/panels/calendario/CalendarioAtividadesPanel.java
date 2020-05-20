@@ -6,29 +6,28 @@
 package ensino.configuracoes.view.panels.calendario;
 
 import ensino.components.GenJButton;
-import ensino.components.GenJComboBox;
 import ensino.components.GenJFormattedTextField;
 import ensino.components.GenJLabel;
+import ensino.components.GenJList;
 import ensino.components.GenJTextField;
-import ensino.configuracoes.controller.LegendaController;
+import ensino.components.renderer.GenListCellRenderer;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeFactory;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Legenda;
 import ensino.configuracoes.view.models.AtividadeTableModel;
-import ensino.configuracoes.view.panels.CalendarioPanel;
+import ensino.configuracoes.view.models.LegendaListModel;
 import ensino.configuracoes.view.renderer.AtividadeCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.util.types.Periodo;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -64,7 +63,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
     private GenJFormattedTextField txtDe;
     private GenJFormattedTextField txtAte;
     private GenJTextField txtAtividade;
-    private GenJComboBox comboLegenda;
+    private GenJList listLegenda;
 
     private GenJButton btAdd;
     private GenJButton btUpdate;
@@ -81,145 +80,171 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
     }
 
     public CalendarioAtividadesPanel(Calendario calendario) {
-        super();
+        super("Controle de atividades");
         this.selectedCalendario = calendario;
         initComponents();
     }
 
     private void initComponents() {
-        setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        setLayout(new BorderLayout(10, 10));
+
         try {
-            JPanel panel = new JPanel(new GridLayout(1, 2, 10, 0));
-            add(panel);
-            JPanel panelLeft = new JPanel(new GridBagLayout());
-            panel.add(panelLeft);
-            GridBagConstraints c = new GridBagConstraints();
-
-            GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
-            GridLayoutHelper.setRight(c, 0, 0);
-            panelLeft.add(lblId, c);
-            txtId = new GenJTextField(5, false);
-            txtId.setEnabled(false);
-            lblId.setLabelFor(txtId);
-            GridLayoutHelper.set(c, 1, 0);
-            panelLeft.add(txtId, c);
-
-            GenJLabel lblDe = new GenJLabel("De: ", JLabel.TRAILING);
-            GridLayoutHelper.setRight(c, 0, 1);
-            panelLeft.add(lblDe, c);
-            txtDe = GenJFormattedTextField.createFormattedField("##/##/####", 1);
-            txtDe.setColumns(8);
-            txtDe.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(FocusEvent e) {
-                    if (txtDe.getValue() != null && txtAte.getValue() == null) {
-                        try {
-                            txtDe.commitEdit();
-                            txtAte.setValue(txtDe.getValue());
-                            txtAtividade.requestFocusInWindow();
-                        } catch (ParseException ex) {
-                            Logger.getLogger(CalendarioAtividadesPanel.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-
-            });
-            lblDe.setLabelFor(txtDe);
-            GridLayoutHelper.set(c, 1, 1);
-            c.fill = GridBagConstraints.HORIZONTAL;
-            panelLeft.add(txtDe, c);
-
-            GenJLabel lblAte = new GenJLabel("Até: ", JLabel.TRAILING);
-            GridLayoutHelper.setRight(c, 2, 1);
-            panelLeft.add(lblAte, c);
-            txtAte = GenJFormattedTextField.createFormattedField("##/##/####", 1);
-            txtAte.setColumns(8);
-            lblAte.setLabelFor(txtAte);
-            GridLayoutHelper.set(c, 3, 1);
-            c.fill = GridBagConstraints.HORIZONTAL;
-            panelLeft.add(txtAte, c);
-
-            GenJLabel lblDescricao = new GenJLabel("Atividade: ", JLabel.TRAILING);
-            GridLayoutHelper.setRight(c, 0, 2);
-            panelLeft.add(lblDescricao, c);
-            txtAtividade = new GenJTextField(20, true);
-            lblDescricao.setLabelFor(txtAtividade);
-            GridLayoutHelper.set(c, 1, 2);
-            c.gridwidth = 3;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            panelLeft.add(txtAtividade, c);
-
-            GenJLabel lblLegenda = new GenJLabel("Legenda: ", JLabel.TRAILING);
-            GridLayoutHelper.setRight(c, 0, 3);
-            panelLeft.add(lblLegenda, c);
-            LegendaController legendaCol = ControllerFactory.createLegendaController();
-            comboLegenda = new GenJComboBox(legendaCol.listar().toArray());
-            lblLegenda.setLabelFor(comboLegenda);
-            GridLayoutHelper.set(c, 1, 3);
-            c.gridwidth = 3;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            panelLeft.add(comboLegenda, c);
-            comboLegenda.setRenderer(new ListCellRenderer() {
-                private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-
-                @Override
-                public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(
-                            list, value, index, isSelected, cellHasFocus);
-
-                    if (value instanceof Legenda) {
-                        Legenda leg = (Legenda) value;
-                        renderer.setForeground(leg.getCor());
-                        Font fieldFont = renderer.getFont();
-                        renderer.setFont(new Font(fieldFont.getFontName(),
-                                Font.BOLD,
-                                fieldFont.getSize()));
-                    }
-
-                    return renderer;
-                }
-            });
-
-            JPanel panelButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            GridLayoutHelper.set(c, 0, 4, 4, 1, GridBagConstraints.BASELINE);
-            c.fill = GridBagConstraints.HORIZONTAL;
-            panelLeft.add(panelButtons, c);
-
-            String source = String.format("/img/%s", "view-button-25px.png");
-            btNew = new GenJButton("Novo", new ImageIcon(getClass().getResource(source)));
-
-            source = String.format("/img/%s", "add-icon-png-25px.png");
-            btAdd = new GenJButton("Adicionar", new ImageIcon(getClass().getResource(source)));
-
-            source = String.format("/img/%s", "update-button-25px.png");
-            btUpdate = new GenJButton("Alterar", new ImageIcon(getClass().getResource(source)));
-
-            source = String.format("/img/%s", "del-button-png-25px.png");
-            btDel = new GenJButton("Remover", new ImageIcon(getClass().getResource(source)));
-
-            AtividadeActionListener atividadeListener = new AtividadeActionListener();
-            btAdd.addActionListener(atividadeListener);
-            btUpdate.addActionListener(atividadeListener);
-            btDel.addActionListener(atividadeListener);
-            btNew.addActionListener(atividadeListener);
-            panelButtons.add(btNew);
-            panelButtons.add(btAdd);
-            panelButtons.add(btUpdate);
-            panelButtons.add(btDel);
-
-            atividadeTable = new JTable();
-            ListSelectionModel cellSelectionModel = atividadeTable.getSelectionModel();
-            cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            cellSelectionModel.addListSelectionListener(new AtividadeListSelectionListener());
-            setData(new ArrayList());
-            JScrollPane atividadeScroll = new JScrollPane();
-            atividadeScroll.setViewportView(atividadeTable);
-            atividadeScroll.setPreferredSize(new Dimension(400, 100));
-            panel.add(atividadeScroll);
-
+            add(createAtividadeFieldsPanel(), BorderLayout.PAGE_START);
+            add(createTablePanel(), BorderLayout.CENTER);
         } catch (Exception ex) {
-            Logger.getLogger(CalendarioPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
         }
+    }
+
+    private ListCellRenderer getCellRenderer() {
+        return new GenListCellRenderer() {
+            private DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                if (isSelected) {
+                    setColors(new Color(list.getSelectionForeground().getRGB()),
+                            new Color(list.getSelectionBackground().getRGB()));
+                } else {
+                    setColors(new Color(list.getForeground().getRGB()),
+                            new Color(255, 255, 255)
+                    );
+                }
+                JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+                if (value instanceof Legenda) {
+                    Legenda leg = (Legenda) value;
+                    GenJLabel renderer = new GenJLabel(leg.getNome());
+                    renderer.toBold();
+                    renderer.resetFontSize(16);
+
+                    if (isSelected) {
+                        renderer.setIcon(new ImageIcon(getClass().getResource("/img/check-white-15.png")));
+                    }
+                    renderer.setForeground(Color.WHITE);
+                    panel.setBackground(leg.getCor());
+                    
+                    panel.add(renderer);
+                }
+
+                panel.setOpaque(true);
+
+                return panel;
+            }
+        };
+    }
+
+    private JPanel createAtividadeFieldsPanel() throws ParseException {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
+        txtId = new GenJTextField(5, false);
+        txtId.setEnabled(false);
+        lblId.setLabelFor(txtId);
+
+        txtDe = GenJFormattedTextField.createFormattedField("##/##/####", 1);
+        txtDe.setColumns(8);
+        txtDe.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (txtDe.getValue() != null && txtAte.getValue() == null) {
+                    try {
+                        txtDe.commitEdit();
+                        txtAte.setValue(txtDe.getValue());
+                        txtAtividade.requestFocusInWindow();
+                    } catch (ParseException ex) {
+                        Logger.getLogger(CalendarioAtividadesPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+
+        });
+
+        txtAte = GenJFormattedTextField.createFormattedField("##/##/####", 1);
+        txtAte.setColumns(8);
+
+        JPanel panelPeriodo = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        panelPeriodo.setBorder(createTitleBorder("Período da atividade"));
+        panelPeriodo.add(txtDe);
+        panelPeriodo.add(new GenJLabel(" a "));
+        panelPeriodo.add(txtAte);
+
+        GenJLabel lblDescricao = new GenJLabel("Atividade: ", JLabel.TRAILING);
+        txtAtividade = new GenJTextField(20, false);
+        lblDescricao.setLabelFor(txtAtividade);
+
+        listLegenda = new GenJList(new LegendaListModel());
+        listLegenda.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listLegenda.setLayoutOrientation(JList.VERTICAL);
+        listLegenda.setVisibleRowCount(4);
+        JScrollPane scrollLegenda = new JScrollPane(listLegenda);
+        scrollLegenda.setBorder(createTitleBorder("Legenda"));
+        scrollLegenda.setAutoscrolls(true);
+
+        listLegenda.setCellRenderer(getCellRenderer());
+
+        int col = 0, row = 0;
+        GridLayoutHelper.setRight(c, col++, row);
+        panel.add(lblId, c);
+        GridLayoutHelper.set(c, col++, row);
+        panel.add(txtId, c);
+
+        GridLayoutHelper.set(c, col++, row);
+        panel.add(panelPeriodo, c);
+
+        GridLayoutHelper.set(c, col, row++, 1, 3, GridBagConstraints.LINE_START);
+        panel.add(scrollLegenda, c);
+
+        col = 0;
+        GridLayoutHelper.setRight(c, col++, row);
+        panel.add(lblDescricao, c);
+        GridLayoutHelper.set(c, col++, row++, 2, 1, GridBagConstraints.LINE_START);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(txtAtividade, c);
+
+        col = 0;
+        GridLayoutHelper.set(c, col, row, 3, 1, GridBagConstraints.LINE_START);
+        panel.add(createButtonsPanel(), c);
+
+        return panel;
+    }
+
+    private JPanel createButtonsPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        btNew = new GenJButton("Novo", new ImageIcon(getClass().getResource(getImageSourceNew())));
+        btAdd = new GenJButton("Adicionar", new ImageIcon(getClass().getResource(getImageSourceAdd())));
+        btUpdate = new GenJButton("Alterar", new ImageIcon(getClass().getResource(getImageSourceUpdate())));
+        btDel = new GenJButton("Remover", new ImageIcon(getClass().getResource(getImageSourceDel())));
+
+        AtividadeActionListener atividadeListener = new AtividadeActionListener();
+        btAdd.addActionListener(atividadeListener);
+        btUpdate.addActionListener(atividadeListener);
+        btDel.addActionListener(atividadeListener);
+        btNew.addActionListener(atividadeListener);
+
+        panel.add(btNew);
+        panel.add(btAdd);
+        panel.add(btUpdate);
+        panel.add(btDel);
+
+        return panel;
+    }
+
+    private JScrollPane createTablePanel() {
+        atividadeTable = new JTable();
+
+        ListSelectionModel cellSelectionModel = atividadeTable.getSelectionModel();
+        cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        cellSelectionModel.addListSelectionListener(new AtividadeListSelectionListener());
+
+        setData(new ArrayList());
+        JScrollPane atividadeScroll = new JScrollPane();
+        atividadeScroll.setViewportView(atividadeTable);
+        atividadeScroll.setPreferredSize(new Dimension(400, 200));
+
+        return atividadeScroll;
     }
 
     /**
@@ -264,7 +289,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
         txtDe.setValue(null);
         txtAte.setValue(null);
         txtAtividade.setText("");
-        comboLegenda.setSelectedItem(null);
+        listLegenda.clearSelection();
     }
 
     @Override
@@ -280,7 +305,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
         txtAtividade.setText(descricao);
         txtDe.setValue(periodo.getDeText());
         txtAte.setValue(periodo.getAteText());
-        comboLegenda.setSelectedItem(legenda);
+        listLegenda.setSelectedValue(legenda);
     }
 
     @Override
@@ -318,14 +343,13 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
         } else if ("".equals(txtAtividade.getText())) {
             campo = "Descrição";
             txtAtividade.requestFocusInWindow();
-        } else if (comboLegenda.getSelectedItem() == null) {
+        } else if (listLegenda.getSelectedValue() == null) {
             campo = "Legenda";
-            comboLegenda.requestFocusInWindow();
+            listLegenda.requestFocusInWindow();
         } else {
             return true;
         }
-        JOptionPane.showMessageDialog(getParent(), String.format(msg, campo),
-                "Aviso", JOptionPane.WARNING_MESSAGE);
+        showInformationMessage(String.format(msg, campo));
         return result;
     }
 
@@ -334,7 +358,8 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
         txtDe.setEnabled(active);
         txtAte.setEnabled(active);
         txtAtividade.setEnabled(active);
-        comboLegenda.setEnabled(active);
+        listLegenda.setEnabled(active);
+
         enableLocalButtons(active);
         clearLocalFields();
     }
@@ -368,7 +393,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
                         sid.matches("\\d+") ? Integer.parseInt(sid) : null,
                         new Periodo(txtDe.getText(), txtAte.getText()),
                         txtAtividade.getText(),
-                        (Legenda) comboLegenda.getSelectedItem(),
+                        (Legenda) listLegenda.getSelectedValue(),
                         selectedCalendario
                 );
                 return at;
@@ -402,7 +427,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
                  */
                 txtId.setText(String.valueOf(id));
                 atividadeTableModel.addRow(createAtividadeFromFields());
-            } else if (e.getSource() == btDel) {
+            } else if (source == btDel) {
                 int selectedRow = atividadeTable.getSelectedRow();
                 if (selectedRow == -1) {
                     JOptionPane.showMessageDialog(getParent(),

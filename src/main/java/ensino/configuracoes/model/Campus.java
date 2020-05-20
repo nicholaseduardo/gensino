@@ -6,9 +6,13 @@
 package ensino.configuracoes.model;
 
 import ensino.patterns.BaseObject;
+import ensino.util.StatusCampusConverter;
+import ensino.util.types.StatusCampus;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -21,17 +25,43 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "campus")
 public class Campus extends BaseObject {
+    
+    /**
+     * Atributo utilizado para registrar a situação do estudante.
+     * 
+     * A situação do estudante pode ser:<br/>
+     * <ul>
+     * <li>VIGENTE</li>
+     * <li>ANTERIOR</li>
+     * </ul>
+     */
+    @Column(name = "status", nullable = true, length = 1)
+    @Convert(converter = StatusCampusConverter.class)
+    private StatusCampus status;
 
-    @OneToMany(mappedBy = "id.campus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.campus", fetch = FetchType.LAZY)
     private List<Curso> cursos;
     
-    @OneToMany(mappedBy = "id.campus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.campus", fetch = FetchType.LAZY)
     private List<Calendario> calendarios;
     
     public Campus() {
         super();
         cursos = new ArrayList();
         calendarios = new ArrayList();
+        status = StatusCampus.VIGENTE;
+    }
+
+    public StatusCampus getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusCampus situacao) {
+        this.status = situacao;
+    }
+    
+    public boolean isVigente() {
+        return StatusCampus.VIGENTE.equals(status);
     }
     
     public List<Curso> getCursos() {

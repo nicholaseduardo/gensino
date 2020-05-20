@@ -122,7 +122,7 @@ public class AtividadePanel extends DefaultFormPanel {
     }
 
     @Override
-    public void onSaveButton(ActionEvent e) {
+    public void onSaveAction(ActionEvent e) {
         DefaultFieldsPanel inPanel = getFieldsPanel();
         if (inPanel.isValidated()) {
             HashMap<String, Object> params = inPanel.getFieldValues();

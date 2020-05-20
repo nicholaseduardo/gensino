@@ -35,7 +35,11 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
     public UnidadeCurricular createObject(Object... args) {
         int i = 0;
         UnidadeCurricular o = new UnidadeCurricular();
-        o.getId().setId((Integer) args[i++]);
+        if (args[i] instanceof UnidadeCurricularId) {
+            o.setId((UnidadeCurricularId) args[i++]);
+        } else {
+            o.getId().setId((Integer) args[i++]);
+        }
         o.setNome((String) args[i++]);
         o.setnAulasTeoricas((Integer) args[i++]);
         o.setnAulasPraticas((Integer) args[i++]);
@@ -56,22 +60,44 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
         );
     }
 
+    public UnidadeCurricular updateObject(UnidadeCurricular o, HashMap<String, Object> p) {
+        o.setNome((String) p.get("nome"));
+        o.setnAulasTeoricas((Integer) p.get("nAulasTeoricas"));
+        o.setnAulasPraticas((Integer) p.get("nAulasPraticas"));
+        o.setCargaHoraria((Integer) p.get("cargaHoraria"));
+        o.setEmenta((String) p.get("ementa"));
+
+        if (p.get("referenciasBibliograficas") != null) {
+            ((List<ReferenciaBibliografica>) p.get("referenciasBibliograficas")).forEach((rb) -> {
+                o.addReferenciaBibliografica(rb);
+            });
+        }
+
+        if (p.get("planosDeEnsino") != null) {
+            ((List<PlanoDeEnsino>) p.get("planosDeEnsino")).forEach((pde) -> {
+                o.addPlanoDeEnsino(pde);
+            });
+        }
+        return o;
+    }
+
     @Override
     public UnidadeCurricular getObject(HashMap<String, Object> p) {
         UnidadeCurricular o = createObject(
-                p.get("id"),
+                new UnidadeCurricularId((Integer) p.get("id"), (Curso) p.get("curso")),
                 p.get("nome"),
                 p.get("nAulasTeoricas"),
                 p.get("nAulasPraticas"),
                 p.get("cargaHoraria"),
                 p.get("ementa")
         );
-        o.getId().setCurso((Curso) p.get("curso"));
         ((List<ReferenciaBibliografica>) p.get("referenciasBibliograficas")).forEach((rb) -> {
             o.addReferenciaBibliografica(rb);
         });
-//        o.getId().setPlanosDeEnsino(
-//                (List<PlanoDeEnsino>) p.get("planosDeEnsino"));
+
+        ((List<PlanoDeEnsino>) p.get("planosDeEnsino")).forEach((pde) -> {
+            o.addPlanoDeEnsino(pde);
+        });
         return o;
     }
 
@@ -88,5 +114,5 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
         e.setAttribute("ementa", o.getEmenta());
         return e;
     }
-    
+
 }

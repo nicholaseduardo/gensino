@@ -33,9 +33,14 @@ public class CursoFactory implements BeanFactory<Curso> {
     @Override
     public Curso createObject(Object... args) {
         Curso c = new Curso();
-        int index = 0;
-        c.getId().setId((Integer) args[index++]);
-        c.setNome((String) args[index++]);
+        int i = 0;
+        if (args[i] instanceof CursoId) {
+            c.setId((CursoId) args[i++]);
+        } else {
+            c.getId().setId((Integer) args[i++]);
+        }
+        c.setNome((String) args[i++]);
+        c.setNivelEnsino((NivelEnsino) args[i++]);
         return c;
     }
 
@@ -43,18 +48,25 @@ public class CursoFactory implements BeanFactory<Curso> {
     public Curso getObject(Element e) {
         Integer id = Integer.parseInt(e.getAttribute("id"));
         Curso c = createObject(id, e.getAttribute("nome"));
-        
+
         return c;
     }
 
     @Override
     public Curso getObject(HashMap<String, Object> p) {
-        Curso c = createObject(p.get("id"), p.get("nome"));
-        c.getId().setCampus((Campus) p.get("campus"));
-//        c.setUnidadesCurriculares((List<UnidadeCurricular>) p.get("unidadesCurriculares"));
-        c.setTurmas((List<Turma>) p.get("turmas"));
 
-        return c;
+        Curso o = createObject(new CursoId((Integer) p.get("id"),
+                (Campus) p.get("campus")),
+                p.get("nome"), (NivelEnsino) p.get("nivelEnsino"));
+
+        return o;
+    }
+
+    public Curso updateObject(Curso o, HashMap<String, Object> p) {
+        o.setNome((String)p.get("nome"));
+        o.setNivelEnsino((NivelEnsino) p.get("nivelEnsino"));
+
+        return o;
     }
 
     @Override

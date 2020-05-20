@@ -26,10 +26,18 @@ public class CursoDaoSQL extends AbstractDaoSQL<Curso> {
     public void save(Curso o) {
         if (o.getId().getId() == null) {
             o.getId().setId(nextVal(o));
+        }
+        
+        if (findById(o.getId()) == null) {
             entityManager.persist(o);
         } else {
             entityManager.merge(o);
         }
+    }
+
+    @Override
+    public void delete(Curso o) {
+        entityManager.remove(entityManager.getReference(Curso.class, o.getId()));
     }
 
     @Override
@@ -60,7 +68,7 @@ public class CursoDaoSQL extends AbstractDaoSQL<Curso> {
 
     @Override
     public Curso findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return entityManager.find(Curso.class, id);
     }
 
     @Override

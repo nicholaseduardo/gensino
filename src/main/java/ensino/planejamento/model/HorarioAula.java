@@ -5,11 +5,11 @@
  */
 package ensino.planejamento.model;
 
-import ensino.util.DayOfWeekConverter;
+import ensino.util.DiaDaSemanaConverter;
 import ensino.util.TurnoConverter;
+import ensino.util.types.DiaDaSemana;
 import ensino.util.types.Turno;
 import java.io.Serializable;
-import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -34,20 +34,20 @@ public class HorarioAula implements Serializable {
     /**
      * Atributo utilizado para indicar o dia da semana ao qual
      * terá aula com a disciplina do plano de ensino.<br/>
-     * Para tanto, deve-se utilizar uma das constantes da enum<code>DayOfWeek</code>
+     * Para tanto, deve-se utilizar uma das constantes da enum<code>DiaDaSemana</code>
      * <ul>
-     *      <li>DayOfWeek.MONDAY para segunda-feira</li>
-     *      <li>DayOfWeek.TUESDAY para terça-feira</li>
-     *      <li>DayOfWeek.WEDNESDAY para quarta-feira</li>
-     *      <li>DayOfWeek.THURSDAY para quinta-feira</li>
-     *      <li>DayOfWeek.FRIDAY para sexta-feira</li>
-     *      <li>DayOfWeek.SATURDAY para sábado</li>
-     *      <li>DayOfWeek.MONDAY para domingo</li>
+     *      <li>DiaDaSemana.MONDAY para segunda-feira</li>
+     *      <li>DiaDaSemana.TUESDAY para terça-feira</li>
+     *      <li>DiaDaSemana.WEDNESDAY para quarta-feira</li>
+     *      <li>DiaDaSemana.THURSDAY para quinta-feira</li>
+     *      <li>DiaDaSemana.FRIDAY para sexta-feira</li>
+     *      <li>DiaDaSemana.SATURDAY para sábado</li>
+     *      <li>DiaDaSemana.MONDAY para domingo</li>
      * </ul>
      */
     @Column(name = "diaDaSemana", nullable = false, columnDefinition = "INTEGER")
-    @Convert(converter = DayOfWeekConverter.class)
-    private DayOfWeek diaDaSemana;
+    @Convert(converter = DiaDaSemanaConverter.class)
+    private DiaDaSemana diaDaSemana;
     /**
      * Indica qual o horário da aula.
      * Informa a hora, no formato (HH:MM), de início da aula da disciplina do 
@@ -96,11 +96,11 @@ public class HorarioAula implements Serializable {
         return id.getPlanoDeEnsino();
     }
 
-    public DayOfWeek getDiaDaSemana() {
+    public DiaDaSemana getDiaDaSemana() {
         return diaDaSemana;
     }
 
-    public void setDiaDaSemana(DayOfWeek diaDaSemana) {
+    public void setDiaDaSemana(DiaDaSemana diaDaSemana) {
         this.diaDaSemana = diaDaSemana;
     }
 

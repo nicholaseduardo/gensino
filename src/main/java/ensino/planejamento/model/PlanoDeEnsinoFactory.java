@@ -53,7 +53,7 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
         o.setId((Integer) args[i++]);
         o.setObjetivoGeral((String) args[i++]);
         o.setRecuperacao((String) args[i++]);
-        
+
         return o;
     }
 
@@ -66,7 +66,7 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
                     calenarioId = Integer.parseInt(e.getAttribute("ano")),
                     periodoLetivoNumero = Integer.parseInt(e.getAttribute("nPeriodoLetivo")),
                     turmaId = Integer.parseInt(e.getAttribute("turmaId"));
-            
+
             PlanoDeEnsino o = createObject(
                     Integer.parseInt(e.getAttribute("id")),
                     e.getAttribute("objetivoGeral"),
@@ -74,20 +74,20 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
             // recupera as associações
             DaoPattern<Docente> docenteDao = DocenteDaoXML.getInstance();
             o.setDocente(docenteDao.findById(Integer.parseInt(e.getAttribute("docenteId"))));
-            
+
             DaoPattern<PeriodoLetivo> periodoLetivoDao = PeriodoLetivoDaoXML.getInstance();
             PeriodoLetivo periodoLetivo = periodoLetivoDao.findById(periodoLetivoNumero, calenarioId, campusId);
             o.setPeriodoLetivo(periodoLetivo);
             /**
-             * Recupera as semanas letivas do período letivo vinculado ao
-             * plano de ensino
+             * Recupera as semanas letivas do período letivo vinculado ao plano
+             * de ensino
              */
             DaoPattern<SemanaLetiva> semanaLetivaDao = SemanaLetivaDaoXML.getInstance();
             String filter = String.format("//SemanaLetiva/semanaLetiva[@pNumero=%d "
-                + "and @ano=%d and @campusId=%d]", 
-                periodoLetivoNumero, calenarioId, campusId);
+                    + "and @ano=%d and @campusId=%d]",
+                    periodoLetivoNumero, calenarioId, campusId);
             periodoLetivo.setSemanasLetivas(semanaLetivaDao.list(filter, o.getPeriodoLetivo()));
-            
+
             DaoPattern<Turma> turmaDao = TurmaDaoXML.getInstance();
             Turma turma = turmaDao.findById(turmaId, cursoId, campusId);
             o.setTurma(turma);
@@ -95,11 +95,11 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
              * Recupera os estudantes vinculados a turma
              */
             DaoPattern<Estudante> estudanteDao = EstudanteDaoXML.getInstance();
-            filter = String.format("//Estudante/estudante[@turmaId=%d and @cursoId=%d and @campusId=%d]", 
-                turma.getId().getId(), turma.getId().getCurso().getId(),
-                turma.getId().getCurso().getId().getCampus().getId());
+            filter = String.format("//Estudante/estudante[@turmaId=%d and @cursoId=%d and @campusId=%d]",
+                    turma.getId().getId(), turma.getId().getCurso().getId(),
+                    turma.getId().getCurso().getId().getCampus().getId());
             turma.setEstudantes(estudanteDao.list(filter, turma));
-            
+
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoFactory.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,23 +116,33 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
         o.setUnidadeCurricular((UnidadeCurricular) p.get("unidadeCurricular"));
         o.setPeriodoLetivo((PeriodoLetivo) p.get("periodoLetivo"));
         o.setTurma((Turma) p.get("turma"));
-        
-        ((List<Objetivo>) p.get("objetivos")).forEach((obj) -> {
-            o.addObjetivo(obj);
-        });
-        ((List<Detalhamento>) p.get("detalhamentos")).forEach((det) -> {
-            o.addDetalhamento(det);
-        });
-        ((List<PlanoAvaliacao>) p.get("planoAvaliacoes")).forEach((pl) -> {
-            o.addPlanoAvaliacao(pl);
-        });
-        ((List<HorarioAula>) p.get("horarios")).forEach((hor) -> {
-            o.addHorario(hor);
-        });
-        ((List<Diario>) p.get("diarios")).forEach((di) -> {
-            o.addDiario(di);
-        });
-        
+
+        if (p.containsKey("objetivos")) {
+            ((List<Objetivo>) p.get("objetivos")).forEach((obj) -> {
+                o.addObjetivo(obj);
+            });
+        }
+        if (p.containsKey("detalhamentos")) {
+            ((List<Detalhamento>) p.get("detalhamentos")).forEach((det) -> {
+                o.addDetalhamento(det);
+            });
+        }
+        if (p.containsKey("planoAvaliacoes")) {
+            ((List<PlanoAvaliacao>) p.get("planoAvaliacoes")).forEach((pl) -> {
+                o.addPlanoAvaliacao(pl);
+            });
+        }
+        if (p.containsKey("horarios")) {
+            ((List<HorarioAula>) p.get("horarios")).forEach((hor) -> {
+                o.addHorario(hor);
+            });
+        }
+        if (p.containsKey("diarios")) {
+            ((List<Diario>) p.get("diarios")).forEach((di) -> {
+                o.addDiario(di);
+            });
+        }
+
         return o;
     }
 
@@ -142,7 +152,7 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
         e.setAttribute("id", o.getId().toString());
         e.setAttribute("objetivoGeral", o.getObjetivoGeral());
         e.setAttribute("recuperacao", o.getRecuperacao());
-        
+
         e.setAttribute("docenteId", o.getDocente().getId().toString());
         Calendario calendario = o.getPeriodoLetivo().getId().getCalendario();
         e.setAttribute("nPeriodoLetivo", o.getPeriodoLetivo().getId().getNumero().toString());
@@ -151,7 +161,7 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
         e.setAttribute("cursoId", o.getTurma().getId().getCurso().getId().toString());
         e.setAttribute("unidadeCurricularId", o.getUnidadeCurricular().getId().toString());
         e.setAttribute("campusId", calendario.getId().getCampus().getId().toString());
-        
+
         return e;
     }
 }

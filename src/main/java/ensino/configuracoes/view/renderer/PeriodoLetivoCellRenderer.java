@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.view.renderer;
 
+import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
 import ensino.configuracoes.view.models.PeriodoLetivoTableModel;
 import ensino.configuracoes.model.PeriodoLetivo;

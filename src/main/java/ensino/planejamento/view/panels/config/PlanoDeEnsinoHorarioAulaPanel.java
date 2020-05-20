@@ -13,38 +13,41 @@ import ensino.components.GenJTextField;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.DiarioController;
 import ensino.planejamento.controller.HorarioAulaController;
+import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.HorarioAulaFactory;
 import ensino.planejamento.model.HorarioAulaId;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.HorarioAulaTableModel;
 import ensino.planejamento.view.renderer.HorarioAulaCellRenderer;
+import ensino.util.types.DiaDaSemana;
 import ensino.util.types.Turno;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerDateModel;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -63,6 +66,9 @@ public class PlanoDeEnsinoHorarioAulaPanel extends DefaultFieldsPanel {
     private GenJButton btDel;
     private GenJButton btNew;
     private GenJButton btUpdate;
+    private GenJButton btGen;
+
+    private GenJLabel lblStatus;
 
     private JTable horarioAulaTable;
     private HorarioAulaTableModel horarioAulaTableModel;
@@ -86,6 +92,7 @@ public class PlanoDeEnsinoHorarioAulaPanel extends DefaultFieldsPanel {
         panelDados.add(createButtonPanel(), BorderLayout.PAGE_END);
 
         add(panelDados, BorderLayout.PAGE_START);
+        add(createFooter(), BorderLayout.PAGE_END);
     }
 
     private JPanel createFields() {
@@ -93,7 +100,7 @@ public class PlanoDeEnsinoHorarioAulaPanel extends DefaultFieldsPanel {
         GridBagConstraints c = new GridBagConstraints();
         txtId = new GenJTextField(5, false);
         txtId.setEnabled(false);
-        comboDiaDaSemana = new GenJComboBox(DayOfWeek.values());
+        comboDiaDaSemana = new GenJComboBox(DiaDaSemana.values());
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 7);
@@ -130,16 +137,19 @@ public class PlanoDeEnsinoHorarioAulaPanel extends DefaultFieldsPanel {
         btDel = new GenJButton("Remover", new ImageIcon(getClass().getResource(getImageSourceDel())));
         btNew = new GenJButton("Novo", new ImageIcon(getClass().getResource(getImageSourceNew())));
         btUpdate = new GenJButton("Atualizar", new ImageIcon(getClass().getResource(getImageSourceUpdate())));
+        btGen = new GenJButton("Gerar Frequências", new ImageIcon(getClass().getResource(getImageSourceGenerator())));
         panel.add(btNew);
         panel.add(btAdd);
         panel.add(btUpdate);
         panel.add(btDel);
+        panel.add(btGen);
 
         ButtonAction buttonAction = new ButtonAction();
         btAdd.addActionListener(buttonAction);
         btNew.addActionListener(buttonAction);
         btUpdate.addActionListener(buttonAction);
         btDel.addActionListener(buttonAction);
+        btGen.addActionListener(buttonAction);
 
         return panel;
     }
@@ -158,7 +168,27 @@ public class PlanoDeEnsinoHorarioAulaPanel extends DefaultFieldsPanel {
         return planoAvaliacaoScroll;
     }
 
+    private JPanel createFooter() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+        panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+
+        lblStatus = new GenJLabel("Status");
+        lblStatus.toBold();
+        panel.add(lblStatus);
+
+        return panel;
+    }
+
+    private void updateStatus(Integer numeroDeAulas) {
+        if (lblStatus != null) {
+            Double carga = (numeroDeAulas.doubleValue() * 45) / 60;
+            lblStatus.setText(String.format("Carga horária semanal: %.1fh | Número de aulas: %d",
+                    carga, numeroDeAulas));
+        }
+    }
+
     private void setData(List<HorarioAula> data) {
+        updateStatus(data.size());
         horarioAulaTableModel = new HorarioAulaTableModel(data);
         refreshHorarioAula();
     }
@@ -238,6 +268,7 @@ public class PlanoDeEnsinoHorarioAulaPanel extends DefaultFieldsPanel {
         btNew.setEnabled(active && !status);
         btUpdate.setEnabled(active && !status);
         btDel.setEnabled(active && !status);
+        btGen.setEnabled(active && !horarioAulaTableModel.isEmpty());
     }
 
     @Override
@@ -323,6 +354,32 @@ public class PlanoDeEnsinoHorarioAulaPanel extends DefaultFieldsPanel {
                     HorarioAula o = horarioAulaTableModel.getRow(selectedRow);
                     col.remover(o);
                     horarioAulaTableModel.removeRow(selectedRow);
+                } catch (Exception ex) {
+                    showErrorMessage(ex);
+                }
+            } else if (source == btGen) {
+                try {
+                    DiarioController col = ControllerFactory.createDiarioController();
+                    if (!planoDeEnsino.getDiarios().isEmpty()
+                            && !confirmDialog("Já existem lançamentos de diários no sistema.\n"
+                                    + "Se confirmar, os dados já lançados serão perdidos.\n"
+                                    + "Caso contrário, os horários alterados não serão publicados.\n"
+                                    + "Deseja continuar?")) {
+                        return;
+                    }
+                    Iterator<Diario> it = planoDeEnsino.getDiarios().iterator();
+                    while (it.hasNext()) {
+                        Diario d = it.next();
+                        col.remover(d);
+                    }
+                    
+                    planoDeEnsino.criarDiarios();
+                    it = planoDeEnsino.getDiarios().iterator();
+                    while (it.hasNext()) {
+                        Diario d = it.next();
+                        col.salvar(d);
+                    }
+                    showInformationMessage("Diário criado com sucesso!");
                 } catch (Exception ex) {
                     showErrorMessage(ex);
                 }

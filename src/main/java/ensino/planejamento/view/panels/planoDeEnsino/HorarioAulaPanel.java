@@ -16,6 +16,7 @@ import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.HorarioAulaTableModel;
 import ensino.planejamento.view.renderer.HorarioAulaCellRenderer;
+import ensino.util.types.DiaDaSemana;
 import ensino.util.types.Turno;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -24,7 +25,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -84,7 +84,7 @@ public class HorarioAulaPanel extends DefaultFieldsPanel {
         GridBagConstraints c = new GridBagConstraints();
         txtId = new GenJTextField(5, false);
         txtId.setEnabled(false);
-        comboDiaDaSemana = new GenJComboBox(DayOfWeek.values());
+        comboDiaDaSemana = new GenJComboBox(DiaDaSemana.values());
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 7);
@@ -250,7 +250,7 @@ public class HorarioAulaPanel extends DefaultFieldsPanel {
                     String sHorario = String.format("%02d:%02d", iHora,
                             iMinutos);
                     horarioAula.setHorario(sHorario);
-                    horarioAula.setDiaDaSemana((DayOfWeek) comboDiaDaSemana.getSelectedItem());
+                    horarioAula.setDiaDaSemana((DiaDaSemana) comboDiaDaSemana.getSelectedItem());
                     
                     /**
                      * Se o horário já existir, ele deve ser atualizado

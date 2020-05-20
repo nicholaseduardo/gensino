@@ -284,9 +284,9 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         map.put("nAulasTeoricas", "".equals(txtAulasTeoricas.getText()) ? null
                 : Integer.parseInt(txtAulasTeoricas.getText()));
         map.put("nAulasPraticas", "".equals(txtAulasPraticas.getText()) ? null
-                : Integer.parseInt(txtAulasTeoricas.getText()));
+                : Integer.parseInt(txtAulasPraticas.getText()));
         map.put("cargaHoraria", "".equals(txtCargaHoraria.getText()) ? null
-                : Integer.parseInt(txtAulasTeoricas.getText()));
+                : Integer.parseInt(txtCargaHoraria.getText()));
         map.put("ementa", txtEmenta.getText());
         map.put("curso", comboCurso.getSelectedItem());
         map.put("referenciasBibliograficas",

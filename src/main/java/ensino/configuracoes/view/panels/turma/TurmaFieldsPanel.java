@@ -14,7 +14,6 @@ import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.view.models.CampusComboBoxModel;
 import ensino.configuracoes.view.models.CursoComboBoxListModel;
-import ensino.configuracoes.view.models.CursoListModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import java.awt.FlowLayout;
@@ -90,10 +89,10 @@ public class TurmaFieldsPanel extends DefaultFieldsPanel {
         comboCampus.addItemListener((ItemEvent e) -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 Campus campus = (Campus) e.getItem();
-                CursoListModel cursoModel = (CursoListModel) comboCurso.getModel();
+                CursoComboBoxListModel cursoModel = (CursoComboBoxListModel) comboCurso.getModel();
                 cursoModel.setCampus(campus);
+                cursoModel.setSelectedItem(selectedCurso);
                 cursoModel.refresh();
-                comboCurso.setSelectedItem(selectedCurso);
             }
         });
         lblCampus.setLabelFor(comboCampus);

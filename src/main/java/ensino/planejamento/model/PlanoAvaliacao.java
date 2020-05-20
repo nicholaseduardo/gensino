@@ -1,12 +1,14 @@
 package ensino.planejamento.model;
 
 import ensino.configuracoes.model.Estudante;
+import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.util.BimestreConverter;
 import ensino.util.types.Bimestre;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -39,10 +41,18 @@ public class PlanoAvaliacao implements Serializable {
     private String nome;
 
     /**
-     * Atributo utilizado para identificar o bimestre no qual o estudante será
-     * avaliado
+     * Atributo utilizado para identificar qual a etapa de ensino será utilizada
+     * no processo de avaliação do estudante
      */
-    @Column(name = "bimestre", nullable = false, columnDefinition = "INTEGER")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumns(value = {
+        @JoinColumn(name = "nivelEnsino_id"),
+        @JoinColumn(name = "etapaEnsino_id")
+    })
+    private EtapaEnsino etapaEnsino;
+
+    @Deprecated
+    @Column(name = "bimestre", nullable = true)
     @Convert(converter = BimestreConverter.class)
     private Bimestre bimestre;
 
@@ -103,6 +113,7 @@ public class PlanoAvaliacao implements Serializable {
         this.peso = 0.0;
         this.valor = 0.0;
         this.deleted = false;
+        this.bimestre = Bimestre.PRIMEIRO;
     }
 
     public Boolean isDeleted() {
@@ -129,12 +140,12 @@ public class PlanoAvaliacao implements Serializable {
         this.nome = nome;
     }
 
-    public Bimestre getBimestre() {
-        return bimestre;
+    public EtapaEnsino getEtapaEnsino() {
+        return etapaEnsino;
     }
 
-    public void setBimestre(Bimestre bimestre) {
-        this.bimestre = bimestre;
+    public void setEtapaEnsino(EtapaEnsino etapaEnsino) {
+        this.etapaEnsino = etapaEnsino;
     }
 
     public Double getPeso() {
@@ -212,17 +223,36 @@ public class PlanoAvaliacao implements Serializable {
         }
     }
 
+    public Avaliacao getAvaliacaoDo(Estudante estudante) {
+        if (hasAvaliacoes()) {
+            Iterator<Avaliacao> it = avaliacoes.iterator();
+            while (it.hasNext()) {
+                Avaliacao o = it.next();
+                if (estudante.equals(o.getEstudante())) {
+                    return o;
+                }
+            }
+        }
+        /**
+         * Não existe avaliação para o estudante, portanto, deve ser criada
+         */
+        Avaliacao o = AvaliacaoFactory.getInstance()
+                .createObject(new AvaliacaoId(this, estudante), 0.0);
+        addAvaliacao(o);
+        return o;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 13 * hash + Objects.hashCode(this.id);
-        hash = 13 * hash + Objects.hashCode(this.nome);
-        hash = 13 * hash + Objects.hashCode(this.bimestre);
-        hash = 13 * hash + Objects.hashCode(this.peso);
-        hash = 13 * hash + Objects.hashCode(this.valor);
-        hash = 13 * hash + Objects.hashCode(this.data);
-        hash = 13 * hash + Objects.hashCode(this.instrumentoAvaliacao);
-        hash = 13 * hash + Objects.hashCode(this.objetivo);
+        int hash = 7;
+        hash = 37 * hash + Objects.hashCode(this.id);
+        hash = 37 * hash + Objects.hashCode(this.nome);
+        hash = 37 * hash + Objects.hashCode(this.etapaEnsino);
+        hash = 37 * hash + Objects.hashCode(this.peso);
+        hash = 37 * hash + Objects.hashCode(this.valor);
+        hash = 37 * hash + Objects.hashCode(this.data);
+        hash = 37 * hash + Objects.hashCode(this.instrumentoAvaliacao);
+        hash = 37 * hash + Objects.hashCode(this.objetivo);
         return hash;
     }
 
@@ -244,7 +274,7 @@ public class PlanoAvaliacao implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (this.bimestre != other.bimestre) {
+        if (!Objects.equals(this.etapaEnsino, other.etapaEnsino)) {
             return false;
         }
         if (!Objects.equals(this.peso, other.peso)) {

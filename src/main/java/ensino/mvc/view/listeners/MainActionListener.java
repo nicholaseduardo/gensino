@@ -25,6 +25,16 @@ public class MainActionListener implements ActionListener {
         this.desktop = desktop;
     }
 
+    private void addFrame(JInternalFrame frame) throws PropertyVetoException {
+        frame.setMaximizable(true);
+        frame.setIconifiable(true);
+        frame.setClosable(true);
+        frame.setSelected(true);
+        frame.setVisible(true);
+        frame.pack();
+        desktop.add(frame);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         // Alterar para recuperar o texto de um recurso
@@ -34,60 +44,28 @@ public class MainActionListener implements ActionListener {
             try {
                 switch (e.getActionCommand()) {
                     case "Configurações":
-                        JInternalFrame fConfiguracao = new ensino.configuracoes.view.frame.FrameConfiguracao();
-                        desktop.add(fConfiguracao);
-                        fConfiguracao.setVisible(true);
-                        fConfiguracao.setSelected(true);
-                        fConfiguracao.pack();
+                        addFrame(new ensino.configuracoes.view.frame.FrameConfiguracao());
                         break;
                     case "Campi":
-                        JInternalFrame fCampus = new ensino.configuracoes.view.frame.FrameCampus();
-                        desktop.add(fCampus);
-                        fCampus.setVisible(true);
-                        fCampus.setSelected(true);
-                        fCampus.pack();
+                        addFrame(new ensino.configuracoes.view.frame.FrameCampus());
                         break;
                     case "Cursos":
-                        JInternalFrame fCursos = new ensino.configuracoes.view.frame.FrameCursos();
-                        desktop.add(fCursos);
-                        fCursos.setVisible(true);
-                        fCursos.setSelected(true);
-                        fCursos.pack();
+                        addFrame(new ensino.configuracoes.view.frame.FrameCursos());
                         break;
                     case "Turma":
-                        JInternalFrame fTurma = new ensino.configuracoes.view.frame.FrameTurma();
-                        desktop.add(fTurma);
-                        fTurma.setVisible(true);
-                        fTurma.setSelected(true);
-                        fTurma.pack();
+                        addFrame(new ensino.configuracoes.view.frame.FrameTurma());
                         break;
                     case "UnidadeCurricular":
-                        JInternalFrame fUnidadeCurricular = new ensino.configuracoes.view.frame.FrameUnidadeCurricular();
-                        desktop.add(fUnidadeCurricular);
-                        fUnidadeCurricular.setVisible(true);
-                        fUnidadeCurricular.setSelected(true);
-                        fUnidadeCurricular.pack();
-                        break;  
+                        addFrame(new ensino.configuracoes.view.frame.FrameUnidadeCurricular());
+                        break;
                     case "Calendário":
-                        JInternalFrame fCalendario = new ensino.configuracoes.view.frame.FrameCalendario();
-                        desktop.add(fCalendario);
-                        fCalendario.pack();
-                        fCalendario.setVisible(true);
-                        fCalendario.setSelected(true);
+                        addFrame(new ensino.configuracoes.view.frame.FrameCalendario());
                         break;
                     case "Bibliografia":
-                        JInternalFrame fBibliografia = new ensino.configuracoes.view.frame.FrameBibliografia();
-                        desktop.add(fBibliografia);
-                        fBibliografia.setVisible(true);
-                        fBibliografia.setSelected(true);
-                        fBibliografia.pack();
+                        addFrame(new ensino.configuracoes.view.frame.FrameBibliografia());
                         break;
                     case "PlanoEnsino":
-                        JInternalFrame fPlanoEnsino = new ensino.planejamento.view.frame.FramePlanoDeEnsino();
-                        desktop.add(fPlanoEnsino);
-                        fPlanoEnsino.setVisible(true);
-                        fPlanoEnsino.setSelected(true);
-                        fPlanoEnsino.pack();
+                        addFrame(new ensino.planejamento.view.frame.FramePlanoDeEnsino());
                         break;
                 }
             } catch (PropertyVetoException ex) {

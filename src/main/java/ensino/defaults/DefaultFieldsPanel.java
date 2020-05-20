@@ -5,13 +5,12 @@
  */
 package ensino.defaults;
 
+import ensino.components.GenJPanel;
 import java.awt.Color;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -20,7 +19,7 @@ import javax.swing.border.TitledBorder;
  *
  * @author nicho
  */
-public abstract class DefaultFieldsPanel extends JPanel implements
+public abstract class DefaultFieldsPanel extends GenJPanel implements
         ComponentListener {
     
     public static final int INSERT_STATUS_PANEL = 0;
@@ -183,26 +182,5 @@ public abstract class DefaultFieldsPanel extends JPanel implements
         if (tree.getRowCount() != rowCount) {
             expandAllNodes(tree, rowCount, tree.getRowCount());
         }
-    }
-    
-    protected void showErrorMessage(Exception ex) {
-        JOptionPane.showMessageDialog(getParent(), 
-                            String.format("Operação cancelada!"
-                                    + "\nErro: %s [caused by: %s]", 
-                                    ex.getMessage(),
-                                    ex.getCause() != null ? ex.getCause().getMessage():""),
-                            "Erro", JOptionPane.ERROR_MESSAGE);
-        System.err.print(ex);
-        ex.printStackTrace();
-    }
-    
-    protected void showInformationMessage(String info) {
-        JOptionPane.showMessageDialog(getParent(), info,
-                "Informação", JOptionPane.INFORMATION_MESSAGE);
-    }
-    
-    protected void showWarningMessage(String msg) {
-        JOptionPane.showMessageDialog(getParent(), msg,
-                "Aviso", JOptionPane.WARNING_MESSAGE);
     }
 }

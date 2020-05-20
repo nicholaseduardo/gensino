@@ -10,6 +10,7 @@ import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
 import com.itextpdf.layout.font.FontProvider;
 import ensino.components.GenJButton;
+import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
@@ -23,7 +24,6 @@ import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.util.types.Bimestre;
 import ensino.util.types.MesesDeAno;
 import ensino.util.types.Periodo;
 import java.awt.BorderLayout;
@@ -58,8 +58,6 @@ import javax.swing.JScrollPane;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -157,7 +155,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
     private String loadHTMLStringFile() {
         InputStreamReader reader = null;
         try {
-            InputStream is = getClass().getResourceAsStream("/img/templates/report-plano-de-ensino.html");
+            InputStream is = getClass().getResourceAsStream("/templates/report-plano-de-ensino.html");
             reader = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(reader);
             StringBuilder sb = new StringBuilder();
@@ -193,7 +191,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
             }
         }
         // Considera-se que são quatro bimestres
-        int nAvaliacoesPorBimestre[] = {0, 0, 0, 0};
+        int nAvaliacoesPorEtapaEnsino[] = {0, 0, 0, 0};
         List<PlanoAvaliacao> listaAvaliacoes = plano.getPlanosAvaliacoes();
         listaAvaliacoes.sort(new Comparator<PlanoAvaliacao>() {
             @Override
@@ -201,17 +199,17 @@ public class HtmlPanel extends DefaultFieldsPanel {
                 return o1.getId().getSequencia() - o2.getId().getSequencia();
             }
         });
-        LinkedHashMap<Bimestre, String> mapLinhas = new LinkedHashMap<>();
+        LinkedHashMap<EtapaEnsino, String> mapLinhas = new LinkedHashMap<>();
         String sColunas = "";
         for (int i = 0; i < listaAvaliacoes.size(); i++) {
             PlanoAvaliacao pa = listaAvaliacoes.get(i);
             // registra o número de avaliações por bimestre
-            nAvaliacoesPorBimestre[pa.getBimestre().getValue()]++;
+            nAvaliacoesPorEtapaEnsino[pa.getEtapaEnsino().getId().getId()-1]++;
 
             String sAvaliacao = "";
-            if (mapLinhas.containsKey(pa.getBimestre())) {
+            if (mapLinhas.containsKey(pa.getEtapaEnsino())) {
                 sColunas = "<tr><td>%s</td><td>%s</td><td>%s</td><td>%.2f</td><td>%.2f</td></tr>";
-                sAvaliacao += mapLinhas.get(pa.getBimestre());
+                sAvaliacao += mapLinhas.get(pa.getEtapaEnsino());
                 sAvaliacao += String.format(sColunas, pa.getNome(),
                         pa.getInstrumentoAvaliacao().getNome(),
                         DateHelper.dateToString(pa.getData(), "dd/MM/yyyy"),
@@ -219,7 +217,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
             } else {
                 sColunas = "<tr><td rowspan='_nlinhas_'>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%.2f</td><td>%.2f</td></tr>";
                 sAvaliacao += String.format(sColunas,
-                        pa.getBimestre().toString(),
+                        pa.getEtapaEnsino().getNome(),
                         pa.getNome(),
                         pa.getInstrumentoAvaliacao().getNome(),
                         DateHelper.dateToString(pa.getData(), "dd/MM/yyyy"),
@@ -227,13 +225,13 @@ public class HtmlPanel extends DefaultFieldsPanel {
             }
 
             // registra o mapa das linhas de avaliações
-            mapLinhas.put(pa.getBimestre(), sAvaliacao);
+            mapLinhas.put(pa.getEtapaEnsino(), sAvaliacao);
         }
         StringBuilder sData = new StringBuilder();
-        for (Map.Entry<Bimestre, String> entry : mapLinhas.entrySet()) {
-            Bimestre key = entry.getKey();
+        for (Map.Entry<EtapaEnsino, String> entry : mapLinhas.entrySet()) {
+            EtapaEnsino key = entry.getKey();
             String value = entry.getValue();
-            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorBimestre[key.getValue()])));
+            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorEtapaEnsino[key.getId().getId()-1])));
         }
         return sData.toString();
     }

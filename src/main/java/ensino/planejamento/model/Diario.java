@@ -13,6 +13,7 @@ import ensino.util.types.TipoAula;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -34,17 +35,17 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "diario")
 public class Diario implements Serializable {
-    
+
     @EmbeddedId
     private DiarioId id;
-    
+
     /**
      * Atributo utilizado para registrar a data da aula.
      */
     @Column(name = "data_diario", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date data;
-    
+
     /**
      * Atributo utilizado para registrar o horário de início da aula.
      */
@@ -57,14 +58,14 @@ public class Diario implements Serializable {
     @Lob
     @Column(name = "conteudo", columnDefinition = "CLOB")
     private String conteudo;
-    
+
     /**
      * Atributo utilizado para registrar alguma observação referente a aula.
      */
     @Lob
     @Column(name = "observacoes", columnDefinition = "CLOB")
     private String observacoes;
-    
+
     /**
      * Atributo utilizado para registrar o tipo de aula. O tipo de aula pode
      * ser:<br/>
@@ -77,12 +78,12 @@ public class Diario implements Serializable {
     @Column(name = "tipoAula", nullable = false)
     @Convert(converter = TipoAulaConverter.class)
     private TipoAula tipoAula;
-    
+
     /**
      * Atributo utilizado para registrar os estudantes que participaram da aula
      * no dia e horário definido.
      */
-    @OneToMany(mappedBy = "id.diario", 
+    @OneToMany(mappedBy = "id.diario",
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH},
             fetch = FetchType.LAZY, orphanRemoval = true)
     private List<DiarioFrequencia> frequencias;
@@ -103,7 +104,7 @@ public class Diario implements Serializable {
     public PlanoDeEnsino getPlanoDeEnsino() {
         return id.getPlanoDeEnsino();
     }
-    
+
     public Date getData() {
         return data;
     }
@@ -219,12 +220,24 @@ public class Diario implements Serializable {
         int seqId = 1;
         for (int i = 0; i < estudantes.size(); i++) {
             Estudante estudante = estudantes.get(i);
-            
+
             DiarioFrequencia df = DiarioFrequenciaFactory.getInstance()
                     .createObject(new DiarioFrequenciaId(seqId++, this, estudante),
                             Presenca.PONTO);
             addFrequencia(df);
         }
+    }
+
+    public Boolean estudanteTemPresenca(Estudante estudante) {
+        Iterator<DiarioFrequencia> it = frequencias.iterator();
+        while(it.hasNext()) {
+            DiarioFrequencia df = it.next();
+            if (estudante.equals(df.getEstudante()) &&
+                    Presenca.PRESENTE.equals(df.getPresenca())) {
+                return  true;
+            }
+        }
+        return false;
     }
 
 }

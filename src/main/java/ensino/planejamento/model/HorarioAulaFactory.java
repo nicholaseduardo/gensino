@@ -6,8 +6,8 @@
 package ensino.planejamento.model;
 
 import ensino.patterns.factory.BeanFactory;
+import ensino.util.types.DiaDaSemana;
 import ensino.util.types.Turno;
-import java.time.DayOfWeek;
 import java.util.HashMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,7 +41,7 @@ public class HorarioAulaFactory implements BeanFactory<HorarioAula> {
         } else {
             o.getId().setId((Integer) args[i++]);
         }
-        o.setDiaDaSemana((DayOfWeek) args[i++]);
+        o.setDiaDaSemana((DiaDaSemana) args[i++]);
         o.setHorario((String) args[i++]);
         o.setTurno((Turno) args[i++]);
 
@@ -52,7 +52,7 @@ public class HorarioAulaFactory implements BeanFactory<HorarioAula> {
     public HorarioAula getObject(Element e) {
         return createObject(
                 Integer.parseInt(e.getAttribute("id")),
-                DayOfWeek.of(Integer.parseInt(e.getAttribute("diaDaSemana"))),
+                DiaDaSemana.of(Integer.parseInt(e.getAttribute("diaDaSemana"))),
                 e.getAttribute("horario"),
                 Turno.of(Integer.parseInt(e.getAttribute("turno")))
         );

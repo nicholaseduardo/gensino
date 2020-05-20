@@ -1,5 +1,6 @@
 package ensino.configuracoes.model;
 
+import ensino.util.types.MesesDeAno;
 import ensino.util.types.Periodo;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,6 +52,10 @@ public class PeriodoLetivo implements Serializable {
 
     public void setId(PeriodoLetivoId id) {
         this.id = id;
+    }
+    
+    public Calendario getCalendario() {
+        return id.getCalendario();
     }
 
     public Boolean getDeleted() {
@@ -104,7 +109,7 @@ public class PeriodoLetivo implements Serializable {
      * @param semana    Semana do ano a ser verificada
      * @return 
      */
-    private List<Atividade> getAtividadesPorSemana(int semana) {
+    public List<Atividade> getAtividadesPorSemana(int semana) {
         List<Atividade> lista = new ArrayList();
         Calendar cal = Calendar.getInstance();
         
@@ -119,6 +124,25 @@ public class PeriodoLetivo implements Serializable {
             }
         }
         return lista;
+    }
+
+    public List<SemanaLetiva> getSemanasDoMes(MesesDeAno mes) {
+        List<SemanaLetiva> listaSemanas = new ArrayList();
+        Calendar cal = Calendar.getInstance();
+
+        for (int i = 0; i < semanasLetivas.size(); i++) {
+            SemanaLetiva semana = semanasLetivas.get(i);
+            Periodo periodo = semana.getPeriodo();
+            cal.setTime(periodo.getDe());
+            MesesDeAno semanaMes = MesesDeAno.of(cal.get(Calendar.MONTH));
+            if (mes.equals(semanaMes)) {
+                listaSemanas.add(semana);
+            } else if (mes.compareTo(mes) > 0) {
+                break;
+            }
+        }
+
+        return listaSemanas;
     }
     
     public void delete() {

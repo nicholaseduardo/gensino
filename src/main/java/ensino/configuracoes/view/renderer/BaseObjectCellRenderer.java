@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.view.renderer;
 
+import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
 import ensino.defaults.DefaultTableModel;
 import ensino.patterns.BaseObject;
@@ -19,7 +20,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  *
  * @author nicho
  */
-public class MetodoCellRenderer extends GenCellRenderer {
+public class BaseObjectCellRenderer extends GenCellRenderer {
     
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, 

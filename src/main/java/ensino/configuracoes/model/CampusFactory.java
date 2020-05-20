@@ -6,6 +6,7 @@
 package ensino.configuracoes.model;
 
 import ensino.patterns.factory.BeanFactory;
+import ensino.util.types.StatusCampus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +35,12 @@ public class CampusFactory implements BeanFactory<Campus> {
 
     @Override
     public Campus createObject(Object... args) {
+        int i = 0;
         Campus campus = new Campus();
-        campus.setId((Integer) args[0]);
-        campus.setNome((String) args[1]);
+        campus.setId((Integer) args[i++]);
+        campus.setNome((String) args[i++]);
+        if (args.length > 2)
+            campus.setStatus((StatusCampus)args[i]);
         return campus;
     }
 
@@ -50,7 +54,8 @@ public class CampusFactory implements BeanFactory<Campus> {
 
     @Override
     public Campus getObject(HashMap<String, Object> p) {
-        Campus campus = createObject(p.get("id"), p.get("nome"));
+        Campus campus = createObject(p.get("id"), p.get("nome"),
+                p.get("status"));
         List<Curso> cursos = (List<Curso>) p.get("cursos");
         if (cursos == null) {
             cursos = new ArrayList();
@@ -69,6 +74,7 @@ public class CampusFactory implements BeanFactory<Campus> {
         Element e = doc.createElement("campus");
         e.setAttribute("id", o.getId().toString());
         e.setAttribute("nome", o.getNome());
+        e.setAttribute("status", o.getStatus() != null ? o.getStatus().toString() : "");
         
         return e;
     }

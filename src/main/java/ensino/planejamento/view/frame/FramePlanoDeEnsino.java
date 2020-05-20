@@ -6,7 +6,6 @@
 package ensino.planejamento.view.frame;
 
 import ensino.planejamento.view.panels.ConfigPlanoDeEnsinoPanel;
-import ensino.planejamento.view.panels.PlanoDeEnsinoPanel;
 import javax.swing.JInternalFrame;
 
 /**
@@ -17,7 +16,6 @@ public class FramePlanoDeEnsino extends JInternalFrame {
     
     public FramePlanoDeEnsino() {
         super("Planos de Ensino", true, true, true, true);
-//        PlanoDeEnsinoPanel panel = new PlanoDeEnsinoPanel(this);
         ConfigPlanoDeEnsinoPanel panel = new ConfigPlanoDeEnsinoPanel();
         getContentPane().add(panel);
         pack();

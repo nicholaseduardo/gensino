@@ -7,12 +7,10 @@ package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.patterns.factory.DaoFactory;
 import ensino.planejamento.dao.DiarioDaoXML;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.DiarioFactory;
-import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.text.ParseException;
 import java.util.Date;

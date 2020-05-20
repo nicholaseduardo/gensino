@@ -23,8 +23,7 @@ public class CalendarioDaoSQL extends AbstractDaoSQL<Calendario> {
     }
 
     private boolean exists(Calendario o) {
-        Calendario c =  findById(o.getId().getAno(),
-                o.getId().getCampus());
+        Calendario c =  findById(o.getId());
         return c != null;
     }
 
@@ -67,7 +66,7 @@ public class CalendarioDaoSQL extends AbstractDaoSQL<Calendario> {
 
     @Override
     public Calendario findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return entityManager.find(Calendario.class, id);
     }
 
     @Override

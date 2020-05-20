@@ -28,6 +28,9 @@ public class ReferenciaBibliograficaDaoSQL extends AbstractDaoSQL<ReferenciaBibl
     public void save(ReferenciaBibliografica o) {
         if (o.getId().getSequencia()== null) {
             o.getId().setSequencia(nextVal(o));
+        }
+        
+        if (findById(o.getId()) == null) {
             entityManager.persist(o);
         } else {
             entityManager.merge(o);
@@ -63,7 +66,7 @@ public class ReferenciaBibliograficaDaoSQL extends AbstractDaoSQL<ReferenciaBibl
 
     @Override
     public ReferenciaBibliografica findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return entityManager.find(ReferenciaBibliografica.class, id);
     }
 
     @Override

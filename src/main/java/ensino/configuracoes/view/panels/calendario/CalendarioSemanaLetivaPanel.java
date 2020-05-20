@@ -7,17 +7,13 @@ package ensino.configuracoes.view.panels.calendario;
 
 import ensino.components.GenJLabel;
 import ensino.components.GenJTree;
-import ensino.configuracoes.controller.SemanaLetivaController;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.view.models.PeriodoLetivoTreeModel;
 import ensino.configuracoes.view.models.SemanaLetivaTableModel;
-import ensino.configuracoes.view.renderer.PeriodoLetivoCellRenderer;
 import ensino.configuracoes.view.renderer.SemanaLetivaCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
-import ensino.patterns.factory.DaoFactory;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -26,8 +22,6 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -55,7 +49,7 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
     private GenJLabel lblPeriodoSelecionado;
 
     public CalendarioSemanaLetivaPanel() {
-        super();
+        super("Controle de Semanas Letivas");
         initComponents();
     }
 

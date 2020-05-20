@@ -2,6 +2,8 @@ package ensino.configuracoes.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -11,6 +13,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -24,6 +27,7 @@ public class Calendario implements Serializable {
     private String descricao;
 
     @OneToMany(mappedBy = "id.calendario", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OrderBy(value = "periodo.de")
     private List<Atividade> atividades;
 
     @OneToMany(mappedBy = "id.calendario", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -75,6 +79,24 @@ public class Calendario implements Serializable {
 
     public void setAtividades(List<Atividade> atividades) {
         this.atividades = atividades;
+    }
+
+    private Atividade getAtividadePorDia(Date dia) {
+        Calendar cal = Calendar.getInstance();
+        for (int i = 0; i < atividades.size(); i++) {
+            Atividade o = atividades.get(i);
+            
+            if (o.getPeriodo().contemData(dia))
+                return o;
+                
+        }
+        return null;
+    }
+
+    public Boolean isDiaLetivo(Date dia) {
+        Atividade o = this.getAtividadePorDia(dia);
+        
+        return (o == null || o.getLegenda().isLetivo());
     }
 
     public void addPeriodoLetivo(PeriodoLetivo periodoLetivo) {

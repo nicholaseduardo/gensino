@@ -14,16 +14,19 @@ import java.util.List;
  *
  * @author nicho
  */
-public class UnidadeCurricularTableModel extends DefaultTableModel {
+public class UnidadeCurricularTableModel extends DefaultTableModel<UnidadeCurricular> {
 
     public UnidadeCurricularTableModel() {
         this(new ArrayList<UnidadeCurricular>());
     }
     
+    public UnidadeCurricularTableModel(List<UnidadeCurricular> lista,
+            String[] columnNames) {
+        super(lista, columnNames);
+    }
+    
     public UnidadeCurricularTableModel(List<UnidadeCurricular> lista) {
-        super(lista, new String[] {
-            "Nome da U.C."
-        });
+        this(lista, new String[] {"Nome da U.C."});
     }
 
     @Override
@@ -32,6 +35,14 @@ public class UnidadeCurricularTableModel extends DefaultTableModel {
         switch(columnIndex) {
             case 0: return unidade.getNome();
             default: return null;
+        }
+    }
+    
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        switch(columnIndex) {
+            case 0: return UnidadeCurricular.class;
+            default: return Object.class;
         }
     }
     

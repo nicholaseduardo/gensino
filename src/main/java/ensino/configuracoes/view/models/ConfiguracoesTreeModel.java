@@ -25,6 +25,7 @@ public class ConfiguracoesTreeModel implements TreeModel {
     private DefaultMutableTreeNode tecnicaNode = new DefaultMutableTreeNode("Técnica");
     private DefaultMutableTreeNode instrumentoNode = new DefaultMutableTreeNode("Instrumento de Avaliação");
     private DefaultMutableTreeNode docenteNode = new DefaultMutableTreeNode("Docente");
+    private DefaultMutableTreeNode nivelEnsinoNode = new DefaultMutableTreeNode("Nível de Ensino");
 
     public ConfiguracoesTreeModel() {
         modeloInterno = new DefaultTreeModel(noRaiz);
@@ -36,7 +37,8 @@ public class ConfiguracoesTreeModel implements TreeModel {
         modeloInterno.insertNodeInto(docenteNode, geraisNode, geralIndex++);
         // legenda
         modeloInterno.insertNodeInto(legendaNode, geraisNode, geralIndex++);
-        // cadastro de feriados
+        // niveis de ensino
+        modeloInterno.insertNodeInto(nivelEnsinoNode, geraisNode, geralIndex++);
 
         // Metodologia
         modeloInterno.insertNodeInto(metodologiaNode, noRaiz, rootIndex++);

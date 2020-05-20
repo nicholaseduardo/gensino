@@ -10,7 +10,6 @@ import ensino.configuracoes.model.Estudante;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.DateHelper;
 import ensino.patterns.factory.ControllerFactory;
-import ensino.planejamento.controller.DiarioController;
 import ensino.planejamento.controller.DiarioFrequenciaController;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.DiarioFrequencia;
@@ -23,10 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -46,7 +42,6 @@ import javax.swing.table.TableColumnModel;
 public class PlanoDeEnsinoFrequenciaPanel extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
-    private DiarioController col;
 
     private JTable frequenciaTable;
     private FrequenciaTableModel frequenciaTableModel;
@@ -62,12 +57,7 @@ public class PlanoDeEnsinoFrequenciaPanel extends DefaultFieldsPanel {
     private void initComponents() {
         setName("panel.frequencia");
         setLayout(new BorderLayout(5, 5));
-        try {
-            col = ControllerFactory.createDiarioController();
-        } catch (Exception ex) {
-            Logger.getLogger(PlanoDeEnsinoFrequenciaPanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        
         add(createCheckPane(), BorderLayout.PAGE_START);
         add(createTablePane(), BorderLayout.CENTER);
     }
@@ -235,18 +225,7 @@ public class PlanoDeEnsinoFrequenciaPanel extends DefaultFieldsPanel {
     public void setFieldValues(Object object) {
         if (object instanceof PlanoDeEnsino) {
             planoDeEnsino = (PlanoDeEnsino) object;
-            if (planoDeEnsino.getDiarios().isEmpty()) {
-                try {
-                    planoDeEnsino.criarDiarios();
-                    Iterator<Diario> it = planoDeEnsino.getDiarios().iterator();
-                    while (it.hasNext()) {
-                        Diario d = it.next();
-                        col.salvar(d);
-                    }
-                } catch (Exception ex) {
-                    showErrorMessage(ex);
-                }
-            }
+            
             createFrequenciasTable();
             refreshFrequencias();
         }

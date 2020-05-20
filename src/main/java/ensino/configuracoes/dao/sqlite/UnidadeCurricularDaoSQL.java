@@ -26,10 +26,18 @@ public class UnidadeCurricularDaoSQL extends AbstractDaoSQL<UnidadeCurricular> {
     public void save(UnidadeCurricular o) {
         if (o.getId().getId() == null) {
             o.getId().setId(nextVal(o));
+        }
+        
+        if (findById(o.getId()) == null) {
             entityManager.persist(o);
         } else {
             entityManager.merge(o);
         }
+    }
+
+    @Override
+    public void delete(UnidadeCurricular o) {
+        entityManager.remove(entityManager.getReference(UnidadeCurricular.class, o.getId()));
     }
 
     @Override
@@ -61,7 +69,7 @@ public class UnidadeCurricularDaoSQL extends AbstractDaoSQL<UnidadeCurricular> {
 
     @Override
     public UnidadeCurricular findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return entityManager.find(UnidadeCurricular.class, id);
     }
 
     @Override

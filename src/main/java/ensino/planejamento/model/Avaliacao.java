@@ -51,6 +51,10 @@ public class Avaliacao implements Serializable {
     public Double getNota() {
         return nota;
     }
+    
+    public Double getNotaCalculada() {
+        return nota * id.getPlanoAvaliacao().getPeso();
+    }
 
     public void setNota(Double nota) {
         this.nota = nota;

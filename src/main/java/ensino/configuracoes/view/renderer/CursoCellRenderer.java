@@ -5,18 +5,14 @@
  */
 package ensino.configuracoes.view.renderer;
 
+import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
-import ensino.configuracoes.controller.TurmaController;
-import ensino.configuracoes.controller.UnidadeCurricularController;
 import ensino.configuracoes.view.models.CursoTableModel;
 import ensino.configuracoes.model.Curso;
-import ensino.patterns.factory.ControllerFactory;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -56,6 +52,10 @@ public class CursoCellRenderer extends GenCellRenderer {
         GenJLabel lblUnd = createLabel(String.format("Disciplinas: %d", o.getUnidadesCurriculares().size()), JLabel.RIGHT);
         lblUnd.resetFontSize(12);
         lblUnd.setIcon(new ImageIcon(getClass().getResource("/img/school-icon-15px.png")));
+        
+        GenJLabel lblNivel = createLabel(String.format("[Nível de Ensino: %s]", 
+                o.getNivelEnsino() != null ? o.getNivelEnsino().getNome() : ""), JLabel.RIGHT);
+        lblNivel.resetFontSize(12);
 
         JPanel panelIcons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panelIcons.add(lblTurma);
@@ -64,7 +64,7 @@ public class CursoCellRenderer extends GenCellRenderer {
 
         JPanel panel = new JPanel(new GridLayout(2, 2, 10, 0));
         panel.add(lblTitle);
-        panel.add(new JLabel(""));
+        panel.add(lblNivel);
         panel.add(lblCampus);
         panel.add(panelIcons);
         panel.setBackground(getBack());

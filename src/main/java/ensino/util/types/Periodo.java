@@ -32,7 +32,7 @@ public class Periodo implements Serializable {
     @Column(name = "periodoDe", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date de;
-    
+
     @Column(name = "periodoAte", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date ate;
@@ -88,7 +88,8 @@ public class Periodo implements Serializable {
     }
 
     /**
-     * Retorna o número de dias existente entre as datas
+     * Retorna o número de dias existente entre as datas.
+     * Considera a data inicial mas não considera a data final.
      *
      * @return
      */
@@ -102,6 +103,25 @@ public class Periodo implements Serializable {
                 .toLocalDate();
         Period p = Period.between(lde, late);
         return p.getDays();
+    }
+
+    public Boolean contemData(Date date) {
+        if (date.equals(de) || date.equals(ate)) {
+            return Boolean.TRUE;
+        }
+        
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(de);
+        if (!isMesmaData()) {
+            do {
+                cal.add(Calendar.DATE, 1);
+                if (date.equals(cal.getTime())) {
+                    return Boolean.TRUE;
+                }
+            } while (cal.getTime().compareTo(ate) < 0);
+        }
+
+        return Boolean.FALSE;
     }
 
     /**
@@ -120,11 +140,12 @@ public class Periodo implements Serializable {
         // Existirá ao menos 1 semana
         return ChronoUnit.WEEKS.between(lde, late) + 1;
     }
-    
+
     /**
-     * Retorna uma instancia de enunm do <code>MesesDeAno</code> 
-     * referente a data De.
-     * @return 
+     * Retorna uma instancia de enunm do <code>MesesDeAno</code> referente a
+     * data De.
+     *
+     * @return
      */
     public MesesDeAno getMesDoAno() {
         Calendar cal = Calendar.getInstance();

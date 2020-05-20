@@ -23,8 +23,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import ensino.components.GenJCheckBox;
 import ensino.components.GenJTextField;
-import ensino.configuracoes.view.frame.FrameConfiguracao;
 import ensino.patterns.factory.ControllerFactory;
+import java.awt.Component;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,7 +36,7 @@ import javax.swing.SpringLayout;
  */
 public class LegendaPanel extends DefaultFormPanel {
 
-    public LegendaPanel(FrameConfiguracao iframe) {
+    public LegendaPanel(Component iframe) {
         super(iframe);
         try {
             super.setName("panel.legenda");

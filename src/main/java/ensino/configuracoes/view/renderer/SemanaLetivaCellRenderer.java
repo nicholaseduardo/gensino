@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.view.renderer;
 
+import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
 import ensino.configuracoes.view.models.SemanaLetivaTableModel;
 import ensino.configuracoes.model.SemanaLetiva;
@@ -39,16 +40,17 @@ public class SemanaLetivaCellRenderer extends GenCellRenderer {
         if (semana.isDeleted()) {
             markAsDeleted();
         }
-        GenJLabel lblTitle = createLabel(String.format("[%d] %s", 
+        GenJLabel lblTitle = createLabel(String.format("[%d] %s de %s", 
                 semana.getId().getId(),
-                semana.getDescricao()));
-        
-        GenJLabel lblSemana = createLabel(String.format("[Semana: %s]", 
+                semana.getDescricao(),
                 semana.getPeriodo().toString()));
+        
+        GenJLabel lblSemana = createLabel(String.format("[Período Letivo: %s]", 
+                semana.getId().getPeriodoLetivo().getDescricao()));
         lblSemana.resetFontSize(12);
         lblSemana.setIcon(new ImageIcon(getClass().getResource("/img/calendar-image-png-15px.png")));
         
-        JPanel panel = new JPanel(new GridLayout(2, 1, 10, 0));
+        JPanel panel = new JPanel(new GridLayout(2, 1, 5, 0));
         
         panel.add(lblTitle);
         panel.add(lblSemana);

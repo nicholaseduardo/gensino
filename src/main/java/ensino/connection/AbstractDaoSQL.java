@@ -8,6 +8,7 @@ package ensino.connection;
 import ensino.patterns.DaoPattern;
 import ensino.util.ConfigProperties;
 import java.sql.SQLException;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -23,11 +24,11 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
     protected static final EntityManagerFactory factory;
     protected EntityManager entityManager;
     protected EntityTransaction transaction;
-    
+
     static {
         factory = Persistence.createEntityManagerFactory(ConfigProperties.get("gensino.db.context"));
     }
-    
+
     public AbstractDaoSQL() {
         entityManager = factory.createEntityManager();
         transaction = entityManager.getTransaction();
@@ -39,10 +40,10 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
     }
 
     @Override
-    public void delete(T o){
+    public void delete(T o) {
         entityManager.remove(o);
     }
-    
+
     @Override
     public boolean isTranscationActive() {
         return transaction != null && transaction.isActive();

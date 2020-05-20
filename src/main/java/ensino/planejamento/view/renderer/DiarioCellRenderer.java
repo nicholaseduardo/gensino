@@ -5,7 +5,7 @@
  */
 package ensino.planejamento.view.renderer;
 
-import ensino.configuracoes.view.renderer.*;
+import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextArea;
 import ensino.helpers.DateHelper;
@@ -21,6 +21,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -31,7 +32,7 @@ public class DiarioCellRenderer extends GenCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int col) {
-        
+
         if (isSelected) {
             setColors(new Color(table.getSelectionForeground().getRGB()),
                     new Color(table.getSelectionBackground().getRGB()));
@@ -56,25 +57,24 @@ public class DiarioCellRenderer extends GenCellRenderer {
                 String.format("Dia: %s das %s às %s",
                         DateHelper.dateToString(diario.getData(), "dd/MM/yyyy"),
                         diario.getHorario(), toHorario));
-        
+
         GenJLabel lblTipo = createLabel(String.format("[Tipo: %s]",
                 diario.getTipoAula().toString()));
         lblTipo.resetFontSize(12);
 
-//        GenJLabel lblConteudo = createLabel(diario.getConteudo());;
-//        lblConteudo.resetFontSize(12);
-
-        Border titleBorderConteudo = BorderFactory.createTitledBorder("Conteúdo programático");
+        Border titleBorderConteudo = BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Conteúdo programático",
+                TitledBorder.LEFT, TitledBorder.CENTER);
         GenJTextArea txtConteudo = new GenJTextArea();
-//        txtConteudo.setRows(3);
         txtConteudo.setText(diario.getConteudo());
         txtConteudo.setBorder(titleBorderConteudo);
         txtConteudo.setBackground(getBack());
         txtConteudo.setForeground(getFore());
-        
-        Border titleBorderObservacao = BorderFactory.createTitledBorder("Observação");
+
+        Border titleBorderObservacao = BorderFactory.createTitledBorder(
+                BorderFactory.createEmptyBorder(), "Observação",
+                TitledBorder.LEFT, TitledBorder.CENTER);
         GenJTextArea txtObservacao = new GenJTextArea();
-//        txtObservacao.setRows(2);
         txtObservacao.setBorder(titleBorderObservacao);
         txtObservacao.setText(diario.getObservacoes());
         txtObservacao.setBackground(getBack());
@@ -84,21 +84,17 @@ public class DiarioCellRenderer extends GenCellRenderer {
         panel.add(createLayoutPanel(lblTitle, FlowLayout.LEFT));
         panel.add(createLayoutPanel(lblTipo, FlowLayout.RIGHT));
         panel.setBackground(getBack());
-        
+
         JPanel panelContent = new JPanel(new BorderLayout());
         panelContent.add(txtConteudo, BorderLayout.CENTER);
         panelContent.add(txtObservacao, BorderLayout.PAGE_END);
         panelContent.add(panel, BorderLayout.PAGE_START);
-        
-//        panel.add(createLayoutPanel(lblConteudo, FlowLayout.LEFT));
-//        panel.add(createLayoutPanel(createLabel(" "), FlowLayout.RIGHT));
-        
 
         panelContent.setBackground(getBack());
 
         table.setRowHeight(panelContent.getPreferredSize().height + 10);;
         panelContent.setOpaque(true);
-        
+
         return panelContent;
     }
 

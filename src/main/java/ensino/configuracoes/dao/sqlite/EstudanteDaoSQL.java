@@ -26,6 +26,9 @@ public class EstudanteDaoSQL extends AbstractDaoSQL<Estudante> {
     public void save(Estudante o) {
         if (o.getId().getId() == null) {
             o.getId().setId(nextVal(o));
+        }
+        
+        if (findById(o.getId()) == null) {
             entityManager.persist(o);
         } else {
             entityManager.merge(o);
@@ -52,8 +55,9 @@ public class EstudanteDaoSQL extends AbstractDaoSQL<Estudante> {
         }
 
         // order
-        sql += " ORDER BY t.id.curso.id.campus.nome, "
-                + "t.id.curso.nome, t.id.id ";
+        sql += " ORDER BY t.id.turma.id.curso.nome,"
+                + "t.id.turma.id.curso.id.campus.nome, "
+                + "t.id.id ";
 
         TypedQuery query = entityManager.createQuery(sql, Estudante.class);
         return query.getResultList();
@@ -61,7 +65,7 @@ public class EstudanteDaoSQL extends AbstractDaoSQL<Estudante> {
 
     @Override
     public Estudante findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return entityManager.find(Estudante.class, id);
     }
 
     @Override

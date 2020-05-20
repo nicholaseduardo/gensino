@@ -72,7 +72,7 @@ public abstract class GenImportDialog extends JDialog {
      * usuário.<br/>Neste caso, esse campo armazenará, para cada linha da lista,
      * o nome do campo como chave e o dado como um objeto do tipo texto.
      */
-    private List<HashMap<String, String>> data;
+    private List<HashMap<String, Object>> data;
     /**
      * Atributo utilizado para identificar o botão responsável por realizar a
      * ação de buscar um arquivo.
@@ -219,7 +219,7 @@ public abstract class GenImportDialog extends JDialog {
      *
      * @return
      */
-    public List<HashMap<String, String>> getData() {
+    public List<HashMap<String, Object>> getData() {
         return data;
     }
 
@@ -292,7 +292,7 @@ public abstract class GenImportDialog extends JDialog {
                     // Recupera os dados por linha de acordo com o separador
                     String aLine[] = line.split(sep);
                     // mapeia os dados e os armazena na lista
-                    HashMap<String, String> map = new HashMap();
+                    HashMap<String, Object> map = new HashMap();
                     for (int i = 0; i < fields.length; i++) {
                         map.put(fields[i], (i < aLine.length ? aLine[i] : ""));
                     }

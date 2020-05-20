@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -32,7 +33,8 @@ public class Detalhamento implements Serializable {
     @Column(name = "conteudo", length = 500)
     private String conteudo;
     
-    @Column(name = "observacao", length = 500)
+    @Lob
+    @Column(name = "observacao", columnDefinition = "CLOB")
     private String observacao;
     
     @ManyToOne(fetch = FetchType.LAZY)

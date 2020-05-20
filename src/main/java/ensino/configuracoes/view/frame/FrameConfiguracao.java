@@ -12,8 +12,12 @@ import ensino.configuracoes.view.panels.InstrumentoAvaliacaoPanel;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.view.models.ConfiguracoesTreeModel;
 import ensino.configuracoes.view.panels.DocentePanel;
+import ensino.configuracoes.view.panels.nivelEnsino.NivelEnsinoPanel;
 import ensino.defaults.DefaultFormPanel;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.FlowLayout;
+import java.util.concurrent.Flow;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
@@ -28,6 +32,11 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public class FrameConfiguracao extends javax.swing.JInternalFrame {
 
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JScrollPane scrollTree;
+    private javax.swing.JTree treeConfiguracoes;
+    private javax.swing.JPanel treePanel;
+
     private JPanel configuracaoCardPanel;
     // painel de legenda
     private DefaultFormPanel legendaPanel;
@@ -39,6 +48,8 @@ public class FrameConfiguracao extends javax.swing.JInternalFrame {
     private DefaultFormPanel instrumentoPanel;
     // painel dos docentes
     private DefaultFormPanel docentePanel;
+    // painel dos Niveis de Ensino
+    private DefaultFormPanel nivelEnsinoPanel;
 
     /**
      * Creates new form frameConfiguracao
@@ -46,6 +57,7 @@ public class FrameConfiguracao extends javax.swing.JInternalFrame {
     public FrameConfiguracao() {
         super("Configurações", true, true, true, true);
         initComponents();
+        initialization();
 
         configuracaoCardPanel = new JPanel(new CardLayout());
         mainPanel.add(configuracaoCardPanel);
@@ -74,10 +86,40 @@ public class FrameConfiguracao extends javax.swing.JInternalFrame {
         docentePanel = new DocentePanel(this);
         configuracaoCardPanel.add(docentePanel, docentePanel.getName());
 
+        // Controle da ficha do cadastro/manutenção do docente
+        nivelEnsinoPanel = new NivelEnsinoPanel(this);
+        configuracaoCardPanel.add(nivelEnsinoPanel, nivelEnsinoPanel.getName());
+
         // Organiza os dados na jtree
         estruturarArvoreDeConfiguracoes();
         // expande o JTree
         expandAllNodes(treeConfiguracoes, 0, treeConfiguracoes.getRowCount());
+    }
+
+    private void initialization() {
+        getContentPane().setLayout(new BorderLayout(5, 5));
+        
+        mainPanel = new javax.swing.JPanel();
+        treePanel = new javax.swing.JPanel();
+        scrollTree = new javax.swing.JScrollPane();
+        treeConfiguracoes = new javax.swing.JTree();
+
+        setTitle("Configurações");
+
+        mainPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
+
+        treeConfiguracoes.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        treeConfiguracoes.setModel(new ConfiguracoesTreeModel());
+        treeConfiguracoes.setMaximumSize(new java.awt.Dimension(120, 64));
+        scrollTree.setViewportView(treeConfiguracoes);
+
+        treePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        treePanel.add(scrollTree);
+
+        getContentPane().add(treePanel, java.awt.BorderLayout.LINE_START);
+
+        pack();
     }
 
     private void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
@@ -106,57 +148,14 @@ public class FrameConfiguracao extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new javax.swing.JPanel();
-        treePanel = new javax.swing.JPanel();
-        scrollTree = new javax.swing.JScrollPane();
-        treeConfiguracoes = new javax.swing.JTree();
-
         setTitle("Configurações");
-
-        treeConfiguracoes.setBorder(javax.swing.BorderFactory.createCompoundBorder());
-        treeConfiguracoes.setModel(new ConfiguracoesTreeModel());
-        treeConfiguracoes.setMaximumSize(new java.awt.Dimension(120, 64));
-        scrollTree.setViewportView(treeConfiguracoes);
-
-        javax.swing.GroupLayout treePanelLayout = new javax.swing.GroupLayout(treePanel);
-        treePanel.setLayout(treePanelLayout);
-        treePanelLayout.setHorizontalGroup(
-            treePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(treePanelLayout.createSequentialGroup()
-                .addComponent(scrollTree, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 4, Short.MAX_VALUE))
-        );
-        treePanelLayout.setVerticalGroup(
-            treePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollTree, javax.swing.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(treePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(treePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JScrollPane scrollTree;
-    private javax.swing.JTree treeConfiguracoes;
-    private javax.swing.JPanel treePanel;
     // End of variables declaration//GEN-END:variables
-
     private class ConfiguracoesTreeSelectionListener implements TreeSelectionListener {
 
         @Override
@@ -183,6 +182,9 @@ public class FrameConfiguracao extends javax.swing.JInternalFrame {
                     break;
                 case "Docente":
                     layout.show(configuracaoCardPanel, docentePanel.getName());
+                    break;
+                case "Nível de Ensino":
+                    layout.show(configuracaoCardPanel, nivelEnsinoPanel.getName());
                     break;
                 default:
                     layout.show(configuracaoCardPanel, "panel.nulo");

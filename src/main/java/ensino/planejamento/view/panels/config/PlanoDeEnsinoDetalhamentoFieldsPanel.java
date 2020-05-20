@@ -14,6 +14,7 @@ import ensino.components.GenJRadioButton;
 import ensino.components.GenJSpinner;
 import ensino.components.GenJTextArea;
 import ensino.components.renderer.TextAreaCellRenderer;
+import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
@@ -47,6 +48,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -374,6 +376,24 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
         comboObjetivo.repaint();
     }
 
+    private String atividadesDaSemana(SemanaLetiva semanaLetiva) {
+        // Procura pelas atividades da semana
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(semanaLetiva.getPeriodo().getDe());
+        int weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
+
+        StringBuilder sb = new StringBuilder();
+        List<Atividade> listaAtividades = detalhamento.getPlanoDeEnsino()
+                .getPeriodoLetivo().getId().getCalendario().getAtividades();
+        listaAtividades.forEach((at) -> {
+            cal.setTime(at.getPeriodo().getDe());
+            if (weekOfYear == cal.get(Calendar.WEEK_OF_YEAR)) {
+                sb.append(String.format("%s,", at.toString()));
+            }
+        });
+        return sb.toString();
+    }
+
     @Override
     public void setFieldValues(Object object) {
         if (object instanceof Detalhamento) {
@@ -381,7 +401,7 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
             setSemanaLetiva(detalhamento.getSemanaLetiva());
             txtConteudo.setText(detalhamento.getConteudo());
-            txtObservacao.setModel(new ObservacaoListModel(detalhamento.getObservacao()));
+            txtObservacao.setModel(new ObservacaoListModel(atividadesDaSemana(detalhamento.getSemanaLetiva())));
             txtNAulasP.setValue(detalhamento.getNAulasPraticas());
             txtNAulasT.setValue(detalhamento.getNAulasTeoricas());
 

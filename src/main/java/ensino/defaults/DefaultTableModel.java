@@ -19,10 +19,25 @@ public abstract class DefaultTableModel<T> extends AbstractTableModel {
 
     protected List<T> lista;
     protected String[] columnNames;
+    private Boolean hasButtons;
 
     public DefaultTableModel(List<T> lista, String[] columnNames) {
+        this(lista, columnNames, false);
+    }
+
+    /**
+     * Construtor
+     *
+     * @param data Lista de dados de uma classe
+     * @param columnNames Os nomes das colunas devem respeitar os nomes dos
+     * atributos
+     * @param hasButtons Se verdadeiro, indica que a última coluna representa os
+     * botões.
+     */
+    public DefaultTableModel(List<T> lista, String[] columnNames, boolean hasButtons) {
         this.lista = lista;
         this.columnNames = columnNames;
+        this.hasButtons = hasButtons;
     }
 
     public boolean isEmpty() {
@@ -63,7 +78,7 @@ public abstract class DefaultTableModel<T> extends AbstractTableModel {
         }
         return null;
     }
-    
+
     public T getMax(Comparator<T> comp) {
         return Collections.max(lista, comp);
     }
@@ -106,6 +121,8 @@ public abstract class DefaultTableModel<T> extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int linha, int coluna) {
+        if (hasButtons && coluna == 1)
+            return true;
         return false;
     }
 

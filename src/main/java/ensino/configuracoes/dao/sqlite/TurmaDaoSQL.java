@@ -26,10 +26,18 @@ public class TurmaDaoSQL extends AbstractDaoSQL<Turma> {
     public void save(Turma o) {
         if (o.getId().getId() == null) {
             o.getId().setId(nextVal(o));
+        }
+        
+        if (findById(o.getId()) == null) {
             entityManager.persist(o);
         } else {
             entityManager.merge(o);
         }
+    }
+
+    @Override
+    public void delete(Turma o) {
+        entityManager.remove(entityManager.getReference(Turma.class, o.getId()));
     }
 
     @Override
@@ -61,7 +69,7 @@ public class TurmaDaoSQL extends AbstractDaoSQL<Turma> {
 
     @Override
     public Turma findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return entityManager.find(Turma.class, id);
     }
 
     @Override

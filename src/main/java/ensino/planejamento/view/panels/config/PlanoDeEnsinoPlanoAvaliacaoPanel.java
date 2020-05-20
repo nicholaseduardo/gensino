@@ -10,8 +10,11 @@ import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJSpinner;
 import ensino.components.GenJTextField;
+import ensino.configuracoes.controller.EtapaEnsinoController;
+import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.configuracoes.model.InstrumentoAvaliacaoFactory;
+import ensino.configuracoes.view.models.EtapaEnsinoComboBoxModel;
 import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
@@ -28,7 +31,6 @@ import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.ObjetivoComboBoxModel;
 import ensino.planejamento.view.models.PlanoAvaliacaoTableModel;
 import ensino.planejamento.view.renderer.PlanoAvaliacaoCellRenderer;
-import ensino.util.types.Bimestre;
 import ensino.util.types.TipoMetodo;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -61,10 +63,12 @@ import javax.swing.event.ListSelectionListener;
 public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
+    private EtapaEnsino etapaPadrao;
 
     private GenJTextField txtId;
     private GenJTextField txtNome;
-    private GenJComboBox comboBimestre;
+    private GenJComboBox comboEtapaEnsino;
+    private EtapaEnsinoComboBoxModel modelEtapaEnsino;
 
     private GenJSpinner spinPeso;
     private GenJSpinner spinValor;
@@ -113,7 +117,8 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         try {
-            comboBimestre = new GenJComboBox(Bimestre.values());
+            comboEtapaEnsino = new GenJComboBox();
+
             txtId = new GenJTextField(5, false);
             txtId.setEnabled(false);
             txtNome = new GenJTextField(20, true);
@@ -129,6 +134,7 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
 
             objetivoComboModel = new ObjetivoComboBoxModel();
             comboObjetivo = new GenJComboBox(objetivoComboModel);
+//            comboObjetivo.setRenderer(new ObjetivoItemRenderer());
 
             int col = 0, row = 0;
             GridLayoutHelper.set(c, col, row++, 4, 1, GridBagConstraints.LINE_START);
@@ -136,20 +142,20 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
             GridLayoutHelper.set(c, col, row++, 4, 1, GridBagConstraints.LINE_START);
             c.fill = GridBagConstraints.HORIZONTAL;
             panel.add(txtId, c);
-            
+
             col = 0;
-            
+
             GridLayoutHelper.set(c, col++, row, 2, 1, GridBagConstraints.LINE_START);
             panel.add(new GenJLabel("Descrição: "), c);
             GridLayoutHelper.set(c, ++col, row++, 2, 1, GridBagConstraints.LINE_START);
-            panel.add(new GenJLabel("Bimestre: "), c);
+            panel.add(new GenJLabel("Etapa: "), c);
 
             col = 0;
             GridLayoutHelper.set(c, col++, row, 2, 1, GridBagConstraints.LINE_START);
             c.fill = GridBagConstraints.HORIZONTAL;
             panel.add(txtNome, c);
             GridLayoutHelper.set(c, ++col, row++, 2, 1, GridBagConstraints.LINE_START);
-            panel.add(comboBimestre, c);
+            panel.add(comboEtapaEnsino, c);
 
             col = 0;
             GridLayoutHelper.set(c, col++, row);
@@ -257,16 +263,32 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(Object object) {
         if (object instanceof PlanoDeEnsino) {
-            planoDeEnsino = (PlanoDeEnsino) object;
-            
-            setData(planoDeEnsino.getPlanosAvaliacoes());
-            clearLocalFields();
-            enableLocalButtons(Boolean.TRUE);
+            try {
+                planoDeEnsino = (PlanoDeEnsino) object;
 
-            objetivoComboModel = new ObjetivoComboBoxModel(planoDeEnsino.getObjetivos());
-            objetivoComboModel.refresh();
-            comboObjetivo.setModel(objetivoComboModel);
-            comboObjetivo.repaint();
+                EtapaEnsinoController col = ControllerFactory.createEtapaEnsinoController();
+                modelEtapaEnsino = new EtapaEnsinoComboBoxModel(
+                        col,
+                        planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino()
+                );
+                comboEtapaEnsino.setModel(modelEtapaEnsino);
+                comboEtapaEnsino.repaint();
+                
+                
+                List<EtapaEnsino> l = col.listar(planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino());
+                etapaPadrao = l.isEmpty() ? null : l.get(0);
+
+                setData(planoDeEnsino.getPlanosAvaliacoes());
+                clearLocalFields();
+                enableLocalButtons(Boolean.TRUE);
+
+                objetivoComboModel = new ObjetivoComboBoxModel(planoDeEnsino.getObjetivos());
+                objetivoComboModel.refresh();
+                comboObjetivo.setModel(objetivoComboModel);
+                comboObjetivo.repaint();
+            } catch (Exception ex) {
+                Logger.getLogger(PlanoDeEnsinoPlanoAvaliacaoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -275,9 +297,9 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
         String msg = " ";
         Double peso = (Double) spinPeso.getValue();
         Double valor = (Double) spinValor.getValue();
-        if (comboBimestre.getSelectedItem() == null) {
-            msg = "O campo bimestre não foi selecionado.";
-            comboBimestre.requestFocusInWindow();
+        if (comboEtapaEnsino.getSelectedItem() == null) {
+            msg = "O campo Etapa de Ensino não foi selecionado.";
+            comboEtapaEnsino.requestFocusInWindow();
         } else if ("".equals(txtNome.getText())) {
             msg = "O campo nome não foi preenchido.";
             txtNome.requestFocusInWindow();
@@ -305,8 +327,8 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
 
     private void clearLocalFields() {
         txtId.setText("");
-        comboBimestre.setSelectedItem(null);
-        comboBimestre.repaint();
+        comboEtapaEnsino.setSelectedItem(null);
+        comboEtapaEnsino.repaint();
         txtNome.setText("");
         comboInstrumento.setSelectedItem(null);
         comboInstrumento.repaint();
@@ -320,7 +342,7 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
 
     @Override
     public void enableFields(boolean active) {
-        comboBimestre.setEnabled(active);
+        comboEtapaEnsino.setEnabled(active);
         txtNome.setEnabled(active);
         comboInstrumento.setEnabled(active);
         comboObjetivo.setEnabled(active);
@@ -374,7 +396,7 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
                     .createObject(
                             new PlanoAvaliacaoId(sequencia, planoDeEnsino),
                             txtNome.getText(),
-                            comboBimestre.getSelectedItem(),
+                            comboEtapaEnsino.getSelectedItem(),
                             spinPeso.getValue(),
                             spinValor.getValue(),
                             spinData.getValue(),
@@ -458,7 +480,7 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
                                                         metodologia.getMetodo().getNome(),
                                                         sequencia++
                                                 ),
-                                                Bimestre.PRIMEIRO,
+                                                etapaPadrao,
                                                 1.0, 10.0,
                                                 detalhe.getSemanaLetiva().getPeriodo().getAte(),
                                                 instrumentoAvaliacao,
@@ -503,8 +525,10 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
                 spinPeso.setValue(plano.getPeso());
                 spinValor.setValue(plano.getValor());
                 spinData.setValue(plano.getData());
-                comboBimestre.setSelectedItem(plano.getBimestre());
-                comboBimestre.repaint();
+
+                EtapaEnsinoComboBoxModel model = (EtapaEnsinoComboBoxModel) comboEtapaEnsino.getModel();
+                model.setSelectedItem(plano.getEtapaEnsino());
+                comboEtapaEnsino.repaint();
 
                 comboObjetivo.setSelectedItem(plano.getObjetivo());
                 comboObjetivo.repaint();

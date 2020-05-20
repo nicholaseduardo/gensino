@@ -10,7 +10,7 @@ import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.CursoController;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.Campus;
-import ensino.configuracoes.view.panels.CursoPanel;
+import ensino.configuracoes.view.panels.curso.CursoPanel;
 import ensino.patterns.factory.ControllerFactory;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;

@@ -14,26 +14,29 @@ import ensino.configuracoes.model.Docente;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.UnidadeCurricular;
-import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.PlanoDeEnsinoController;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.model.PlanoDeEnsinoFactory;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoAvaliacaoPanel;
+import ensino.planejamento.view.panels.config.PlanoDeEnsinoChartsPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoConteudoPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoDetalhamentoFieldsPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoFrequenciaPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoHorarioAulaPanel;
+import ensino.planejamento.view.panels.config.PlanoDeEnsinoHtmlNotasPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoHtmlPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoIdentificacaoFieldsPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoObjetivoEspecificoPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoPlanoAvaliacaoPanel;
+import ensino.planejamento.view.renderer.ConfigTreeCellRenderer;
 import ensino.util.types.MesesDeAno;
 import ensino.util.types.Periodo;
 import ensino.util.types.TabsPlano;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -80,12 +83,15 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
     private PlanoDeEnsinoFrequenciaPanel frequenciaPanel;
     private PlanoDeEnsinoAvaliacaoPanel avaliacaoPanel;
     private PlanoDeEnsinoHtmlPanel htmlPanel;
+    private PlanoDeEnsinoHtmlNotasPanel htmlNotasPanel;
+    private PlanoDeEnsinoChartsPanel chartObjetivosPanel;
 
     public ConfigPlanoDeEnsinoPanel() {
         super(new BorderLayout(5, 5));
 
         planoDeEnsinoTree = new GenJTree();
         planoDeEnsinoTree.addMouseListener(new TreeMouseEvent());
+        planoDeEnsinoTree.setCellRenderer(new ConfigTreeCellRenderer());
 
         planoDeEnsinoCardPanel = new JPanel(new CardLayout(5, 5));
 
@@ -112,12 +118,15 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
     }
 
     private void initComponents() {
-        JScrollPane customTreeScroll = new JScrollPane();
+        planoDeEnsinoTree.setAutoscrolls(true);
         planoDeEnsinoTree.setBorder(BorderFactory.createCompoundBorder());
         planoDeEnsinoTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         planoDeEnsinoTree.addTreeSelectionListener(new PlanoDeEnsinoTreeSelectionListener());
         ToolTipManager.sharedInstance().registerComponent(planoDeEnsinoTree);
-        customTreeScroll.setViewportView(planoDeEnsinoTree);
+        
+        JScrollPane customTreeScroll = new JScrollPane(planoDeEnsinoTree);
+        customTreeScroll.setAutoscrolls(true);
+        customTreeScroll.setPreferredSize(new Dimension(300, 500));
 
         add(customTreeScroll, BorderLayout.LINE_START);
         add(planoDeEnsinoCardPanel, BorderLayout.CENTER);
@@ -131,6 +140,8 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
         conteudoProgramaticoPanel = new PlanoDeEnsinoConteudoPanel();
         avaliacaoPanel = new PlanoDeEnsinoAvaliacaoPanel();
         htmlPanel = new PlanoDeEnsinoHtmlPanel();
+        htmlNotasPanel = new PlanoDeEnsinoHtmlNotasPanel();
+        chartObjetivosPanel = new PlanoDeEnsinoChartsPanel();
 
         // Adiciona um painel vazio
         JPanel panelNulo = new JPanel();
@@ -145,75 +156,93 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
         planoDeEnsinoCardPanel.add(conteudoProgramaticoPanel, conteudoProgramaticoPanel.getName());
         planoDeEnsinoCardPanel.add(avaliacaoPanel, avaliacaoPanel.getName());
         planoDeEnsinoCardPanel.add(htmlPanel, htmlPanel.getName());
+        planoDeEnsinoCardPanel.add(htmlNotasPanel, htmlNotasPanel.getName());
+        planoDeEnsinoCardPanel.add(chartObjetivosPanel, chartObjetivosPanel.getName());
 
         /**
          * Criação dos painéis relativos aos dados do plano de ensino
          */
         loadTree();
-        DefaultFieldsPanel.expandAllNodes(planoDeEnsinoTree, 0, 0);
+        //DefaultFieldsPanel.expandAllNodes(planoDeEnsinoTree, 0, 0);
     }
 
     private void loadTree() {
         try {
-            ToolTipTreeNode noRaiz = new ToolTipTreeNode("Planejamento");
-            DefaultTreeModel treeModel = new DefaultTreeModel(noRaiz);
-
+            ToolTipTreeNode noRaiz;
+            DefaultTreeModel treeModel;
             /**
-             * Preparando a árvore para adicionar os campus cadastrados no
-             * sistema
+             * Preparando a árvore para adicionar a estrutura de cursos com base
+             * no campus vigente
              */
-            List<Campus> campusList = ControllerFactory.createCampusController().listar();
-            for (int rootIndex = 0; rootIndex < campusList.size(); rootIndex++) {
+            Campus oCampus = ControllerFactory.getCampusVigente();
+            if (oCampus != null) {
+                noRaiz = new ToolTipTreeNode(oCampus);
+                treeModel = new DefaultTreeModel(noRaiz);
+
+                loadTreeByCampus(treeModel, oCampus, noRaiz);
+            } else {
+                noRaiz = new ToolTipTreeNode("Planejamento");
+                treeModel = new DefaultTreeModel(noRaiz);
                 /**
-                 * Adicionando à árvore o nó campus
+                 * Preparando a árvore para adicionar os campus cadastrados no
+                 * sistema caso não existe um campus vigente
                  */
-                Campus oCampus = campusList.get(rootIndex);
-                ToolTipTreeNode campusNode = new ToolTipTreeNode(oCampus);
-                treeModel.insertNodeInto(campusNode, noRaiz, rootIndex);
-
-                /**
-                 * Preparando a árvore para receber, em cada campus, a lista de
-                 * cursos
-                 */
-                List<Curso> cursoList = oCampus.getCursos();
-                for (int campusIndex = 0; campusIndex < cursoList.size(); campusIndex++) {
+                List<Campus> campusList = ControllerFactory.createCampusController().listar();
+                for (int rootIndex = 0; rootIndex < campusList.size(); rootIndex++) {
                     /**
-                     * Adicionando ao nó do Campus os seus respectivos cursos
+                     * Adicionando à árvore o nó campus
                      */
-                    Curso oCurso = cursoList.get(campusIndex);
-                    ToolTipTreeNode cursoNode = new ToolTipTreeNode(oCurso);
-                    treeModel.insertNodeInto(cursoNode, campusNode, campusIndex);
-
-                    /**
-                     * Preparando a árvore para receber, em cada curso, a lista
-                     * de unidades curriculares
-                     */
-                    List<UnidadeCurricular> unidadeCurricularList = oCurso.getUnidadesCurriculares();
-                    for (int cursoIndex = 0; cursoIndex < unidadeCurricularList.size(); cursoIndex++) {
-                        /**
-                         * Adicionando ao nó do curso as suas respectivas
-                         * unidades curriculares
-                         */
-                        UnidadeCurricular oUnidadeCurricular = unidadeCurricularList.get(cursoIndex);
-                        ToolTipTreeNode unidadeCurricularNode = new ToolTipTreeNode(oUnidadeCurricular);
-                        treeModel.insertNodeInto(unidadeCurricularNode, cursoNode, cursoIndex);
-
-                        /**
-                         * Preparando a árvore para receber a lista dos planos
-                         * de ensino por unidade curricular
-                         */
-                        List<PlanoDeEnsino> planoDeEnsinoList = oUnidadeCurricular.getPlanosDeEnsino();
-                        for (int unidadeIndex = 0; unidadeIndex < planoDeEnsinoList.size(); unidadeIndex++) {
-                            createPlanoTreeStructure(treeModel, unidadeCurricularNode,
-                                    planoDeEnsinoList.get(unidadeIndex), unidadeIndex);
-                        }
-                    }
+                    oCampus = campusList.get(rootIndex);
+                    ToolTipTreeNode campusNode = new ToolTipTreeNode(oCampus);
+                    treeModel.insertNodeInto(campusNode, noRaiz, rootIndex);
+                    loadTreeByCampus(treeModel, oCampus, campusNode);
                 }
             }
 
             planoDeEnsinoTree.setModel(treeModel);
         } catch (Exception ex) {
             Logger.getLogger(ConfigPlanoDeEnsinoPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void loadTreeByCampus(DefaultTreeModel treeModel, Campus oCampus,
+            ToolTipTreeNode campusNode) {
+        /**
+         * Preparando a árvore para receber, em cada campus, a lista de cursos
+         */
+        List<Curso> cursoList = oCampus.getCursos();
+        for (int campusIndex = 0; campusIndex < cursoList.size(); campusIndex++) {
+            /**
+             * Adicionando ao nó do Campus os seus respectivos cursos
+             */
+            Curso oCurso = cursoList.get(campusIndex);
+            ToolTipTreeNode cursoNode = new ToolTipTreeNode(oCurso);
+            treeModel.insertNodeInto(cursoNode, campusNode, campusIndex);
+
+            /**
+             * Preparando a árvore para receber, em cada curso, a lista de
+             * unidades curriculares
+             */
+            List<UnidadeCurricular> unidadeCurricularList = oCurso.getUnidadesCurriculares();
+            for (int cursoIndex = 0; cursoIndex < unidadeCurricularList.size(); cursoIndex++) {
+                /**
+                 * Adicionando ao nó do curso as suas respectivas unidades
+                 * curriculares
+                 */
+                UnidadeCurricular oUnidadeCurricular = unidadeCurricularList.get(cursoIndex);
+                ToolTipTreeNode unidadeCurricularNode = new ToolTipTreeNode(oUnidadeCurricular);
+                treeModel.insertNodeInto(unidadeCurricularNode, cursoNode, cursoIndex);
+
+                /**
+                 * Preparando a árvore para receber a lista dos planos de ensino
+                 * por unidade curricular
+                 */
+                List<PlanoDeEnsino> planoDeEnsinoList = oUnidadeCurricular.getPlanosDeEnsino();
+                for (int unidadeIndex = 0; unidadeIndex < planoDeEnsinoList.size(); unidadeIndex++) {
+                    createPlanoTreeStructure(treeModel, unidadeCurricularNode,
+                            planoDeEnsinoList.get(unidadeIndex), unidadeIndex);
+                }
+            }
         }
     }
 
@@ -237,27 +266,27 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
          * Prepara a árvore para receber a estrutura do plano de ensino
          */
         int planoIndex = 0;
-        ToolTipTreeNode nodeEsp = new ToolTipTreeNode(TabsPlano.ESP.toString());
+        ToolTipTreeNode nodeEsp = new ToolTipTreeNode(TabsPlano.ESP);
         treeModel.insertNodeInto(nodeEsp, planejamentoNode, planoIndex++);
 
         /**
          * Prepara a árvore para receber a estrutura do detalhamento do plano de
          * ensino
          */
-        ToolTipTreeNode nodeDetalhe = new ToolTipTreeNode(TabsPlano.DET.toString());
+        ToolTipTreeNode nodeDetalhe = new ToolTipTreeNode(TabsPlano.DET);
         treeModel.insertNodeInto(nodeDetalhe, planejamentoNode, planoIndex++);
         loadDetalhamentoTree(nodeDetalhe, oPlanoDeEnsino);
 
         /**
          * Prepara a árvore para receber a estrutura dos planos de avaliações
          */
-        ToolTipTreeNode nodePlanoAvaliacao = new ToolTipTreeNode(TabsPlano.PAVA.toString());
+        ToolTipTreeNode nodePlanoAvaliacao = new ToolTipTreeNode(TabsPlano.PAVA);
         treeModel.insertNodeInto(nodePlanoAvaliacao, planejamentoNode, planoIndex++);
 
         /**
          * Prepara a árvore para receber a estrutura dos planos de avaliações
          */
-        ToolTipTreeNode nodeHorarioAula = new ToolTipTreeNode(TabsPlano.HOR.toString());
+        ToolTipTreeNode nodeHorarioAula = new ToolTipTreeNode(TabsPlano.HOR);
         treeModel.insertNodeInto(nodeHorarioAula, planejamentoNode, planoIndex++);
 
         /**
@@ -271,34 +300,46 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
         /**
          * Prepara a árvore para receber a estrutura das frequencias de aulas
          */
-        ToolTipTreeNode nodeFrequencia = new ToolTipTreeNode(TabsPlano.FREQ.toString());
+        ToolTipTreeNode nodeFrequencia = new ToolTipTreeNode(TabsPlano.FREQ);
         treeModel.insertNodeInto(nodeFrequencia, execucaoNode, planoIndex++);
 
         /**
          * Prepara a árvore para receber a estrutura das frequencias de aulas
          */
-        ToolTipTreeNode nodeConteudo = new ToolTipTreeNode(TabsPlano.CON.toString());
+        ToolTipTreeNode nodeConteudo = new ToolTipTreeNode(TabsPlano.CON);
         treeModel.insertNodeInto(nodeConteudo, execucaoNode, planoIndex++);
 
         /**
          * Prepara a árvore para receber a estrutura das frequencias de aulas
          */
-        ToolTipTreeNode nodeAvaliacao = new ToolTipTreeNode(TabsPlano.AVA.toString());
+        ToolTipTreeNode nodeAvaliacao = new ToolTipTreeNode(TabsPlano.AVA);
         treeModel.insertNodeInto(nodeAvaliacao, execucaoNode, planoIndex++);
 
         /**
          * Preparação da package de impressão
          */
-        ToolTipTreeNode impressaoNode = new ToolTipTreeNode("Impressão");
+        ToolTipTreeNode impressaoNode = new ToolTipTreeNode("Relatórios");
         treeModel.insertNodeInto(impressaoNode, planoDeEnsinoNode, structPlanoIndex++);
         // reinicia a variável de controle
         planoIndex = 0;
 
         /**
-         * Prepara a árvore para receber a estrutura das frequencias de aulas
+         * Prepara a árvore para receber impressao do plano de ensino
          */
-        ToolTipTreeNode nodeHtml = new ToolTipTreeNode(TabsPlano.VIEW.toString());
+        ToolTipTreeNode nodeHtml = new ToolTipTreeNode(TabsPlano.VIEW_PLAN);
         treeModel.insertNodeInto(nodeHtml, impressaoNode, planoIndex++);
+        
+        /**
+         * Prepara a árvore para receber impressao das notas do diário
+         */
+        ToolTipTreeNode nodeNotaHtml = new ToolTipTreeNode(TabsPlano.NOTAS);
+        treeModel.insertNodeInto(nodeNotaHtml, impressaoNode, planoIndex++);
+        
+        /**
+         * Prepara a árvore para receber impressao das notas do diário
+         */
+        ToolTipTreeNode nodeObjetivosGrafico = new ToolTipTreeNode(TabsPlano.CONTROLE);
+        treeModel.insertNodeInto(nodeObjetivosGrafico, impressaoNode, planoIndex++);
     }
 
     private List<SemanaLetiva> getSemanasDoMes(PeriodoLetivo periodoLetivo,
@@ -441,9 +482,15 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
                 } else if (TabsPlano.AVA.toString().equals(sSource)) {
                     avaliacaoPanel.setFieldValues(parentNode.getUserObject());
                     layout.show(planoDeEnsinoCardPanel, avaliacaoPanel.getName());
-                } else if (TabsPlano.VIEW.toString().equals(sSource)) {
+                } else if (TabsPlano.VIEW_PLAN.toString().equals(sSource)) {
                     htmlPanel.setFieldValues(parentNode.getUserObject());
                     layout.show(planoDeEnsinoCardPanel, htmlPanel.getName());
+                } else if (TabsPlano.NOTAS.toString().equals(sSource)) {
+                    htmlNotasPanel.setFieldValues(parentNode.getUserObject());
+                    layout.show(planoDeEnsinoCardPanel, htmlNotasPanel.getName());
+                } else if (TabsPlano.CONTROLE.toString().equals(sSource)) {
+                    chartObjetivosPanel.setFieldValues(parentNode.getUserObject());
+                    layout.show(planoDeEnsinoCardPanel, chartObjetivosPanel.getName());
                 } else {
                     layout.show(planoDeEnsinoCardPanel, "panel.nulo");
                 }
@@ -464,14 +511,16 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
         }
 
         private void addPlanoNaArvore(PlanoDeEnsino o,
-                ToolTipTreeNode parent) {
+                TreePath parentPath) {
             DefaultTreeModel treeModel = (DefaultTreeModel) planoDeEnsinoTree.getModel();
             try {
                 col.salvar(o);
                 /**
                  * Adiciona o novo plano na árvore
                  */
-                createPlanoTreeStructure(treeModel, parent, o, parent.getChildCount());
+                ToolTipTreeNode childNode = (ToolTipTreeNode) parentPath.getLastPathComponent();
+                createPlanoTreeStructure(treeModel, childNode, o, childNode.getChildCount());
+                planoDeEnsinoTree.setSelectionPath(parentPath);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getParent(),
                         String.format("Erro: %s [caused by: %s]", ex.getMessage(),
@@ -504,7 +553,7 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
                         planoDeEnsino.setDocente(docente);
                         planoDeEnsino.setUnidadeCurricular(unidadeCurricular);
 
-                        addPlanoNaArvore(planoDeEnsino, childNode);
+                        addPlanoNaArvore(planoDeEnsino, tp);
                     } catch (Exception ex) {
                         Logger.getLogger(ConfigPlanoDeEnsinoPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -529,6 +578,7 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
                              */
                             treeModel.removeNodeFromParent(childNode);
                             planoDeEnsinoTree.scrollPathToVisible(parent);
+                            planoDeEnsinoTree.setSelectionPath(parent);
                         } catch (Exception ex) {
                             JOptionPane.showMessageDialog(getParent(),
                                     ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -552,8 +602,10 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
                         planoDeEnsino.setHorarios(new ArrayList());
                         // remove o lançamento de diário
                         planoDeEnsino.setDiarios(new ArrayList());
+                        // remove o lançamento de permanências
+                        planoDeEnsino.setPermanencias(new ArrayList());
 
-                        addPlanoNaArvore(planoDeEnsino, parentNode);
+                        addPlanoNaArvore(planoDeEnsino, parent);
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(getParent(),
                                 "Erro ao duplicar o plano de ensino: "
@@ -581,11 +633,11 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
         }
     }
 
-//    public static void main(String args[]) {
+//    public static void main(String args[]) {;
 //        JPanel p = new ConfigPlanoDeEnsinoPanel();
 //
-//        JFrame f = new JFrame("Config");
-//        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        javax.swing.JFrame f = new javax.swing.JFrame("Config");
+//        f.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 ////        f.setLocationRelativeTo(null);
 //        f.getContentPane().add(p);
 //        f.pack();

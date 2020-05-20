@@ -17,11 +17,15 @@ import org.w3c.dom.Node;
  * @author nicho
  */
 public class TurmaFactory implements BeanFactory<Turma> {
+
     private static TurmaFactory instance = null;
-    private TurmaFactory() {}
+
+    private TurmaFactory() {
+    }
+
     public static TurmaFactory getInstance() {
         if (instance == null) {
-             instance = new TurmaFactory();
+            instance = new TurmaFactory();
         }
         return instance;
     }
@@ -42,6 +46,18 @@ public class TurmaFactory implements BeanFactory<Turma> {
                 Integer.valueOf(e.getAttribute("id")),
                 e.getAttribute("nome"),
                 Integer.valueOf(e.getAttribute("ano")));
+    }
+
+    public Turma updateObject(Turma o, HashMap<String, Object> p) {
+        o.setNome((String) p.get("nome"));
+        o.setAno((Integer) p.get("ano"));
+
+        if (p.get("estudantes") != null) {
+            ((List<Estudante>) p.get("estudantes")).forEach((estudante) -> {
+                o.addEstudante(estudante);
+            });
+        }
+        return o;
     }
 
     @Override
@@ -66,8 +82,8 @@ public class TurmaFactory implements BeanFactory<Turma> {
         e.setAttribute("campusId", o.getId().getCurso().getId().getCampus().getId().toString());
         e.setAttribute("nome", o.getNome());
         e.setAttribute("ano", o.getAno().toString());
-        
+
         return e;
     }
-    
+
 }

@@ -5,114 +5,210 @@
  */
 package ensino.components;
 
-import ensino.components.customTableRow.GenCustomTableRow;
-import ensino.helpers.GridLayoutHelper;
+import ensino.defaults.DefaultTableModel;
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.EnumSet;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.AbstractCellEditor;
+import javax.swing.ButtonModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.WindowConstants;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 /**
  *
  * @author nicho
  */
-public class GenCustomTable extends JPanel {
+public class GenCustomTable {
 
-    private final String[] columnsNames;
-    private List<GenCustomTableRow> rows;
-    private List<?> data;
-
-    /**
-     * Cria uma tabela com um número definido de colunas
-     *
-     * @param columns Número de colunas da tabela
-     */
-    public GenCustomTable(Integer columns) {
-        this(columns, null);
-    }
-    
-    /**
-     * Cria uma tabela com um número definido de colunas
-     *
-     * @param columns Número de colunas da tabela
-     */
-    public GenCustomTable(Integer columns, List<?> data) {
-        super();
-        columnsNames = new String[columns];
-        // adiciona um nome padrão à coluna
-        for (int i = 0; i < columns; i++) {
-            columnsNames[i] = String.format("Column %d", i);
-        }
-        this.data = data;
-        rows = new ArrayList();
+    private JComponent makeUI() {
+        String[] columnNames = {"REPORT ID", "ACTION"};
+        Object[][] data = {
+            {"Report1", EnumSet.of(Actions.PRINT)},
+            {"Report2", EnumSet.of(Actions.PRINT, Actions.EDIT)},
+            {"Report3", EnumSet.allOf(Actions.class)},
+            {"Report4", EnumSet.of(Actions.PRINT)}
+        };
         
-        initComponents();
+        JTable table = new JTable(data, columnNames);
+        table.setRowHeight(36);
+        TableColumn column = table.getColumnModel().getColumn(1);
+        column.setCellRenderer(new ButtonsRenderer());
+        column.setCellEditor(new ButtonsEditor(table));
+        return new JScrollPane(table);
     }
 
-    /**
-     * Cria uma tabela com um número definido de colunas com os respectivos
-     * nomes atribuídos a elas.
-     *
-     * @param columns Vetor com os nomes das colunas
-     */
-    public GenCustomTable(String[] columns, List<?> data) {
-        super();
-        columnsNames = columns;
-        this.data = data;
-        rows = new ArrayList();
-        for(int i = 0; i < data.size(); i++) {
-            GenCustomTableRow customRow = new GenCustomTableRow(columns.length);
+    enum Actions {
+        PRINT, EDIT;
+    }
+
+    class ButtonsPanel extends JPanel {
+
+        public final List<JButton> buttons = new ArrayList<>();
+
+        public ButtonsPanel() {
+            super(new FlowLayout(FlowLayout.LEFT));
+            setOpaque(true);
+            for (Actions a : Actions.values()) {
+                JButton b = new JButton(a.toString());
+                b.setFocusable(false);
+                b.setRolloverEnabled(false);
+                add(b);
+                buttons.add(b);
+            }
         }
-        initComponents();
-    }
 
-    private void initComponents() {
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        
-        /**
-         * Criação dos nomes das colunas
-         */
-        createHeader(c);
-    }
-    
-    private void createHeader(GridBagConstraints c) {
-        int col = 0, row = 0;
-        int size = columnsNames.length;
-        GenCustomTableRow customRow = new GenCustomTableRow(size);
-        for (int i = 0; i < columnsNames.length; i++) {
-            GenJLabel lblColumn = (GenJLabel) customRow.getColumnComponent(i);
-            lblColumn.setText(columnsNames[i]);
-            lblColumn.toBold();
-            // coluna 'i' na linha 0
-            GridLayoutHelper.set(c, i, 0);
-            c.anchor = GridBagConstraints.CENTER;
-            add(lblColumn, c);
+        protected void updateButtons(Object value) {
+            if (value instanceof EnumSet) {
+                EnumSet ea = (EnumSet) value;
+                removeAll();
+                if (ea.contains(Actions.PRINT)) {
+                    add(buttons.get(0));
+                }
+                if (ea.contains(Actions.EDIT)) {
+                    add(buttons.get(1));
+                }
+            }
         }
     }
-    
-    private void populateTable() {
-        
-    }
 
-    /**
-     * Altera o nome da coluna da tabela
-     * 
-     * @param index     Índice da coluna
-     * @param name      Nome da coluna
-     * @return 
-     */
-    public GenCustomTable setColumnName(Integer index, String name) {
-        if (index < 0 || index >= columnsNames.length) {
-            throw new ArrayIndexOutOfBoundsException(index);
+    class ButtonsRenderer implements TableCellRenderer {
+
+        private final ButtonsPanel panel = new ButtonsPanel();
+
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            panel.updateButtons(value);
+            return panel;
         }
-        columnsNames[index] = name;
-        return this;
     }
 
+    class PrintAction extends AbstractAction {
+
+        private final JTable table;
+
+        public PrintAction(JTable table) {
+            super(Actions.PRINT.toString());
+            this.table = table;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(table, "Printing");
+        }
+    }
+
+    class EditAction extends AbstractAction {
+
+        private final JTable table;
+
+        public EditAction(JTable table) {
+            super(Actions.EDIT.toString());
+            this.table = table;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int row = table.convertRowIndexToModel(table.getEditingRow());
+            Object o = table.getModel().getValueAt(row, 0);
+            JOptionPane.showMessageDialog(table, "Editing: " + o);
+        }
+    }
+
+    class ButtonsEditor extends AbstractCellEditor implements TableCellEditor {
+
+        private final ButtonsPanel panel = new ButtonsPanel();
+        private final JTable table;
+        private Object o;
+
+        private class EditingStopHandler extends MouseAdapter implements ActionListener {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Object o = e.getSource();
+                if (o instanceof TableCellEditor) {
+                    actionPerformed(null);
+                } else if (o instanceof JButton) {
+                    ButtonModel m = ((JButton) e.getComponent()).getModel();
+                    if (m.isPressed() && table.isRowSelected(table.getEditingRow()) && e.isControlDown()) {
+                        panel.setBackground(table.getBackground());
+                    }
+                }
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        fireEditingStopped();
+                    }
+                });
+            }
+        }
+
+        public ButtonsEditor(JTable table) {
+            super();
+            this.table = table;
+            panel.buttons.get(0).setAction(new PrintAction(table));
+            panel.buttons.get(1).setAction(new EditAction(table));
+
+            EditingStopHandler handler = new EditingStopHandler();
+            for (JButton b : panel.buttons) {
+                b.addMouseListener(handler);
+                b.addActionListener(handler);
+            }
+            panel.addMouseListener(handler);
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(
+                JTable table, Object value, boolean isSelected, int row, int column) {
+            panel.setBackground(table.getSelectionBackground());
+            panel.updateButtons(value);
+            o = value;
+            return panel;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return o;
+        }
+    }
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                createAndShowGUI();
+            }
+        });
+    }
+
+    public static void createAndShowGUI() {
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        f.getContentPane().add(new GenCustomTable().makeUI());
+        f.setSize(320, 240);
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+    }
 }
