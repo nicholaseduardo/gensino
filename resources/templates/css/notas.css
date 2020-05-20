@@ -1,0 +1,61 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 30 de mar de 2020, 13:02:09
+    Author     : santos
+*/
+
+body {
+    font-family: sans-serif, serif, monospace;
+}
+
+table {
+    width: 842px;
+    border: 1px solid black;
+}
+
+table th {
+    width: 100px;
+    
+}
+
+table td {
+    width: 100%;
+}
+
+#pagina {
+    width: 842px;
+    height: 595px;
+    margin-top:0;     
+    margin-right:auto;  
+    margin-bottom:0;   
+    margin-left:auto;
+}
+
+#header{   
+    width: 842px;
+    height:100px; 
+}
+
+#conteudo{   
+    width: 842px;
+    height: 395px;
+}
+
+#titulo {
+    font-size: 120%;
+    font-weight: bold;
+
+    text-align: center;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#footer{ 
+    width: 842px;
+    height:100px;
+}
