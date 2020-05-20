@@ -16,7 +16,6 @@ import ensino.configuracoes.model.NivelEnsino;
 import ensino.configuracoes.view.models.EtapaEnsinoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;

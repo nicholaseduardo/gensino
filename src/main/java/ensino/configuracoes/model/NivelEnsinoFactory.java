@@ -19,9 +19,10 @@ import org.w3c.dom.Node;
 public class NivelEnsinoFactory implements BeanFactory<NivelEnsino> {
 
     private static NivelEnsinoFactory instance = null;
-    
-    private NivelEnsinoFactory() {}
-    
+
+    private NivelEnsinoFactory() {
+    }
+
     public static NivelEnsinoFactory getInstance() {
         if (instance == null) {
             instance = new NivelEnsinoFactory();
@@ -35,7 +36,7 @@ public class NivelEnsinoFactory implements BeanFactory<NivelEnsino> {
         NivelEnsino o = new NivelEnsino();
         o.setId((Integer) args[i++]);
         o.setNome((String) args[i++]);
-        
+
         return o;
     }
 
@@ -49,7 +50,11 @@ public class NivelEnsinoFactory implements BeanFactory<NivelEnsino> {
     @Override
     public NivelEnsino getObject(HashMap<String, Object> p) {
         NivelEnsino o = createObject(p.get("id"), p.get("nome"));
-        o.setEtapas((List<EtapaEnsino>) p.get("etapas"));
+        if (p.get("etapas") != null) {
+            ((List<EtapaEnsino>) p.get("etapas")).forEach(etapa -> {
+                o.addEtapaEnsino(etapa);
+            });
+        }
         return o;
     }
 
@@ -60,5 +65,5 @@ public class NivelEnsinoFactory implements BeanFactory<NivelEnsino> {
         e.setAttribute("nome", o.getNome());
         return e;
     }
-    
+
 }

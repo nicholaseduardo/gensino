@@ -200,8 +200,8 @@ public class NotasReport extends Report {
              * Adiciona-se 1 porque será incluída a coluna Média no detalhamento
              * dos campos
              */
-            Integer colspan = mapEtapa.get(ee) + 1;
-            lHeader.add(createMapHeader(ee.getNome(), colspan != null ? colspan : 1, 1, ee));
+            Integer colspan = mapEtapa.containsKey(ee) ? mapEtapa.get(ee) : null;
+            lHeader.add(createMapHeader(ee.getNome(), colspan != null ? colspan + 1 : 1, 1, ee));
         }
         /**
          * Adição do cabeçalho de totalização e média
