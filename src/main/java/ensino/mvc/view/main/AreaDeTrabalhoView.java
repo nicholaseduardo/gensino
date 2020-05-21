@@ -37,6 +37,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -55,13 +56,15 @@ public class AreaDeTrabalhoView extends GenJPanel {
     private JTable tableUC;
     private JTable tableTurma;
     private JTabbedPane tabs;
-    
-    private Campus campusVigente;
 
-    public AreaDeTrabalhoView(Campus campus) {
+    private Campus campusVigente;
+    private Component frame;
+
+    public AreaDeTrabalhoView(Campus campus, Component frame) {
         super();
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        campusVigente = campus;
+        campusVigente = ControllerFactory.getCampusVigente();
+        this.frame = frame;
 
         initComponents();
     }
@@ -316,11 +319,15 @@ public class AreaDeTrabalhoView extends GenJPanel {
                 dialog.setVisible(true);
                 Curso curso = CursoFactory.getInstance().getObject(panel.getFieldValues());
                 if (curso.getId().getId() != null) {
+                    Boolean hasTabs = tabs.getTabCount() > 0;
                     URL urlCurso = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "courses-icon-25px.png"));
-
                     Integer tabIndex = tabs.getTabCount();
                     tabs.addTab(curso.getNome(), new ImageIcon(urlCurso), createCursoPanel(curso));
                     tabs.setSelectedIndex(tabIndex);
+
+                    if (Boolean.FALSE.equals(hasTabs) && this.frame instanceof JInternalFrame) {
+                        ((JInternalFrame) this.frame).pack();
+                    }
                 }
 
             } else if (o instanceof Curso) {
@@ -387,6 +394,8 @@ public class AreaDeTrabalhoView extends GenJPanel {
                 tabs.remove(tabIndex);
                 if (tabIndex > 0) {
                     tabs.setSelectedIndex(tabIndex - 1);
+                } else {
+                    ((JInternalFrame) this.frame).pack();
                 }
             } else if (o instanceof JTable) {
                 JTable t = (JTable) o;

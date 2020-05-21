@@ -27,9 +27,11 @@ import ensino.configuracoes.view.renderer.CalendarioCellRenderer;
 import ensino.configuracoes.view.renderer.CampusCellRenderer;
 import ensino.configuracoes.view.renderer.CursoCellRenderer;
 import ensino.helpers.GridLayoutHelper;
+import ensino.mvc.view.main.AreaDeTrabalhoView;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.util.types.StatusCampus;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -54,9 +56,11 @@ import javax.swing.table.TableColumnModel;
 public class CampusPanel extends DefaultFormPanel {
 
     private JButton btSearch;
+    private JInternalFrame areaDeTrabalho;
 
-    public CampusPanel(JInternalFrame iframe) {
+    public CampusPanel(JInternalFrame iframe, JInternalFrame areaDeTrabalho) {
         super(iframe);
+        this.areaDeTrabalho = areaDeTrabalho;
         try {
             setName("panel.campus");
             setTitlePanel("Dados do Campus");
@@ -67,6 +71,16 @@ public class CampusPanel extends DefaultFormPanel {
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             Logger.getLogger(CampusPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void onSaveAction(ActionEvent e) {
+        super.onSaveAction(e);
+        if (areaDeTrabalho != null) {
+            Campus campus = ControllerFactory.getCampusVigente();
+            Container c = areaDeTrabalho.getContentPane();
+            c.removeAll();
+            c.add(new AreaDeTrabalhoView(campus, areaDeTrabalho));
         }
     }
 

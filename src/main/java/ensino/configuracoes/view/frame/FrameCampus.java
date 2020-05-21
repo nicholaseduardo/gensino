@@ -6,6 +6,7 @@
 package ensino.configuracoes.view.frame;
 
 import ensino.configuracoes.view.panels.campus.CampusPanel;
+import javax.swing.JInternalFrame;
 
 /**
  *
@@ -13,9 +14,9 @@ import ensino.configuracoes.view.panels.campus.CampusPanel;
  */
 public class FrameCampus extends javax.swing.JInternalFrame {
 
-    public FrameCampus() {
+    public FrameCampus(JInternalFrame areaDeTrabalho) {
         super("Campi", true, true, true, true);
-        CampusPanel panel = new CampusPanel(this);
+        CampusPanel panel = new CampusPanel(this, areaDeTrabalho);
         getContentPane().add(panel);
         pack();
     }

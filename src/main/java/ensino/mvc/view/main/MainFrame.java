@@ -119,7 +119,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         Campus campusVigente = ControllerFactory.getCampusVigente();
         if (campusVigente != null) {
-            AreaDeTrabalhoView p = new AreaDeTrabalhoView(campusVigente);
+            AreaDeTrabalhoView p = new AreaDeTrabalhoView(campusVigente, framePainel);
             p.setDesktop(desktop);
 
             JScrollPane scroll = new JScrollPane(p);
@@ -294,7 +294,7 @@ public class MainFrame extends javax.swing.JFrame {
             try {
                 switch (menu) {
                     case CAMPI:
-                        addFrame(new ensino.configuracoes.view.frame.FrameCampus());
+                        addFrame(new ensino.configuracoes.view.frame.FrameCampus(framePainel));
                         break;
                     case CURSO:
                         addFrame(new ensino.configuracoes.view.frame.FrameCursos());

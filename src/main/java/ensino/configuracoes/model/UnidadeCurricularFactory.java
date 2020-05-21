@@ -91,13 +91,17 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
                 p.get("cargaHoraria"),
                 p.get("ementa")
         );
-        ((List<ReferenciaBibliografica>) p.get("referenciasBibliograficas")).forEach((rb) -> {
-            o.addReferenciaBibliografica(rb);
-        });
+        if (p.get("referenciasBibliograficas") != null) {
+            ((List<ReferenciaBibliografica>) p.get("referenciasBibliograficas")).forEach((rb) -> {
+                o.addReferenciaBibliografica(rb);
+            });
+        }
 
-        ((List<PlanoDeEnsino>) p.get("planosDeEnsino")).forEach((pde) -> {
-            o.addPlanoDeEnsino(pde);
-        });
+        if (p.get("planosDeEnsino") != null) {
+            ((List<PlanoDeEnsino>) p.get("planosDeEnsino")).forEach((pde) -> {
+                o.addPlanoDeEnsino(pde);
+            });
+        }
         return o;
     }
 

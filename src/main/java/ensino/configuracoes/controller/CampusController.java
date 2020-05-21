@@ -10,6 +10,7 @@ import ensino.patterns.AbstractController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.CampusFactory;
 import ensino.patterns.factory.DaoFactory;
+import ensino.util.types.StatusCampus;
 import java.net.URL;
 import java.util.List;
 
@@ -29,6 +30,17 @@ public class CampusController extends AbstractController<Campus> {
     
     @Override
     public Campus salvar(Campus o) throws Exception {
+        /**
+         * Antes de salvar, verifica se já existe um campus vigente.
+         * Caso positivo, substitua a vigência dos campi
+         */
+        if (o.isVigente()) {
+            Campus vigente = getCampusVigente();
+            if (!vigente.equals(o)) {
+                vigente.setStatus(StatusCampus.ANTERIOR);
+                super.salvar(vigente);
+            }
+        }
         o = super.salvar(o);
         
         return o;
@@ -45,7 +57,7 @@ public class CampusController extends AbstractController<Campus> {
         /**
          * Se encontrar, retorna o campus
          */
-        if (l.size() == 1) {
+        if (!l.isEmpty()) {
             return l.get(0);
         }
         /**
