@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.view.frame;
 
-import ensino.configuracoes.view.panels.CampusPanel;
+import ensino.configuracoes.view.panels.campus.CampusPanel;
 
 /**
  *

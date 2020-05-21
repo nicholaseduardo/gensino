@@ -11,13 +11,12 @@ import ensino.components.GenJLabel;
 import ensino.components.GenJTextArea;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.BibliografiaController;
-import ensino.configuracoes.controller.DocenteController;
 import ensino.configuracoes.controller.InstrumentoAvaliacaoController;
 import ensino.configuracoes.controller.LegendaController;
 import ensino.configuracoes.controller.RecursoController;
 import ensino.configuracoes.controller.TecnicaController;
-import ensino.configuracoes.model.Docente;
-import ensino.configuracoes.model.DocenteFactory;
+import ensino.configuracoes.view.panels.campus.CampusFields;
+import ensino.configuracoes.view.panels.docente.DocenteFields;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.ControllerFactory;
 import java.awt.BorderLayout;
@@ -37,7 +36,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -52,6 +53,7 @@ public class PanelInformacao extends JFrame {
     private GenJCheckBox check;
     private GenJButton btFechar;
     private GenJButton btProximo;
+    private GenJButton btAnterior;
     private JPanel cardPanel;
     private String selectedCard;
     private GenJTextField txtNome;
@@ -79,20 +81,43 @@ public class PanelInformacao extends JFrame {
 
         cardPanel.add(infoPanel(), "panel.info");
         cardPanel.add(docentePanel(), "panel.docente");
+        cardPanel.add(new CampusFields(null), "panel.campus");
+        cardPanel.add(loadingPanel(), "panel.loading");
         selectedCard = "panel.info";
         layout.show(cardPanel, selectedCard);
 
+        URL urlBack = getClass().getResource("/img/backward-icon-25px.png");
+        URL urlFor = getClass().getResource("/img/forward-icon-25px.png");
+        URL urlClose = getClass().getResource("/img/close-icon-25px.png");
+        
         ButtonAction action = new ButtonAction();
-        btProximo = new GenJButton("Próximo");
+        btAnterior = new GenJButton("Anterior", new ImageIcon(urlBack));
+        btAnterior.setEnabled(false);
+        btAnterior.addActionListener(action);
+
+        btProximo = new GenJButton("Próximo", new ImageIcon(urlFor));
         btProximo.setEnabled(false);
         btProximo.addActionListener(action);
-        btFechar = new GenJButton("Fechar");
+
+        btFechar = new GenJButton("Fechar", new ImageIcon(urlClose));
         btFechar.addActionListener(action);
 
         JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelButton.add(btFechar);
+        panelButton.add(btAnterior);
         panelButton.add(btProximo);
+        panelButton.add(btFechar);
         add(panelButton, BorderLayout.SOUTH);
+    }
+
+    private JPanel loadingPanel() {
+        URL url = getClass().getResource("/img/loading.gif");
+        GenJLabel label = new GenJLabel("Importando dados de base", new ImageIcon(url), JLabel.CENTER);
+        label.setHorizontalTextPosition(JLabel.CENTER);
+        label.setVerticalTextPosition(JLabel.BOTTOM);
+        label.resetFontSize(20);
+        JPanel panel = new JPanel();
+        panel.add(label);
+        return panel;
     }
 
     private JPanel infoPanel() {
@@ -141,28 +166,28 @@ public class PanelInformacao extends JFrame {
     }
 
     private JPanel docentePanel() {
-        txtNome = new GenJTextField(40, true);
-        txtNome.setLabelFor("Digite seu Nome");
-
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panel.add(txtNome);
-        return panel;
+//        txtNome = new GenJTextField(40, true);
+//        txtNome.setLabelFor("Digite seu Nome");
+//
+//        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+//        panel.add(txtNome);
+//        return panel;
+        return new DocenteFields(null);
     }
 
-    private void salvarNome() {
-        try {
-            DocenteController col = ControllerFactory.createDocenteController();
-            Docente o = DocenteFactory.getInstance()
-                    .createObject(null, txtNome.getText());
-            col.salvar(o);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Erro no sistema. Contate o desenvolvedor relatando o erro: \n" + ex.getMessage()
-                    + ex.getCause() != null ? "\nCausa: " + ex.getCause().getMessage() : "",
-                    "Erro de sistema", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
+//    private void salvarNome() {
+//        try {
+//            DocenteController col = ControllerFactory.createDocenteController();
+//            Docente o = DocenteFactory.getInstance()
+//                    .createObject(null, txtNome.getText());
+//            col.salvar(o);
+//        } catch (Exception ex) {
+//            JOptionPane.showMessageDialog(this,
+//                    "Erro no sistema. Contate o desenvolvedor relatando o erro: \n" + ex.getMessage()
+//                    + ex.getCause() != null ? "\nCausa: " + ex.getCause().getMessage() : "",
+//                    "Erro de sistema", JOptionPane.ERROR_MESSAGE);
+//        }
+//    }
     /**
      * Método utilizado para importar os dados de legenda, recursos, técnicas e
      * instrumentos de avaliação direto do ambiente de desenvolvimento:
@@ -192,53 +217,7 @@ public class PanelInformacao extends JFrame {
                     } else if (sUrl.matches(".+(bibliografia.xml).*")) {
                         onlineController = new BibliografiaController(url);
                         localController = ControllerFactory.createBibliografiaController();
-                    } 
-//                    else if (sUrl.matches(".+(campus.xml).*")) {
-//                        onlineController = new CampusController(url);
-//                        localController = ControllerFactory.createCampusController();
-//                    } else if (sUrl.matches(".+(calendario.xml).*")) {
-//                        onlineController = new CalendarioController(url);
-//                        localController = ControllerFactory.createCalendarioController();
-//                    } else if (sUrl.matches(".+(atividade.xml).*")) {
-//                        onlineController = new AtividadeController(url);
-//                        localController = ControllerFactory.createAtividadeController();
-//                    } else if (sUrl.matches(".+(periodoLetivo.xml).*")) {
-//                        onlineController = new PeriodoLetivoController(url);
-//                        localController = ControllerFactory.createPeriodoLetivoController();
-//                    } else if (sUrl.matches(".+(semanaLetiva.xml).*")) {
-//                        onlineController = new SemanaLetivaController(url);
-//                        localController = ControllerFactory.createSemanaLetivaController();
-//                    } else if (sUrl.matches(".+(curso.xml).*")) {
-//                        onlineController = new CursoController(url);
-//                        localController = ControllerFactory.createCursoController();
-//                    } else if (sUrl.matches(".+(unidadeCurricular.xml).*")) {
-//                        onlineController = new UnidadeCurricularController(url);
-//                        localController = ControllerFactory.createUnidadeCurricularController();
-//                    } else if (sUrl.matches(".+(referenciaBibliografica.xml).*")) {
-//                        onlineController = new ReferenciaBibliograficaController(url);
-//                        localController = ControllerFactory.createReferenciaBibliograficaController();
-//                    } else if (sUrl.matches(".+(turma.xml).*")) {
-//                        onlineController = new TurmaController(url);
-//                        localController = ControllerFactory.createTurmaController();
-//                    } else if (sUrl.matches(".+(estudante.xml).*")) {
-//                        onlineController = new EstudanteController(url);
-//                        localController = ControllerFactory.createEstudanteController();
-//                    } else if (sUrl.matches(".+(planoDeEnsino.xml).*")) {
-//                        onlineController = new PlanoDeEnsinoController(url);
-//                        localController = ControllerFactory.createPlanoDeEnsinoController();
-//                    } else if (sUrl.matches(".+(detalhamento.xml).*")) {
-//                        onlineController = new DetalhamentoController(url);
-//                        localController = ControllerFactory.createDetalhamentoController();
-//                    } else if (sUrl.matches(".+(metodologia.xml).*")) {
-//                        onlineController = new MetodologiaController(url);
-//                        localController = ControllerFactory.createMetodologiaController();
-//                    } else if (sUrl.matches(".+(objetivoDetalhe.xml).*")) {
-//                        onlineController = new ObjetivoDetalheController(url);
-//                        localController = ControllerFactory.createObjetivoDetalheController();
-//                    } else if (sUrl.matches(".+(horarioAula.xml).*")) {
-//                        onlineController = new HorarioAulaController(url);
-//                        localController = ControllerFactory.createHorarioAulaController();
-//                    }
+                    }
 
                     if (onlineController != null && localController != null) {
                         List list = onlineController.listar();
@@ -295,24 +274,39 @@ public class PanelInformacao extends JFrame {
                 PanelInformacao.this.dispose();
             } else if (source == check) {
                 btProximo.setEnabled(check.isSelected());
+            } else if (source == btAnterior) {
+                if ("panel.docente".equals(selectedCard)) {
+                    selectedCard = "panel.info";
+                    layout.show(cardPanel, selectedCard);
+                    btAnterior.setEnabled(false);
+                } else if ("panel.campus".equals(selectedCard)) {
+                    selectedCard = "panel.docente";
+                    layout.show(cardPanel, selectedCard);
+                }
             } else if (source == btProximo) {
                 if ("panel.info".equals(selectedCard)) {
                     selectedCard = "panel.docente";
                     layout.show(cardPanel, selectedCard);
-                    txtNome.requestFocusInWindow();
+                    btAnterior.setEnabled(true);
+//                    txtNome.requestFocusInWindow();
+                } else if ("panel.docente".equals(selectedCard)) {
+                    selectedCard = "panel.campus";
+                    layout.show(cardPanel, selectedCard);
                 } else {
-                    if ("".equals(txtNome.getText())) {
-                        JOptionPane.showMessageDialog(PanelInformacao.this,
-                                "O nome não foi informado. Favor, preencha o seu nome",
-                                "Aviso",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        txtNome.requestFocusInWindow();
-                        return;
-                    }
-                    /**
-                     * Salva o nome digitado como sendo o nome do docente
-                     */
-                    salvarNome();
+                    selectedCard = "panel.loading";
+                    layout.show(cardPanel, selectedCard);
+//                    if ("".equals(txtNome.getText())) {
+//                        JOptionPane.showMessageDialog(PanelInformacao.this,
+//                                "O nome não foi informado. Favor, preencha o seu nome",
+//                                "Aviso",
+//                                JOptionPane.INFORMATION_MESSAGE);
+//                        txtNome.requestFocusInWindow();
+//                        return;
+//                    }
+//                    /**
+//                     * Salva o nome digitado como sendo o nome do docente
+//                     */
+//                    salvarNome();
                     /**
                      * Importa os dados padrões do sistema
                      */

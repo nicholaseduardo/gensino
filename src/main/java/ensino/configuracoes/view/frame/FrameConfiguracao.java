@@ -11,7 +11,7 @@ import ensino.configuracoes.view.panels.RecursoPanel;
 import ensino.configuracoes.view.panels.InstrumentoAvaliacaoPanel;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.view.models.ConfiguracoesTreeModel;
-import ensino.configuracoes.view.panels.DocentePanel;
+import ensino.configuracoes.view.panels.docente.DocentePanel;
 import ensino.configuracoes.view.panels.nivelEnsino.NivelEnsinoPanel;
 import ensino.defaults.DefaultFormPanel;
 import java.awt.BorderLayout;

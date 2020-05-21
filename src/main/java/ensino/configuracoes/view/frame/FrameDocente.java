@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.view.frame;
 
-import ensino.configuracoes.view.panels.DocentePanel;
+import ensino.configuracoes.view.panels.docente.DocentePanel;
 import javax.swing.JInternalFrame;
 
 /**

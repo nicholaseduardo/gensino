@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.view.panels;
+package ensino.configuracoes.view.panels.campus;
 
 import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;

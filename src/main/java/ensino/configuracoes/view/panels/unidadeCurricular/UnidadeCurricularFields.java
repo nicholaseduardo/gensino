@@ -24,8 +24,8 @@ import ensino.patterns.factory.ControllerFactory;
 import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -172,6 +172,7 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
         referenciasTable = new JTable(referenciaTableModel);
         referenciasTable.getColumnModel().getColumn(0).setCellRenderer(new ReferenciaBibliograficaCellRenderer());
         JScrollPane scroll = new JScrollPane(referenciasTable);
+        scroll.setPreferredSize(new Dimension(480, 240));
         scroll.setAutoscrolls(true);
 
         JPanel panel = createPanel(new BorderLayout());
@@ -202,7 +203,7 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
         txtAulasPraticas = new GenJTextField(10, true);
         lblPraticas.setLabelFor(txtAulasPraticas);
 
-        txtEmenta = new GenJTextArea(10, 50);
+        txtEmenta = new GenJTextArea(5, 50);
         JScrollPane scroll = new JScrollPane(txtEmenta);
         scroll.setBorder(createTitleBorder("Ementa:"));
         scroll.setAutoscrolls(true);
