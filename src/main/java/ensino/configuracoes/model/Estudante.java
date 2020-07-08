@@ -77,7 +77,7 @@ public class Estudante implements Serializable {
     public void delete() {
         deleted = true;
     }
-    
+
     public Boolean isDesligado() {
         return SituacaoEstudante.DESLIGADO.equals(situacaoEstudante);
     }
@@ -92,6 +92,13 @@ public class Estudante implements Serializable {
 
     public EstudanteId getId() {
         return id;
+    }
+
+    public Turma getTurma() {
+        if (id != null) {
+            return id.getTurma();
+        }
+        return null;
     }
 
     public void setId(EstudanteId id) {
@@ -205,8 +212,8 @@ public class Estudante implements Serializable {
             Avaliacao a = avaliacoes.get(i);
             PlanoAvaliacao pa = a.getId().getPlanoAvaliacao();
             /**
-             * Calcula a média somente das notas que não
-             * estejam relacionadas a recuperação
+             * Calcula a média somente das notas que não estejam relacionadas a
+             * recuperação
              */
             if (!pa.getEtapaEnsino().isRecuperacao()) {
                 /**
@@ -287,12 +294,13 @@ public class Estudante implements Serializable {
     public Integer getPresencas(PlanoDeEnsino planoDeEnsino) {
         return getNumeroFrequencia(planoDeEnsino, Presenca.PRESENTE);
     }
-    
+
     public Boolean hasPresenca(Diario diario) {
         List<DiarioFrequencia> ldf = diario.getFrequencias();
-        for(int i = 0; i < ldf.size(); i++ ) {
-            if (Presenca.PRESENTE.equals(ldf.get(i).getPresenca()))
+        for (int i = 0; i < ldf.size(); i++) {
+            if (Presenca.PRESENTE.equals(ldf.get(i).getPresenca())) {
                 return Boolean.TRUE;
+            }
         }
         return Boolean.FALSE;
     }

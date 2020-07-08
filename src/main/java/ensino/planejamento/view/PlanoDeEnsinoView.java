@@ -13,7 +13,10 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.model.Detalhamento;
+import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.PlanoDeEnsino;
+import ensino.planejamento.view.models.PlanoDeEnsinoTableModel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoAvaliacao;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoCharts;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoConteudo;
@@ -23,12 +26,12 @@ import ensino.planejamento.view.panels.config.PlanoDeEnsinoHorarioAula;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoHtml;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoHtmlNotas;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoIdentificacao;
+import ensino.planejamento.view.panels.config.PlanoDeEnsinoImportaConteudo;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoObjetivoEspecifico;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoPlanoAvaliacao;
 import ensino.planejamento.view.panels.permanenciaEstudantil.PermanenciaEstudantilPanel;
 import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
-import ensino.util.types.TabsPlano;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -37,7 +40,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -63,6 +65,7 @@ public class PlanoDeEnsinoView extends GenJPanel {
     private UnidadeCurricular unidadeCurricular;
     private Component frame;
     private JTable table;
+    private PlanoDeEnsinoTableModel tableModel;
 
     private ImageIcon iconInfo = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Info-icon-25px.png")));
     private ImageIcon iconTarget = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "target-icon-25px.png")));
@@ -153,41 +156,42 @@ public class PlanoDeEnsinoView extends GenJPanel {
         lblStatus.resetFontSize(12);
         lblStatus.setForeground(ChartsFactory.darkGreen);
 
-        JScrollPane scroll;
-        List<GenJButton> listaBotoes = new ArrayList();
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.IDEN)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.ESP)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.DET)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.PAVA)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.HOR)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.FREQ)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.CON)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.AVA)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.PE)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.VIEW_PLAN)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.NOTAS)));
-        listaBotoes.add(createButton(new PlanoHandler(TabsPlano.CONTROLE)));
-
         String[] columnNames = {"Plano de Ensino", "Ações"};
+        table = new JTable();
+        setData(lista);
 
-        table = makeTableUI(lista, columnNames,
-                EnumSet.of(AcoesBotoes.DUPLICATE, AcoesBotoes.DELETE),
-                listaBotoes);
-
-        TableColumn tc0 = table.getColumnModel().getColumn(0);
-        tc0.setCellRenderer(new PDECellRender());
-        tc0.setMinWidth(300);
-        scroll = new JScrollPane(table);
-
-        TableColumn tc1 = table.getColumnModel().getColumn(1);
-        tc1.setMinWidth(350);
-
+        JScrollPane scroll = new JScrollPane(table);
         scroll.setAutoscrolls(true);
         JPanel pg = ChartsFactory.createPanel(ChartsFactory.ligthGreen, "Planos de Ensino",
-                ChartsFactory.darkGreen, scroll, new Dimension(1024, 480), panelButton);
+                ChartsFactory.darkGreen, scroll, new Dimension(1024, 640), panelButton);
         pg.add(lblStatus, BorderLayout.PAGE_END);
 
         return pg;
+    }
+
+    private void setData(List<PlanoDeEnsino> lista) {
+        tableModel = new PlanoDeEnsinoTableModel(lista);
+        tableModel.activateButtons();
+        refreshTable();
+    }
+
+    private void refreshTable() {
+        table.setModel(tableModel);
+        if (!tableModel.isEmpty()) {
+            TableColumn tc0 = table.getColumnModel().getColumn(0);
+            tc0.setCellRenderer(new PDECellRender());
+            tc0.setMinWidth(300);
+
+            EnumSet enumSet = EnumSet.of(AcoesBotoes.DUPLICATE, AcoesBotoes.IDEN, AcoesBotoes.ESP,
+                    AcoesBotoes.DET, AcoesBotoes.PAVA, AcoesBotoes.HOR,
+                    AcoesBotoes.FREQ, AcoesBotoes.CON, AcoesBotoes.AVA,
+                    AcoesBotoes.PE, AcoesBotoes.VIEW_PLAN, AcoesBotoes.NOTAS,
+                    AcoesBotoes.CONTROLE, AcoesBotoes.DELETE);
+            TableColumn col1 = table.getColumnModel().getColumn(1);
+            col1.setMinWidth(350);
+            col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
+            col1.setCellEditor(new ButtonsEditor(table, null, enumSet));
+        }
     }
 
     private void reloadTable() {
@@ -261,96 +265,122 @@ public class PlanoDeEnsinoView extends GenJPanel {
         }
     }
 
-    private JDialog createDialog() {
-        JDialog dialog = new JDialog();
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setModal(true);
-        return dialog;
-    }
-
-    protected class PlanoHandler extends ActionHandler {
-
-        private final TabsPlano tabsPlano;
-
-        public PlanoHandler(TabsPlano tabsPlano) {
-            super(tabsPlano.toString(),
-                    TabsPlano.IDEN.equals(tabsPlano) ? iconInfo
-                    : TabsPlano.DET.equals(tabsPlano) ? iconDetail
-                    : TabsPlano.ESP.equals(tabsPlano) ? iconTarget
-                    : TabsPlano.PAVA.equals(tabsPlano) ? iconPlan
-                    : TabsPlano.HOR.equals(tabsPlano) ? iconTime
-                    : TabsPlano.FREQ.equals(tabsPlano) ? iconFrequency
-                    : TabsPlano.CON.equals(tabsPlano) ? iconContent
-                    : TabsPlano.AVA.equals(tabsPlano) ? iconEvaluation
-                    : TabsPlano.VIEW_PLAN.equals(tabsPlano) ? iconReport
-                    : TabsPlano.NOTAS.equals(tabsPlano) ? iconReport
-                    : TabsPlano.CONTROLE.equals(tabsPlano) ? iconChart : null);
-            this.tabsPlano = tabsPlano;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent ae) {
+    @Override
+    public void onDefaultButton(ActionEvent e, Object o) {
+        if (o != null && o instanceof JTable) {
+            PlanoDeEnsino planoDeEnsino = null;
+            Object obj = getObjectFromTable((JTable) o);
+            planoDeEnsino = (PlanoDeEnsino) obj;
             JDialog dialog = createDialog();
             DefaultFieldsPanel panel = null;
 
-            switch (tabsPlano) {
-                case IDEN:
-                    panel = new PlanoDeEnsinoIdentificacao(unidadeCurricular, dialog);
-                    break;
-                case DET:
-                    panel = new PlanoDeEnsinoDetalhamentos(dialog);
-                    break;
-                case ESP:
-                    panel = new PlanoDeEnsinoObjetivoEspecifico(dialog);
-                    break;
-                case PAVA:
-                    panel = new PlanoDeEnsinoPlanoAvaliacao(dialog);
-                    break;
-                case HOR:
-                    panel = new PlanoDeEnsinoHorarioAula(dialog);
-                    break;
-                case FREQ:
-                    panel = new PlanoDeEnsinoFrequencia(dialog);
-                    break;
-                case CON:
-                    panel = new PlanoDeEnsinoConteudo(dialog);
-                    break;
-                case AVA:
-                    panel = new PlanoDeEnsinoAvaliacao(dialog);
-                    break;
-                case VIEW_PLAN:
-                    panel = new PlanoDeEnsinoHtml(dialog);
-                    break;
-                case NOTAS:
-                    panel = new PlanoDeEnsinoHtmlNotas(dialog);
-                    break;
-                case CONTROLE:
-                    panel = new PlanoDeEnsinoCharts(dialog);
-                    break;
-                default:
-                    break;
-            }
-            PlanoDeEnsino planoDeEnsino = null;
-            if (object != null && object instanceof JTable) {
-                Object o = getObjectFromTable((JTable) object);
-                if (o instanceof PlanoDeEnsino) {
-                    planoDeEnsino = (PlanoDeEnsino) o;
+            String command = e.getActionCommand();
+            if (command.equals(AcoesBotoes.IDEN.toString())) {
+                panel = new PlanoDeEnsinoIdentificacao(unidadeCurricular, dialog);
+            } else if (command.equals(AcoesBotoes.DET.toString())) {
+                /**
+                 * Cria o detalhamento caso ainda não exista
+                 */
+                if (planoDeEnsino.getDetalhamentos().isEmpty()) {
+                    if (planoDeEnsino.getPeriodoLetivo().getSemanasLetivas().isEmpty()) {
+                        showWarningMessage("O Período Letivo selecionado não tem "
+                                + "Semanas Letivas vinculadas.\n"
+                                + "Para resolver esse problema, acesse "
+                                + "o calendário e crie semanas letivas.");
+                        return;
+                    }
+                    /**
+                     * Cria a estrutura de plano de ensino com base na estrutura
+                     * hierárquica de conteúdo definido na unidade curricular.
+                     */
+                    if (confirmDialog(String.format("Deseja montar o detalhamento do plano de ensino a partir\n"
+                            + "do conteúdo proposto na Unidade Curricular %s?",
+                            planoDeEnsino.getUnidadeCurricular().getNome()))) {
+
+                        List<HorarioAula> lhorarios = planoDeEnsino.getHorarios();
+                        if (lhorarios.isEmpty()) {
+                            showInformationMessage("Para usar essa funcionalidade você deve cadastrar"
+                                    + "\nseus horários de aula no plano de ensino!");
+                            return;
+                        }
+                        UnidadeCurricular uc = planoDeEnsino.getUnidadeCurricular();
+                        if (uc.getObjetivos().isEmpty()) {
+                            showInformationMessage("Para usar essa funcionalidade você deve cadastrar"
+                                    + "\nos objetivos na Unidade Curricular " + uc.getNome().toUpperCase()
+                                    + "!");
+                            return;
+                        }
+                        if (uc.getConteudos().isEmpty()) {
+                            showInformationMessage("Para usar essa funcionalidade você deve cadastrar"
+                                    + "\nos conteúdos na Unidade Curricular " + uc.getNome().toUpperCase()
+                                    + "!");
+                            return;
+                        }
+
+                        JDialog d = new JDialog();
+                        d.setModal(true);
+                        d.setLocationRelativeTo(null);
+                        d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+                        PlanoDeEnsinoImportaConteudo peic = new PlanoDeEnsinoImportaConteudo(d, planoDeEnsino);
+                        d.getContentPane().add(peic);
+                        d.pack();
+                        d.setVisible(true);
+                    } else {
+                        /**
+                         * Cria o detalhamento com base nas semanas letivas e
+                         * deixa o usuário realizar o preenchimento manualmente.
+                         */
+                        planoDeEnsino.criarDetalhamentos();
+                        List<Detalhamento> listaDetalhamentos = planoDeEnsino.getDetalhamentos();
+                        listaDetalhamentos.forEach(d -> {
+                            try {
+                                ControllerFactory.createDetalhamentoController().salvar(d);
+                            } catch (Exception ex) {
+                                showErrorMessage(ex);
+                            }
+                        });
+                    }
                 }
+                panel = new PlanoDeEnsinoDetalhamentos(dialog);
+            } else if (command.equals(AcoesBotoes.ESP.toString())) {
+                panel = new PlanoDeEnsinoObjetivoEspecifico(dialog);
+            } else if (command.equals(AcoesBotoes.PAVA.toString())) {
+                panel = new PlanoDeEnsinoPlanoAvaliacao(dialog);
+            } else if (command.equals(AcoesBotoes.HOR.toString())) {
+                panel = new PlanoDeEnsinoHorarioAula(dialog);
+            } else if (command.equals(AcoesBotoes.FREQ.toString())) {
+                panel = new PlanoDeEnsinoFrequencia(dialog);
+            } else if (command.equals(AcoesBotoes.CON.toString())) {
+                panel = new PlanoDeEnsinoConteudo(dialog);
+            } else if (command.equals(AcoesBotoes.AVA.toString())) {
+                panel = new PlanoDeEnsinoAvaliacao(dialog);
+            } else if (command.equals(AcoesBotoes.VIEW_PLAN.toString())) {
+                panel = new PlanoDeEnsinoHtml(dialog);
+            } else if (command.equals(AcoesBotoes.NOTAS.toString())) {
+                panel = new PlanoDeEnsinoHtmlNotas(dialog);
+            } else if (command.equals(AcoesBotoes.CONTROLE.toString())) {
+                panel = new PlanoDeEnsinoCharts(dialog);
+            } else if (command.equals(AcoesBotoes.PE.toString())) {
+                PermanenciaEstudantilPanel p = new PermanenciaEstudantilPanel(dialog, planoDeEnsino);
+                dialog.add(p);
+                dialog.pack();
+                dialog.setVisible(true);
             }
             if (panel != null) {
                 panel.setFieldValues(planoDeEnsino);
                 dialog.add(panel);
                 dialog.pack();
                 dialog.setVisible(true);
-            } else if (TabsPlano.PE.equals(tabsPlano)) {
-                PermanenciaEstudantilPanel p = new PermanenciaEstudantilPanel(dialog, planoDeEnsino);
-                dialog.add(p);
-                dialog.pack();
-                dialog.setVisible(true);
             }
-
         }
+    }
 
+    private JDialog createDialog() {
+        JDialog dialog = new JDialog();
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setModal(true);
+        return dialog;
     }
 
     private class PDECellRender extends GenCellRenderer {
@@ -363,8 +393,6 @@ public class PlanoDeEnsinoView extends GenJPanel {
                 PlanoDeEnsino plano = (PlanoDeEnsino) value;
 
                 JPanel panel = createPlanoPanel(plano);
-
-                table.setRowHeight(panel.getPreferredSize().height + 5);
                 panel.setOpaque(true);
                 return panel;
             } else {

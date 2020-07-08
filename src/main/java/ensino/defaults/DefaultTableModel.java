@@ -40,6 +40,10 @@ public abstract class DefaultTableModel<T> extends AbstractTableModel {
         this.hasButtons = hasButtons;
     }
 
+    public void activateButtons() {
+        this.hasButtons = Boolean.TRUE;
+    }
+
     public boolean isEmpty() {
         return getRowCount() == 0;
     }
@@ -115,14 +119,16 @@ public abstract class DefaultTableModel<T> extends AbstractTableModel {
     }
 
     public void removeRow(int row) {
-        lista.remove(row);
-        fireTableRowsDeleted(row, row);
+        if (lista.remove(lista.get(row))) {
+            fireTableRowsDeleted(row, row);
+        }
     }
 
     @Override
     public boolean isCellEditable(int linha, int coluna) {
-        if (hasButtons && coluna == 1)
+        if (hasButtons && coluna == 1) {
             return true;
+        }
         return false;
     }
 

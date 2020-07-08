@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -28,7 +27,7 @@ public class Turma implements Serializable {
     @Column(name = "ano")
     private Integer ano;
     
-    @OneToMany(mappedBy = "id.turma", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.turma", fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderBy("nome ASC")
     private List<Estudante> estudantes;
 

@@ -73,6 +73,18 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
             });
         }
 
+        if (p.get("conteudos") != null) {
+            ((List<Conteudo>) p.get("conteudos")).forEach((c) -> {
+                o.addConteudo(c);
+            });
+        }
+
+        if (p.get("objetivos") != null) {
+            ((List<ObjetivoUC>) p.get("objetivos")).forEach((c) -> {
+                o.addObjetivo(c);
+            });
+        }
+
         if (p.get("planosDeEnsino") != null) {
             ((List<PlanoDeEnsino>) p.get("planosDeEnsino")).forEach((pde) -> {
                 o.addPlanoDeEnsino(pde);
@@ -91,9 +103,22 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
                 p.get("cargaHoraria"),
                 p.get("ementa")
         );
+        
         if (p.get("referenciasBibliograficas") != null) {
             ((List<ReferenciaBibliografica>) p.get("referenciasBibliograficas")).forEach((rb) -> {
                 o.addReferenciaBibliografica(rb);
+            });
+        }
+
+        if (p.get("conteudos") != null) {
+            ((List<Conteudo>) p.get("conteudos")).forEach((c) -> {
+                o.addConteudo(c);
+            });
+        }
+
+        if (p.get("objetivos") != null) {
+            ((List<ObjetivoUC>) p.get("objetivos")).forEach((c) -> {
+                o.addObjetivo(c);
             });
         }
 

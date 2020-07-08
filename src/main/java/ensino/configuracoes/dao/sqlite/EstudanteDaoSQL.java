@@ -26,6 +26,9 @@ public class EstudanteDaoSQL extends AbstractDaoSQL<Estudante> {
     public void save(Estudante o) {
         if (o.getId().getId() == null) {
             o.getId().setId(nextVal(o));
+            o.getTurma().addEstudante(o);
+        } else {
+            o.getTurma().updateEstudante(o);
         }
         
         if (findById(o.getId()) == null) {

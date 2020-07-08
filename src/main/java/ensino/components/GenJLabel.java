@@ -72,10 +72,11 @@ public class GenJLabel extends JLabel {
      *
      * @param size
      */
-    public void resetFontSize(int size) {
+    public GenJLabel resetFontSize(int size) {
         Font fieldFont = getFont();
         formatFont(fieldFont.getFontName(),
                 fieldFont.getStyle(), size);
+        return this;
     }
 
     public void toItalic() {

@@ -51,8 +51,7 @@ public class PlanoDeEnsino implements Serializable {
     private Integer id;
 
     /**
-     * Data de criação.
-     * Atributo utilizado para registrar da data de horário do
+     * Data de criação. Atributo utilizado para registrar da data de horário do
      * cadastro do plano de ensino
      */
     @Column(name = "criacao", nullable = true)
@@ -60,9 +59,8 @@ public class PlanoDeEnsino implements Serializable {
     private Date criacao;
 
     /**
-     * Data de fechamento.
-     * Atributo utilizado para registrar da data de horário do
-     * cadastro do plano de ensino
+     * Data de fechamento. Atributo utilizado para registrar da data de horário
+     * do cadastro do plano de ensino
      */
     @Column(name = "fechamento", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -104,22 +102,24 @@ public class PlanoDeEnsino implements Serializable {
     })
     private Turma turma;
 
-    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Objetivo> objetivos;
-    
-    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, 
+            cascade = {CascadeType.REMOVE, CascadeType.DETACH},
+            orphanRemoval = true)
     private List<Detalhamento> detalhamentos;
 
-    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PlanoAvaliacao> planoAvaliacoes;
 
-    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<HorarioAula> horarios;
 
-    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Diario> diarios;
 
-    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PermanenciaEstudantil> permanencias;
 
     public PlanoDeEnsino() {
@@ -129,7 +129,7 @@ public class PlanoDeEnsino implements Serializable {
         this.horarios = new ArrayList();
         this.diarios = new ArrayList();
         this.permanencias = new ArrayList();
-        
+
         criacao = new Date();
     }
 
@@ -285,7 +285,7 @@ public class PlanoDeEnsino implements Serializable {
     public void setDiarios(List<Diario> diarios) {
         this.diarios = diarios;
     }
-    
+
     public void clearPermanencias() {
         this.permanencias.clear();
     }
@@ -324,7 +324,7 @@ public class PlanoDeEnsino implements Serializable {
              * Variável utilizada para verificar se o dia é letivo
              */
             Calendario calendario = periodoLetivo.getCalendario();
-            
+
             // Campo utilizado para controlar os dias de aula
             Calendar cal = Calendar.getInstance();
 
@@ -349,7 +349,7 @@ public class PlanoDeEnsino implements Serializable {
                              * Antes de criar o diário, deve-se verificar se a
                              * data é um dia letivo
                              */
-                            
+
                             Diario diario = DiarioFactory.getInstance().createObject(
                                     new DiarioId(idDiario++, this), cal.getTime(),
                                     horarioAula.getHorario(), "", "",
@@ -398,10 +398,9 @@ public class PlanoDeEnsino implements Serializable {
                 Detalhamento detalhamento = DetalhamentoFactory.getInstance()
                         .createObject(
                                 new DetalhamentoId(sl.getId().getId(), this),
-                            0, 0,
-                            "", "");
+                                0, 0, "", "", null);
                 detalhamento.setSemanaLetiva(sl);
-                
+
                 addDetalhamento(detalhamento);
             }
         }
@@ -470,28 +469,28 @@ public class PlanoDeEnsino implements Serializable {
                 id, turma != null ? turma.getNome() : "",
                 periodoLetivo != null ? periodoLetivo.getDescricao() : "");
     }
-    
+
     public PlanoDeEnsino clone() {
         PlanoDeEnsino o = PlanoDeEnsinoFactory.getInstance().createObject(
                 null, objetivoGeral, recuperacao);
-        
+
         o.setDocente(docente);
         o.setUnidadeCurricular(unidadeCurricular);
         o.setPeriodoLetivo(periodoLetivo);
         o.setTurma(turma);
         o.criarDetalhamentos();
         List<Detalhamento> lclone = o.getDetalhamentos();
-        for(int i = 0; i < detalhamentos.size(); i++) {
+        for (int i = 0; i < detalhamentos.size(); i++) {
             Detalhamento d = detalhamentos.get(i);
             Detalhamento clone = lclone.get(i);
-            
+
             clone.setConteudo(d.getConteudo());
             clone.setObservacao(d.getObservacao());
             clone.setMetodologias(d.getMetodologias());
             clone.setNAulasPraticas(d.getNAulasPraticas());
             clone.setNAulasTeoricas(d.getNAulasTeoricas());
         }
-        
+
         return o;
     }
 

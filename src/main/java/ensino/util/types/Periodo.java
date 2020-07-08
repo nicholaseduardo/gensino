@@ -94,6 +94,16 @@ public class Periodo implements Serializable {
      * @return
      */
     public Integer getDiasEntrePeriodo() {
+        Period p = getPeriod();
+        return p.getDays();
+    }
+    
+    public Integer getMesesEntrePeriodo() {
+        Period p = getPeriod();
+        return p.getMonths();
+    }
+    
+    private Period getPeriod() {
         LocalDate lde, late;
         lde = Instant.ofEpochMilli(de.getTime())
                 .atZone(ZoneId.systemDefault())
@@ -101,8 +111,7 @@ public class Periodo implements Serializable {
         late = Instant.ofEpochMilli(ate.getTime())
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
-        Period p = Period.between(lde, late);
-        return p.getDays();
+        return Period.between(lde, late);
     }
 
     public Boolean contemData(Date date) {

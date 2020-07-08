@@ -53,7 +53,7 @@ public class ChartsFactory {
     public static Color ardoziaBlueColor = new Color(0, 127, 255);
     public static Color amberColor = new Color(240, 163, 10, 50);
     public static Color lightBlue = new Color(166, 218, 247);
-    public static Color ligthGreen = new Color(177, 247, 166);
+    public static Color ligthGreen = new Color(177, 247, 166, 70);
     public static Color darkGreen = new Color(9, 112, 62);
     
     private static Dimension scaleDimension(Dimension d, Double s) {

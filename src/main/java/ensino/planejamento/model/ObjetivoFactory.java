@@ -5,6 +5,7 @@
  */
 package ensino.planejamento.model;
 
+import ensino.configuracoes.model.ObjetivoUC;
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
 import org.w3c.dom.Document;
@@ -52,7 +53,8 @@ public class ObjetivoFactory implements BeanFactory<Objetivo> {
             o.getId().setSequencia((Integer) args[i++]);
         }
         o.setDescricao((String) args[i++]);
-        if (args.length == 3) {
+        o.setObjetivoUC((ObjetivoUC) args[i++]);
+        if (args.length == 4) {
             o.getId().setPlanoDeEnsino((PlanoDeEnsino) args[i]);
         }
 
@@ -71,7 +73,8 @@ public class ObjetivoFactory implements BeanFactory<Objetivo> {
         Objetivo o = createObject(
                 new ObjetivoId((Integer) p.get("sequencia"),
                 (PlanoDeEnsino) p.get("planoDeEnsino")),
-                p.get("descricao"));
+                p.get("descricao"),
+                p.get("objetivoUC"));
 
         return o;
     }

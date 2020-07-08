@@ -63,7 +63,7 @@ public class TurmaFieldsPanel extends DefaultFieldsPanel {
         setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Identificação", createIdentificacaoPanel());
-        tfpe = new TurmaFieldsPanelEstudante();
+        tfpe = new TurmaFieldsPanelEstudante(null);
         tabbedPane.addTab("Estudantes", tfpe);
         add(tabbedPane);
     }

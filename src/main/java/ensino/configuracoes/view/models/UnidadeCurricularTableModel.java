@@ -26,15 +26,14 @@ public class UnidadeCurricularTableModel extends DefaultTableModel<UnidadeCurric
     }
     
     public UnidadeCurricularTableModel(List<UnidadeCurricular> lista) {
-        this(lista, new String[] {"Nome da U.C."});
+        this(lista, new String[] {"Nome da U.C.", "Ações"});
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        UnidadeCurricular unidade = (UnidadeCurricular) getRow(rowIndex);
         switch(columnIndex) {
-            case 0: return unidade.getNome();
-            default: return null;
+            case 0: return getRow(rowIndex);
+            default: return "Buttons";
         }
     }
     

@@ -9,6 +9,7 @@ import ensino.configuracoes.dao.sqlite.AtividadeDaoSQL;
 import ensino.configuracoes.dao.sqlite.BibliografiaDaoSQL;
 import ensino.configuracoes.dao.sqlite.CalendarioDaoSQL;
 import ensino.configuracoes.dao.sqlite.CampusDaoSQL;
+import ensino.configuracoes.dao.sqlite.ConteudoDaoSQL;
 import ensino.configuracoes.dao.sqlite.CursoDaoSQL;
 import ensino.configuracoes.dao.sqlite.DocenteDaoSQL;
 import ensino.configuracoes.dao.sqlite.EstudanteDaoSQL;
@@ -16,6 +17,8 @@ import ensino.configuracoes.dao.sqlite.EtapaEnsinoDaoSQL;
 import ensino.configuracoes.dao.sqlite.InstrumentoAvaliacaoDaoSQL;
 import ensino.configuracoes.dao.sqlite.LegendaDaoSQL;
 import ensino.configuracoes.dao.sqlite.NivelEnsinoDaoSQL;
+import ensino.configuracoes.dao.sqlite.ObjetivoUCConteudoDaoSQL;
+import ensino.configuracoes.dao.sqlite.ObjetivoUCDaoSQL;
 import ensino.configuracoes.dao.sqlite.PeriodoLetivoDaoSQL;
 import ensino.configuracoes.dao.sqlite.RecursoDaoSQL;
 import ensino.configuracoes.dao.sqlite.ReferenciaBibliograficaDaoSQL;
@@ -221,5 +224,17 @@ public class DaoFactory {
     public static DaoPattern createReferenciaBibliograficaDao() throws Exception {
          return isXML() ? ReferenciaBibliograficaDaoXML.getInstance() :
                 new ReferenciaBibliograficaDaoSQL();
+    }
+    
+    public static DaoPattern createConteudoDao() throws Exception {
+         return !isXML() ? new ConteudoDaoSQL() : null;
+    }
+    
+    public static DaoPattern createObjetivoUCDao() throws Exception {
+         return !isXML() ? new ObjetivoUCDaoSQL() : null;
+    }
+    
+    public static DaoPattern createObjetivoUCConteudoDao() throws Exception {
+         return !isXML() ? new ObjetivoUCConteudoDaoSQL() : null;
     }
 }

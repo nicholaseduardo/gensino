@@ -64,38 +64,22 @@ public enum TabsPlano {
     @Override
     public String toString() {
         switch (index) {
-            case 0:
-                return "Identificação";
-            case 1:
-                return "Ementa";
-            case 2:
-                return "Referências bibliográficas";
-            case 3:
-                return "Recup. da aprendizagem";
-            case 4:
-                return "Objetivos";
-            case 5:
-                return "Obj. Específicos";
-            case 6:
-                return "Detalhamento";
-            case 7:
-                return "Plano de Avaliações";
-            case 8:
-                return "Horários das aulas";
-            case 9:
-                return "Conteúdo";
-            case 10:
-                return "Frequência";
-            case 11:
-                return "Avaliações";
-            case 12:
-                return "Plano de Ensino";
-            case 13:
-                return "Notas do Diário";
-            case 14:
-                return "Painel de Controle";
-            case 15:
-                return "Permanência Estudantil";
+            case 0: return "Identificação";
+            case 1: return "Ementa";
+            case 2: return "Referências bibliográficas";
+            case 3: return "Recup. da aprendizagem";
+            case 4: return "Objetivos";
+            case 5: return "Obj. Específicos";
+            case 6: return "Detalhamento";
+            case 7: return "Plano de Avaliações";
+            case 8: return "Horários das aulas";
+            case 9: return "Conteúdo";
+            case 10: return "Frequência";
+            case 11: return "Avaliações";
+            case 12: return "Plano de Ensino";
+            case 13: return "Notas do Diário";
+            case 14: return "Painel de Controle";
+            case 15: return "Permanência Estudantil";
         }
         return null;
     }

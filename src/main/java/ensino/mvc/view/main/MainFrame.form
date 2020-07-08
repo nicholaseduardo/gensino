@@ -103,38 +103,6 @@
                 </MenuItem>
               </SubComponents>
             </Menu>
-            <Menu class="javax.swing.JMenu" name="jMenu3">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Cursos"/>
-              </Properties>
-              <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="menuItemCurso">
-                  <Properties>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/img/courses-icon-25px.png"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Cursos"/>
-                  </Properties>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="menuItemTurma">
-                  <Properties>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/img/classroom-25px.png"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Turma"/>
-                  </Properties>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="menuItemUnidadeCurricular">
-                  <Properties>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/img/school-icon-25px.png"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" value="Unidade Curricular"/>
-                    <Property name="actionCommand" type="java.lang.String" value="UnidadeCurricular"/>
-                  </Properties>
-                </MenuItem>
-              </SubComponents>
-            </Menu>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="separadorArquivo">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemSair">

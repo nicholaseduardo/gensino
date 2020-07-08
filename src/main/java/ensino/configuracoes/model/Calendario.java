@@ -95,8 +95,7 @@ public class Calendario implements Serializable {
 
     public Boolean isDiaLetivo(Date dia) {
         Atividade o = this.getAtividadePorDia(dia);
-        
-        return (o == null || o.getLegenda().isLetivo());
+        return (o == null || (o != null && (o.getLegenda().isLetivo() || o.getLegenda().isInformativo())));
     }
 
     public void addPeriodoLetivo(PeriodoLetivo periodoLetivo) {

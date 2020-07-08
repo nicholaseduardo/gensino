@@ -15,9 +15,15 @@ import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoFactory;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.UnidadeCurricular;
+import ensino.configuracoes.view.models.TurmaTableModel;
+import ensino.configuracoes.view.models.UnidadeCurricularTableModel;
 import ensino.configuracoes.view.panels.curso.CursoFields;
 import ensino.configuracoes.view.panels.turma.TurmaFields;
+import ensino.configuracoes.view.panels.turma.TurmaFieldsPanelEstudante;
 import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularFields;
+import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularFieldsConteudo;
+import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularFieldsReferencias;
+import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularFieldsObjetivoUCConteudo;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.view.frame.FrameViewPlanoDeEnsino;
 import ensino.reports.ChartsFactory;
@@ -27,13 +33,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.EnumSet;
 import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
@@ -44,6 +51,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -54,7 +62,16 @@ public class AreaDeTrabalhoView extends GenJPanel {
     private JDesktopPane desktop;
 
     private JTable tableUC;
+    private UnidadeCurricularTableModel tableUCModel;
+    private GenJLabel lblUnidades;
+
     private JTable tableTurma;
+    private TurmaTableModel tableTurmaModel;
+    private GenJLabel lblTurmas;
+
+    private GenJLabel lblCurso;
+    private GenJLabel lblNivelEnsino;
+
     private JTabbedPane tabs;
 
     private Campus campusVigente;
@@ -64,6 +81,7 @@ public class AreaDeTrabalhoView extends GenJPanel {
         super();
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         campusVigente = ControllerFactory.getCampusVigente();
+
         this.frame = frame;
 
         initComponents();
@@ -98,23 +116,55 @@ public class AreaDeTrabalhoView extends GenJPanel {
         lblReferencias.resetFontSize(12);
         lblReferencias.setIcon(new ImageIcon(getClass().getResource("/img/library-icon-15px.png")));
 
-        GenJLabel lblNAulas = new GenJLabel(
-                String.format("[Aulas Teórico/Práticas: %d/%d]",
-                        uc.getnAulasTeoricas(), uc.getnAulasPraticas()),
-                JLabel.RIGHT);
-        lblNAulas.resetFontSize(12);
+        GenJLabel lblObjetivos = new GenJLabel(String.format("Objetivos: %d", uc.getObjetivos().size()), JLabel.RIGHT);
+        lblObjetivos.resetFontSize(12);
+        lblObjetivos.setIcon(new ImageIcon(getClass().getResource("/img/target-icon-15px.png")));
+
+        GenJLabel lblConteudos = new GenJLabel(String.format("Conteúdo Base: %d", uc.getConteudos().size()), JLabel.LEFT);
+        lblConteudos.resetFontSize(12);
+        lblConteudos.setIcon(new ImageIcon(getClass().getResource("/img/Clipboard-icon-15px.png")));
 
         JPanel panelPlanos = createPanel(new GridLayout(0, 2));
         panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblTitulo));
         panelPlanos.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblReferencias));
         panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblPlanos));
-        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblNAulas));
+        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblObjetivos));
+        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblConteudos));
 
         JPanel panel = createPanel();
         panel.setLayout(new BorderLayout());
         panel.add(panelPlanos, BorderLayout.CENTER);
 
         return panel;
+    }
+
+    private void setUCData(Curso curso) {
+        try {
+            List<UnidadeCurricular> data = ControllerFactory.createUnidadeCurricularController().listar(curso);
+            tableUCModel = new UnidadeCurricularTableModel(data);
+            tableUCModel.activateButtons();
+            refreshTableUC();
+            updateLabelUC(data.size());
+        } catch (Exception ex) {
+            showErrorMessage(ex);
+        }
+    }
+
+    private void refreshTableUC() {
+        tableUC.setModel(tableUCModel);
+        TableColumnModel tcm = tableUC.getColumnModel();
+        TableColumn col0 = tcm.getColumn(0);
+        col0.setCellRenderer(new CellRenderer());
+
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.PLAN,
+                AcoesBotoes.REFBIB, AcoesBotoes.CONT_EMENTA, AcoesBotoes.ESP,
+                AcoesBotoes.DELETE);
+
+        TableColumn col1 = tcm.getColumn(1);
+        col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
+        col1.setCellEditor(new ButtonsEditor(tableUC, null, enumSet));
+
+        tableUC.repaint();
     }
 
     private JPanel createUCsPanel(Curso curso) {
@@ -124,12 +174,8 @@ public class AreaDeTrabalhoView extends GenJPanel {
         lblStatus.resetFontSize(12);
         lblStatus.setForeground(ChartsFactory.ardoziaBlueColor);
 
-        String[] columnNames = {"Nome da U.C.", "Ações"};
-        tableUC = makeTableUI(lista, columnNames, EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.PLAN, AcoesBotoes.DELETE));
-
-        TableColumn tc0 = tableUC.getColumnModel().getColumn(0);
-        tc0.setCellRenderer(new CellRenderer());
-        tc0.setMinWidth(420);
+        tableUC = new JTable();
+        setUCData(curso);
 
         JScrollPane scrollUC = new JScrollPane(tableUC);
         scrollUC.setAutoscrolls(true);
@@ -174,6 +220,32 @@ public class AreaDeTrabalhoView extends GenJPanel {
         return panel;
     }
 
+    private void setTurmaData(Curso curso) {
+        try {
+            List<Turma> data = ControllerFactory.createTurmaController().listar(curso);
+            tableTurmaModel = new TurmaTableModel(data);
+            tableTurmaModel.activateButtons();
+            refreshTableTurma();
+            updateLabelTurma(data.size());
+        } catch (Exception ex) {
+            showErrorMessage(ex);
+        }
+    }
+
+    private void refreshTableTurma() {
+        tableTurma.setModel(tableTurmaModel);
+        TableColumnModel tcm = tableTurma.getColumnModel();
+        TableColumn col0 = tcm.getColumn(0);
+        col0.setCellRenderer(new CellRenderer());
+
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.ESTUD, AcoesBotoes.DELETE);
+
+        TableColumn col1 = tcm.getColumn(1);
+        col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
+        col1.setCellEditor(new GenJPanel.ButtonsEditor(tableTurma, null, enumSet));
+        tableTurma.repaint();
+    }
+
     private JPanel createTurmasPanel(Curso curso) {
         List<Turma> lista = curso.getTurmas();
 
@@ -181,12 +253,8 @@ public class AreaDeTrabalhoView extends GenJPanel {
         lblStatus.resetFontSize(10);
         lblStatus.setForeground(ChartsFactory.ardoziaBlueColor);
 
-        String[] columnNames = {"Turma", "Ações"};
-        tableTurma = makeTableUI(lista, columnNames, EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.DELETE));
-
-        TableColumn tc0 = tableTurma.getColumnModel().getColumn(0);
-        tc0.setCellRenderer(new CellRenderer());
-        tc0.setMinWidth(420);
+        tableTurma = new JTable();
+        setTurmaData(curso);
 
         JScrollPane scroll = new JScrollPane(tableTurma);
         scroll.setAutoscrolls(true);
@@ -202,6 +270,21 @@ public class AreaDeTrabalhoView extends GenJPanel {
         return pg;
     }
 
+    private void updateLabelUC(Integer nUCs) {
+        String sUnidades = "%d Und. Curricular" + (nUCs > 1 ? "es" : "");
+        lblUnidades.setText(String.format(sUnidades, nUCs));
+    }
+
+    private void updateLabelTurma(Integer nTurmas) {
+        String sUnidades = "%d Turma" + (nTurmas > 1 ? "s" : "");
+        lblTurmas.setText(String.format(sUnidades, nTurmas));
+    }
+
+    private void updateLabelCurso(Curso curso) {
+        lblCurso.setText(curso.getNome());
+        lblNivelEnsino.setText(curso.getNivelEnsino().getNome());
+    }
+
     private JPanel createCursoPanel(Curso curso) {
         URL urlCurso = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "courses-icon-100px.png"));
         URL urlUnidade = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "school-icon-25px.png"));
@@ -211,26 +294,28 @@ public class AreaDeTrabalhoView extends GenJPanel {
         ImageIcon iconUnidade = new ImageIcon(urlUnidade);
         ImageIcon iconTurma = new ImageIcon(urlTurma);
 
-        GenJLabel lblTitulo = new GenJLabel(curso.getNome(), iconCurso, JLabel.CENTER);
-        lblTitulo.setVerticalTextPosition(JLabel.BOTTOM);
-        lblTitulo.setHorizontalTextPosition(JLabel.CENTER);
+        lblCurso = new GenJLabel(curso.getNome(), iconCurso, JLabel.CENTER);
+        lblCurso.setVerticalTextPosition(JLabel.BOTTOM);
+        lblCurso.setHorizontalTextPosition(JLabel.CENTER);
 
-        Integer nUnidades = curso.getUnidadesCurriculares().size(),
-                nTurmas = curso.getTurmas().size();
-        String sUnidades = "%d Und. Curricular" + (nUnidades > 1 ? "es" : "");
-        String sTurmas = "%d Turma" + (nTurmas > 1 ? "s" : "");
+        lblNivelEnsino = new GenJLabel(curso.getNivelEnsino().getNome(), JLabel.CENTER);
+        lblNivelEnsino.resetFontSize(12);
 
-        GenJLabel lblUnidades = new GenJLabel(String.format(sUnidades, nUnidades),
-                iconUnidade, JLabel.RIGHT);
+        JPanel panelCursoTitle = createPanel(new BorderLayout());
+        panelCursoTitle.add(lblCurso, BorderLayout.CENTER);
+        panelCursoTitle.add(lblNivelEnsino, BorderLayout.PAGE_END);
+
+        lblUnidades = new GenJLabel(iconUnidade, JLabel.RIGHT);
         lblUnidades.resetFontSize(12);
         JPanel panelLabelUnidade = createPanel(new FlowLayout(FlowLayout.RIGHT));
         panelLabelUnidade.add(lblUnidades);
+        updateLabelUC(curso.getUnidadesCurriculares().size());
 
-        GenJLabel lblTurmas = new GenJLabel(String.format(sTurmas, nTurmas),
-                iconTurma, JLabel.LEFT);
+        lblTurmas = new GenJLabel(iconTurma, JLabel.LEFT);
         lblTurmas.resetFontSize(12);
         JPanel panelLabelTurma = createPanel(new FlowLayout(FlowLayout.LEFT));
         panelLabelTurma.add(lblTurmas);
+        updateLabelTurma(curso.getTurmas().size());
 
         JPanel panelDados = createPanel();
         panelDados.setLayout(new GridLayout(1, 2, 10, 10));
@@ -248,7 +333,7 @@ public class AreaDeTrabalhoView extends GenJPanel {
 
         JPanel panelTitulo = createPanel();
         panelTitulo.setLayout(new BorderLayout(5, 5));
-        panelTitulo.add(lblTitulo, BorderLayout.PAGE_START);
+        panelTitulo.add(panelCursoTitle, BorderLayout.PAGE_START);
         panelTitulo.add(panelButton, BorderLayout.CENTER);
         panelTitulo.add(panelDados, BorderLayout.PAGE_END);
 
@@ -293,30 +378,18 @@ public class AreaDeTrabalhoView extends GenJPanel {
         return pg;
     }
 
-    private void refreshCurso(Curso curso) {
-        if (curso != null) {
-            Integer tabIndex = tabs.getSelectedIndex();
-            Icon icon = tabs.getIconAt(tabIndex);
-            tabs.remove(tabIndex);
-            tabs.insertTab(curso.getNome(), icon,
-                    createCursoPanel(curso), curso.getNome(), tabIndex);
-            tabs.setSelectedIndex(tabIndex);
-        }
-    }
-
     @Override
     public void onAddAction(ActionEvent e, Object o) {
         Object source = e.getSource();
         if (source instanceof GenJButton) {
 
-            JDialog dialog = new JDialog();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setModal(true);
+            JDialog dialog = null;
             if (o instanceof Campus) {
-                CursoFields panel = new CursoFields((Campus) o, dialog);
-                dialog.add(panel);
-                dialog.pack();
+                CursoFields panel = new CursoFields((Campus) o);
+                dialog = createDialog(panel);
+                panel.setFrame(dialog);
                 dialog.setVisible(true);
+
                 Curso curso = CursoFactory.getInstance().getObject(panel.getFieldValues());
                 if (curso.getId().getId() != null) {
                     Boolean hasTabs = tabs.getTabCount() > 0;
@@ -336,61 +409,109 @@ public class AreaDeTrabalhoView extends GenJPanel {
                 GenJButton bt = (GenJButton) source;
                 switch (bt.getActionCommand()) {
                     case "addUC":
-                        UnidadeCurricularFields panel = new UnidadeCurricularFields(curso, dialog);
-                        dialog.add(panel);
+                        UnidadeCurricularFields panel = new UnidadeCurricularFields(curso);
+                        dialog = createDialog(panel);
+                        panel.setFrame(dialog);
+                        dialog.setVisible(true);
+
+                        setUCData(curso);
                         break;
                     case "addTurma":
-                        TurmaFields panelTurma = new TurmaFields(curso, dialog);
-                        dialog.add(panelTurma);
+                        TurmaFields panelTurma = new TurmaFields(curso);
+                        dialog = createDialog(panelTurma);
+                        panelTurma.setFrame(dialog);
+                        dialog.setVisible(true);
+
+                        setTurmaData(curso);
                         break;
                 }
-                dialog.pack();
-                dialog.setVisible(true);
-                refreshCurso(curso);
             }
         }
     }
 
-    @Override
-    public void onEditAction(ActionEvent e, Object o) {
+    private JDialog createDialog(JPanel panel) {
         JDialog dialog = new JDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setModal(true);
+        dialog.add(panel);
+        dialog.pack();
 
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        Dimension dialogSize = dialog.getPreferredSize();
+        int x = 0;
+        if (dialogSize.width < screenSize.width) {
+            x = (screenSize.width / 2) - (dialogSize.width / 2);
+        }
+        int y = 0;
+        if (dialogSize.height < screenSize.height) {
+            y = (screenSize.height / 2) - (dialogSize.height / 2);
+        }
+
+        dialog.setLocation(new Point(x, y));
+
+        return dialog;
+    }
+
+    @Override
+    public void onEditAction(ActionEvent e, Object o) {
+        JDialog dialog = null;
         Curso curso = null;
         if (o instanceof Curso) {
             curso = (Curso) o;
-            CursoFields panel = new CursoFields(curso.getCampus(), dialog);
+            CursoFields panel = new CursoFields(curso.getCampus());
             panel.setFieldValues(curso);
-            dialog.add(panel);
+            dialog = createDialog(panel);
+            panel.setFrame(dialog);
+
+            dialog.setVisible(true);
+            updateLabelCurso(curso);
         } else if (o instanceof JTable) {
             Object obj = getObjectFromTable((JTable) o);
 
             if (obj instanceof UnidadeCurricular) {
                 UnidadeCurricular uc = (UnidadeCurricular) obj;
                 curso = uc.getCurso();
-                UnidadeCurricularFields panel = new UnidadeCurricularFields(curso, dialog);
+                UnidadeCurricularFields panel = new UnidadeCurricularFields(curso);
                 panel.setFieldValues(obj);
-                dialog.add(panel);
+
+                dialog = createDialog(panel);
+                panel.setFrame(dialog);
+                dialog.setVisible(true);
             } else if (obj instanceof Turma) {
                 Turma turma = (Turma) obj;
                 curso = turma.getCurso();
-                TurmaFields panel = new TurmaFields(curso, dialog);
-                panel.setFieldValues(obj);
-                dialog.add(panel);
+                TurmaFields panel = new TurmaFields(curso);
+                panel.setFieldValues(turma);
+
+                dialog = createDialog(panel);
+                panel.setFrame(dialog);
+                dialog.setVisible(true);
             }
         }
-        dialog.pack();
-        dialog.setVisible(true);
-        refreshCurso(curso);
     }
 
     @Override
     public void onDelAction(ActionEvent e, Object o) {
         try {
             if (o instanceof Curso && confirmDialog("Confirma a exclusão do Curso?")) {
+                Curso curso = (Curso) o;
+
+                String warnMsg = "Não é possível excluir o Curso %s \npois existem %s vinculados a ela",
+                        dependency = "";
+                if (!curso.getTurmas().isEmpty()) {
+                    dependency = "Turmas";
+                }
+                if (!curso.getUnidadesCurriculares().isEmpty()) {
+                    dependency = "Unidades Curriculares";
+                }
+                if (!"".equals(dependency)) {
+                    showWarningMessage(String.format(warnMsg, curso.getNome(), dependency));
+                    return;
+                }
+
                 Integer tabIndex = tabs.getSelectedIndex();
-                ControllerFactory.createCursoController().remover((Curso) o);
+                ControllerFactory.createCursoController().remover(curso);
                 tabs.remove(tabIndex);
                 if (tabIndex > 0) {
                     tabs.setSelectedIndex(tabIndex - 1);
@@ -406,10 +527,26 @@ public class AreaDeTrabalhoView extends GenJPanel {
                 if (obj instanceof UnidadeCurricular
                         && confirmDialog("Confirma a exclusão da U.C.?")) {
                     UnidadeCurricular uc = (UnidadeCurricular) obj;
+                    String warnMsg = "Não é possível excluir a UC %s \npois existem %s vinculados a ela",
+                            dependency = "";
+                    if (!uc.getConteudos().isEmpty()) {
+                        dependency = "Conteudos";
+                    }
+                    if (!uc.getObjetivos().isEmpty()) {
+                        dependency = "Objetivos";
+                    }
+                    if (!uc.getReferenciasBibliograficas().isEmpty()) {
+                        dependency = "Referências Bibliográficas";
+                    }
+                    if (!"".equals(dependency)) {
+                        showWarningMessage(String.format(warnMsg, uc.getNome(), dependency));
+                        return;
+                    }
                     curso = uc.getCurso();
 
                     ControllerFactory.createUnidadeCurricularController().remover(uc);
                     curso.removeUnidadeCurricular(uc);
+                    setUCData(curso);
                 } else if (obj instanceof Turma
                         && confirmDialog("Confirma a exclusão da Turma?")) {
                     Turma turma = (Turma) obj;
@@ -417,8 +554,8 @@ public class AreaDeTrabalhoView extends GenJPanel {
 
                     ControllerFactory.createTurmaController().remover(turma);
                     curso.removeTurma(turma);
+                    setTurmaData(curso);
                 }
-                refreshCurso(curso);
             }
         } catch (PropertyVetoException ex) {
             showErrorMessage(ex);
@@ -441,6 +578,46 @@ public class AreaDeTrabalhoView extends GenJPanel {
         }
     }
 
+    @Override
+    public void onDefaultButton(ActionEvent e, Object o) {
+        if (o != null && o instanceof JTable) {
+            Object obj = getObjectFromTable((JTable) o);
+            if (obj instanceof Turma) {
+                Turma turma = (Turma) obj;
+
+                TurmaFieldsPanelEstudante panel = new TurmaFieldsPanelEstudante(turma);
+
+                JDialog dialog = createDialog(panel);
+                panel.setFrame(dialog);
+                dialog.setVisible(true);
+                setTurmaData(turma.getCurso());
+            } else if (obj instanceof UnidadeCurricular) {
+                UnidadeCurricular uc = (UnidadeCurricular) obj;
+
+                String actionCommant = e.getActionCommand();
+                if (actionCommant.equals(AcoesBotoes.REFBIB.toString())) {
+                    UnidadeCurricularFieldsReferencias panel = new UnidadeCurricularFieldsReferencias(uc);
+
+                    JDialog dialog = createDialog(panel);
+                    panel.setFrame(dialog);
+                    dialog.setVisible(true);
+                } else if (actionCommant.equals(AcoesBotoes.CONT_EMENTA.toString())) {
+                    UnidadeCurricularFieldsConteudo panel = new UnidadeCurricularFieldsConteudo(uc);
+                    JDialog dialog = createDialog(panel);
+                    panel.setFrame(dialog);
+                    dialog.setVisible(true);
+                } else if (actionCommant.equals(AcoesBotoes.ESP.toString())) {
+                    UnidadeCurricularFieldsObjetivoUCConteudo panel = new UnidadeCurricularFieldsObjetivoUCConteudo(uc);
+                    JDialog dialog = createDialog(panel);
+                    panel.setFrame(dialog);
+                    dialog.setVisible(true);
+                }
+
+                setUCData(uc.getCurso());
+            }
+        }
+    }
+
     private class CellRenderer extends GenCellRenderer {
 
         @Override
@@ -454,7 +631,6 @@ public class AreaDeTrabalhoView extends GenJPanel {
             }
 
             if (panel != null) {
-                table.setRowHeight(panel.getPreferredSize().height + 5);
                 panel.setOpaque(true);
                 return panel;
             } else {

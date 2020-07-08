@@ -5,6 +5,7 @@
  */
 package ensino.components;
 
+import ensino.components.renderer.GenCellRenderer;
 import ensino.util.types.AcoesBotoes;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,13 +31,14 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
@@ -62,6 +64,20 @@ public class GenJPanel extends JPanel {
     protected ImageIcon iconNew;
     protected ImageIcon iconPlan;
 
+    protected ImageIcon iconInfo;
+    protected ImageIcon iconTarget;
+    protected ImageIcon iconDetail;
+    protected ImageIcon iconPlanos;
+    protected ImageIcon iconTime;
+    protected ImageIcon iconFrequency;
+    protected ImageIcon iconContent;
+    protected ImageIcon iconEvaluation;
+    protected ImageIcon iconReport;
+    protected ImageIcon iconChart;
+    protected ImageIcon iconPE;
+    protected ImageIcon iconRB;
+    protected ImageIcon iconEstudante;
+
     public GenJPanel() {
         super();
         initPanel();
@@ -83,6 +99,20 @@ public class GenJPanel extends JPanel {
         URL urlImport = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "import-button-25px.png"));
         URL urlNew = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "view-button-25px.png"));
         URL urlPlan = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "plano-icon-25px.png"));
+
+        iconInfo = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Info-icon-25px.png")));
+        iconTarget = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "target-icon-25px.png")));
+        iconDetail = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Logos-Details-icon-25px.png")));
+        iconPlanos = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "project-plan-icon-25px.png")));
+        iconTime = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Apps-preferences-system-time-icon-25px.png")));
+        iconFrequency = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "document-frequency-icon-25px.png")));
+        iconContent = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "content-icon-25px.png")));
+        iconEvaluation = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Status-mail-task-icon-25px.png")));
+        iconReport = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "report-icon-25px.png")));
+        iconChart = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "chart-icon-25px.png")));
+        iconPE = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Clipboard-icon-25px.png")));
+        iconRB = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "library-icon-25px.png")));
+        iconEstudante = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "student-icon-25px.png")));
 
         iconAdd = new ImageIcon(urlAdd);
         iconClose = new ImageIcon(urlClose);
@@ -178,6 +208,27 @@ public class GenJPanel extends JPanel {
         JOptionPane.showMessageDialog(getParent(), msg,
                 "Aviso", JOptionPane.WARNING_MESSAGE);
     }
+    
+    protected String showInputDialog(String msgTitle, String msg) {
+        return JOptionPane.showInputDialog(getParent(), msg, msgTitle, JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    protected String showIntputTextAreaDialog(String msgTitle, String msg) {
+        Icon icon = new ImageIcon(getClass().getResource("/img/Open-folder-add-icon-100px.png"));
+        Object[] options = {"Ok", "Cancelar"};
+        GenJTextArea text = new GenJTextArea(3, 30);
+        final JComponent[] inputs = new JComponent[] {
+            new GenJLabel(msg),
+            text
+        };
+        int result = JOptionPane.showOptionDialog(getParent(), inputs, msgTitle, 
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, icon,
+                options, null);
+        if (result == JOptionPane.OK_OPTION) {
+            return text.getText();
+        }
+        return null;
+    }
 
     public void onAddAction(ActionEvent e, Object o) {
 
@@ -219,6 +270,53 @@ public class GenJPanel extends JPanel {
 
     }
 
+    public void onDefaultButton(ActionEvent e, Object o) {
+
+    }
+
+    public JTable makeTableUI(List list, String[] columnNames, EnumSet enumSet) {
+        return makeTableUI(list, columnNames, enumSet, null);
+    }
+
+    public JTable makeTableUI(TableModel model, EnumSet enumSet, List<GenJButton> listaBotoes) {
+        JTable table = new JTable(model);
+        table.setRowHeight(36);
+        TableColumn column = table.getColumnModel().getColumn(1);
+        column.setCellRenderer(new ButtonsRenderer(listaBotoes, enumSet));
+        column.setCellEditor(new ButtonsEditor(table, listaBotoes, enumSet));
+        return table;
+    }
+
+    public JTable makeTableUI(List list, String[] columnNames, EnumSet enumSet,
+            List<GenJButton> listaBotoes) {
+        Object[][] data = new Object[list.size()][columnNames.length];
+        for (int i = 0; i < list.size(); i++) {
+            data[i][0] = list.get(i);
+        }
+
+        JTable table = new JTable(data, columnNames);
+        table.setRowHeight(36);
+        TableColumn column = table.getColumnModel().getColumn(1);
+        column.setCellRenderer(new ButtonsRenderer(listaBotoes, enumSet));
+        column.setCellEditor(new ButtonsEditor(table, listaBotoes, enumSet));
+        return table;
+    }
+
+    public void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
+        for (int i = startingIndex; i < rowCount; ++i) {
+            tree.expandRow(i);
+        }
+
+        if (tree.getRowCount() != rowCount) {
+            expandAllNodes(tree, rowCount, tree.getRowCount());
+        }
+    }
+
+    public Object getObjectFromTable(JTable t) {
+        int row = t.convertRowIndexToModel(t.getEditingRow());
+        return t.getModel().getValueAt(row, 0);
+    }
+
     protected class ActionHandler extends AbstractAction {
 
         private AcoesBotoes acaoBotao;
@@ -244,6 +342,20 @@ public class GenJPanel extends JPanel {
                     : AcoesBotoes.IMPORT.equals(acaoBotao) ? iconImport
                     : AcoesBotoes.NEW.equals(acaoBotao) ? iconNew
                     : AcoesBotoes.PLAN.equals(acaoBotao) ? iconPlan
+                    : AcoesBotoes.IDEN.equals(acaoBotao) ? iconInfo
+                    : AcoesBotoes.DET.equals(acaoBotao) ? iconDetail
+                    : AcoesBotoes.ESP.equals(acaoBotao) ? iconTarget
+                    : AcoesBotoes.PAVA.equals(acaoBotao) ? iconPlanos
+                    : AcoesBotoes.HOR.equals(acaoBotao) ? iconTime
+                    : AcoesBotoes.FREQ.equals(acaoBotao) ? iconFrequency
+                    : AcoesBotoes.CON.equals(acaoBotao) ? iconContent
+                    : AcoesBotoes.AVA.equals(acaoBotao) ? iconEvaluation
+                    : AcoesBotoes.VIEW_PLAN.equals(acaoBotao) ? iconReport
+                    : AcoesBotoes.NOTAS.equals(acaoBotao) ? iconReport
+                    : AcoesBotoes.CONTROLE.equals(acaoBotao) ? iconChart
+                    : AcoesBotoes.REFBIB.equals(acaoBotao) ? iconChart
+                    : AcoesBotoes.ESTUD.equals(acaoBotao) ? iconEstudante
+                    : AcoesBotoes.CONT_EMENTA.equals(acaoBotao) ? iconPE
                     : null);
             this.acaoBotao = acaoBotao;
             this.object = object;
@@ -286,42 +398,11 @@ public class GenJPanel extends JPanel {
                 case PLAN:
                     onPlanAction(ae, object);
                     break;
+                default:
+                    onDefaultButton(ae, object);
             }
         }
 
-    }
-
-    public JTable makeTableUI(List list, String[] columnNames, EnumSet enumSet) {
-        return makeTableUI(list, columnNames, enumSet, null);
-    }
-
-    public JTable makeTableUI(TableModel model, EnumSet enumSet, List<GenJButton> listaBotoes) {
-        JTable table = new JTable(model);
-        table.setRowHeight(36);
-        TableColumn column = table.getColumnModel().getColumn(1);
-        column.setCellRenderer(new ButtonsRenderer(listaBotoes, enumSet));
-        column.setCellEditor(new ButtonsEditor(table, listaBotoes, enumSet));
-        return table;
-    }
-
-    public JTable makeTableUI(List list, String[] columnNames, EnumSet enumSet,
-            List<GenJButton> listaBotoes) {
-        Object[][] data = new Object[list.size()][columnNames.length];
-        for (int i = 0; i < list.size(); i++) {
-            data[i][0] = list.get(i);
-        }
-        
-        JTable table = new JTable(data, columnNames);
-        table.setRowHeight(36);
-        TableColumn column = table.getColumnModel().getColumn(1);
-        column.setCellRenderer(new ButtonsRenderer(listaBotoes, enumSet));
-        column.setCellEditor(new ButtonsEditor(table, listaBotoes, enumSet));
-        return table;
-    }
-
-    public Object getObjectFromTable(JTable t) {
-        int row = t.convertRowIndexToModel(t.getEditingRow());
-        return t.getModel().getValueAt(row, 0);
     }
 
     protected class ButtonsPanel extends JPanel {
@@ -331,11 +412,11 @@ public class GenJPanel extends JPanel {
 
         public ButtonsPanel(List<GenJButton> listButtons, EnumSet enumSelectedSet) {
             super(new FlowLayout(FlowLayout.RIGHT));
-            if (listButtons != null && listButtons.size() > 3) {
+            if ((listButtons != null && listButtons.size() > 3) ||
+                    enumSelectedSet.size() > 3) {
                 setLayout(new GridLayout(0, 3));
             }
             setOpaque(true);
-            setBackground(backColor);
 
             enumSet = enumSelectedSet;
 
@@ -347,6 +428,7 @@ public class GenJPanel extends JPanel {
                     GenJButton b = createButton(new ActionHandler(a));
                     b.setFocusable(false);
                     b.setRolloverEnabled(false);
+                    b.setActionCommand(o.toString());
                     add(b);
                     buttons.add(b);
                 }
@@ -371,7 +453,7 @@ public class GenJPanel extends JPanel {
         }
     }
 
-    protected class ButtonsRenderer implements TableCellRenderer {
+    protected class ButtonsRenderer extends GenCellRenderer {
 
         private final ButtonsPanel panel;
 
@@ -383,7 +465,17 @@ public class GenJPanel extends JPanel {
         @Override
         public Component getTableCellRendererComponent(
                 JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-//            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            if (isSelected) {
+                setColors(new Color(table.getSelectionForeground().getRGB()),
+                        new Color(table.getSelectionBackground().getRGB()));
+            } else {
+                setColors(new Color(table.getForeground().getRGB()),
+                        (row % 2 == 0
+                                ? new Color(table.getBackground().getRGB())
+                                : new Color(240, 240, 240)));
+            }
+
+            panel.setBackground(getBack());
             panel.updateButtons();
             table.setRowHeight(panel.getPreferredSize().height + 5);
             return panel;
@@ -414,9 +506,10 @@ public class GenJPanel extends JPanel {
         @Override
         public Component getTableCellEditorComponent(
                 JTable table, Object value, boolean isSelected, int row, int column) {
-//            panel.setBackground(table.getSelectionBackground());
+            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
             panel.updateButtons();
             o = value;
+//            table.setRowHeight(panel.getPreferredSize().height + 5);
             return panel;
         }
 
@@ -439,6 +532,7 @@ public class GenJPanel extends JPanel {
                         bt.setBackground(table.getBackground());
                     }
                 }
+//                table.setRowHeight(panel.getPreferredSize().height + 5);
             }
 
             @Override

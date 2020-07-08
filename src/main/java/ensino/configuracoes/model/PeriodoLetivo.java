@@ -21,21 +21,21 @@ import javax.persistence.Transient;
 @Entity(name = "PeriodoLetivo")
 @Table(name = "periodoLetivo")
 public class PeriodoLetivo implements Serializable {
-    
+
     @EmbeddedId
     private PeriodoLetivoId id;
 
     @Column(name = "descricao", nullable = false)
     private String descricao;
-    
+
     @Embedded
     private Periodo periodo;
-    
+
     @OneToMany(mappedBy = "id.periodoLetivo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SemanaLetiva> semanasLetivas;
     /**
-     * Atributo utilizado para marcar o objeto para remoção futura.
-     * Valor padrão: false
+     * Atributo utilizado para marcar o objeto para remoção futura. Valor
+     * padrão: false
      */
     @Transient
     private Boolean deleted;
@@ -53,7 +53,7 @@ public class PeriodoLetivo implements Serializable {
     public void setId(PeriodoLetivoId id) {
         this.id = id;
     }
-    
+
     public Calendario getCalendario() {
         return id.getCalendario();
     }
@@ -65,7 +65,6 @@ public class PeriodoLetivo implements Serializable {
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
-    
 
     public String getDescricao() {
         return descricao;
@@ -99,22 +98,23 @@ public class PeriodoLetivo implements Serializable {
     public void setSemanasLetivas(List<SemanaLetiva> semanasLetivas) {
         this.semanasLetivas = semanasLetivas;
     }
-   
+
     public void clearSemanasLetivas() {
         this.semanasLetivas.clear();
     }
-    
+
     /**
      * Recupera a lista de atividades realizadas na semana
-     * @param semana    Semana do ano a ser verificada
-     * @return 
+     *
+     * @param semana Semana do ano a ser verificada
+     * @return
      */
     public List<Atividade> getAtividadesPorSemana(int semana) {
         List<Atividade> lista = new ArrayList();
         Calendar cal = Calendar.getInstance();
-        
+
         Iterator<Atividade> it = id.getCalendario().getAtividades().iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             Atividade at = it.next();
             cal.setTime(at.getPeriodo().getDe());
             if (cal.get(Calendar.WEEK_OF_YEAR) == semana) {
@@ -124,6 +124,12 @@ public class PeriodoLetivo implements Serializable {
             }
         }
         return lista;
+    }
+    
+    public List<Atividade> getAtividadesPorSemana(SemanaLetiva sl) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sl.getPeriodo().getDe());
+        return getAtividadesPorSemana(cal.get(Calendar.WEEK_OF_YEAR));
     }
 
     public List<SemanaLetiva> getSemanasDoMes(MesesDeAno mes) {
@@ -144,7 +150,27 @@ public class PeriodoLetivo implements Serializable {
 
         return listaSemanas;
     }
-    
+
+    public List<MesesDeAno> getMesesDoPeriodo() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(periodo.getDe());
+
+        Integer nMes = cal.get(Calendar.MONTH);
+        Integer nMeses = periodo.getMesesEntrePeriodo();
+        List<MesesDeAno> l = new ArrayList();
+        for (int i = 0; i < nMeses; i++) {
+            MesesDeAno mes = MesesDeAno.of(nMes);
+            l.add(mes);
+            if (nMes > 11) {
+                nMes = 1;
+            } else {
+                nMes++;
+            }
+        }
+
+        return l;
+    }
+
     public void delete() {
         deleted = true;
     }
@@ -185,7 +211,6 @@ public class PeriodoLetivo implements Serializable {
         }
         return true;
     }
-    
 
     @Override
     public String toString() {

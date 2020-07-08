@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
  *
  * @author santos
  */
-@Embeddable 
+@Embeddable
 public class EtapaEnsinoId implements Serializable {
     @Column(name = "id", nullable = false)
     private Integer id;

@@ -12,6 +12,7 @@ import ensino.components.GenJTextArea;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Curso;
+import ensino.configuracoes.model.ObjetivoUC;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.view.models.DocenteComboBoxModel;
@@ -22,6 +23,9 @@ import ensino.configuracoes.view.panels.filters.TurmaSearch;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.model.Objetivo;
+import ensino.planejamento.model.ObjetivoFactory;
+import ensino.planejamento.model.ObjetivoId;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.model.PlanoDeEnsinoFactory;
 import ensino.reports.ChartsFactory;
@@ -272,7 +276,7 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
     }
 
     @Override
-    public void enableFields(boolean active) {        
+    public void enableFields(boolean active) {
         compoCalendario.setEnable(active);
         comboPeriodoLetivo.setEnabled(active);
         comboDocente.setEnabled(active);
@@ -302,22 +306,15 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
     @Override
     public void onSaveAction(ActionEvent e, Object o) {
         if (isValidated()) {
-            planoDeEnsino = PlanoDeEnsinoFactory.getInstance()
-                    .getObject(getFieldValues());
-            /**
-             * Cria o detalhamento caso ainda não exista
-             */
-            if (planoDeEnsino.getDetalhamentos().isEmpty()) {
-                if (planoDeEnsino.getPeriodoLetivo().getSemanasLetivas().isEmpty()) {
-                    showWarningMessage("O Período Letivo selecionado não tem "
-                            + "Semanas Letivas vinculadas.\n"
-                            + "Para resolver esse problema, acesse "
-                            + "o calendário e crie semanas letivas.");
-                    return;
-                }
-                planoDeEnsino.criarDetalhamentos();
+            if ("".equals(txtId.getText())) {
+                planoDeEnsino = PlanoDeEnsinoFactory.getInstance()
+                        .getObject(getFieldValues());
+                selectedUnidadeCurricular.addPlanoDeEnsino(planoDeEnsino);
+            } else {
+                PlanoDeEnsinoFactory.getInstance()
+                        .updateObject(planoDeEnsino, getFieldValues());
             }
-            selectedUnidadeCurricular.addPlanoDeEnsino(planoDeEnsino);
+            
         }
         try {
             ControllerFactory.createPlanoDeEnsinoController().salvar(planoDeEnsino);
@@ -338,7 +335,13 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
         private void changedSource() {
             if (source == compoCalendario) {
                 Calendario cal = (Calendario) compoCalendario.getObjectValue();
-                refreshComboPeriodoLetivo(cal);
+
+                PeriodoLetivoComboBoxListModel periodoLetivoListModel = (PeriodoLetivoComboBoxListModel) comboPeriodoLetivo.getModel();
+                PeriodoLetivo pl = (PeriodoLetivo) periodoLetivoListModel.getSelectedItem();
+
+                if ((pl == null) || (pl != null && !pl.getCalendario().equals(cal))) {
+                    refreshComboPeriodoLetivo(cal);
+                }
             }
         }
 

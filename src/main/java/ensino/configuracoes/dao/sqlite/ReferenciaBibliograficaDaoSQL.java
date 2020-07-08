@@ -6,7 +6,6 @@
 package ensino.configuracoes.dao.sqlite;
 
 import ensino.configuracoes.model.Bibliografia;
-import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.ReferenciaBibliograficaId;
 import ensino.configuracoes.model.UnidadeCurricular;
@@ -35,6 +34,11 @@ public class ReferenciaBibliograficaDaoSQL extends AbstractDaoSQL<ReferenciaBibl
         } else {
             entityManager.merge(o);
         }
+    }
+
+    @Override
+    public void delete(ReferenciaBibliografica o) {
+        entityManager.remove(entityManager.getReference(ReferenciaBibliografica.class, o.getId()));
     }
 
     @Override

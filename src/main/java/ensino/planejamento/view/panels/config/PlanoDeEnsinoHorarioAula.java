@@ -93,11 +93,9 @@ public class PlanoDeEnsinoHorarioAula extends DefaultFieldsPanel {
             setBackground(backColor);
             col = ControllerFactory.createHorarioAulaController();
 
-            GenJButton btSave = createButton(new ActionHandler(AcoesBotoes.SAVE), backColor, foreColor);
             GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
 
             JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
-            panelButton.add(btSave);
             panelButton.add(btClose);
             add(panelButton, BorderLayout.PAGE_END);
             /**

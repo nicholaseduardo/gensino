@@ -18,13 +18,11 @@ import ensino.patterns.factory.ControllerFactory;
 import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentEvent;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -35,7 +33,6 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.SpinnerNumberModel;
 
 /**
@@ -54,21 +51,21 @@ public class TurmaFields extends DefaultFieldsPanel {
     private GenJTextField txtNome;
     private GenJSpinner spinAno;
 
-    private JTabbedPane tabbedPane;
-    private TurmaFieldsPanelEstudante tfpe;
-
     private Turma turma;
     private Component frame;
 
-    public TurmaFields(Curso curso, Component frame) {
+    public TurmaFields(Curso curso) {
         this();
         this.selectedCurso = curso;
-        this.frame = frame;
     }
 
     public TurmaFields() {
         super();
         initComponents();
+    }
+    
+    public void setFrame(Component frame) {
+        this.frame = frame;
     }
 
     private void initComponents() {
@@ -97,49 +94,48 @@ public class TurmaFields extends DefaultFieldsPanel {
         panelButton.add(btSave);
         panelButton.add(btClose);
         add(panelButton, BorderLayout.PAGE_END);
-
-        tfpe = new TurmaFieldsPanelEstudante();
-        tfpe.setBorder(createTitleBorder("Dados dos Estudantes"));
-
-        JPanel panelInfo = createPanel(new BorderLayout());
-        panelInfo.add(createIdentificacaoPanel(), BorderLayout.PAGE_START);
-        panelInfo.add(tfpe, BorderLayout.CENTER);
-
-        add(panelInfo, BorderLayout.CENTER);
+        add(createIdentificacaoPanel(), BorderLayout.CENTER);
+        
+        enableFields(true);
+        initFocus();
     }
 
     private JPanel createIdentificacaoPanel() {
+        GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
+        txtId = new GenJTextField(5, false);
+        txtId.setEnabled(false);
+        lblId.setLabelFor(txtId);
+        
+        GenJLabel lblNome = new GenJLabel("Nome da Turma:", JLabel.TRAILING);
+        txtNome = new GenJTextField(30, true);
+        lblNome.setLabelFor(txtNome);
+        
+        GenJLabel lblAno = new GenJLabel("Ano:", JLabel.TRAILING);
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        spinAno = new GenJSpinner(new SpinnerNumberModel(currentYear, 2000, currentYear + 1, 1));
+        lblAno.setLabelFor(spinAno);
+        
         int row = 0, col = 0;
         JPanel fieldsPanel = createPanel(new GridBagLayout());
         fieldsPanel.setBorder(createTitleBorder("Identificação"));
         GridBagConstraints c = new GridBagConstraints();
 
-        GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblId, c);
-        txtId = new GenJTextField(5, false);
-        txtId.setEnabled(false);
-        lblId.setLabelFor(txtId);
-        GridLayoutHelper.set(c, col++, row);
+        GridLayoutHelper.set(c, col, row++);
         fieldsPanel.add(txtId, c);
 
-        GenJLabel lblNome = new GenJLabel("Nome da Turma:", JLabel.TRAILING);
+        col = 0;
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblNome, c);
-        txtNome = new GenJTextField(10, true);
-        lblNome.setLabelFor(txtNome);
-        GridLayoutHelper.set(c, col++, row);
-        c.fill = GridBagConstraints.HORIZONTAL;
+        GridLayoutHelper.set(c, col, row++);
         fieldsPanel.add(txtNome, c);
 
-        GenJLabel lblAno = new GenJLabel("Ano:", JLabel.TRAILING);
+        col = 0;
         GridLayoutHelper.setRight(c, col++, row);
         fieldsPanel.add(lblAno, c);
-        Calendar cal = Calendar.getInstance();
-        int currentYear = cal.get(Calendar.YEAR);
-        spinAno = new GenJSpinner(new SpinnerNumberModel(currentYear, 2000, currentYear + 1, 1));
-        lblAno.setLabelFor(spinAno);
-        GridLayoutHelper.set(c, col++, row);
+        GridLayoutHelper.set(c, col, row);
         fieldsPanel.add(spinAno, c);
 
         JPanel panel = createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
@@ -157,7 +153,6 @@ public class TurmaFields extends DefaultFieldsPanel {
         map.put("nome", txtNome.getText());
         map.put("ano", (Integer) spinAno.getValue());
         map.put("curso", selectedCurso);
-        map.putAll(tfpe.getFieldValues());
         return map;
     }
 
@@ -176,7 +171,6 @@ public class TurmaFields extends DefaultFieldsPanel {
                 (String) mapValues.get("nome"),
                 (Integer) mapValues.get("ano"),
                 (Curso) mapValues.get("curso"));
-        tfpe.setFieldValues(mapValues);
     }
 
     @Override
@@ -189,7 +183,6 @@ public class TurmaFields extends DefaultFieldsPanel {
                     turma.getAno(),
                     turma.getId().getCurso());
         }
-        tfpe.setFieldValues(object);
     }
 
     @Override
@@ -212,15 +205,12 @@ public class TurmaFields extends DefaultFieldsPanel {
         Calendar cal = Calendar.getInstance();
         spinAno.setValue(cal.get(Calendar.YEAR));
         txtNome.setText("");
-        tfpe.clearFields();
     }
 
     @Override
     public void enableFields(boolean active) {
-        txtId.setEnabled(false);
         spinAno.setEnabled(active);
         txtNome.setEnabled(active);
-        tfpe.enableFields(active);
     }
 
     @Override
@@ -252,20 +242,10 @@ public class TurmaFields extends DefaultFieldsPanel {
             }
             try {
                 ControllerFactory.createTurmaController().salvar(turma);
-                if ("".equals(txtId.getText())) {
-                    txtId.setText(turma.getId().getId().toString());
-                    selectedCurso.addTurma(turma);
-                }
                 onCloseAction(e);
             } catch (Exception ex) {
                 showErrorMessage(ex);
             }
         }
-    }
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-        super.componentShown(e);
-        tabbedPane.setSelectedIndex(0);
     }
 }

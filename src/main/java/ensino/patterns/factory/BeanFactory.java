@@ -25,6 +25,8 @@ public interface BeanFactory<T> {
      */
     public T createObject(Object ...args);
     /**
+     * @Since("jun 18 2020")
+     * 
      * Construtor por elementos do XML.
      * Método utilizado para criar um objeto a partir
      * de atributos do arquivo XML.
@@ -32,6 +34,7 @@ public interface BeanFactory<T> {
      *              os dados a serem atribuídos à classe
      * @return 
      */
+    @Deprecated
     public T getObject(Element e);
     /**
      * Construtor por elementos de um HahsMap.
@@ -44,6 +47,8 @@ public interface BeanFactory<T> {
      */
     public T getObject(HashMap<String, Object> p);
     /**
+     * @Since("jun 18 2020")
+     * 
      * Converter para XML.
      * Captura o objeto como referência e o converte em um objecto da classe
      * <Node>
@@ -52,5 +57,6 @@ public interface BeanFactory<T> {
      * @param o     Instância da classe a ser convertida
      * @return 
      */
+    @Deprecated
     public Node toXml(Document doc, T o);
 }

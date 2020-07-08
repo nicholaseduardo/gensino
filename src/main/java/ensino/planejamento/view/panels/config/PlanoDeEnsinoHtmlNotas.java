@@ -82,13 +82,18 @@ public class PlanoDeEnsinoHtmlNotas extends DefaultFieldsPanel {
         if (object instanceof PlanoDeEnsino) {
             try {
                 planoDeEnsino = (PlanoDeEnsino) object;
-
-                /**
-                 * Criando o PDF de acordo com o plano de ensino
-                 */
-                NotasReport notasReport = new NotasReport(planoDeEnsino);
-                notasReport.initReport();
-                scrollPane.setViewportView(notasReport.getViewer());
+                if (!planoDeEnsino.getPlanosAvaliacoes().isEmpty()) {
+                    /**
+                     * Criando o PDF de acordo com o plano de ensino
+                     */
+                    NotasReport notasReport = new NotasReport(planoDeEnsino);
+                    notasReport.initReport();
+                    scrollPane.setViewportView(notasReport.getViewer());
+                } else {
+                    showWarningMessage("Você precisa montar o plano de avaliações para\n"
+                            + "visualizar as notas dos estudantes!");
+                    onCloseAction(null);
+                }
             } catch (Exception ex) {
                 showErrorMessage(ex);
             }

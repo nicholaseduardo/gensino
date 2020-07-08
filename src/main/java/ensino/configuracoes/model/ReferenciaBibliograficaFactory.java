@@ -37,7 +37,11 @@ public class ReferenciaBibliograficaFactory implements BeanFactory<ReferenciaBib
     public ReferenciaBibliografica createObject(Object... args) {
         int i = 0;
         ReferenciaBibliografica o = new ReferenciaBibliografica();
-        o.getId().setSequencia((Integer) args[i++]);
+        if (args[i] instanceof ReferenciaBibliograficaId) {
+            o.setId((ReferenciaBibliograficaId) args[i++]);
+        } else {
+            o.getId().setSequencia((Integer) args[i++]);
+        }
         o.setTipo((Integer) args[i++]);
         return o;
     }
@@ -60,10 +64,12 @@ public class ReferenciaBibliograficaFactory implements BeanFactory<ReferenciaBib
 
     @Override
     public ReferenciaBibliografica getObject(HashMap<String, Object> p) {
-        ReferenciaBibliografica o = createObject(p.get("sequencia"),
-                p.get("tipo"));
-        o.getId().setUnidadeCurricular((UnidadeCurricular) p.get("unidadeCurricular"));
-        o.getId().setBibliografia((Bibliografia) p.get("bibliografia"));
+        ReferenciaBibliografica o = createObject(
+                new ReferenciaBibliograficaId(
+                        (Integer) p.get("sequencia"),
+                        (UnidadeCurricular) p.get("unidadeCurricular"),
+                        (Bibliografia) p.get("bibliografia")),
+                (Integer)p.get("tipo"));
         return o;
     }
 

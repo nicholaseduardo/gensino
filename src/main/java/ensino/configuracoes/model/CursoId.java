@@ -58,7 +58,7 @@ public class CursoId implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 43 * hash + Objects.hashCode(this.id);
-        hash = 43 * hash + Objects.hashCode(this.campus);
+        hash = 43 * hash + Objects.hashCode(this.getCampus());
         return hash;
     }
 

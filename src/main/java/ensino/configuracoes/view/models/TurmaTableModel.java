@@ -21,16 +21,14 @@ public class TurmaTableModel extends DefaultTableModel {
     }
     
     public TurmaTableModel(List<Turma> lista) {
-        super(lista, new String[] {
-            "Nome"
-        });
+        super(lista, new String[] {"Nome", "Ações"});
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Turma turma = (Turma) getRow(rowIndex);
         switch(columnIndex) {
-            case 0: return turma.getNome();
+            case 0: return turma;
             default: return null;
         }
     }

@@ -43,21 +43,6 @@ public class MainActionListener implements ActionListener {
         } else {
             try {
                 switch (e.getActionCommand()) {
-                    case "Configurações":
-                        addFrame(new ensino.configuracoes.view.frame.FrameConfiguracao());
-                        break;
-                    case "Campi":
-                        addFrame(new ensino.configuracoes.view.frame.FrameCampus());
-                        break;
-                    case "Cursos":
-                        addFrame(new ensino.configuracoes.view.frame.FrameCursos());
-                        break;
-                    case "Turma":
-                        addFrame(new ensino.configuracoes.view.frame.FrameTurma());
-                        break;
-                    case "UnidadeCurricular":
-                        addFrame(new ensino.configuracoes.view.frame.FrameUnidadeCurricular());
-                        break;
                     case "Calendário":
                         addFrame(new ensino.configuracoes.view.frame.FrameCalendario());
                         break;

@@ -1,5 +1,6 @@
 package ensino.planejamento.model;
 
+import ensino.configuracoes.model.ObjetivoUC;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +8,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -15,7 +19,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "objetivo")
 public class Objetivo implements Serializable {
-    
+
     @EmbeddedId
     private ObjetivoId id;
 
@@ -23,24 +27,33 @@ public class Objetivo implements Serializable {
     @Column(name = "descricao", columnDefinition = "CLOB")
     private String descricao;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns(value = {
+        @JoinColumn(name = "objetivouc_unidadeCurricular_id"),
+        @JoinColumn(name = "objetivouc_curso_id"),
+        @JoinColumn(name = "objetivouc_campus_id"),
+        @JoinColumn(name = "objetivouc_id")
+    })
+    private ObjetivoUC objetivoUC;
+
     /**
      * Atributo utilizado para armazenas as notas das avaliações por estudante
      */
     @OneToMany(mappedBy = "objetivo", fetch = FetchType.LAZY)
     private List<PlanoAvaliacao> planosAvaliacao;
-    
+
     @Transient
     private Boolean deleted;
-    
+
     public Objetivo() {
         id = new ObjetivoId();
         deleted = false;
     }
-    
+
     public Boolean isDeleted() {
         return deleted;
     }
-    
+
     public void delete() {
         deleted = true;
     }
@@ -52,11 +65,11 @@ public class Objetivo implements Serializable {
     public void setId(ObjetivoId id) {
         this.id = id;
     }
-    
+
     public String getShortName() {
         return String.format("Obj. [id: %d]", id.getSequencia());
     }
-    
+
     public PlanoDeEnsino getPlanoDeEnsino() {
         return id.getPlanoDeEnsino();
     }
@@ -69,6 +82,14 @@ public class Objetivo implements Serializable {
         this.descricao = descricao;
     }
 
+    public ObjetivoUC getObjetivoUC() {
+        return objetivoUC;
+    }
+
+    public void setObjetivoUC(ObjetivoUC objetivo) {
+        this.objetivoUC = objetivo;
+    }
+
     public List<PlanoAvaliacao> getPlanosAvaliacao() {
         return planosAvaliacao;
     }
@@ -76,23 +97,23 @@ public class Objetivo implements Serializable {
     public void setPlanosAvaliacao(List<PlanoAvaliacao> planosAvaliacao) {
         this.planosAvaliacao = planosAvaliacao;
     }
-    
+
     public void addPlanoAvaliacao(PlanoAvaliacao o) {
         o.setObjetivo(this);
         planosAvaliacao.add(o);
     }
-    
+
     public void removePlanoAvaliacao(PlanoAvaliacao o) {
         planosAvaliacao.remove(o);
     }
-    
+
     @Override
     public String toString() {
         int length = this.descricao.length();
-        if (length > 50)
+        if (length > 70) {
             length = 70;
+        }
         return String.format("[%d] %s", this.id.getSequencia(), this.descricao.substring(0, length));
-//        return String.format("[%d] %s", this.id.getSequencia(), this.descricao);
     }
 
     @Override
@@ -100,6 +121,7 @@ public class Objetivo implements Serializable {
         int hash = 5;
         hash = 37 * hash + Objects.hashCode(this.id);
         hash = 37 * hash + Objects.hashCode(this.descricao);
+        hash = 37 * hash + Objects.hashCode(this.objetivoUC);
         return hash;
     }
 

@@ -146,6 +146,43 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
         return o;
     }
 
+    public PlanoDeEnsino updateObject(PlanoDeEnsino o, HashMap<String, Object> p) {
+        o.setObjetivoGeral((String) p.get("objetivoGeral"));
+        o.setRecuperacao((String) p.get("recuperacao"));
+        o.setDocente((Docente) p.get("docente"));
+        o.setUnidadeCurricular((UnidadeCurricular) p.get("unidadeCurricular"));
+        o.setPeriodoLetivo((PeriodoLetivo) p.get("periodoLetivo"));
+        o.setTurma((Turma) p.get("turma"));
+
+        if (p.containsKey("objetivos")) {
+            ((List<Objetivo>) p.get("objetivos")).forEach((obj) -> {
+                o.addObjetivo(obj);
+            });
+        }
+        if (p.containsKey("detalhamentos")) {
+            ((List<Detalhamento>) p.get("detalhamentos")).forEach((det) -> {
+                o.addDetalhamento(det);
+            });
+        }
+        if (p.containsKey("planoAvaliacoes")) {
+            ((List<PlanoAvaliacao>) p.get("planoAvaliacoes")).forEach((pl) -> {
+                o.addPlanoAvaliacao(pl);
+            });
+        }
+        if (p.containsKey("horarios")) {
+            ((List<HorarioAula>) p.get("horarios")).forEach((hor) -> {
+                o.addHorario(hor);
+            });
+        }
+        if (p.containsKey("diarios")) {
+            ((List<Diario>) p.get("diarios")).forEach((di) -> {
+                o.addDiario(di);
+            });
+        }
+
+        return o;
+    }
+
     @Override
     public Node toXml(Document doc, PlanoDeEnsino o) {
         Element e = doc.createElement("planoDeEnsino");

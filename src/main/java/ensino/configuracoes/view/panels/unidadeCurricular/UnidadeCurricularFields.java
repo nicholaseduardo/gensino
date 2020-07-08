@@ -6,18 +6,12 @@
 package ensino.configuracoes.view.panels.unidadeCurricular;
 
 import ensino.components.GenJButton;
-import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextArea;
 import ensino.components.GenJTextField;
-import ensino.configuracoes.model.Bibliografia;
 import ensino.configuracoes.model.Curso;
-import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.UnidadeCurricularFactory;
-import ensino.configuracoes.view.models.ReferenciaBibliograficaTableModel;
-import ensino.configuracoes.view.panels.filters.BibliografiaSearch;
-import ensino.configuracoes.view.renderer.ReferenciaBibliograficaCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
@@ -25,29 +19,21 @@ import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.net.URL;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -67,19 +53,10 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
     private GenJTextField txtCargaHoraria;
     private GenJTextArea txtEmenta;
 
-    private BibliografiaSearch compoBiblioSearch;
-    private GenJComboBox comboTipoRef;
-    private JButton btAdicionar;
-    private JButton btRemover;
-    private JTable referenciasTable;
-    private ReferenciaBibliograficaTableModel referenciaTableModel;
-
-    private JTabbedPane tabbedFicha;
     private Component frame;
     private UnidadeCurricular unidadeCurricular;
 
-    public UnidadeCurricularFields(Curso curso,
-            Component frame) {
+    public UnidadeCurricularFields(Curso curso) {
         this();
         this.selectedCurso = curso;
         this.frame = frame;
@@ -88,6 +65,12 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
     public UnidadeCurricularFields() {
         super();
         initComponents();
+        enableFields(true);
+        initFocus();
+    }
+    
+    public void setFrame(Component frame) {
+        this.frame = frame;
     }
 
     private void initComponents() {
@@ -125,61 +108,7 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
         panelButton.add(btClose);
         add(panelButton, BorderLayout.PAGE_END);
 
-        tabbedFicha = new JTabbedPane();
-        tabbedFicha.addTab("Identificação", iconInfo, createIdentificacaoPanel());
-        tabbedFicha.addTab("Referências bibliográficas", iconReferencia, createReferenciasPanel());
-
-        add(tabbedFicha, BorderLayout.CENTER);
-    }
-
-    private JPanel createReferenciasPanel() {
-        GenJLabel lblBibliografia = new GenJLabel("Bibliografia: ", JLabel.TRAILING);
-        compoBiblioSearch = new BibliografiaSearch();
-        compoBiblioSearch.setBackground(backColor);
-
-        GenJLabel lblClassificacao = new GenJLabel("Classificação: ", JLabel.TRAILING);
-        String tipoList[] = {"Referência básica", "Referência complementar"};
-        comboTipoRef = new GenJComboBox(tipoList);
-
-        btAdicionar = createButton(new ActionHandler(AcoesBotoes.ADD), backColor, foreColor);
-        btRemover = createButton(new ActionHandler(AcoesBotoes.DELETE), backColor, foreColor);
-
-        JPanel panelReferencias = createPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-        GridLayoutHelper.setRight(c, 0, 0);
-        panelReferencias.add(lblBibliografia, c);
-        GridLayoutHelper.set(c, 1, 0, 2, 1, GridBagConstraints.LINE_START);
-        panelReferencias.add(compoBiblioSearch, c);
-
-        GridLayoutHelper.setRight(c, 0, 1);
-        panelReferencias.add(lblClassificacao, c);
-        GridLayoutHelper.set(c, 1, 1);
-        panelReferencias.add(comboTipoRef, c);
-
-        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.LEFT));
-        panelButton.add(btAdicionar);
-        panelButton.add(btRemover);
-
-        GridLayoutHelper.set(c, 2, 1);
-        panelReferencias.add(panelButton, c);
-
-        GenJLabel lblListaReferencia = new GenJLabel("Lista de referências", JLabel.TRAILING);
-        GridLayoutHelper.set(c, 0, 2, 3, 1, GridBagConstraints.CENTER);
-        panelReferencias.add(lblListaReferencia, c);
-
-        referenciaTableModel = new ReferenciaBibliograficaTableModel();
-        referenciasTable = new JTable(referenciaTableModel);
-        referenciasTable.getColumnModel().getColumn(0).setCellRenderer(new ReferenciaBibliograficaCellRenderer());
-        JScrollPane scroll = new JScrollPane(referenciasTable);
-        scroll.setPreferredSize(new Dimension(480, 240));
-        scroll.setAutoscrolls(true);
-
-        JPanel panel = createPanel(new BorderLayout());
-        panel.add(panelReferencias, BorderLayout.PAGE_START);
-        panel.add(scroll, BorderLayout.CENTER);
-
-        return panel;
+        add(createIdentificacaoPanel(), BorderLayout.CENTER);
     }
 
     private JPanel createIdentificacaoPanel() {
@@ -260,29 +189,18 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
                 : Integer.parseInt(txtCargaHoraria.getText()));
         map.put("ementa", txtEmenta.getText());
         map.put("curso", selectedCurso);
-        map.put("referenciasBibliograficas",
-                (List<ReferenciaBibliografica>) referenciaTableModel.getData());
         return map;
     }
 
     private void setFieldValues(Integer id, String nome, Integer nAulasTeoricas,
             Integer nAulasPraticas, Integer cargaHoraria,
-            String ementa, Curso curso,
-            List<ReferenciaBibliografica> listReferencias) {
+            String ementa, Curso curso) {
         txtId.setText(id.toString());
         txtNome.setText(nome);
         txtAulasTeoricas.setText(nAulasTeoricas.toString());
         txtAulasPraticas.setText(nAulasPraticas.toString());
         txtCargaHoraria.setText(cargaHoraria.toString());
         txtEmenta.setText(ementa);
-
-        referenciaTableModel = new ReferenciaBibliograficaTableModel(listReferencias);
-        referenciasTable.setModel(referenciaTableModel);
-        TableColumnModel tcm = referenciasTable.getColumnModel();
-        TableColumn tcReferencia = tcm.getColumn(0);
-        tcReferencia.setMinWidth(50);
-        tcReferencia.setCellRenderer(new ReferenciaBibliograficaCellRenderer());
-        referenciasTable.repaint();
     }
 
     @Override
@@ -294,8 +212,7 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
                 (Integer) mapValues.get("nAulasPraticas"),
                 (Integer) mapValues.get("cargaHoraria"),
                 (String) mapValues.get("ementa"),
-                (Curso) mapValues.get("curso"),
-                (List<ReferenciaBibliografica>) mapValues.get("referenciasBibliograficas"));
+                (Curso) mapValues.get("curso"));
     }
 
     @Override
@@ -309,9 +226,7 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
                     unidadeCurricular.getnAulasPraticas(),
                     unidadeCurricular.getCargaHoraria(),
                     unidadeCurricular.getEmenta(),
-                    unidadeCurricular.getId().getCurso(),
-                    unidadeCurricular.getReferenciasBibliograficas()
-            );
+                    unidadeCurricular.getId().getCurso());
         }
     }
 
@@ -319,8 +234,6 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
     public boolean isValidated() {
         String msg = "O campo [%s] não foi informado.",
                 campo = "";
-
-        Integer index = 0;
         if ("".equals(txtNome.getText())) {
             campo = "NOME";
         } else if ("".equals(txtAulasTeoricas.getText())) {
@@ -335,7 +248,6 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
             return true;
         }
         showInformationMessage(String.format(msg, campo));
-        tabbedFicha.setSelectedIndex(index);
         return false;
     }
 
@@ -347,7 +259,6 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
         txtCargaHoraria.setText("");
         txtEmenta.setText("");
         txtNome.setText("");
-        compoBiblioSearch.setObjectValue(null);
     }
 
     @Override
@@ -358,11 +269,6 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
         txtCargaHoraria.setEnabled(active);
         txtEmenta.setEnabled(active);
         txtNome.setEnabled(active);
-
-        compoBiblioSearch.setEnable(active);
-        comboTipoRef.setEnabled(active);
-        btAdicionar.setEnabled(active);
-        btRemover.setEnabled(active);
     }
 
     @Override
@@ -390,7 +296,6 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
             if ("".equals(txtId.getText())) {
                 unidadeCurricular = UnidadeCurricularFactory.getInstance()
                         .getObject(getFieldValues());
-                selectedCurso.addUnidadeCurricular(unidadeCurricular);
             } else {
                 UnidadeCurricularFactory.getInstance()
                         .updateObject(unidadeCurricular, getFieldValues());
@@ -402,51 +307,6 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
                 showErrorMessage(ex);
             }
         }
-    }
-
-    private void clear() {
-        compoBiblioSearch.setObjectValue(null);
-        comboTipoRef.setSelectedIndex(0);
-    }
-
-    @Override
-    public void onAddAction(ActionEvent e, Object o) {
-        Bibliografia b = compoBiblioSearch.getObjectValue();
-        if (b != null) {
-            ReferenciaBibliografica rb = new ReferenciaBibliografica();
-            rb.getId().setBibliografia(b);
-            rb.setTipo(comboTipoRef.getSelectedIndex());
-            if (referenciaTableModel.getData().contains(rb)) {
-                showWarningMessage("A Bibliografia já foi adicionada.\nEscolha outro curso!");
-                return;
-            }
-            int id = 1;
-            if (!referenciaTableModel.isEmpty()) {
-                /**
-                 * Procedimento realizado para gerar a chave única de cada
-                 * atividade para cada calendário/campusll
-                 */
-                ReferenciaBibliografica atemp = referenciaTableModel.getMax(Comparator.comparing(a -> a.getId().getSequencia()));
-                id = atemp.getId().getSequencia();
-            }
-            rb.getId().setSequencia(id);
-            referenciaTableModel.addRow(rb);
-            clear();
-        } else {
-            showInformationMessage("Informe a identficação da Bibliografia");
-        }
-    }
-
-    @Override
-    public void onDelAction(ActionEvent e, Object o) {
-        int selectedRow = referenciasTable.getSelectedRow();
-        if (selectedRow == -1) {
-            showWarningMessage("Você não selecionou a Referência Bibliográfica que será removida."
-                    + "\nFavor, clique sobre uma Referência Bibliográfica!");
-            return;
-        }
-        referenciaTableModel.removeRow(selectedRow);
-        referenciasTable.repaint();
     }
 
 }

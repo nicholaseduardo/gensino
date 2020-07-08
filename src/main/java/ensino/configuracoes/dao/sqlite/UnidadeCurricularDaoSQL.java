@@ -26,6 +26,9 @@ public class UnidadeCurricularDaoSQL extends AbstractDaoSQL<UnidadeCurricular> {
     public void save(UnidadeCurricular o) {
         if (o.getId().getId() == null) {
             o.getId().setId(nextVal(o));
+            o.getCurso().addUnidadeCurricular(o);
+        } else {
+            o.getCurso().updateUnidadeCurricular(o);
         }
         
         if (findById(o.getId()) == null) {

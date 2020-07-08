@@ -3,22 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.planejamento.view.panels.config;
+package ensino.configuracoes.view.panels.unidadeCurricular;
 
 import ensino.components.GenJButton;
 import ensino.components.GenJTextArea;
 import ensino.components.renderer.TextAreaCellRenderer;
+import ensino.configuracoes.controller.ObjetivoUCController;
 import ensino.configuracoes.model.ObjetivoUC;
+import ensino.configuracoes.model.ObjetivoUCFactory;
 import ensino.configuracoes.model.UnidadeCurricular;
+import ensino.configuracoes.view.models.ObjetivoUCTableModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
-import ensino.planejamento.controller.ObjetivoController;
-import ensino.planejamento.model.Objetivo;
-import ensino.planejamento.model.ObjetivoFactory;
-import ensino.planejamento.model.ObjetivoId;
-import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.planejamento.view.models.ObjetivoTableModel;
 import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
@@ -31,8 +28,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -49,7 +44,7 @@ import javax.swing.table.TableColumnModel;
  *
  * @author nicho
  */
-public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
+public class UnidadeCurricularFieldsObjetivo extends DefaultFieldsPanel {
 
     private Integer sequencia;
     private GenJTextArea txtObjetivo;
@@ -57,28 +52,31 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
     private GenJButton btUpdate;
     private GenJButton btDel;
     private GenJButton btNew;
-    private GenJButton btImport;
     private JTable objetivoTable;
 
-    private ObjetivoTableModel objetivoTableModel;
+    private ObjetivoUCTableModel objetivoTableModel;
 
-    private PlanoDeEnsino planoDeEnsino;
+    private UnidadeCurricular unidadeCurricular;
 
     private Component frame;
-    private ObjetivoController col;
+    private ObjetivoUCController col;
 
-    public PlanoDeEnsinoObjetivoEspecifico(Component frame) {
+    public UnidadeCurricularFieldsObjetivo(UnidadeCurricular unidadeCurricular) {
         super("Objetivos específicos");
-        this.frame = frame;
+        this.unidadeCurricular = unidadeCurricular;
         initComponents();
+    }
+
+    public void setFrame(Component frame) {
+        this.frame = frame;
     }
 
     private void initComponents() {
         try {
-            setName("plano.objetivos");
+            setName("unidadeCurricular.objetivos");
             setLayout(new BorderLayout(5, 5));
             setBorder(BorderFactory.createEtchedBorder());
-            col = ControllerFactory.createObjetivoController();
+            col = ControllerFactory.createObjetivoUCController();
 
             backColor = ChartsFactory.ligthGreen;
             foreColor = ChartsFactory.darkGreen;
@@ -92,6 +90,9 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
 
             add(createPanelEspecificos(), BorderLayout.PAGE_START);
             add(createPanelTabela(), BorderLayout.CENTER);
+
+            enableFields(true);
+            initFocus();
         } catch (Exception ex) {
             showErrorMessage(ex);
         }
@@ -110,16 +111,12 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
         btUpdate = createButton(new ActionHandler(AcoesBotoes.EDIT), backColor, foreColor);
         btDel = createButton(new ActionHandler(AcoesBotoes.DELETE), backColor, foreColor);
         btNew = createButton(new ActionHandler(AcoesBotoes.NEW), backColor, foreColor);
-        btImport = createButton(new ActionHandler(AcoesBotoes.IMPORT), backColor, foreColor);
-        btImport.setText("Importar Objetivos da U.C.");
-        btImport.setToolTipText("Importar Objetivos da Unidade Curricular");
 
         JPanel panelButtons = createPanel(new FlowLayout(FlowLayout.RIGHT));
         panelButtons.add(btNew);
         panelButtons.add(btAdd);
         panelButtons.add(btUpdate);
         panelButtons.add(btDel);
-        panelButtons.add(btImport);
 
         GridLayoutHelper.set(c, 0, 0);
         panel.add(objetivoScroll, c);
@@ -136,7 +133,7 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
         ListSelectionModel cellSelectionModel = objetivoTable.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         cellSelectionModel.addListSelectionListener(new ObjetivoListSelectionListener());
-        setData(new ArrayList());
+        setData(unidadeCurricular.getObjetivos());
         JScrollPane scroll = new JScrollPane();
         scroll.setViewportView(objetivoTable);
 
@@ -148,7 +145,7 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
      *
      * @return
      */
-    public List<Objetivo> getData() {
+    public List<ObjetivoUC> getData() {
         return objetivoTableModel.getData();
     }
 
@@ -157,8 +154,8 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
      *
      * @param data
      */
-    public void setData(List<Objetivo> data) {
-        objetivoTableModel = new ObjetivoTableModel(data);
+    public void setData(List<ObjetivoUC> data) {
+        objetivoTableModel = new ObjetivoUCTableModel(data);
         refreshTable();
     }
 
@@ -184,12 +181,10 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(Object object) {
-        if (object instanceof PlanoDeEnsino) {
-            planoDeEnsino = (PlanoDeEnsino) object;
+        if (object instanceof UnidadeCurricular) {
+            unidadeCurricular = (UnidadeCurricular) object;
             sequencia = null;
-
-            setData(planoDeEnsino.getObjetivos());
-
+            setData(unidadeCurricular.getObjetivos());
             enableLocalButtons(Boolean.TRUE);
         }
     }
@@ -235,7 +230,6 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
         Boolean status = sequencia == null;
 
         btAdd.setEnabled(active && status);
-        btImport.setEnabled(active && status);
         btNew.setEnabled(active && !status);
         btUpdate.setEnabled(active && !status);
         btDel.setEnabled(active && !status);
@@ -252,11 +246,11 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
         initFocus();
     }
 
-    private Objetivo createObjetivoFromFields() {
+    private ObjetivoUC createObjetivoFromFields() {
 
-        Objetivo o = ObjetivoFactory.getInstance().createObject(
+        ObjetivoUC o = ObjetivoUCFactory.getInstance().createObject(
                 sequencia, txtObjetivo.getText());
-        o.getId().setPlanoDeEnsino(planoDeEnsino);
+        o.getId().setUnidadeCurricular(unidadeCurricular);
         try {
             /**
              * Grava os dados adicionados
@@ -297,7 +291,7 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
                  * Procedimento realizado para gerar a chave única de cada
                  * objetivo
                  */
-                Objetivo otemp = objetivoTableModel.getMax(Comparator.comparing(a -> a.getId().getSequencia()));
+                ObjetivoUC otemp = objetivoTableModel.getMax(Comparator.comparing(a -> a.getId().getSequencia()));
                 id = otemp.getId().getSequencia() + 1;
             }
             /**
@@ -337,37 +331,13 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultFieldsPanel {
         }
     }
 
-    @Override
-    public void onImportAction(ActionEvent e) {
-        UnidadeCurricular uc = planoDeEnsino.getUnidadeCurricular();
-        if (uc.getObjetivos().isEmpty()) {
-            showWarningMessage("A U.C. vinculada ao plano de ensino não tem\n"
-                    + "não tem objetivos cadastrados");
-            return;
-        }
-        try {
-            List<ObjetivoUC> lista = uc.getObjetivos();
-            for (ObjetivoUC ouc : lista) {
-                Objetivo obj = ObjetivoFactory.getInstance().createObject(
-                        new ObjetivoId(null, planoDeEnsino),
-                        ouc.getDescricao(), ouc);
-                col.salvar(obj);
-                objetivoTableModel.addRow(obj);
-            }
-            clear();
-        } catch (Exception ex) {
-            showErrorMessage(ex);
-            ex.printStackTrace();
-        }
-    }
-
     private class ObjetivoListSelectionListener implements ListSelectionListener {
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
             int selectedRow = objetivoTable.getSelectedRow();
             if (selectedRow >= 0) {
-                Objetivo o = (Objetivo) objetivoTableModel.getRow(selectedRow);
+                ObjetivoUC o = (ObjetivoUC) objetivoTableModel.getRow(selectedRow);
                 setFieldValues(o.getId().getSequencia(), o.getDescricao());
                 enableLocalButtons(Boolean.TRUE);
                 initFocus();

@@ -5,6 +5,10 @@
  */
 package ensino.util.types;
 
+import ensino.configuracoes.model.InstrumentoAvaliacao;
+import ensino.configuracoes.model.Recurso;
+import ensino.configuracoes.model.Tecnica;
+import ensino.patterns.BaseObject;
 import java.util.stream.Stream;
 
 /**
@@ -23,10 +27,22 @@ public enum TipoMetodo {
     public int getValue() {
         return value;
     }
-    
+
     public static TipoMetodo of(Integer value) {
         return Stream.of(TipoMetodo.values()).filter(t -> t.getValue() == value)
-                .findFirst().orElseThrow(IllegalArgumentException::new );
+                .findFirst().orElseThrow(IllegalArgumentException::new);
+    }
+
+    public static TipoMetodo of(BaseObject value) {
+        TipoMetodo tm = null;
+        if (value instanceof Recurso) {
+            tm = TipoMetodo.RECURSO;
+        } else if (value instanceof Tecnica) {
+            tm = TipoMetodo.TECNICA;
+        } else if (value instanceof InstrumentoAvaliacao) {
+            tm = TipoMetodo.INSTRUMENTO;
+        }
+        return tm;
     }
 
     @Override

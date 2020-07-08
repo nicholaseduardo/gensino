@@ -50,15 +50,18 @@ public class CursoFields extends DefaultFieldsPanel {
     private Curso curso;
     private Component frame;
 
-    public CursoFields(Campus campus, Component frame) {
+    public CursoFields(Campus campus) {
         this();
         selectedCampus = campus;
-        this.frame = frame;
     }
 
     public CursoFields() {
         super();
         initComponents();
+    }
+    
+    public void setFrame(Component frame) {
+        this.frame = frame;
     }
 
     private void initComponents() {

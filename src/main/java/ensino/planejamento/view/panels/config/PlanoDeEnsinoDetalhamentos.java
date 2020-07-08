@@ -13,9 +13,12 @@ import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
+import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
+import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoDeEnsino;
@@ -152,25 +155,27 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
                 List<SemanaLetiva> semanas = periodoLetivo.getSemanasDoMes(mes);
                 Integer nSemanas = semanas.size();
 
-                for (int j = 0; j < nSemanas; j++) {
-                    SemanaLetiva semanaLetiva = semanas.get(j);
-                    Detalhamento detalhamento = listaDetalhamentos.get(semanaLetiva.getId().getId() - 1);
-                    detalhamento.setObservacao(atividadesDaSemana(semanaLetiva));
+                if (!listaDetalhamentos.isEmpty()) {
+                    for (int j = 0; j < nSemanas; j++) {
+                        SemanaLetiva semanaLetiva = semanas.get(j);
+                        Detalhamento detalhamento = listaDetalhamentos.get(semanaLetiva.getId().getId() - 1);
+                        detalhamento.setObservacao(atividadesDaSemana(semanaLetiva));
 
-                    PlanoDeEnsinoDetalhamento detalhamentoFields;
-                    // O primeiro componente é nulo
-                    if (!componentsCreated) {
-                        // Cria o formulário com os campos do detalhamento
-                        detalhamentoFields = new PlanoDeEnsinoDetalhamento();
-                        // armazena cada formulário no cardpanel
-                        detalhamentoCardPanel.add(detalhamentoFields, String.format("%d", semanaLetiva.getId().getId()));
+                        PlanoDeEnsinoDetalhamento detalhamentoFields;
+                        // O primeiro componente é nulo
+                        if (!componentsCreated) {
+                            // Cria o formulário com os campos do detalhamento
+                            detalhamentoFields = new PlanoDeEnsinoDetalhamento();
+                            // armazena cada formulário no cardpanel
+                            detalhamentoCardPanel.add(detalhamentoFields, String.format("%d", semanaLetiva.getId().getId()));
+                        }
+
+                        ToolTipTreeNode nodeSemana = new ToolTipTreeNode(semanaLetiva,
+                                String.format("Período: %s",
+                                        semanaLetiva.getPeriodo().toString()));
+
+                        nodeMes.add(nodeSemana);
                     }
-
-                    ToolTipTreeNode nodeSemana = new ToolTipTreeNode(semanaLetiva,
-                            String.format("Período: %s",
-                                    semanaLetiva.getPeriodo().toString()));
-
-                    nodeMes.add(nodeSemana);
                 }
             }
             expandAllNodes(treeDetalhamento, 0, treeDetalhamento.getRowCount());
@@ -210,7 +215,9 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
             periodoLetivo = planoDeEnsino.getPeriodoLetivo();
             listaAtividades = periodoLetivo.getId().getCalendario().getAtividades();
             listaObjetivos = planoDeEnsino.getObjetivos();
+
             listaDetalhamentos = planoDeEnsino.getDetalhamentos();
+
             loadTreeDetalhamento();
         }
     }
@@ -226,7 +233,8 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
     }
 
     @Override
-    public void enableFields(boolean active) {
+    public void enableFields(boolean active
+    ) {
         // verifica os componentes dos campos de detalhamento
         for (int i = 0; i < detalhamentoCardPanel.getComponentCount(); i++) {
             if (detalhamentoCardPanel.getComponent(i) instanceof DetalhamentoFieldsPanel) {
@@ -237,7 +245,8 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
     }
 
     @Override
-    public void componentShown(ComponentEvent e) {
+    public void componentShown(ComponentEvent e
+    ) {
         super.componentShown(e);
         treeDetalhamento.setSelectionRow(2);
     }
@@ -287,7 +296,7 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
                  * detalhamento baseia-se na sequência da semana menos uma
                  * unidade
                  */
-                detalhamentoFields.setFieldValues(listaDetalhamentos.get(index-1));
+                detalhamentoFields.setFieldValues(listaDetalhamentos.get(index - 1));
                 detalhamentoFields.enableFields(getStatusPanel() != VIEW_STATUS_PANEL);
 
                 layout.show(detalhamentoCardPanel, index.toString());

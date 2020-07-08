@@ -5,7 +5,7 @@
  */
 package ensino.configuracoes.view.models;
 
-import ensino.configuracoes.model.ReferenciaBibliografica;
+import ensino.configuracoes.model.ObjetivoUC;
 import ensino.defaults.DefaultTableModel;
 import ensino.patterns.factory.DaoFactory;
 import java.util.ArrayList;
@@ -15,15 +15,15 @@ import java.util.List;
  *
  * @author nicho
  */
-public class ReferenciaBibliograficaTableModel extends DefaultTableModel<ReferenciaBibliografica> {
+public class ObjetivoUCTableModel extends DefaultTableModel<ObjetivoUC> {
 
-    public ReferenciaBibliograficaTableModel() {
-        this(new ArrayList<ReferenciaBibliografica>());
+    public ObjetivoUCTableModel() {
+        this(new ArrayList<ObjetivoUC>());
     }
 
-    public ReferenciaBibliograficaTableModel(List<ReferenciaBibliografica> lista) {
+    public ObjetivoUCTableModel(List<ObjetivoUC> lista) {
         super(lista, new String[]{
-            "Referência bibliográfica", "Ações"
+            "Objetivo específico"
         });
     }
 
@@ -35,8 +35,7 @@ public class ReferenciaBibliograficaTableModel extends DefaultTableModel<Referen
     @Override
     public void removeRow(int row) {
         if (DaoFactory.isXML()) {
-            ReferenciaBibliografica o = (ReferenciaBibliografica) lista.get(row);
-            o.delete();
+            ObjetivoUC o = (ObjetivoUC) lista.get(row);
             updateRow(row, o);
         } else {
             super.removeRow(row);
@@ -44,11 +43,16 @@ public class ReferenciaBibliograficaTableModel extends DefaultTableModel<Referen
     }
 
     @Override
+    public List<ObjetivoUC> getData() {
+        return super.getData();
+    }
+
+    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        ReferenciaBibliografica referencia = getRow(rowIndex);
+        ObjetivoUC obj = (ObjetivoUC) getRow(rowIndex);
         switch (columnIndex) {
             case 0:
-                return referencia;
+                return obj.getDescricao();
             default:
                 return null;
         }

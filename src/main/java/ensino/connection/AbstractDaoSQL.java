@@ -6,13 +6,8 @@
 package ensino.connection;
 
 import ensino.patterns.DaoPattern;
-import ensino.util.ConfigProperties;
 import java.sql.SQLException;
-import java.util.Map;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 
 /**
  *
@@ -21,17 +16,12 @@ import javax.persistence.Persistence;
  */
 public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
-    protected static final EntityManagerFactory factory;
+    private Connection connection;
     protected EntityManager entityManager;
-    protected EntityTransaction transaction;
-
-    static {
-        factory = Persistence.createEntityManagerFactory(ConfigProperties.get("gensino.db.context"));
-    }
 
     public AbstractDaoSQL() {
-        entityManager = factory.createEntityManager();
-        transaction = entityManager.getTransaction();
+        connection = Connection.getInstance();
+        entityManager = connection.getEntityManager();
     }
 
     @Override
@@ -46,23 +36,23 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
     @Override
     public boolean isTranscationActive() {
-        return transaction != null && transaction.isActive();
+        return connection.getTransaction() != null && connection.getTransaction().isActive();
     }
 
     @Override
     public void startTransaction() {
-        transaction.begin();
+        connection.getTransaction().begin();
     }
 
     @Override
     public void commit() throws SQLException {
-        transaction.commit();
+        connection.getTransaction().commit();
     }
 
     @Override
     public void rollback() {
         if (isTranscationActive()) {
-            transaction.rollback();
+            connection.getTransaction().rollback();
         }
     }
 }

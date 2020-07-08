@@ -82,7 +82,7 @@ public class Curso implements Serializable {
         unidadesCurriculares.add(unidadeCurricular);
     }
     
-    public void upddateUnidadeCurricular(UnidadeCurricular unidadeCurricular) {
+    public void updateUnidadeCurricular(UnidadeCurricular unidadeCurricular) {
         for(UnidadeCurricular und : unidadesCurriculares) {
             if (und.getId().equals(unidadeCurricular.getId())) {
                 und = unidadeCurricular;
@@ -108,6 +108,15 @@ public class Curso implements Serializable {
     public void addTurma(Turma turma) {
         turma.getId().setCurso(this);
         turmas.add(turma);
+    }
+    
+    public void updateTurma(Turma turma) {
+        for(Turma t : turmas) {
+            if (t.getId().equals(t.getId())) {
+                t = turma;
+                break;
+            }
+        }
     }
     
     public void removeTurma(Turma turma) {

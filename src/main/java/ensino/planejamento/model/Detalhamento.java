@@ -1,5 +1,6 @@
 package ensino.planejamento.model;
 
+import ensino.configuracoes.model.Conteudo;
 import ensino.configuracoes.model.SemanaLetiva;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,6 +46,15 @@ public class Detalhamento implements Serializable {
         @JoinColumn(name = "semanaLetiva_id")
     })
     private SemanaLetiva semanaLetiva;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns(value = {
+        @JoinColumn(name = "conteudo_unidadeCurricular_id"),
+        @JoinColumn(name = "conteudo_curso_id"),
+        @JoinColumn(name = "conteudo_campus_id"),
+        @JoinColumn(name = "conteudo_id")
+    })
+    private Conteudo conteudoUC;
     
     @OneToMany(mappedBy = "id.detalhamento", 
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, 
@@ -113,6 +123,14 @@ public class Detalhamento implements Serializable {
     public void setSemanaLetiva(SemanaLetiva semanaLetiva) {
         this.semanaLetiva = semanaLetiva;
     }
+
+    public Conteudo getConteudoUC() {
+        return conteudoUC;
+    }
+
+    public void setConteudoUC(Conteudo conteudoUC) {
+        this.conteudoUC = conteudoUC;
+    }
     
     public void addMetodologia(Metodologia metodologia) {
         metodologia.getId().setDetalhamento(this);
@@ -157,6 +175,7 @@ public class Detalhamento implements Serializable {
         hash = 79 * hash + Objects.hashCode(this.conteudo);
         hash = 79 * hash + Objects.hashCode(this.observacao);
         hash = 79 * hash + Objects.hashCode(this.semanaLetiva);
+        hash = 79 * hash + Objects.hashCode(this.conteudoUC);
         return hash;
     }
 
@@ -188,6 +207,9 @@ public class Detalhamento implements Serializable {
             return false;
         }
         if (!Objects.equals(this.semanaLetiva, other.semanaLetiva)) {
+            return false;
+        }
+        if (!Objects.equals(this.conteudoUC, other.conteudoUC)) {
             return false;
         }
         return true;

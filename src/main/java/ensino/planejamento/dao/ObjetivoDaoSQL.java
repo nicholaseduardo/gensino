@@ -27,7 +27,7 @@ public class ObjetivoDaoSQL extends AbstractDaoSQL<Objetivo> {
         if (o.getId().getSequencia() == null) {
             o.getId().setSequencia(nextVal(o));
         }
-        if (findById(o.getId()) != null) {
+        if (findById(o.getId()) == null) {
             entityManager.persist(o);
         } else {
             entityManager.merge(o);

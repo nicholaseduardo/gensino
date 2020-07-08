@@ -34,7 +34,11 @@ public class TurmaFactory implements BeanFactory<Turma> {
     public Turma createObject(Object... args) {
         Turma o = new Turma();
         int i = 0;
-        o.getId().setId((Integer) args[i++]);
+        if (args[i] instanceof TurmaId) {
+            o.setId((TurmaId) args[i++]);
+        } else {
+            o.getId().setId((Integer) args[i++]);
+        }
         o.setNome((String) args[i++]);
         o.setAno((Integer) args[i++]);
         return o;
@@ -63,14 +67,16 @@ public class TurmaFactory implements BeanFactory<Turma> {
     @Override
     public Turma getObject(HashMap<String, Object> p) {
         Turma o = createObject(
-                (Integer) p.get("id"),
+                new TurmaId((Integer) p.get("id"), (Curso) p.get("curso")),
                 (String) p.get("nome"),
                 (Integer) p.get("ano")
         );
-        o.getId().setCurso((Curso) p.get("curso"));
-        ((List<Estudante>) p.get("estudantes")).forEach((estudante) -> {
-            o.addEstudante(estudante);
-        });
+
+        if (p.get("estudantes") != null) {
+            ((List<Estudante>) p.get("estudantes")).forEach((estudante) -> {
+                o.addEstudante(estudante);
+            });
+        }
         return o;
     }
 

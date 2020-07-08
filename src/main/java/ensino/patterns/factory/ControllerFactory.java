@@ -9,6 +9,7 @@ import ensino.configuracoes.controller.AtividadeController;
 import ensino.configuracoes.controller.BibliografiaController;
 import ensino.configuracoes.controller.CalendarioController;
 import ensino.configuracoes.controller.CampusController;
+import ensino.configuracoes.controller.ConteudoController;
 import ensino.configuracoes.controller.CursoController;
 import ensino.configuracoes.controller.DocenteController;
 import ensino.configuracoes.controller.EstudanteController;
@@ -16,6 +17,8 @@ import ensino.configuracoes.controller.EtapaEnsinoController;
 import ensino.configuracoes.controller.InstrumentoAvaliacaoController;
 import ensino.configuracoes.controller.LegendaController;
 import ensino.configuracoes.controller.NivelEnsinoController;
+import ensino.configuracoes.controller.ObjetivoUCConteudoController;
+import ensino.configuracoes.controller.ObjetivoUCController;
 import ensino.configuracoes.controller.PeriodoLetivoController;
 import ensino.configuracoes.controller.RecursoController;
 import ensino.configuracoes.controller.ReferenciaBibliograficaController;
@@ -173,5 +176,17 @@ public class ControllerFactory {
     
     public static AvaliacaoController createAvaliacaoController() throws Exception {
         return new AvaliacaoController();
+    }
+    
+    public static ConteudoController createConteudoController() throws Exception {
+        return new ConteudoController();
+    }
+    
+    public static ObjetivoUCController createObjetivoUCController() throws Exception {
+        return new ObjetivoUCController();
+    }
+    
+    public static ObjetivoUCConteudoController createObjetivoUCConteudoController() throws Exception {
+        return new ObjetivoUCConteudoController();
     }
 }

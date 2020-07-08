@@ -5,30 +5,27 @@
  */
 package ensino.configuracoes.view.models;
 
-import ensino.configuracoes.model.Estudante;
+import ensino.configuracoes.model.Conteudo;
 import ensino.defaults.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author nicho
  */
-public class EstudanteTableModel extends DefaultTableModel<Estudante> {
-
-    public EstudanteTableModel() {
-        this(new ArrayList<Estudante>());
-    }
+public class ConteudoTableModel extends DefaultTableModel<Conteudo> {
     
-    public EstudanteTableModel(List<Estudante> lista) {
-        super(lista, new String[] {"Estudante", "Ações"});
+    public ConteudoTableModel(List<Conteudo> lista) {
+        super(lista, new String[] {
+            "Nome"
+        });
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Estudante estudante = (Estudante) getRow(rowIndex);
+        Conteudo conteudo = (Conteudo) getRow(rowIndex);
         switch(columnIndex) {
-            case 0: return estudante;
+            case 0: return conteudo;
             default: return null;
         }
     }

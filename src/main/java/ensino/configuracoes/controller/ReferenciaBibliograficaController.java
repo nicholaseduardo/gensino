@@ -51,8 +51,12 @@ public class ReferenciaBibliograficaController extends AbstractController<Refere
                 o.getId().getCurso().getId(),
                 o.getId().getCurso().getId().getCampus().getId());
         } else {
-            filter = String.format(" AND rb.id.unidadeCurricular.id = %d ", 
-                    o.getId().getId());
+            filter = String.format(" AND rb.id.unidadeCurricular.id.id = %d "
+                    + " AND rb.id.unidadeCurricular.id.curso.id.id = %d "
+                    + " AND rb.id.unidadeCurricular.id.curso.id.campus.id = %d ", 
+                    o.getId().getId(),
+                    o.getId().getCurso().getId().getId(),
+                    o.getId().getCurso().getId().getCampus().getId());
         }
         
         return super.getDao().list(filter, o);

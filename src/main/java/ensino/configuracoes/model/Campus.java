@@ -10,7 +10,7 @@ import ensino.util.StatusCampusConverter;
 import ensino.util.types.StatusCampus;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;

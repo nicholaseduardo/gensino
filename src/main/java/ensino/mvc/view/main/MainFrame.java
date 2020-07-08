@@ -152,11 +152,7 @@ public class MainFrame extends javax.swing.JFrame {
         mapPathIcons = new HashMap();
         mapPathIcons.put(MenuOpcoes.CAMPI, "/img/university-icon-50px.png");
         mapPathIcons.put(MenuOpcoes.CALENDARIO, "/img/calendar-image-png-50px.png");
-        mapPathIcons.put(MenuOpcoes.CURSO, "/img/courses-icon-50px.png");
-        mapPathIcons.put(MenuOpcoes.TURMA, "/img/classroom-50px.png");
-        mapPathIcons.put(MenuOpcoes.UNDCURR, "/img/school-icon-50px.png");
         mapPathIcons.put(MenuOpcoes.BIBLIOGRAFIA, "/img/library-icon-50px.png");
-        mapPathIcons.put(MenuOpcoes.PLANOENSINO, "/img/plano-icon-50px.png");
         mapPathIcons.put(MenuOpcoes.SAIR, "/img/exit-button-50px.png");
     }
 
@@ -264,20 +260,13 @@ public class MainFrame extends javax.swing.JFrame {
         MainActionListener mainListener = new MainActionListener();
         menuItemCampus.addActionListener(mainListener);
         menuItemCalendario.addActionListener(mainListener);
-        menuItemCurso.addActionListener(mainListener);
-        menuItemTurma.addActionListener(mainListener);
-        menuItemUnidadeCurricular.addActionListener(mainListener);
         menuItemBibliografia.addActionListener(mainListener);
         menuItemPlanoDeEnsino.addActionListener(mainListener);
         menuItemSair.addActionListener(mainListener);
 
         menuItemCampus.setActionCommand(MenuOpcoes.CAMPI.getValue());
         menuItemCalendario.setActionCommand(MenuOpcoes.CALENDARIO.getValue());
-        menuItemCurso.setActionCommand(MenuOpcoes.CURSO.getValue());
-        menuItemTurma.setActionCommand(MenuOpcoes.TURMA.getValue());
-        menuItemUnidadeCurricular.setActionCommand(MenuOpcoes.UNDCURR.getValue());
         menuItemBibliografia.setActionCommand(MenuOpcoes.BIBLIOGRAFIA.getValue());
-        menuItemPlanoDeEnsino.setActionCommand(MenuOpcoes.PLANOENSINO.getValue());
         menuItemSair.setActionCommand(MenuOpcoes.SAIR.getValue());
 
         createButtons(mainListener);
@@ -296,23 +285,11 @@ public class MainFrame extends javax.swing.JFrame {
                     case CAMPI:
                         addFrame(new ensino.configuracoes.view.frame.FrameCampus(framePainel));
                         break;
-                    case CURSO:
-                        addFrame(new ensino.configuracoes.view.frame.FrameCursos());
-                        break;
-                    case TURMA:
-                        addFrame(new ensino.configuracoes.view.frame.FrameTurma());
-                        break;
-                    case UNDCURR:
-                        addFrame(new ensino.configuracoes.view.frame.FrameUnidadeCurricular());
-                        break;
                     case CALENDARIO:
                         addFrame(new ensino.configuracoes.view.frame.FrameCalendario());
                         break;
                     case BIBLIOGRAFIA:
                         addFrame(new ensino.configuracoes.view.frame.FrameBibliografia());
-                        break;
-                    case PLANOENSINO:
-                        addFrame(new ensino.planejamento.view.frame.FramePlanoDeEnsino());
                         break;
                     case SAIR:
                         System.exit(0);
@@ -326,10 +303,8 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private enum MenuOpcoes {
-        CAMPI("campi"), CURSO("curso"), TURMA("turma"),
-        UNDCURR("undCurr"), CALENDARIO("cal"),
-        BIBLIOGRAFIA("bib"),
-        PLANOENSINO("planoEnsino"), SAIR("sair");
+        CAMPI("campi"), CALENDARIO("cal"),
+        BIBLIOGRAFIA("bib"), SAIR("sair");
 
         private String value;
 
@@ -393,10 +368,6 @@ public class MainFrame extends javax.swing.JFrame {
         menuItemCampus = new javax.swing.JMenuItem();
         menuItemCalendario = new javax.swing.JMenuItem();
         menuItemBibliografia = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        menuItemCurso = new javax.swing.JMenuItem();
-        menuItemTurma = new javax.swing.JMenuItem();
-        menuItemUnidadeCurricular = new javax.swing.JMenuItem();
         separadorArquivo = new javax.swing.JPopupMenu.Separator();
         menuItemSair = new javax.swing.JMenuItem();
         menuGerenciamento = new javax.swing.JMenu();
@@ -480,23 +451,6 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu1.add(menuItemBibliografia);
 
         menuArquivo.add(jMenu1);
-
-        jMenu3.setText("Cursos");
-
-        menuItemCurso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/courses-icon-25px.png"))); // NOI18N
-        menuItemCurso.setText("Cursos");
-        jMenu3.add(menuItemCurso);
-
-        menuItemTurma.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/classroom-25px.png"))); // NOI18N
-        menuItemTurma.setText("Turma");
-        jMenu3.add(menuItemTurma);
-
-        menuItemUnidadeCurricular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/school-icon-25px.png"))); // NOI18N
-        menuItemUnidadeCurricular.setText("Unidade Curricular");
-        menuItemUnidadeCurricular.setActionCommand("UnidadeCurricular");
-        jMenu3.add(menuItemUnidadeCurricular);
-
-        menuArquivo.add(jMenu3);
         menuArquivo.add(separadorArquivo);
 
         menuItemSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/exit-button-25px.png"))); // NOI18N
@@ -636,14 +590,12 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu menuArquivo;
     private javax.swing.JMenu menuGerenciamento;
     private javax.swing.JMenuItem menuItemBibliografia;
     private javax.swing.JMenuItem menuItemCalendario;
     private javax.swing.JMenuItem menuItemCampus;
-    private javax.swing.JMenuItem menuItemCurso;
     private javax.swing.JMenuItem menuItemDocente;
     private javax.swing.JMenuItem menuItemInstrumentoAvaliacao;
     private javax.swing.JMenuItem menuItemLegenda;
@@ -653,8 +605,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemRecurso;
     private javax.swing.JMenuItem menuItemSair;
     private javax.swing.JMenuItem menuItemTecnica;
-    private javax.swing.JMenuItem menuItemTurma;
-    private javax.swing.JMenuItem menuItemUnidadeCurricular;
     private javax.swing.JMenuBar menuPrincipal;
     private javax.swing.JPopupMenu.Separator separadorArquivo;
     // End of variables declaration//GEN-END:variables

@@ -5,9 +5,9 @@
  */
 package ensino.configuracoes.dao.sqlite;
 
-import ensino.configuracoes.model.Curso;
-import ensino.configuracoes.model.Turma;
-import ensino.configuracoes.model.TurmaId;
+import ensino.configuracoes.model.Conteudo;
+import ensino.configuracoes.model.ConteudoId;
+import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoSQL;
 import java.util.List;
 import javax.persistence.TypedQuery;
@@ -16,19 +16,17 @@ import javax.persistence.TypedQuery;
  *
  * @author santos
  */
-public class TurmaDaoSQL extends AbstractDaoSQL<Turma> {
+public class ConteudoDaoSQL extends AbstractDaoSQL<Conteudo> {
 
-    public TurmaDaoSQL() {
+    public ConteudoDaoSQL() {
         super();
     }
 
     @Override
-    public void save(Turma o) {
-        if (o.getId().getId() == null) {
+    public void save(Conteudo o) {
+        if (o.getId().getId()== null) {
             o.getId().setId(nextVal(o));
-            o.getCurso().addTurma(o);
-        } else {
-            o.getCurso().updateTurma(o);
+            o.getId().getUnidadeCurricular().addConteudo(o);
         }
         
         if (findById(o.getId()) == null) {
@@ -39,60 +37,59 @@ public class TurmaDaoSQL extends AbstractDaoSQL<Turma> {
     }
 
     @Override
-    public void delete(Turma o) {
-        entityManager.remove(entityManager.getReference(Turma.class, o.getId()));
+    public void delete(Conteudo o) {
+        entityManager.remove(entityManager.getReference(Conteudo.class, o.getId()));
     }
 
     @Override
-    public List<Turma> list() {
+    public List<Conteudo> list() {
         return this.list(null);
     }
 
     @Override
-    public List<Turma> list(Object ref) {
+    public List<Conteudo> list(Object ref) {
         String sql = ref instanceof String ? (String) ref : "";
         return this.list(sql, ref);
     }
 
     @Override
-    public List<Turma> list(String criteria, Object ref) {
-        String sql = "SELECT t FROM Turma t ";
+    public List<Conteudo> list(String criteria, Object ref) {
+        String sql = "SELECT c FROM Conteudo c ";
 
         if (!"".equals(criteria)) {
-            sql += " WHERE t.id.id > 0 " + criteria;
+            sql += " WHERE c.id.id > 0 " + criteria;
         }
 
         // order
-        sql += " ORDER BY t.id.curso.id.campus.nome, "
-                + "t.id.curso.nome, t.id.id ";
+        sql += " ORDER BY c.id.unidadeCurricular.nome, "
+                + " c.nivel, sequencia ";
 
-        TypedQuery query = entityManager.createQuery(sql, Turma.class);
+        TypedQuery query = entityManager.createQuery(sql, Conteudo.class);
         return query.getResultList();
     }
 
     @Override
-    public Turma findById(Object id) {
-        return entityManager.find(Turma.class, id);
+    public Conteudo findById(Object id) {
+        return entityManager.find(Conteudo.class, id);
     }
 
     @Override
-    public Turma findById(Object... ids) {
+    public Conteudo findById(Object... ids) {
         if (ids.length != 2) {
             System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
             return null;
         }
-        Object oAno = ids[0];
-        if (!(oAno instanceof Integer)) {
+        Object oNumero = ids[0];
+        if (!(oNumero instanceof Integer)) {
             System.err.println("Primeiro atributo deve ser Integer");
             return null;
         }
-        Object oCurso = ids[1];
-        if (!(oCurso instanceof Curso)) {
-            System.err.println("Segundo atributo deve ser Curso");
+        Object oUnidade = ids[1];
+        if (!(oUnidade instanceof UnidadeCurricular)) {
+            System.err.println("Segundo atributo deve ser UnidadeCurricular");
             return null;
         }
-        TurmaId pk = new TurmaId((Integer) oAno, (Curso) oCurso);
-        return entityManager.find(Turma.class, pk);
+        return entityManager.find(Conteudo.class, new ConteudoId((Integer) oNumero, (UnidadeCurricular) oUnidade));
     }
 
     @Override
@@ -102,11 +99,11 @@ public class TurmaDaoSQL extends AbstractDaoSQL<Turma> {
 
     @Override
     public Integer nextVal(Object... params) {
-        Turma o = (Turma) params[0];
+        Conteudo o = (Conteudo) params[0];
         int id = 1;
-        List<Turma> l = o.getId().getCurso().getTurmas();
+        List<Conteudo> l = o.getId().getUnidadeCurricular().getConteudos();
         if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getId() + 1;
+            id = l.get(l.size() - 1).getId().getId()+ 1;
         }
         return id;
     }

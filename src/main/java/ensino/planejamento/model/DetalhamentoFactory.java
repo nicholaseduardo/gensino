@@ -6,6 +6,7 @@
 package ensino.planejamento.model;
 
 import ensino.configuracoes.dao.xml.SemanaLetivaDaoXML;
+import ensino.configuracoes.model.Conteudo;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.patterns.DaoPattern;
@@ -50,6 +51,7 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
         o.setNAulasTeoricas((Integer) args[i++]);
         o.setConteudo((String) args[i++]);
         o.setObservacao((String) args[i++]);
+        o.setConteudoUC((Conteudo) args[i++]);
 
         return o;
     }

@@ -11,7 +11,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
-import javax.swing.JTree;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
@@ -172,15 +171,5 @@ public abstract class DefaultFieldsPanel extends GenJPanel implements
     @Override
     public void componentHidden(ComponentEvent e) {
 
-    }
-
-    public static void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
-        for (int i = startingIndex; i < rowCount; ++i) {
-            tree.expandRow(i);
-        }
-
-        if (tree.getRowCount() != rowCount) {
-            expandAllNodes(tree, rowCount, tree.getRowCount());
-        }
     }
 }
