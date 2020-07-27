@@ -49,7 +49,9 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
     @Override
     public void commit() throws SQLException {
-        connection.getTransaction().commit();
+        if (isTranscationActive()) {
+            connection.getTransaction().commit();
+        }
     }
 
     @Override
