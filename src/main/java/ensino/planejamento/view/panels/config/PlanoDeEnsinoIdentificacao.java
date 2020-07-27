@@ -12,7 +12,6 @@ import ensino.components.GenJTextArea;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Curso;
-import ensino.configuracoes.model.ObjetivoUC;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.view.models.DocenteComboBoxModel;
@@ -22,25 +21,13 @@ import ensino.configuracoes.view.panels.filters.CalendarioSearch;
 import ensino.configuracoes.view.panels.filters.TurmaSearch;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
-import ensino.planejamento.model.Objetivo;
-import ensino.planejamento.model.ObjetivoFactory;
-import ensino.planejamento.model.ObjetivoId;
 import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.planejamento.model.PlanoDeEnsinoFactory;
-import ensino.reports.ChartsFactory;
-import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -85,7 +72,6 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEtchedBorder());
 
-        JPanel panel = createPanel(new GridBagLayout());
         int col = 0, row = 0;
         GridBagConstraints c = new GridBagConstraints();
         
@@ -129,6 +115,7 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
         recuperacaoScroll.setBorder(createTitleBorder("Recuperação da aprendizagem"));
         recuperacaoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         
+        JPanel panel = createPanel(new GridBagLayout());
         GridLayoutHelper.setRight(c, col++, row);
         panel.add(lblId, c);
         GridLayoutHelper.set(c, col, row++);
