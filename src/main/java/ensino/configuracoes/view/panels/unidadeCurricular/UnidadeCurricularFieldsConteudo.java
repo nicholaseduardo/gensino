@@ -66,9 +66,11 @@ public class UnidadeCurricularFieldsConteudo extends DefaultFieldsPanel {
     private JMenuItem menuNovo;
     private JMenuItem menuDelete;
 
-    public UnidadeCurricularFieldsConteudo(UnidadeCurricular unidadeCurricular) {
+    public UnidadeCurricularFieldsConteudo(UnidadeCurricular unidadeCurricular,
+            Component frame) {
         super();
         this.unidadeCurricular = unidadeCurricular;
+        this.frame = frame;
 
         initComponents();
 

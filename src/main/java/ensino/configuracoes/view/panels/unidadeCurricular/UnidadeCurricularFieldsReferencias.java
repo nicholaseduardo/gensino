@@ -60,8 +60,10 @@ public class UnidadeCurricularFieldsReferencias extends DefaultFieldsPanel {
     private Component frame;
     private UnidadeCurricular unidadeCurricular;
 
-    public UnidadeCurricularFieldsReferencias(UnidadeCurricular unidadeCurricular) {
+    public UnidadeCurricularFieldsReferencias(UnidadeCurricular unidadeCurricular,
+            Component frame) {
         super();
+        this.frame = frame;
         this.unidadeCurricular = unidadeCurricular;
         initComponents();
 

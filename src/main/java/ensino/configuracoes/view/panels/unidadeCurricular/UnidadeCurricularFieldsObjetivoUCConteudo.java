@@ -53,11 +53,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -77,9 +73,11 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
     private JPopupMenu popupMenu;
     private JMenuItem menuNovo;
 
-    public UnidadeCurricularFieldsObjetivoUCConteudo(UnidadeCurricular unidadeCurricular) {
+    public UnidadeCurricularFieldsObjetivoUCConteudo(UnidadeCurricular unidadeCurricular,
+            Component frame) {
         super();
         this.unidadeCurricular = unidadeCurricular;
+        this.frame = frame;
 
         initComponents();
 
