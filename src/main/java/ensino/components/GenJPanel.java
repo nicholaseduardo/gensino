@@ -15,6 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -33,6 +34,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -341,6 +343,29 @@ public class GenJPanel extends JPanel {
     public Object getObjectFromTable(JTable t) {
         int row = t.convertRowIndexToModel(t.getEditingRow());
         return t.getModel().getValueAt(row, 0);
+    }
+
+    protected void showDialog(JDialog dialog, JPanel panel) {
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(null);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.add(panel);
+        dialog.pack();
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        Dimension dialogSize = dialog.getPreferredSize();
+        int x = 0;
+        if (dialogSize.width < screenSize.width) {
+            x = (screenSize.width / 2) - (dialogSize.width / 2);
+        }
+        int y = 0;
+        if (dialogSize.height < screenSize.height) {
+            y = (screenSize.height / 2) - (dialogSize.height / 2);
+        }
+
+        dialog.setLocation(new Point(x, y));
+        dialog.setVisible(true);
     }
 
     protected class ActionHandler extends AbstractAction {
