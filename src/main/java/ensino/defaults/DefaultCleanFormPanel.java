@@ -414,6 +414,10 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
     protected void disableAddButton() {
         btAdd.setEnabled(false);
     }
+    
+    protected void disableCloseButton() {
+        btExit.setEnabled(false);
+    }
 
     public void enableFields(boolean active) {
         if (fieldsPanel != null) {
