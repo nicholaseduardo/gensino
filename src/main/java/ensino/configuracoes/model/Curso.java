@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -37,10 +36,10 @@ public class Curso implements Serializable {
     @JoinColumn(name = "nivelEnsino_id")
     private NivelEnsino nivelEnsino;
     
-    @OneToMany(mappedBy = "id.curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.curso", fetch = FetchType.LAZY)
     private List<Turma> turmas;
     
-    @OneToMany(mappedBy = "id.curso", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.curso", fetch = FetchType.LAZY)
     private List<UnidadeCurricular> unidadesCurriculares;
     
     public Curso() {
