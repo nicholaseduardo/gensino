@@ -9,6 +9,7 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.StringJoiner;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -19,7 +20,9 @@ import javax.swing.border.Border;
  * @author nicho
  */
 public class GenJLabel extends JLabel {
+
     private String actionCommand;
+    private Integer columns;
 
     public GenJLabel() {
         actionCommand = "";
@@ -100,17 +103,40 @@ public class GenJLabel extends JLabel {
         addMouseWheelListener(lme);
     }
 
+    /**
+     * Atribui um TEXT ao componente e realiza uma quebre de linha a cada
+     * nColumns usando TAGS HTML
+     *
+     * @param value
+     * @param nColumns
+     */
+    public void setText(String value, Integer nColumns) {
+        String html = "<html><body>%s</body></html>";
+        Integer length = value.length();
+        if (length <= nColumns) {
+            super.setText(String.format(html, value));
+        } else {
+            StringJoiner sj = new StringJoiner("<br/>");
+            String format = String.format("(?<=\\G.{%d})", nColumns);
+            String v[] = value.split(format);
+            for (int i = 0; i < v.length; i++) {
+                sj.add(v[i]);
+            }
+            super.setText(String.format(html, sj.toString()));
+        }
+    }
+
     private class LabelMouseEvents extends MouseAdapter {
-        
+
         private Border outsideBorder;
         private Border insideBorder;
         private Font originalFont;
-        
+
         public LabelMouseEvents() {
             originalFont = getFont();
             toOriginal();
         }
-        
+
         private void toOriginal() {
             outsideBorder = BorderFactory.createLineBorder(
                     GenJLabel.this.getForeground(), 1, true);
@@ -124,13 +150,13 @@ public class GenJLabel extends JLabel {
             resetFontSize(originalFont.getSize() - 1);
             setBorder(BorderFactory.createCompoundBorder(outsideBorder, insideBorder));
         }
-        
+
         @Override
         public void mouseReleased(MouseEvent e) {
             resetFontSize(originalFont.getSize());
             setBorder(BorderFactory.createCompoundBorder(outsideBorder, insideBorder));
         }
-        
+
         @Override
         public void mouseEntered(MouseEvent e) {
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
