@@ -8,6 +8,7 @@ package ensino.components;
 import java.awt.Font;
 import java.awt.Insets;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 /**
  *
@@ -41,6 +42,17 @@ public class GenJTextArea extends JTextArea {
         Font font = new Font(fieldFont.getFontName(), 
                         fieldFont.getStyle(), size);
         setFont(font);
+    }
+    
+    public void actAsLabel() {
+        setWrapStyleWord(true);
+        setLineWrap(true);
+        setOpaque(false);
+        setEditable(false);
+        setFocusable(false);
+        setBackground(UIManager.getColor("Label.background"));
+        setFont(UIManager.getFont("Label.font"));
+        setBorder(UIManager.getBorder("Label.border"));
     }
     
 }
