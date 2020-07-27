@@ -143,6 +143,9 @@ public class GenJPanel extends JPanel {
 
         backColor = Color.WHITE;
         foreColor = Color.BLACK;
+        
+        setBackground(backColor);
+        setForeground(foreColor);
     }
 
     public JPanel createPanel() {
