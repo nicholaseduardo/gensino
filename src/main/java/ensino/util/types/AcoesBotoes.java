@@ -12,12 +12,13 @@ import java.util.stream.Stream;
  * @author santos
  */
 public enum AcoesBotoes {
-    IDEN(10), ESP(11), DET(12), PAVA(13), HOR(14), CON(15), FREQ(16), AVA(17), VIEW_PLAN(18), 
-    NOTAS(19), CONTROLE(20), PE(21),
-    REFBIB(22), ESTUD(23), CONT_EMENTA(24), PLAN(9),
+    IDEN(10), ESP(11), DET(12), PAVA(13), HOR(14), PE(21), CON(15), FREQ(16), 
+    AVA(17), VIEW_PLAN(18), 
+    NOTAS(19), CONTROLE(20),
+    REFBIB(22), ESTUD(23), CONT_EMENTA(24), PLAN(9), DIARY(28), REPORT(29),
 
-    ADD(0), NEW(8), DELETE(1), EDIT(2), SAVE(3), CLOSE(4), DUPLICATE(5), GENERATE(6),
-    IMPORT(7);
+    ADD(0), NEW(8), DELETE(1), EDIT(2), SAVE(3), DUPLICATE(5), CLOSE(4), GENERATE(6),
+    IMPORT(7), CANCEL(25), SEARCH(26), CLEAR(27), STRUCTURE(30);
     
     private final Integer value;
     
@@ -63,6 +64,12 @@ public enum AcoesBotoes {
             case 22: return "Referências bibliográficas";
             case 23: return "Estudantes";
             case 24: return "Conteudo da U.C.";
+            case 25: return "Cancelar";
+            case 26: return "Buscar";
+            case 27: return "Limpar";
+            case 28: return "Diário";
+            case 29: return "Relatórios";
+            case 30: return "Estrutura";
         }
     }
 }

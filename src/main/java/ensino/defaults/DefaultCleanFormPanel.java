@@ -5,25 +5,25 @@
  */
 package ensino.defaults;
 
+import ensino.components.GenJLabel;
 import ensino.components.GenJPanel;
 import ensino.patterns.AbstractController;
+import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -35,8 +35,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
@@ -47,8 +47,7 @@ import javax.swing.border.TitledBorder;
  *
  * @author nicho
  */
-public abstract class DefaultFormPanel extends GenJPanel implements ActionListener,
-        ComponentListener {
+public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements ComponentListener {
 
     public static final String CARD_FICHA = "ficha";
     public static final String CARD_LIST = "lista";
@@ -93,58 +92,73 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
 
     private JLabel titlePanel;
 
-    private HashMap<String, String> imagesSource;
-    private JToolBar toolBar;
     private JButton btAdd;
-    private JButton btEdit;
-    private JButton btView;
-    private JButton btDelete;
     private JButton btSave;
     private JButton btCancel;
     private JButton btExit;
-    private JButton btExport;
-    private JButton btImport;
 
+    /**
+     * Atributo utilizado para indicar qual é a origem da janela que instanciou
+     * o painel
+     */
     private Component frame;
 
-    public DefaultFormPanel(Component frame) {
+    /**
+     * Atributo utilizado para mostrar o status do panel
+     */
+    private GenJLabel labelStatus;
+
+    public DefaultCleanFormPanel(Component frame) {
         super(new BorderLayout());
         this.frame = frame;
 
         BorderLayout layout = (BorderLayout) getLayout();
         layout.setVgap(10);
+        layout.setHgap(10);
+
         initComponents();
     }
 
     private void initComponents() {
-        BorderLayout centerLayout = new BorderLayout();
+        BorderLayout centerLayout = new BorderLayout(10, 10);
         panelCenter = createPanel(centerLayout);
-        addTitlePanel();
-        // adiciona o painel principal
-        add(panelCenter, BorderLayout.CENTER);
+        /**
+         * Cria o cabeçalho da tela com o titulo e os botões add e close
+         */
+        panelCenter.add(createTitlePanel(), BorderLayout.PAGE_START);
         cardPanel = createPanel(new CardLayout());
         panelCenter.add(cardPanel, BorderLayout.CENTER);
-        centerLayout.setVgap(10);
 
-        imagesSource = new HashMap<>();
-        toolBar = new JToolBar(JToolBar.VERTICAL);
+        // adiciona o painel principal
+        add(panelCenter, BorderLayout.CENTER);
+    }
 
-        // adiciona a toolbar no topo da panel
-        add(toolBar, BorderLayout.LINE_START);
+    private JPanel createFooterPanel() {
+        labelStatus = new GenJLabel();
+        labelStatus.resetFontSize(12);
 
-        createImageList();
-        addToolBarButton();
+        JPanel panel = createPanel();
+        panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        panel.add(labelStatus);
+        return panel;
+    }
+
+    private void updateLabelStatus(Integer nRegistros) {
+        String sLabel = "%d registro" + (nRegistros > 1 ? "s" : "");
+        labelStatus.setText(String.format(sLabel, nRegistros));
     }
 
     /**
-     * Atribui um modelo de tabela
+     * Atribui um modelo à tabela e à atualiza na sequência
      *
      * @param model
      */
     public void setTableModel(DefaultTableModel model) {
         this.model = model;
+        model.activateButtons();
         table.setModel(this.model);
         table.repaint();
+        updateLabelStatus(this.model.getRowCount());
 
         componentsControl(0);
     }
@@ -153,6 +167,10 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
      * Método usado para fazer a atualização dos dados do painel de filtrabem
      */
     public abstract void reloadTableData();
+
+    public void setFrame(Component frame) {
+        this.frame = frame;
+    }
 
     /**
      * Retorna uma instancia ou de JFrame ou de JInternalFrame
@@ -165,6 +183,10 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
 
     public JTable getTable() {
         return this.table;
+    }
+
+    public DefaultTableModel<T> getModel() {
+        return this.model;
     }
 
     public AbstractController getController() {
@@ -219,7 +241,7 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
      *
      * @param controller
      */
-    public void setController(AbstractController controller) {
+    public void setController(AbstractController<T> controller) {
         this.controller = controller;
     }
 
@@ -228,13 +250,14 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
      *
      * @param component
      */
-    public void enableTablePanel(JComponent component) {
+    public void createTablePanel(JComponent component) {
         // cria o painel 
         tablePanel = createPanel(new BorderLayout());
         tablePanel.addComponentListener(this);
         scrollPane = new JScrollPane();
         if (component instanceof JTable) {
             table = new JTable(model);
+            
             scrollPane.setViewportView(table);
             // adiciona a tabela no centro do painel de tabela
             tablePanel.add(scrollPane, BorderLayout.CENTER);
@@ -250,6 +273,7 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
                 "Filtros de pesquisa", TitledBorder.LEFT, TitledBorder.TOP);
         filterPanel.setBorder(title);
         tablePanel.add(filterPanel, BorderLayout.PAGE_START);
+        tablePanel.add(createFooterPanel(), BorderLayout.PAGE_END);
         addFiltersFields();
 
         // adiciona o painel da tabela ao cardlayout
@@ -262,55 +286,7 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
      */
     public void enableTablePanel() {
         table = new JTable(model);
-        enableTablePanel(table);
-    }
-
-    /**
-     * Cria a lista de sources das imagens
-     */
-    private void createImageList() {
-        imagesSource.put("search", "search-button-25px.png");
-        imagesSource.put("add", "add-button-50px.png");
-        imagesSource.put("edit", "edit-button-50px.png");
-        imagesSource.put("delete", "delete-button-50px.png");
-        imagesSource.put("exit", "exit-button-50px.png");
-        imagesSource.put("save", "save-button-50px.png");
-        imagesSource.put("cancel", "back-button-50px.png");
-        imagesSource.put("upload", "upload-button-25px.png");
-        imagesSource.put("book", "back-button-50px.png");
-        imagesSource.put("view", "view-button-50px.png");
-        imagesSource.put("export", "export-button-50px.png");
-        imagesSource.put("import", "import-button-50px.png");
-        imagesSource.put("clear", "clear-icon-25px.png");
-    }
-
-    /**
-     * Cria um botão
-     *
-     * @param buttonCategory Categoria do botão (search, add, edit,
-     * delete,exit). O botão search tem tamanho 25. Ou pode ser utilizado o nome
-     * do arquivo de imagem.
-     * @param buttonText Nome a ser atribuído ao botão
-     * @param buttonType Tipo do botao (0 - Default, 1 - ToolBar button)
-     * @return
-     */
-    protected JButton createButton(String buttonCategory, String buttonText, int buttonType) {
-        JButton button = new JButton();
-        String source = "";
-        if (imagesSource.containsKey(buttonCategory)) {
-            source = String.format("/img/%s", imagesSource.get(buttonCategory));
-        } else {
-            source = String.format("/img/%s", buttonCategory);
-        }
-        button.setIcon(new ImageIcon(getClass().getResource(source)));
-//        button.setText(buttonText);
-        button.setActionCommand(buttonCategory);
-        button.addActionListener(this);
-        if (buttonType == 1) {
-            button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-            button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        }
-        return button;
+        createTablePanel(table);
     }
 
     /**
@@ -320,21 +296,6 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
 
     public abstract Object getSelectedObject();
 
-    /**
-     * Adiciona um botão na barra de botoes do formulario
-     *
-     * @param button botao a ser adicionado. Objeto da classe
-     * <code>JButton</code>
-     * @param separate Se <code>true</code> adiciona uma separacao antes de
-     * adicionar o botao.
-     */
-    protected void addButtonToToolBar(JButton button, boolean separate) {
-        if (separate) {
-            toolBar.addSeparator();
-        }
-        toolBar.add(button);
-    }
-
     private void addKeyEventTo(JButton button, int keyChar) {
         // controla os eventos de tecla dos botoes
         button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
@@ -343,53 +304,45 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
         button.getActionMap().put("evento", new KeyMapAction());
     }
 
-    private void addToolBarButton() {
-        btAdd = createButton("add", "Novo", 1);
-        btEdit = createButton("edit", "Editar", 1);
-        btDelete = createButton("delete", "Excluir", 1);
-        btSave = createButton("save", "Gravar", 1);
-        btCancel = createButton("cancel", "Cancelar", 1);
-        btExit = createButton("exit", "Fechar", 1);
-        btView = createButton("view", "Visualizar", 1);
-//        btExport = createButton("export", "Visualizar", 1);
-//        btImport = createButton("import", "Visualizar", 1);
-        toolBar.add(btAdd);
-        toolBar.add(btSave);
-        toolBar.add(btCancel);
-        toolBar.add(btView);
-        toolBar.add(btEdit);
-        toolBar.add(btDelete);
-//        toolBar.addSeparator();
-//        toolBar.add(btExport);
-//        toolBar.add(btImport);
-        toolBar.addSeparator();
-        toolBar.add(btExit);
+    private JPanel createTitlePanel() {
+        // Título da Janela
+        titlePanel = new GenJLabel("Panel title");
+        titlePanel.setFont(new Font("Arial", Font.BOLD, 18));
+        titlePanel.setBorder(new EmptyBorder(5, 10, 5, 0));
+
+        // Botões para adicionar ou fechar a tela
+        btAdd = createButton(new ActionHandler(AcoesBotoes.ADD));
+        btExit = createButton(new ActionHandler(AcoesBotoes.CLOSE));
+        // Botões para salvar ou cancelar a operação
+        btSave = createButton(new ActionHandler(AcoesBotoes.SAVE));
+        btCancel = createButton(new ActionHandler(AcoesBotoes.CANCEL));
 
         // controla os eventos de tecla dos botoes
         addKeyEventTo(btAdd, KeyEvent.VK_N);
         btAdd.setToolTipText("Adicionar (CTRL + N)");
-        addKeyEventTo(btEdit, KeyEvent.VK_E);
-        btEdit.setToolTipText("Editar (CTRL + E)");
-        addKeyEventTo(btView, KeyEvent.VK_O);
-        btView.setToolTipText("Visualizar (CTRL + O)");
-        addKeyEventTo(btCancel, KeyEvent.VK_X);
-        btCancel.setToolTipText("Cancelar (CTRL + X)");
-        addKeyEventTo(btDelete, KeyEvent.VK_DELETE);
-        btDelete.setToolTipText("Excluir (CTRL + DELETE)");
-        addKeyEventTo(btSave, KeyEvent.VK_S);
-        btSave.setToolTipText("Salvar (CTRL + S)");
+
         addKeyEventTo(btExit, KeyEvent.VK_W);
         btExit.setToolTipText("Fechar (CTRL + W)");
-//        btExport.setToolTipText("Exportar");
-//        btImport.setToolTipText("Importar");
-    }
 
-    private void addTitlePanel() {
-        // Título da Janela
-        titlePanel = new JLabel("Panel title");
-        titlePanel.setFont(new Font("Arial", Font.BOLD, 18));
-        titlePanel.setBorder(new EmptyBorder(0, 10, 0, 0));
-        panelCenter.add(titlePanel, BorderLayout.PAGE_START);
+        addKeyEventTo(btSave, KeyEvent.VK_S);
+        btSave.setToolTipText("Adicionar (CTRL + S)");
+
+        addKeyEventTo(btCancel, KeyEvent.VK_X);
+        btCancel.setToolTipText("Fechar (CTRL + X)");
+
+        JPanel panelButtons = createPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelButtons.add(btAdd);
+        if (frame != null) {
+            panelButtons.add(btExit);
+        }
+        panelButtons.add(btSave);
+        panelButtons.add(btCancel);
+
+        JPanel panel = createPanel(new BorderLayout());
+        panel.add(titlePanel, BorderLayout.CENTER);
+        panel.add(panelButtons, BorderLayout.LINE_END);
+
+        return panel;
     }
 
     private JLabel getTitlePanel() {
@@ -405,6 +358,17 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
         this.titlePanel.setText(title);
     }
 
+    /**
+     * Atribui um título e um ícone na tela do painel
+     *
+     * @param title
+     * @param icon
+     */
+    public void setTitlePanel(String title, Icon icon) {
+        this.titlePanel.setText(title);
+        this.titlePanel.setIcon(icon);
+    }
+
     public void showPanelInCard(String keyvalue) {
         this.selectedCardPanel = keyvalue;
         CardLayout cardLayout = (CardLayout) cardPanel.getLayout();
@@ -413,47 +377,6 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
 
     public boolean isSelectedCardList() {
         return CARD_LIST.equals(this.selectedCardPanel);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource().getClass() == JButton.class) {
-            switch (e.getActionCommand()) {
-                case "search":
-                    onSearchButton(e);
-                    break;
-                case "clear":
-                    onClearButton(e);
-                    break;
-                case "add":
-                    onAddAction(e);
-                    break;
-                case "edit":
-                    onEditAction(e);
-                    break;
-                case "view":
-                    onViewButton(e);
-                    break;
-                case "delete":
-                    onDeleteButton(e);
-                    break;
-                case "exit":
-                    onExitButton(e);
-                    break;
-                case "save":
-                    onSaveAction(e);
-                    break;
-                case "cancel":
-                    onCancelButton(e);
-                    break;
-                case "export":
-                    onExportButton(e);
-                    break;
-                case "import":
-                    onImportButton(e);
-                    break;
-            }
-        }
     }
 
     /**
@@ -477,18 +400,19 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
     protected void componentsControl(int option) {
         boolean hasData = hasData();
 
-        btAdd.setEnabled(option == 0);
-        btEdit.setEnabled((option == 0 || option == 2) && hasData);
-        btView.setEnabled(option == 0 && hasData);
-        btDelete.setEnabled((option == 0 || option == 2) && hasData);
-        btSave.setEnabled(option == 1);
-        btCancel.setEnabled(option == 1 || option == 2);
-        btExit.setEnabled(option == 0);
-        
-//        btExport.setEnabled(option == 0 && hasData);
-//        btImport.setEnabled(option == 0 && hasData);
+        btAdd.setVisible(option == 0);
+//        btEdit.setEnabled((option == 0 || option == 2) && hasData);
+//        btView.setEnabled(option == 0 && hasData);
+//        btDelete.setEnabled((option == 0 || option == 2) && hasData);
+        btSave.setVisible(option == 1);
+        btCancel.setVisible(option == 1 || option == 2);
+        btExit.setVisible(option == 0);
 
         enableFields(option == 1);
+    }
+
+    protected void disableAddButton() {
+        btAdd.setEnabled(false);
     }
 
     public void enableFields(boolean active) {
@@ -497,32 +421,20 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
         }
     }
 
-    public void onCancelButton(ActionEvent e) {
+    @Override
+    public void onCancelAction(ActionEvent e) {
         componentsControl(0);
         showPanelInCard(CARD_LIST);
     }
-    
-    public void onExportButton(ActionEvent e) {
-        JOptionPane.showMessageDialog(this, "Exportação não implementada",
-                "Informação", JOptionPane.INFORMATION_MESSAGE);
-    }
-    
-    public void onImportButton(ActionEvent e) {
-        JOptionPane.showMessageDialog(this, "Importação não implementada",
-                "Informação", JOptionPane.INFORMATION_MESSAGE);
-    }
 
-    public void onDeleteButton(ActionEvent e) {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(frame,
-                    "Selecione uma linha para realizar a operação de alteração",
-                    "Aviso",
-                    JOptionPane.WARNING_MESSAGE);
-        } else {
+    @Override
+    public void onDelAction(ActionEvent e, Object o) {
+        if (o instanceof JTable) {
+            JTable t = (JTable) o;
+            int selectedRow = t.convertRowIndexToModel(t.getEditingRow());
+
             try {
-                if (JOptionPane.showConfirmDialog(frame, "Confirma a exclusão do registro?", "Confirmação",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.CANCEL_OPTION) {
+                if (!confirmDialog("Confirma a exclusão do registro?")) {
                     return;
                 }
                 fieldsPanel.setStatusPanel(DefaultFieldsPanel.UPDATE_STATUS_PANEL);
@@ -534,19 +446,17 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
                 componentsControl(0);
                 // atualiza a tabela
                 reloadTableData();
-                JOptionPane.showMessageDialog(frame,
-                        "Dados excluídos com sucesso!", "Confirmação",
-                        JOptionPane.INFORMATION_MESSAGE);
+                showInformationMessage("Dados excluídos com sucesso!");
             } catch (Exception ex) {
-                Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(frame, ex.getMessage(),
-                        "Aviso", JOptionPane.WARNING_MESSAGE);
+                showErrorMessage(ex);
+                ex.printStackTrace();
             }
 
         }
     }
 
-    public void onAddAction(ActionEvent e) {
+    @Override
+    public void onAddAction(ActionEvent e, Object o) {
         fieldsPanel.clearFields();
         fieldsPanel.setStatusPanel(DefaultFieldsPanel.INSERT_STATUS_PANEL);
         componentsControl(1);
@@ -556,18 +466,21 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
         showPanelInCard(CARD_FICHA);
     }
 
-    public void onEditAction(ActionEvent e) {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(frame,
-                    "Selecione uma linha para realizar a operação de alteração",
-                    "Aviso",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
+    @Override
+    public void onEditAction(ActionEvent e, Object o) {
+        if (o instanceof JTable) {
+            JTable t = (JTable) o;
+            int selectedRow = t.convertRowIndexToModel(t.getEditingRow());
+
+            fieldsPanel.setStatusPanel(DefaultFieldsPanel.UPDATE_STATUS_PANEL);
+            loadView(selectedRow);
+            componentsControl(1);
         }
-        fieldsPanel.setStatusPanel(DefaultFieldsPanel.UPDATE_STATUS_PANEL);
-        loadView(selectedRow);
-        componentsControl(1);
+    }
+
+    @Override
+    public void onSearchAction(ActionEvent e) {
+        reloadTableData();
     }
 
     private void loadView(int selectedRow) {
@@ -576,21 +489,8 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
         showPanelInCard(CARD_FICHA);
     }
 
-    public void onViewButton(ActionEvent e) {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(frame,
-                    "Selecione uma linha para realizar a operação de visualização",
-                    "Aviso",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        fieldsPanel.setStatusPanel(DefaultFieldsPanel.VIEW_STATUS_PANEL);
-        componentsControl(2);
-        loadView(selectedRow);
-    }
-
-    public void onSaveAction(ActionEvent e) {
+    @Override
+    public void onSaveAction(ActionEvent e, Object o) {
         if (fieldsPanel.isValidated()) {
             HashMap<String, Object> params = fieldsPanel.getFieldValues();
             try {
@@ -600,33 +500,32 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
                 } else {
                     model.addRow(object);
                 }
-                JOptionPane.showMessageDialog(frame, "Dados gravados com sucesso!",
-                        "Informação", JOptionPane.INFORMATION_MESSAGE);
+                showInformationMessage("Dados gravados com sucesso!");
 
                 componentsControl(0);
                 // atualiza a tabela
                 reloadTableData();
                 showPanelInCard(CARD_LIST);
             } catch (Exception ex) {
-                Logger.getLogger(DefaultFormPanel.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(frame, ex.getMessage(),
-                        "Aviso", JOptionPane.WARNING_MESSAGE);
+                showErrorMessage(ex);
+                ex.printStackTrace();
             }
         } else {
-            JOptionPane.showMessageDialog(frame, "Os campos em Asterisco (*) não foram preenchidos/selecioados.",
-                    "Informação", JOptionPane.INFORMATION_MESSAGE);
+            showInformationMessage("Os campos em Asterisco (*) não foram preenchidos/selecioados.");
         }
     }
 
-    public abstract void onSearchButton(ActionEvent e);
-
-    /**
-     * Sobreescrever metodo para realizar a limpeza dos dados
-     *
-     * @param e
-     */
-    public void onClearButton(ActionEvent e) {
-
+    public void onCloseAction(ActionEvent e) {
+        if (frame instanceof JInternalFrame) {
+            JInternalFrame f = (JInternalFrame) frame;
+            f.dispose();
+        } else if (frame instanceof JDialog) {
+            JDialog d = (JDialog) frame;
+            d.dispose();
+        } else {
+            JFrame f = (JFrame) frame;
+            f.dispose();
+        }
     }
 
     public abstract void addFiltersFields();
@@ -662,19 +561,6 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
 
     }
 
-    private void onExitButton(ActionEvent e) {
-        if (frame instanceof JInternalFrame) {
-            JInternalFrame f = (JInternalFrame) frame;
-            f.dispose();
-        } else if (frame instanceof JDialog) {
-            JDialog d = (JDialog) frame;
-            d.dispose();
-        } else {
-            JFrame f = (JFrame) frame;
-            f.dispose();
-        }
-    }
-
     /**
      * Classe criada para controlar os campos de texto que exigem somente número
      */
@@ -700,23 +586,13 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
             if (source == btAdd) {
-                onAddAction(e);
+                onAddAction(e, null);
             } else if (source == btCancel) {
-                onCancelButton(e);
-            } else if (source == btDelete) {
-                onDeleteButton(e);
-            } else if (source == btEdit) {
-                onEditAction(e);
-            } else if (source == btView) {
-                onViewButton(e);
+                onCancelAction(e);
             } else if (source == btSave) {
-                onSaveAction(e);
+                onSaveAction(e, null);
             } else if (source == btExit) {
-                onExitButton(e);
-            } else if (source == btExport) {
-                onExportButton(e);
-            } else if (source == btImport) {
-                onImportButton(e);
+                onCloseAction(e);
             }
         }
 
@@ -735,7 +611,7 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
 //        intFrame.setSize(300, 300);
 //        intFrame.setVisible(true);
 //        
-//        DefaultFormPanel panel = new DefaultFormPanel(intFrame);
+//        DefaultCleanFormPanel panel = new DefaultCleanFormPanel(intFrame);
 //        intFrame.setContentPane(panel);
 //        panel.getTitlePanel().setText("Exercício");
 //        desktop.add(intFrame);

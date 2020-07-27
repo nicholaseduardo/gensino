@@ -119,7 +119,8 @@ public abstract class DefaultTableModel<T> extends AbstractTableModel {
     }
 
     public void removeRow(int row) {
-        if (lista.remove(lista.get(row))) {
+        T o = lista.remove(row);
+        if (o != null) {
             fireTableRowsDeleted(row, row);
         }
     }

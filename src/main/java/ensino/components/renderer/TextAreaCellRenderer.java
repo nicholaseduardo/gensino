@@ -98,6 +98,9 @@ public class TextAreaCellRenderer extends JTextArea implements TableCellRenderer
                         new Color(240,240,240)));
         }
         
+        if (table.getColumnCount() > 1 && table.getRowHeight(row) < 50) {
+            table.setRowHeight(row, 55);
+        }
         return this;
     }
 

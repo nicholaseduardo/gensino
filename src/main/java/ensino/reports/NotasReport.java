@@ -18,16 +18,15 @@ import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.NivelEnsino;
 import ensino.configuracoes.model.UnidadeCurricular;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.model.Avaliacao;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -35,15 +34,19 @@ import java.util.List;
  */
 public class NotasReport extends Report {
 
-    private PlanoDeEnsino planoDeEnsino;
+    private final PlanoDeEnsino planoDeEnsino;
+    private final List<EtapaEnsino> listaEtapaEnsino;
 
     public NotasReport(PlanoDeEnsino plano) throws IOException {
         super(String.format("campus-%d/curso-%d/uc-%d/diario-notas-%d.pdf",
                 plano.getUnidadeCurricular().getCurso().getCampus().getId(),
                 plano.getUnidadeCurricular().getCurso().getId().getId(),
                 plano.getUnidadeCurricular().getId().getId(),
-                plano.getId()));
+                plano.getId()), LANDSCAPE);
         planoDeEnsino = plano;
+
+        NivelEnsino ne = planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino();
+        listaEtapaEnsino = ne.getEtapas();
     }
 
     @Override
@@ -99,22 +102,38 @@ public class NotasReport extends Report {
     private Table createTable() {
         List<PlanoAvaliacao> planosDeAvaliacoes = planoDeEnsino.getPlanosAvaliacoes();
 
-        // Busca pelo número de etapas de ensino
-        Integer nEtapas = planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino().getEtapas().size();
         /**
-         * O número de colunas compreende 7 campos fixos que são: (numero,
-         * estudante, média geral, Presença, Faltas, % faltas, situação Além
-         * desses campos, para cada etapa tem-se o cálculo da média, logo, o
-         * nEtapas * 2 Enfim, contempla-se o número de planos de avaliação
+         * Verificar se já existem avaliações vinculadas às etapas de ensino
+         * para identificar a necessidade de criação de colunas vazias para as
+         * etapas que não têm avaliações vinculadas.
          */
-        Integer nColunas = planosDeAvaliacoes.size() + nEtapas + 7;
+        Integer nAvaliacoes = 0;
+        HashMap<EtapaEnsino, Integer> map = planoDeEnsino.getNumeroDeAvaliacoesPorEtapa();
+        for (Map.Entry<EtapaEnsino, Integer> entry : map.entrySet()) {
+            /**
+             * Acrescenta-se uma unidade considerando que cada etapa de ensino
+             * será composta por uma coluna de média.
+             */
+            nAvaliacoes += entry.getValue() + 1;
+        }
+        /**
+         * O número de colunas padrão compreende 7 campos fixos que são:
+         * (numero, estudante, média geral, Presença, Faltas, % faltas,
+         * situação.
+         *
+         * Soma-se a essas colunas o número de avaliações vinculadas às etapas
+         * de ensino
+         */
+        Integer nColunas = nAvaliacoes + 7;
 
         Table table = new Table(nColunas);
         table.setWidth(UnitValue.createPercentValue(100));
 
-//        int fontSize = nColunas <= 22 ? 8 : nColunas <= 28 ? 6 : 4;
+        /**
+         * Se o número de colunas for inferior a 30, considerando o número de
+         * avaliações, então o tamanho da fonte será 8pt. Do contrário, 6pt.
+         */
         int fontSize = nColunas <= 30 ? 8 : 6;
-//        int fontSize = 8;
 
         createTableHeader(table, planosDeAvaliacoes, fontSize);
         createTableData(table, planosDeAvaliacoes, fontSize);
@@ -146,34 +165,6 @@ public class NotasReport extends Report {
     }
 
     /**
-     * Número de avaliações por etapa.
-     *
-     * Identifica e captura o número de avaliações cadastradas por Etapa de
-     * Ensino
-     *
-     * @param planosDeAvaliacoes
-     * @return
-     */
-    private HashMap<EtapaEnsino, Integer> getNumeroDeAvaliacoesPorEtapa(
-            List<PlanoAvaliacao> planosDeAvaliacoes) {
-        HashMap<EtapaEnsino, Integer> hashMap = new HashMap();
-
-        Integer n = 0;
-        for (int i = 0; i < planosDeAvaliacoes.size(); i++) {
-            PlanoAvaliacao o = planosDeAvaliacoes.get(i);
-            EtapaEnsino key = o.getEtapaEnsino();
-            if (hashMap.containsKey(key)) {
-                n = hashMap.get(key);
-                hashMap.replace(key, n, n + 1);
-            } else {
-                hashMap.put(key, 1);
-            }
-        }
-
-        return hashMap;
-    }
-
-    /**
      * Títulos da tabela. Cria uma lista contendo os nomes dos títulos de
      * cabeçalho da tabela.
      *
@@ -181,10 +172,13 @@ public class NotasReport extends Report {
      */
     private List<HashMap<String, Object>> createTitleTableHeader(
             List<PlanoAvaliacao> planosDeAvaliacoes) {
-        NivelEnsino ne = planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino();
-        List<EtapaEnsino> lee = ne.getEtapas();
         List<HashMap<String, Object>> lHeader = new ArrayList<>();
-        HashMap<EtapaEnsino, Integer> mapEtapa = getNumeroDeAvaliacoesPorEtapa(planosDeAvaliacoes);
+        /**
+         * Procedimento realizado para determinar o número de colunas que cada
+         * etapa de ensino terá e que será utilizado para fazer a mesclagem das
+         * colunas
+         */
+        HashMap<EtapaEnsino, Integer> mapEtapa = planoDeEnsino.getNumeroDeAvaliacoesPorEtapa();
 
         /**
          * Definição dos títulos dos cabeçalhos
@@ -194,14 +188,13 @@ public class NotasReport extends Report {
         /**
          * Adicionando aos nomes dos cabeçalhos as etapas de ensino
          */
-        for (int i = 0; i < lee.size(); i++) {
-            EtapaEnsino ee = lee.get(i);
+        for (EtapaEnsino ee : listaEtapaEnsino) {
             /**
-             * Adiciona-se 1 porque será incluída a coluna Média no detalhamento
-             * dos campos
+             * Adiciona-se 1 à colspan porque será incluída a coluna Média no
+             * detalhamento dos campos
              */
-            Integer colspan = mapEtapa.containsKey(ee) ? mapEtapa.get(ee) : null;
-            lHeader.add(createMapHeader(ee.getNome(), colspan != null ? colspan + 1 : 1, 1, ee));
+            Integer colspan = mapEtapa.get(ee);
+            lHeader.add(createMapHeader(ee.getNome(), colspan + 1, 1, ee));
         }
         /**
          * Adição do cabeçalho de totalização e média
@@ -216,18 +209,18 @@ public class NotasReport extends Report {
     }
 
     /**
-     * Criação do cabeçaho da tabela.
-     * Cria o cabeçalho da tabela de acordo com os parâmetros
-     * 
+     * Criação do cabeçaho da tabela. Cria o cabeçalho da tabela de acordo com
+     * os parâmetros
+     *
      * @param rowspan
      * @param colspan
      * @param fontSize
      * @param title
      * @param weight
      * @param rotate
-     * @return 
+     * @return
      */
-    private Cell createCellTitleHeader(Integer rowspan, Integer colspan, 
+    private Cell createCellTitleHeader(Integer rowspan, Integer colspan,
             Integer fontSize, String title, Double weight, Boolean rotate) {
         Cell cell = new Cell(rowspan, colspan);
         cell.add(new Paragraph(title).setBold().setFontSize(fontSize)
@@ -267,8 +260,7 @@ public class NotasReport extends Report {
             String title = (String) map.get("nome");
             Integer rowspan = (Integer) map.get("rowspan"),
                     colspan = (Integer) map.get("colspan");
-            Object o = map.get("object");
-            
+
             table.addHeaderCell(createCellTitleHeader(rowspan, colspan, fontSize, title, 0.0, Boolean.FALSE));
         }
 
@@ -277,31 +269,52 @@ public class NotasReport extends Report {
          * avaliações
          */
         Integer nTamanho = planosDeAvaliacoes.size();
-        Boolean rotate = nTamanho > 15;
-        EtapaEnsino old = planosDeAvaliacoes.get(0).getEtapaEnsino();
-        for (int i = 0; i < nTamanho; i++) {
-            PlanoAvaliacao pa = planosDeAvaliacoes.get(i);
-            EtapaEnsino ee = planosDeAvaliacoes.get(i).getEtapaEnsino();
-
-            /**
-             * Se a etapa de ensino for diferente então deve ser adicionada a
-             * coluna de média para esta etapa de ensino
-             */
-            if (!ee.equals(old)) {
-                table.addHeaderCell(createCellTitleHeader(1, 1, fontSize - 1, "Média", 0.0, Boolean.FALSE));
-                old = ee;
-            }
-
-            table.addHeaderCell(createCellTitleHeader(1, 1, fontSize - 1, pa.getNome(), pa.getPeso(), rotate));
-        }
         /**
-         * Adiciona a coluna da última média
+         * Variável auxiliar criada para ajudar a identificar quando um
+         * cabeçalho deve ou não rotacionar. A rotação ocorrerá quando o número
+         * de avaliações for superior a 15.
          */
-        table.addHeaderCell(createCellTitleHeader(1, 1, fontSize, "Média", 0.0, Boolean.FALSE));
+        Boolean rotate = nTamanho > 15;
+        /**
+         * Imprime o cabeçalho de avaliações por etapa de ensino.
+         */
+        for (EtapaEnsino ee : listaEtapaEnsino) {
+            /**
+             * Variável de controle usada para identificar quando não existe
+             * avaliação na etapa de ensino.
+             */
+            Boolean existeAvaliacao = Boolean.FALSE;
+            for (PlanoAvaliacao pa : planosDeAvaliacoes) {
+                /**
+                 * Adiciona os planos de avaliações no cabeçalho de acordo com a
+                 * etapa de ensino
+                 */
+                if (ee.equals(pa.getEtapaEnsino())) {
+                    table.addHeaderCell(createCellTitleHeader(1, 1, fontSize - 1, pa.getNome(), pa.getPeso(), rotate));
+                    existeAvaliacao = Boolean.TRUE;
+                }
+            }
+            /**
+             * Caso não exista avaliação para a etapa de ensino, inserir um
+             * texto vazio
+             */
+            if (!existeAvaliacao) {
+                table.addHeaderCell(createCellTitleHeader(1, 1, fontSize - 1, " -- ", 0.0, rotate));
+            }
+            /**
+             * Adição da coluna da Média da etapa de ensino.
+             */
+            table.addHeaderCell(createCellTitleHeader(1, 1, fontSize - 1, "Média", 0.0, Boolean.FALSE));
+        }
     }
 
     private Cell createCellData(Double value, Integer fontSize) {
-        Paragraph p = new Paragraph(String.format("%.1f", value));
+        Paragraph p = null;
+        if (value == null) {
+            p = new Paragraph("--");
+        } else {
+            p = new Paragraph(String.format("%.1f", value));
+        }
         p.setFontSize(fontSize);
         Cell cell = new Cell().add(p)
                 .setTextAlignment(TextAlignment.CENTER)
@@ -330,32 +343,46 @@ public class NotasReport extends Report {
             table.addCell(new Cell().add(new Paragraph(e.getNome()).setFontSize(fontSize)));
 
             /**
-             * Pega a primeira etapa de ensino para iniciar a comparação e
-             * calcular a média de cada etapa
+             * Adiciona as avaliações realizadas pelo estudante por etapa de
+             * ensino
              */
-            EtapaEnsino old = planosDeAvaliacoes.get(0).getEtapaEnsino();
-
-            /**
-             * Preparação para adicionar as notas de cada avaliação e calcular a
-             * média por etapa de ensino.
-             */
-            PlanoAvaliacao pa = null;
-            for (int j = 0; j < planosDeAvaliacoes.size(); j++) {
-                pa = planosDeAvaliacoes.get(j);
-                if (!pa.getEtapaEnsino().equals(old)) {
+            for (EtapaEnsino ee : listaEtapaEnsino) {
+                /**
+                 * Variável de controle usada para identificar quando não existe
+                 * avaliação na etapa de ensino.
+                 */
+                Boolean existeAvaliacao = Boolean.FALSE;
+                for (PlanoAvaliacao pa : planosDeAvaliacoes) {
                     /**
-                     * Adiciona o valor da média calculada
+                     * Apresenta as notas das avaliações vinculadas somente a
+                     * etapa de ensino em questão
                      */
-                    table.addCell(createCellData(e.getMediaPorEtapa(planoDeEnsino, old), fontSize));
-                    old = pa.getEtapaEnsino();
+                    if (ee.equals(pa.getEtapaEnsino())) {
+                        /**
+                         * Obtém o resultado da avaliação do esdutante
+                         */
+                        Avaliacao a = pa.getAvaliacaoDo(e);
+                        /**
+                         * Adiciona-se o valor da nota da avaliação à tabela
+                         */
+                        table.addCell(createCellData(a.getNota(), fontSize));
+                        existeAvaliacao = Boolean.TRUE;
+                    }
                 }
-                Avaliacao a = pa.getAvaliacaoDo(e);
-                table.addCell(createCellData(a.getNota(), fontSize));
+                /**
+                 * Se não existe nota na etapa de ensino, informar vazio
+                 */
+                if (!existeAvaliacao) {
+                    /**
+                     * Adiciona-se o valor vazio da nota da avaliação à tabela
+                     */
+                    table.addCell(createCellData(null, fontSize));
+                }
+                /**
+                 * Adiciona-se a média da etapa de ensino por estudante
+                 */
+                table.addCell(createCellData(e.getMediaPorEtapa(planoDeEnsino, ee), fontSize));
             }
-            /**
-             * Adiciona o valor da média calculada
-             */
-            table.addCell(createCellData(e.getMediaPorEtapa(planoDeEnsino, pa.getEtapaEnsino()), fontSize));
 
             /**
              * Cálculo da média geral (média aritmética simples)
@@ -363,11 +390,11 @@ public class NotasReport extends Report {
             table.addCell(createCellData(e.getMedia(planoDeEnsino), fontSize));
 
             List<Diario> lDiario = planoDeEnsino.getDiarios();
-            Integer nPresenca = e.getPresencas(planoDeEnsino), 
-                    nFalta = e.getFaltas(planoDeEnsino), 
+            Integer nPresenca = e.getPresencas(planoDeEnsino),
+                    nFalta = e.getFaltas(planoDeEnsino),
                     totalDias = lDiario.size();
-            
-            Double percFaltas = (nFalta.doubleValue() / totalDias.doubleValue()) * 100.0;
+
+            Double percFaltas = totalDias == 0 ? 0.0 : (nFalta.doubleValue() / totalDias.doubleValue()) * 100.0;
             table.addCell(new Cell().add(new Paragraph(nPresenca.toString())
                     .setFontSize(fontSize))
                     .setTextAlignment(TextAlignment.CENTER)
@@ -388,6 +415,6 @@ public class NotasReport extends Report {
     }
 
 //    public static void main(String args[]) throws Exception {
-//        new NotasReport(ControllerFactory.createPlanoDeEnsinoController().buscarPorId(14)).initReport();
+//        new NotasReport(ControllerFactory.createPlanoDeEnsinoController().buscarPorId(13)).initReport();
 //    }
 }

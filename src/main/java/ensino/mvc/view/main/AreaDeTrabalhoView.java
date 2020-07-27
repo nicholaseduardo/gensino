@@ -19,7 +19,7 @@ import ensino.configuracoes.view.models.TurmaTableModel;
 import ensino.configuracoes.view.models.UnidadeCurricularTableModel;
 import ensino.configuracoes.view.panels.curso.CursoFields;
 import ensino.configuracoes.view.panels.turma.TurmaFields;
-import ensino.configuracoes.view.panels.turma.TurmaFieldsPanelEstudante;
+import ensino.configuracoes.view.panels.turma.TurmaPanelEstudante;
 import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularFields;
 import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularFieldsConteudo;
 import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularFieldsReferencias;
@@ -584,12 +584,12 @@ public class AreaDeTrabalhoView extends GenJPanel {
             Object obj = getObjectFromTable((JTable) o);
             if (obj instanceof Turma) {
                 Turma turma = (Turma) obj;
-
-                TurmaFieldsPanelEstudante panel = new TurmaFieldsPanelEstudante(turma);
+                TurmaPanelEstudante panel = new TurmaPanelEstudante(turma);
 
                 JDialog dialog = createDialog(panel);
                 panel.setFrame(dialog);
                 dialog.setVisible(true);
+                
                 setTurmaData(turma.getCurso());
             } else if (obj instanceof UnidadeCurricular) {
                 UnidadeCurricular uc = (UnidadeCurricular) obj;
@@ -632,6 +632,7 @@ public class AreaDeTrabalhoView extends GenJPanel {
 
             if (panel != null) {
                 panel.setOpaque(true);
+                table.setRowHeight(row, panel.getPreferredSize().height);
                 return panel;
             } else {
                 return createLabel(value.toString());

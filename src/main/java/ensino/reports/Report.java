@@ -17,8 +17,9 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfName;
+import com.itextpdf.kernel.pdf.PdfNumber;
 import com.itextpdf.kernel.pdf.PdfPage;
-import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Canvas;
@@ -52,30 +53,37 @@ public abstract class Report {
     public static final String DEST_PATH = "resources/reports/";
     private static final String RESOURCE_IMG = "resources/templates/img/";
 
+    protected static final PdfNumber PORTRAIT = new PdfNumber(0);
+    protected static final PdfNumber LANDSCAPE = new PdfNumber(90);
+
     private PdfDocument pdf;
     private PdfFont helvetica;
     private PdfFont helveticaBold;
 
     private Image brasaoImage;
     private Image ifmsImage;
-    
+
     protected Document document;
     protected JPanel viewer;
     private String filename;
-    
+
+    private PdfNumber orietation;
+
     public Report() throws IOException {
-        this("hello.pdf");
+        this("hello.pdf", PORTRAIT);
     }
-    
-    public Report(String fileName) throws FileNotFoundException, IOException {
+
+    public Report(String fileName, PdfNumber orientagion) throws FileNotFoundException, IOException {
         this.filename = DEST_PATH + fileName;
+        this.orietation = orientagion;
         File file = new File(this.filename);
         File parentpath = file.getParentFile();
         if (!parentpath.exists()) {
             parentpath.mkdirs();
         }
-        
-        pdf = new PdfDocument(new PdfWriter(this.filename));
+
+        PdfWriter pdfWriter = new PdfWriter(this.filename);
+        pdf = new PdfDocument(pdfWriter);
         pdf.addEventHandler(PdfDocumentEvent.END_PAGE, new HeaderFooterHandler());
 
         helvetica = PdfFontFactory.createFont(FontConstants.HELVETICA);
@@ -84,11 +92,15 @@ public abstract class Report {
         brasaoImage = new Image(ImageDataFactory.create(RESOURCE_IMG + "brasao-do-brasil-republica.50px.png"));
         ifmsImage = new Image(ImageDataFactory.create(RESOURCE_IMG + "marcaifms.50px.png"));
     }
-    
+
     public abstract void createReport(Document document);
 
     public void initReport() {
-        document = new Document(pdf, PageSize.A4.rotate());
+        if (orietation == LANDSCAPE) {
+            document = new Document(pdf, PageSize.A4.rotate());
+        } else {
+            document = new Document(pdf, PageSize.A4);
+        }
         document.setMargins(100, 20, 60, 20);
 
         createReport(document);
@@ -157,11 +169,20 @@ public abstract class Report {
 
     private class HeaderFooterHandler implements IEventHandler {
 
+        private PdfNumber rotation = PORTRAIT;
+
+        public void setRotation(PdfNumber orientation) {
+            this.rotation = orientation;
+        }
+
         @Override
         public void handleEvent(Event event) {
             PdfDocumentEvent docEvent = (PdfDocumentEvent) event;
             PdfDocument pdfDoc = docEvent.getDocument();
             PdfPage page = docEvent.getPage();
+
+            page.put(PdfName.Rotate, rotation);
+
             int pageNumber = pdfDoc.getPageNumber(page),
                     total = pdfDoc.getNumberOfPages();
             Rectangle pageSize = page.getPageSize();
@@ -198,7 +219,7 @@ public abstract class Report {
         }
 
     }
-    
+
     public JPanel getViewer() {
         SwingController controller = new SwingController();
         SwingViewBuilder factory = new SwingViewBuilder(controller);

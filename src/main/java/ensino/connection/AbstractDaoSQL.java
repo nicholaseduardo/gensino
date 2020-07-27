@@ -8,6 +8,7 @@ package ensino.connection;
 import ensino.patterns.DaoPattern;
 import java.sql.SQLException;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  *
@@ -41,7 +42,9 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
     @Override
     public void startTransaction() {
-        connection.getTransaction().begin();
+        if (!isTranscationActive()) {
+            connection.getTransaction().begin();
+        }
     }
 
     @Override
@@ -54,5 +57,9 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
         if (isTranscationActive()) {
             connection.getTransaction().rollback();
         }
+    }
+
+    public CriteriaBuilder getCriteriaBuilder() {
+        return connection.getCriteriaBuilder();
     }
 }
