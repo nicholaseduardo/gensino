@@ -36,7 +36,7 @@ public class CampusController extends AbstractController<Campus> {
          */
         if (o.isVigente()) {
             Campus vigente = getCampusVigente();
-            if (!vigente.equals(o)) {
+            if (vigente != null && !vigente.equals(o)) {
                 vigente.setStatus(StatusCampus.ANTERIOR);
                 super.salvar(vigente);
             }
