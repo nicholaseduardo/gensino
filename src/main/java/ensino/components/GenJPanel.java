@@ -55,6 +55,9 @@ public class GenJPanel extends JPanel {
 
     protected ImageIcon iconAdd;
     protected ImageIcon iconClose;
+    protected ImageIcon iconClear;
+    protected ImageIcon iconCancel;
+    protected ImageIcon iconSearch;
     protected ImageIcon iconDel;
     protected ImageIcon iconEdit;
     protected ImageIcon iconSave;
@@ -77,6 +80,8 @@ public class GenJPanel extends JPanel {
     protected ImageIcon iconPE;
     protected ImageIcon iconRB;
     protected ImageIcon iconEstudante;
+    protected ImageIcon iconDiario;
+    protected ImageIcon iconStructure;
 
     public GenJPanel() {
         super();
@@ -93,8 +98,12 @@ public class GenJPanel extends JPanel {
         URL urlDel = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "del-button-png-25px.png"));
         URL urlEdit = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "edit-icon-png-25px.png"));
         URL urlClose = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "exit-button-25px.png"));
+        URL urlClear = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "clear-icon-25px.png"));
+        URL urlCancel = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "back-button-25px.png"));
+        URL urlSearch = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "search-button-25px.png"));
         URL urlSave = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "check-tick-icon-25px.png"));
-        URL urlDuplicate = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "duplicate-button-25px.png"));
+        URL urlDuplicate = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Copy-icon-25px.png"));
+        URL urlDiary = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "duplicate-button-25px.png"));
         URL urlGenarate = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "gear-icon-25px.png"));
         URL urlImport = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "import-button-25px.png"));
         URL urlNew = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "view-button-25px.png"));
@@ -108,14 +117,19 @@ public class GenJPanel extends JPanel {
         iconFrequency = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "document-frequency-icon-25px.png")));
         iconContent = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "content-icon-25px.png")));
         iconEvaluation = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Status-mail-task-icon-25px.png")));
-        iconReport = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "report-icon-25px.png")));
+        iconReport = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Custom-reports-icon-25px.png")));
         iconChart = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "chart-icon-25px.png")));
         iconPE = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Clipboard-icon-25px.png")));
         iconRB = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "library-icon-25px.png")));
         iconEstudante = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "student-icon-25px.png")));
+        iconStructure = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Action-view-tree-icon-25px.png")));
+        iconDiario = new ImageIcon(urlDiary);
 
         iconAdd = new ImageIcon(urlAdd);
         iconClose = new ImageIcon(urlClose);
+        iconClear = new ImageIcon(urlClear);
+        iconCancel = new ImageIcon(urlCancel);
+        iconSearch = new ImageIcon(urlSearch);
         iconDel = new ImageIcon(urlDel);
         iconEdit = new ImageIcon(urlEdit);
         iconSave = new ImageIcon(urlSave);
@@ -208,20 +222,20 @@ public class GenJPanel extends JPanel {
         JOptionPane.showMessageDialog(getParent(), msg,
                 "Aviso", JOptionPane.WARNING_MESSAGE);
     }
-    
+
     protected String showInputDialog(String msgTitle, String msg) {
         return JOptionPane.showInputDialog(getParent(), msg, msgTitle, JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     protected String showIntputTextAreaDialog(String msgTitle, String msg) {
         Icon icon = new ImageIcon(getClass().getResource("/img/Open-folder-add-icon-100px.png"));
         Object[] options = {"Ok", "Cancelar"};
         GenJTextArea text = new GenJTextArea(3, 30);
-        final JComponent[] inputs = new JComponent[] {
+        final JComponent[] inputs = new JComponent[]{
             new GenJLabel(msg),
             text
         };
-        int result = JOptionPane.showOptionDialog(getParent(), inputs, msgTitle, 
+        int result = JOptionPane.showOptionDialog(getParent(), inputs, msgTitle,
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, icon,
                 options, null);
         if (result == JOptionPane.OK_OPTION) {
@@ -243,6 +257,18 @@ public class GenJPanel extends JPanel {
     }
 
     public void onCloseAction(ActionEvent e) {
+
+    }
+
+    public void onClearAction(ActionEvent e) {
+
+    }
+
+    public void onCancelAction(ActionEvent e) {
+
+    }
+
+    public void onSearchAction(ActionEvent e) {
 
     }
 
@@ -337,6 +363,9 @@ public class GenJPanel extends JPanel {
                     : AcoesBotoes.EDIT.equals(acaoBotao) ? iconEdit
                     : AcoesBotoes.SAVE.equals(acaoBotao) ? iconSave
                     : AcoesBotoes.CLOSE.equals(acaoBotao) ? iconClose
+                    : AcoesBotoes.CLEAR.equals(acaoBotao) ? iconClear
+                    : AcoesBotoes.CANCEL.equals(acaoBotao) ? iconCancel
+                    : AcoesBotoes.SEARCH.equals(acaoBotao) ? iconSearch
                     : AcoesBotoes.DUPLICATE.equals(acaoBotao) ? iconDuplicate
                     : AcoesBotoes.GENERATE.equals(acaoBotao) ? iconGenerate
                     : AcoesBotoes.IMPORT.equals(acaoBotao) ? iconImport
@@ -356,6 +385,9 @@ public class GenJPanel extends JPanel {
                     : AcoesBotoes.REFBIB.equals(acaoBotao) ? iconChart
                     : AcoesBotoes.ESTUD.equals(acaoBotao) ? iconEstudante
                     : AcoesBotoes.CONT_EMENTA.equals(acaoBotao) ? iconPE
+                    : AcoesBotoes.DIARY.equals(acaoBotao) ? iconDiario
+                    : AcoesBotoes.REPORT.equals(acaoBotao) ? iconReport
+                    : AcoesBotoes.STRUCTURE.equals(acaoBotao) ? iconStructure
                     : null);
             this.acaoBotao = acaoBotao;
             this.object = object;
@@ -382,6 +414,15 @@ public class GenJPanel extends JPanel {
                     break;
                 case CLOSE:
                     onCloseAction(ae);
+                    break;
+                case CLEAR:
+                    onClearAction(ae);
+                    break;
+                case CANCEL:
+                    onCancelAction(ae);
+                    break;
+                case SEARCH:
+                    onSearchAction(ae);
                     break;
                 case DUPLICATE:
                     onDuplicateAction(ae, object);
@@ -412,8 +453,8 @@ public class GenJPanel extends JPanel {
 
         public ButtonsPanel(List<GenJButton> listButtons, EnumSet enumSelectedSet) {
             super(new FlowLayout(FlowLayout.RIGHT));
-            if ((listButtons != null && listButtons.size() > 3) ||
-                    enumSelectedSet.size() > 3) {
+            if ((listButtons != null && listButtons.size() > 3)
+                    || enumSelectedSet.size() > 3) {
                 setLayout(new GridLayout(0, 3));
             }
             setOpaque(true);
@@ -477,7 +518,6 @@ public class GenJPanel extends JPanel {
 
             panel.setBackground(getBack());
             panel.updateButtons();
-            table.setRowHeight(panel.getPreferredSize().height + 5);
             return panel;
         }
     }
@@ -509,7 +549,6 @@ public class GenJPanel extends JPanel {
             panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
             panel.updateButtons();
             o = value;
-//            table.setRowHeight(panel.getPreferredSize().height + 5);
             return panel;
         }
 
@@ -532,7 +571,6 @@ public class GenJPanel extends JPanel {
                         bt.setBackground(table.getBackground());
                     }
                 }
-//                table.setRowHeight(panel.getPreferredSize().height + 5);
             }
 
             @Override
