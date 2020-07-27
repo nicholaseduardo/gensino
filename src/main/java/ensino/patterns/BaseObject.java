@@ -73,11 +73,9 @@ public abstract class BaseObject implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        
         final BaseObject other = (BaseObject) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.id, other.getId())) {
             return false;
         }
         return true;
