@@ -26,7 +26,7 @@ public class UnidadeCurricularTableModel extends DefaultTableModel<UnidadeCurric
     }
     
     public UnidadeCurricularTableModel(List<UnidadeCurricular> lista) {
-        this(lista, new String[] {"Nome da U.C.", "Ações"});
+        this(lista, new String[] {"Unidade Curricular", "Ações"});
     }
 
     @Override
