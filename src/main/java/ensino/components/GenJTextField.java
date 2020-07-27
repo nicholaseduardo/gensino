@@ -14,6 +14,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -21,16 +23,31 @@ import javax.swing.border.TitledBorder;
  */
 public class GenJTextField extends JTextField {
 
+    /**
+     * Atributo utilizado para informar que o campo é de preenchimento
+     * obrigatório
+     */
     private boolean required = false;
+
+    private Font originalFont;
+    private Color originalForeground;
+    /**
+     * Grey by default*
+     */
+    private Color placeholderForeground = new Color(160, 160, 160);
+    private boolean textWrittenIn;
+    private String placeholderText;
 
     public GenJTextField(boolean required) {
         super();
         this.required = required;
+        this.placeholderText = "";
     }
 
     public GenJTextField(int columns, boolean required) {
         super(columns);
         this.required = required;
+        this.placeholderText = "";
         initComponents();
     }
 
@@ -70,6 +87,88 @@ public class GenJTextField extends JTextField {
         Font font = new Font(fieldFont.getFontName(),
                 fieldFont.getStyle(), size);
         setFont(font);
+    }
+
+    @Override
+    public void setFont(Font f) {
+        super.setFont(f);
+        if (!isTextWrittenIn()) {
+            originalFont = f;
+        }
+    }
+
+    @Override
+    public void setForeground(Color fg) {
+        super.setForeground(fg);
+        if (!isTextWrittenIn()) {
+            originalForeground = fg;
+        }
+    }
+
+    public Color getPlaceholderForeground() {
+        return placeholderForeground;
+    }
+    
+    public Boolean isSetPlaceholderText() {
+        return !"".equals(placeholderText);
+    }
+
+    public void setPlaceholderForeground(Color placeholderForeground) {
+        this.placeholderForeground = placeholderForeground;
+    }
+
+    public boolean isTextWrittenIn() {
+        return textWrittenIn;
+    }
+
+    public void setTextWrittenIn(boolean textWrittenIn) {
+        this.textWrittenIn = textWrittenIn;
+    }
+
+    public void setPlaceholder(final String text) {
+        placeholderText = text;
+        this.customizeText();
+
+        this.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                warn();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                warn();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                warn();
+            }
+
+            public void warn() {
+                if (isSetPlaceholderText() &&
+                        getText().trim().length() != 0) {
+                    setFont(originalFont);
+                    setForeground(originalForeground);
+                    setTextWrittenIn(true);
+                }
+
+            }
+        });
+
+    }
+
+    public void customizeText() {
+        if (isSetPlaceholderText()) {
+            setText(placeholderText);
+            /**
+             * If you change font, family and size will follow changes, while
+             * style will always be italic*
+             */
+            setFont(new Font(getFont().getFamily(), Font.ITALIC, getFont().getSize()));
+            setForeground(getPlaceholderForeground());
+            setTextWrittenIn(false);
+        }
     }
 
 }
