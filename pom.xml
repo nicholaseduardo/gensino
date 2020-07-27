@@ -12,6 +12,7 @@
         <itext.version>RELEASE</itext.version>
         <mainClass>ensino.mvc.view.main.Inicializacao</mainClass>
     </properties>
+    
     <dependencies>
         <!--        JFreeChart-->
         <dependency>
