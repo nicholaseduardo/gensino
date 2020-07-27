@@ -32,8 +32,6 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DropMode;
 import javax.swing.ImageIcon;
@@ -398,19 +396,19 @@ public class UnidadeCurricularFieldsConteudo extends DefaultFieldsPanel {
 
     }
 
-    public static void main(String args[]) {
-        try {
-            ConteudoController col = ControllerFactory.createConteudoController();
-            List<Conteudo> l = col.listar();
-            while (!l.isEmpty()) {
-                Conteudo c = l.get(l.size() - 1);
-                System.out.println(c);
-                col.remover(c);
-                l.remove(c);
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(UnidadeCurricularFieldsConteudo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    public static void main(String args[]) {
+//        try {
+//            ConteudoController col = ControllerFactory.createConteudoController();
+//            List<Conteudo> l = col.listar();
+//            while (!l.isEmpty()) {
+//                Conteudo c = l.get(l.size() - 1);
+//                System.out.println(c);
+//                col.remover(c);
+//                l.remove(c);
+//            }
+//        } catch (Exception ex) {
+//            Logger.getLogger(UnidadeCurricularFieldsConteudo.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
 }
