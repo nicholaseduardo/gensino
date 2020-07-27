@@ -54,14 +54,15 @@ public class TurmaFields extends DefaultFieldsPanel {
     private Turma turma;
     private Component frame;
 
-    public TurmaFields(Curso curso) {
-        this();
+    public TurmaFields(Curso curso, Component frame) {
+        super();
+        this.frame = frame;
         this.selectedCurso = curso;
+        initComponents();
     }
 
     public TurmaFields() {
-        super();
-        initComponents();
+        this(null, null);
     }
     
     public void setFrame(Component frame) {

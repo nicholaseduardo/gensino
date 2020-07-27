@@ -6,7 +6,6 @@
 package ensino.configuracoes.view.panels.curso;
 
 import ensino.components.GenJButton;
-import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJRadioButton;
 import ensino.components.GenJTextField;
@@ -27,8 +26,6 @@ import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -54,14 +51,15 @@ public class CursoFields extends DefaultFieldsPanel {
     private Curso curso;
     private Component frame;
 
-    public CursoFields(Campus campus) {
-        this();
+    public CursoFields(Campus campus, Component frame) {
+        super();
+        this.frame = frame;
         selectedCampus = campus;
+        initComponents();
     }
 
     public CursoFields() {
-        super();
-        initComponents();
+        this(null, null);
     }
 
     public void setFrame(Component frame) {
