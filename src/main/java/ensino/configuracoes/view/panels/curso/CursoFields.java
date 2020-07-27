@@ -8,16 +8,15 @@ package ensino.configuracoes.view.panels.curso;
 import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
+import ensino.components.GenJRadioButton;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoFactory;
 import ensino.configuracoes.model.NivelEnsino;
-import ensino.configuracoes.view.models.NivelEnsinoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
-import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -27,7 +26,11 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -45,7 +48,8 @@ public class CursoFields extends DefaultFieldsPanel {
     private Campus selectedCampus;
     private JTextField txtId;
     private JTextField txtNome;
-    private GenJComboBox comboNivelEnsino;
+    private ButtonGroup buttonGroup;
+    private GenJRadioButton[] radios;
 
     private Curso curso;
     private Component frame;
@@ -59,7 +63,7 @@ public class CursoFields extends DefaultFieldsPanel {
         super();
         initComponents();
     }
-    
+
     public void setFrame(Component frame) {
         this.frame = frame;
     }
@@ -68,10 +72,6 @@ public class CursoFields extends DefaultFieldsPanel {
         setName("curso.cadastro");
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEtchedBorder());
-
-        backColor = ChartsFactory.lightBlue;
-        foreColor = ChartsFactory.ardoziaBlueColor;
-        setBackground(backColor);
 
         URL urlCurso = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "courses-icon-50px.png"));
 
@@ -103,10 +103,22 @@ public class CursoFields extends DefaultFieldsPanel {
             txtNome = new GenJTextField(30, false);
             lblNome.setLabelFor(txtNome);
 
-            GenJLabel lblNivelEnsino = new GenJLabel("Nível de Ensino:", JLabel.TRAILING);
-            comboNivelEnsino = new GenJComboBox();
-            comboNivelEnsino.setModel(new NivelEnsinoComboBoxModel(ControllerFactory.createNivelEnsinoController()));
-            lblNivelEnsino.setLabelFor(txtNome);
+            /**
+             * Criação dos radiobuttons dos níveis de ensino
+             */
+            JPanel radiosPanel = createPanel();
+            radiosPanel.setBorder(createTitleBorder("Nível de Ensino"));
+
+            buttonGroup = new ButtonGroup();
+            List<NivelEnsino> listaNE = ControllerFactory.createNivelEnsinoController().listar();
+            radios = new GenJRadioButton[listaNE.size()];
+            for (int i = 0; i < listaNE.size(); i++) {
+                NivelEnsino ne = listaNE.get(i);
+                radios[i] = new GenJRadioButton(ne.getNome(), false, buttonGroup);
+                radios[i].setObjectValue(ne);
+                
+                radiosPanel.add(radios[i]);
+            }
 
             int col = 0, row = 0;
             GridLayoutHelper.setRight(c, col++, row);
@@ -115,10 +127,8 @@ public class CursoFields extends DefaultFieldsPanel {
             fieldsPanel.add(txtId, c);
 
             col = 0;
-            GridLayoutHelper.setRight(c, col++, row);
-            fieldsPanel.add(lblNivelEnsino, c);
-            GridLayoutHelper.set(c, col++, row++);
-            fieldsPanel.add(comboNivelEnsino, c);
+            GridLayoutHelper.set(c, col, row++, 2, 1, GridBagConstraints.LINE_START);
+            fieldsPanel.add(radiosPanel, c);
 
             col = 0;
             GridLayoutHelper.setRight(c, col++, row);
@@ -133,6 +143,24 @@ public class CursoFields extends DefaultFieldsPanel {
         }
     }
 
+    private NivelEnsino getSelectedNivelEnsino() {
+        for (GenJRadioButton rb : radios) {
+            if (rb.isSelected()) {
+                return (NivelEnsino) rb.getObjectValue();
+            }
+        }
+        return null;
+    }
+
+    private void setSelectedNivelEnsino(NivelEnsino ne) {
+        for (GenJRadioButton rb : radios) {
+            if (rb.getObjectValue().equals(ne)) {
+                rb.setSelected(true);
+                break;
+            }
+        }
+    }
+
     @Override
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
@@ -141,7 +169,7 @@ public class CursoFields extends DefaultFieldsPanel {
                 : Integer.parseInt(txtId.getText())));
         map.put("nome", txtNome.getText());
         map.put("campus", selectedCampus);
-        map.put("nivelEnsino", comboNivelEnsino.getSelectedItem());
+        map.put("nivelEnsino", getSelectedNivelEnsino());
 
         return map;
     }
@@ -151,8 +179,7 @@ public class CursoFields extends DefaultFieldsPanel {
         txtId.setText(codigo.toString());
         txtNome.setText(nome);
         selectedCampus = iCampus;
-        NivelEnsinoComboBoxModel model = (NivelEnsinoComboBoxModel) comboNivelEnsino.getModel();
-        model.setSelectedItem(nivelEnsino);
+        setSelectedNivelEnsino(nivelEnsino);
     }
 
     @Override
@@ -168,10 +195,8 @@ public class CursoFields extends DefaultFieldsPanel {
     public void setFieldValues(Object object) {
         if (object instanceof Curso) {
             curso = (Curso) object;
-
             setFieldValues(curso.getId().getId(), curso.getNome(),
-                    curso.getId().getCampus(),
-                    curso.getNivelEnsino());
+                    curso.getId().getCampus(), curso.getNivelEnsino());
         }
     }
 
@@ -179,9 +204,8 @@ public class CursoFields extends DefaultFieldsPanel {
     public boolean isValidated() {
         String msg = "O campo [%s] não foi informado!",
                 campo = "";
-        if (comboNivelEnsino.getSelectedItem() == null) {
+        if (buttonGroup.getSelection() == null) {
             campo = "NÍVEL DE ENSINO";
-            comboNivelEnsino.requestFocusInWindow();
         } else if ("".equals(txtNome.getText())) {
             campo = "NOME";
             txtNome.requestFocusInWindow();
@@ -196,13 +220,15 @@ public class CursoFields extends DefaultFieldsPanel {
     public void clearFields() {
         txtId.setText("");
         txtNome.setText("");
-        comboNivelEnsino.setSelectedItem(selectedCampus);
+        buttonGroup.clearSelection();
     }
 
     @Override
     public void enableFields(boolean active) {
         txtNome.setEnabled(active);
-        comboNivelEnsino.setEnabled(active && selectedCampus == null);
+        for (GenJRadioButton rb : radios) {
+            rb.setEnabled(active && selectedCampus == null);
+        }
     }
 
     @Override
