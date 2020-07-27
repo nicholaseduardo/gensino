@@ -13,7 +13,6 @@ import ensino.configuracoes.view.models.BibliografiaTableModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.defaults.DefaultFormPanel;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,8 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 /**
  *

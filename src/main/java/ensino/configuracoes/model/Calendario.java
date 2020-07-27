@@ -1,5 +1,6 @@
 package ensino.configuracoes.model;
 
+import ensino.util.types.MesesDeAno;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,6 +48,13 @@ public class Calendario implements Serializable {
         this.id = id;
     }
 
+    public Campus getCampus() {
+        if (id != null) {
+            return id.getCampus();
+        }
+        return null;
+    }
+
     public String getDescricao() {
         return descricao;
     }
@@ -85,12 +93,23 @@ public class Calendario implements Serializable {
         Calendar cal = Calendar.getInstance();
         for (int i = 0; i < atividades.size(); i++) {
             Atividade o = atividades.get(i);
-            
-            if (o.getPeriodo().contemData(dia))
+
+            if (o.getPeriodo().contemData(dia)) {
                 return o;
-                
+            }
+
         }
         return null;
+    }
+    
+    public List<Atividade> getAtividadesPorMes(MesesDeAno mes) {
+        List<Atividade> l = new ArrayList();
+        for(Atividade a : atividades) {
+            if (mes.equals(a.getPeriodo().getMesDoAno())) {
+                l.add(a);
+            }
+        }
+        return l;
     }
 
     public Boolean isDiaLetivo(Date dia) {

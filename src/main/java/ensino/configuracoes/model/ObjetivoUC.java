@@ -98,7 +98,7 @@ public class ObjetivoUC implements Serializable {
     @Override
     public String toString() {
         int length = this.descricao.length();
-        if (length > 50) {
+        if (length > 70) {
             length = 70;
         }
         return String.format("[%d] %s", this.id.getSequencia(), this.descricao.substring(0, length));

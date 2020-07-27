@@ -55,7 +55,10 @@ public class PeriodoLetivo implements Serializable {
     }
 
     public Calendario getCalendario() {
-        return id.getCalendario();
+        if (id != null) {
+            return id.getCalendario();
+        }
+        return null;
     }
 
     public Boolean getDeleted() {
@@ -125,7 +128,7 @@ public class PeriodoLetivo implements Serializable {
         }
         return lista;
     }
-    
+
     public List<Atividade> getAtividadesPorSemana(SemanaLetiva sl) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(sl.getPeriodo().getDe());

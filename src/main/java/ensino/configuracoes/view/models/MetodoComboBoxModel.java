@@ -17,24 +17,32 @@ import javax.swing.ComboBoxModel;
  * @author nicho
  */
 public class MetodoComboBoxModel extends AbstractListModel implements ComboBoxModel {
+
     private AbstractController metodoCol;
     private List<BaseObject> list;
-    
+
     private BaseObject selection;
-    
+
     public MetodoComboBoxModel(AbstractController controller) {
         metodoCol = controller;
         initComponents();
     }
-    
+
+    public MetodoComboBoxModel(List<BaseObject> list) {
+        this.list = list;
+        initComponents();
+    }
+
     private void initComponents() {
         refresh();
     }
-    
+
     public void refresh() {
         int index = 0;
-        list = (List<BaseObject>) metodoCol.listar();
-        
+        if (metodoCol != null) {
+            list = (List<BaseObject>) metodoCol.listar();
+        }
+
         if (!list.isEmpty()) {
             list.sort(Comparator.comparing(BaseObject::getNome));
             index = list.size() - 1;
@@ -55,7 +63,7 @@ public class MetodoComboBoxModel extends AbstractListModel implements ComboBoxMo
 
     @Override
     public void setSelectedItem(Object anItem) {
-        selection = (BaseObject)anItem;
+        selection = (BaseObject) anItem;
     }
 
     @Override

@@ -16,7 +16,6 @@ import ensino.configuracoes.view.models.ObjetivoUCTableModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
-import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -78,11 +77,7 @@ public class UnidadeCurricularFieldsObjetivo extends DefaultFieldsPanel {
             setBorder(BorderFactory.createEtchedBorder());
             col = ControllerFactory.createObjetivoUCController();
 
-            backColor = ChartsFactory.ligthGreen;
-            foreColor = ChartsFactory.darkGreen;
-            setBackground(backColor);
-
-            GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
+            GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE));
 
             JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
             panelButton.add(btClose);

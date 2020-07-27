@@ -153,6 +153,10 @@ public class Conteudo implements Serializable {
 
     @Override
     public String toString() {
-        return "Conteudo{" + "id=" + id + ", descricao=" + descricao + ", sequencia=" + sequencia + ", nivel=" + nivel + ", conteudoParent=" + conteudoParent + '}';
+        int length = this.descricao.length();
+        if (length > 70) {
+            length = 70;
+        }
+        return String.format("[%d] %s", this.id.getId(), this.descricao.substring(0, length));
     }
 }

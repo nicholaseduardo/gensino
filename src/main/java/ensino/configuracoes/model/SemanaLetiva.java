@@ -60,6 +60,13 @@ public class SemanaLetiva implements Serializable {
         this.id = id;
     }
 
+    public PeriodoLetivo getPeriodoLetivo() {
+        if (id != null) {
+            return id.getPeriodoLetivo();
+        }
+        return null;
+    }
+
     public Boolean getDeleted() {
         return deleted;
     }

@@ -52,7 +52,7 @@ public class NivelEnsinoFields extends DefaultFieldsPanel {
 
     private JTable etapaEnsinoTable;
     private EtapaEnsinoTableModel etapaEnsinoTableModel;
-    
+
     private GenJButton btNew;
 
     public NivelEnsinoFields() {
@@ -151,9 +151,13 @@ public class NivelEnsinoFields extends DefaultFieldsPanel {
                 JPanel panel = createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
                 panel.add(label);
                 panel.setBackground(getBack());
-                table.setRowHeight(panel.getPreferredSize().height + 5);
-
                 panel.setOpaque(true);
+                table.setRowHeight(row, panel.getPreferredSize().height);
+
+                if (table.getColumnCount() > 1 && table.getRowHeight(row) < 50) {
+                    table.setRowHeight(row, 55);
+                }
+
                 return panel;
             }
         };
@@ -255,7 +259,7 @@ public class NivelEnsinoFields extends DefaultFieldsPanel {
         dialog.add(neef);
         dialog.pack();
         dialog.setVisible(true);
-        
+
         setData(nivelEnsino.getEtapas());
     }
 

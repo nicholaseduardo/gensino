@@ -63,17 +63,17 @@ public class EstudanteFactory implements BeanFactory<Estudante> {
     @Override
     public Estudante getObject(HashMap<String, Object> p) {
         try {
-            String sData = (String)p.get("ingresso"),
+            String sData = (String) p.get("ingresso"),
                     sId = (String) p.get("id");
-            
+
             Estudante o = createObject(
-                    sId.matches("\\d+") ? Integer.parseInt(sId) : null,
+                    new EstudanteId(sId.matches("\\d+") ? Integer.parseInt(sId) : null,
+                            (Turma) p.get("turma")),
                     p.get("nome"),
                     p.get("registro"),
-                    SituacaoEstudante.of((String)p.get("situacao")),
-                    !"".equals(sData)? DateHelper.stringToDate(sData, "dd/MM/yyyy"): null
+                    p.get("situacao"),
+                    !"".equals(sData) ? DateHelper.stringToDate(sData, "dd/MM/yyyy") : null
             );
-            o.getId().setTurma((Turma) p.get("turma"));
             return o;
         } catch (ParseException ex) {
             Logger.getLogger(EstudanteFactory.class.getName()).log(Level.SEVERE, null, ex);

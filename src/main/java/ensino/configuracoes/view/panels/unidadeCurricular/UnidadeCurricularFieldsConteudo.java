@@ -19,7 +19,7 @@ import ensino.configuracoes.view.renderer.ConteudoTreeCellEditor;
 import ensino.configuracoes.view.renderer.UCTreeCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.factory.ControllerFactory;
-import ensino.planejamento.view.panels.config.transferable.TreeTransferHandler;
+import ensino.planejamento.view.panels.transferable.TreeTransferHandler;
 import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;

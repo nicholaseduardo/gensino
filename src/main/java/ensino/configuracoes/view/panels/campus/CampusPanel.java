@@ -70,7 +70,8 @@ public class CampusPanel extends DefaultFormPanel {
             enableTablePanel();
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
-            Logger.getLogger(CampusPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
+            ex.printStackTrace();
         }
     }
     
@@ -82,14 +83,6 @@ public class CampusPanel extends DefaultFormPanel {
             c.removeAll();
             c.add(new AreaDeTrabalhoView(campus, areaDeTrabalho));
         }
-    }
-
-    private void resizeTableColumns() {
-        javax.swing.JTable table = getTable();
-        javax.swing.table.TableColumnModel tcm = table.getColumnModel();
-        TableColumn tcNome = tcm.getColumn(0);
-        tcNome.setMinWidth(50);
-        tcNome.setCellRenderer(new CampusCellRenderer());
     }
 
     @Override
@@ -109,6 +102,14 @@ public class CampusPanel extends DefaultFormPanel {
         panel.add(btSearch, c);
     }
 
+    private void resizeTableColumns() {
+        javax.swing.JTable table = getTable();
+        javax.swing.table.TableColumnModel tcm = table.getColumnModel();
+        TableColumn tcNome = tcm.getColumn(0);
+        tcNome.setMinWidth(50);
+        tcNome.setCellRenderer(new CampusCellRenderer());
+    }
+
     @Override
     public void reloadTableData() {
         try {
@@ -117,7 +118,8 @@ public class CampusPanel extends DefaultFormPanel {
             setTableModel(new CampusTableModel(l));
             resizeTableColumns();
         } catch (Exception ex) {
-            Logger.getLogger(CampusPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
+            ex.printStackTrace();
         }
     }
 

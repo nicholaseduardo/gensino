@@ -26,9 +26,6 @@ public class EstudanteDaoSQL extends AbstractDaoSQL<Estudante> {
     public void save(Estudante o) {
         if (o.getId().getId() == null) {
             o.getId().setId(nextVal(o));
-            o.getTurma().addEstudante(o);
-        } else {
-            o.getTurma().updateEstudante(o);
         }
         
         if (findById(o.getId()) == null) {
@@ -51,16 +48,16 @@ public class EstudanteDaoSQL extends AbstractDaoSQL<Estudante> {
 
     @Override
     public List<Estudante> list(String criteria, Object ref) {
-        String sql = "SELECT t FROM Estudante t ";
+        String sql = "SELECT e FROM Estudante e ";
 
         if (!"".equals(criteria)) {
-            sql += " WHERE t.id.id > 0 " + criteria;
+            sql += " WHERE e.id.id > 0 " + criteria;
         }
 
         // order
-        sql += " ORDER BY t.id.turma.id.curso.nome,"
-                + "t.id.turma.id.curso.id.campus.nome, "
-                + "t.id.id ";
+        sql += " ORDER BY e.id.turma.id.curso.nome,"
+                + "e.id.turma.id.curso.id.campus.nome, "
+                + "e.id.id ";
 
         TypedQuery query = entityManager.createQuery(sql, Estudante.class);
         return query.getResultList();
