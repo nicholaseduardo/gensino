@@ -69,7 +69,8 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
              */
             super.disableCloseButton();
         } catch (Exception ex) {
-            Logger.getLogger(CursoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
+            ex.printStackTrace();
         }
     }
 
@@ -155,17 +156,6 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
         TableColumnModel tcm = table.getColumnModel();
         TableColumn col0 = tcm.getColumn(0);
         col0.setCellRenderer(new UnidadeCurricularCellRenderer());
-//        col0.setCellRenderer(new GenCellRenderer() {
-//            @Override
-//            public Component getTableCellRendererComponent(JTable table, Object value,
-//                    boolean isSelected, boolean hasFocus, int row, int col) {
-//                JPanel inPanel = createUCPanel((UnidadeCurricular) value);
-//                inPanel.setOpaque(true);
-//                table.setRowHeight(row, inPanel.getPreferredSize().height);
-//
-//                return inPanel;
-//            }
-//        });
 
         EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.PLAN,
                 AcoesBotoes.REFBIB, AcoesBotoes.CONT_EMENTA, AcoesBotoes.ESP,
@@ -185,7 +175,7 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
             setTableModel(new UnidadeCurricularTableModel(col.listar(selectedCurso)));
             resizeTableColumns();
         } catch (Exception ex) {
-            Logger.getLogger(UnidadeCurricularPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
         }
     }
 

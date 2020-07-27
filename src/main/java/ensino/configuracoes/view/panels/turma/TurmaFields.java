@@ -5,32 +5,23 @@
  */
 package ensino.configuracoes.view.panels.turma;
 
-import ensino.components.GenJButton;
 import ensino.components.GenJLabel;
 import ensino.components.GenJSpinner;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.Turma;
-import ensino.configuracoes.model.TurmaFactory;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
-import ensino.reports.ChartsFactory;
-import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpinnerNumberModel;
@@ -64,7 +55,7 @@ public class TurmaFields extends DefaultFieldsPanel {
     public TurmaFields() {
         this(null, null);
     }
-    
+
     public void setFrame(Component frame) {
         this.frame = frame;
     }
@@ -74,10 +65,6 @@ public class TurmaFields extends DefaultFieldsPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEtchedBorder());
 
-        backColor = ChartsFactory.lightBlue;
-        foreColor = ChartsFactory.ardoziaBlueColor;
-        setBackground(backColor);
-
         URL urlTurma = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "classroom-50px.png"));
 
         GenJLabel lblTitulo = new GenJLabel("Ficha da Turma", new ImageIcon(urlTurma), JLabel.CENTER);
@@ -86,19 +73,12 @@ public class TurmaFields extends DefaultFieldsPanel {
         lblTitulo.resetFontSize(20);
         lblTitulo.setForeground(foreColor);
         lblTitulo.toBold();
-        add(lblTitulo, BorderLayout.PAGE_START);
 
-        GenJButton btSave = createButton(new ActionHandler(AcoesBotoes.SAVE), backColor, foreColor);
-        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
+        JPanel panel = createPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.add(lblTitulo);
 
-        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButton.add(btSave);
-        panelButton.add(btClose);
-        add(panelButton, BorderLayout.PAGE_END);
+        add(panel, BorderLayout.PAGE_START);
         add(createIdentificacaoPanel(), BorderLayout.CENTER);
-        
-        enableFields(true);
-        initFocus();
     }
 
     private JPanel createIdentificacaoPanel() {
@@ -106,17 +86,17 @@ public class TurmaFields extends DefaultFieldsPanel {
         txtId = new GenJTextField(5, false);
         txtId.setEnabled(false);
         lblId.setLabelFor(txtId);
-        
+
         GenJLabel lblNome = new GenJLabel("Nome da Turma:", JLabel.TRAILING);
         txtNome = new GenJTextField(30, true);
         lblNome.setLabelFor(txtNome);
-        
+
         GenJLabel lblAno = new GenJLabel("Ano:", JLabel.TRAILING);
         Calendar cal = Calendar.getInstance();
         int currentYear = cal.get(Calendar.YEAR);
         spinAno = new GenJSpinner(new SpinnerNumberModel(currentYear, 2000, currentYear + 1, 1));
         lblAno.setLabelFor(spinAno);
-        
+
         int row = 0, col = 0;
         JPanel fieldsPanel = createPanel(new GridBagLayout());
         fieldsPanel.setBorder(createTitleBorder("Identificação"));
@@ -191,8 +171,10 @@ public class TurmaFields extends DefaultFieldsPanel {
         String msg = "O campo [%s] não foi informado!", campo = "";
         if ("".equals(txtNome.getText())) {
             campo = "NOME DA TURMA";
+            txtNome.requestFocusInWindow();
         } else if (spinAno.getValue() == null) {
             campo = "ANO";
+            spinAno.requestFocusInWindow();
         } else {
             return true;
         }
@@ -217,36 +199,5 @@ public class TurmaFields extends DefaultFieldsPanel {
     @Override
     public void initFocus() {
         txtNome.requestFocusInWindow();
-    }
-
-    @Override
-    public void onCloseAction(ActionEvent e) {
-        if (frame instanceof JInternalFrame) {
-            JInternalFrame f = (JInternalFrame) frame;
-            f.dispose();
-        } else if (frame instanceof JDialog) {
-            JDialog d = (JDialog) frame;
-            d.dispose();
-        } else {
-            JFrame f = (JFrame) frame;
-            f.dispose();
-        }
-    }
-
-    @Override
-    public void onSaveAction(ActionEvent e, Object o) {
-        if (isValidated()) {
-            if ("".equals(txtId.getText())) {
-                turma = TurmaFactory.getInstance().getObject(getFieldValues());
-            } else {
-                TurmaFactory.getInstance().updateObject(turma, getFieldValues());
-            }
-            try {
-                ControllerFactory.createTurmaController().salvar(turma);
-                onCloseAction(e);
-            } catch (Exception ex) {
-                showErrorMessage(ex);
-            }
-        }
     }
 }

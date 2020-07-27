@@ -5,34 +5,19 @@
  */
 package ensino.configuracoes.view.panels.turma;
 
-import ensino.components.GenJComboBox;
-import ensino.components.GenJLabel;
+import ensino.components.GenJPanel;
 import ensino.configuracoes.controller.TurmaController;
-import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.Turma;
-import ensino.configuracoes.view.models.CampusComboBoxModel;
-import ensino.configuracoes.view.models.CursoComboBoxListModel;
-import ensino.configuracoes.view.models.CursoListModel;
 import ensino.configuracoes.view.models.TurmaTableModel;
-import ensino.configuracoes.view.panels.curso.CursoPanel;
 import ensino.configuracoes.view.renderer.TurmaCellRenderer;
-import ensino.defaults.DefaultFormPanel;
-import ensino.helpers.GridLayoutHelper;
+import ensino.defaults.DefaultCleanFormPanel;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.util.types.AcoesBotoes;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
+import java.util.EnumSet;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -41,23 +26,22 @@ import javax.swing.table.TableColumnModel;
  *
  * @author nicho
  */
-public class TurmaPanel extends DefaultFormPanel {
+public class TurmaPanel extends DefaultCleanFormPanel {
 
-    private GenJComboBox comboCampus;
-    private GenJComboBox comboCurso;
-    private JButton btSearch;
-    private JButton btClear;
-    
     private Curso selectedCurso;
     private Turma selectedTurma;
 
     public TurmaPanel(Component frame) {
         this(frame, null);
     }
-    
+
     public TurmaPanel(Component frame, Curso curso) {
         super(frame);
         this.selectedCurso = curso;
+        initComponents();
+    }
+
+    private void initComponents() {
         try {
             super.setName("panel.turma");
             super.setTitlePanel("Dados da Turma");
@@ -65,10 +49,13 @@ public class TurmaPanel extends DefaultFormPanel {
             super.setController(ControllerFactory.createTurmaController());
 
             super.enableTablePanel();
-            super.setFieldsPanel(new TurmaFieldsPanel(curso));
+            super.setFieldsPanel(new TurmaFields(this.selectedCurso, null));
             super.showPanelInCard(CARD_LIST);
+            super.disableCloseButton();
+            
         } catch (Exception ex) {
-            Logger.getLogger(CursoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
+            ex.printStackTrace();
         }
     }
 
@@ -81,117 +68,74 @@ public class TurmaPanel extends DefaultFormPanel {
         this.selectedCurso = selectedCurso;
         reloadTableData();
     }
+
     /**
-     * Cria um botão para selecionar um curso na tabela e fecha 
-     * a janela do curso
+     * Cria um botão para selecionar um curso na tabela e fecha a janela do
+     * curso
      */
     @Override
     public void createSelectButton() {
-        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
-        button.addActionListener((ActionEvent e) -> {
-            JTable t = getTable();
-            if (t.getRowCount() > 0) {
-                int row = t.getSelectedRow();
-                TurmaTableModel model = (TurmaTableModel) t.getModel();
-                selectedTurma = (Turma) model.getRow(row);
-                JDialog dialog = (JDialog)getFrame();
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(getParent(), 
-                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
-                        "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-        addButtonToToolBar(button, true);
+//        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
+//        button.addActionListener((ActionEvent e) -> {
+//            JTable t = getTable();
+//            if (t.getRowCount() > 0) {
+//                int row = t.getSelectedRow();
+//                TurmaTableModel model = (TurmaTableModel) t.getModel();
+//                selectedTurma = (Turma) model.getRow(row);
+//                JDialog dialog = (JDialog) getFrame();
+//                dialog.dispose();
+//            } else {
+//                JOptionPane.showMessageDialog(getParent(),
+//                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
+//                        "Aviso", JOptionPane.WARNING_MESSAGE);
+//            }
+//        });
+//        addButtonToToolBar(button, true);
     }
-    
+
     private void resizeTableColumns() {
         JTable table = getTable();
         TableColumnModel tcm = table.getColumnModel();
-        TableColumn tcNome = tcm.getColumn(0);
-        tcNome.setMinWidth(50);
-        tcNome.setCellRenderer(new TurmaCellRenderer());;
+        TableColumn col0 = tcm.getColumn(0);
+        col0.setCellRenderer(new TurmaCellRenderer());
+
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.ESTUD, AcoesBotoes.DELETE);
+
+        TableColumn col1 = tcm.getColumn(1);
+        col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
+        col1.setCellEditor(new GenJPanel.ButtonsEditor(table, null, enumSet));
+        table.repaint();
     }
 
     @Override
     public void reloadTableData() {
         try {
-            Campus campus = (Campus) comboCampus.getSelectedItem();
-            selectedCurso = (Curso) comboCurso.getSelectedItem();
-            setController(ControllerFactory.createTurmaController());
+            
             TurmaController col = (TurmaController) getController();
-            TurmaTableModel model;
-            List<Turma> list;
-            if (campus != null && selectedCurso != null) {
-                list = col.listar(selectedCurso);
-            } else {
-                list = col.listar();
-            }
-            model = new TurmaTableModel(list);
-            setTableModel(model);
+            setTableModel(new TurmaTableModel(col.listar(selectedCurso)));
             resizeTableColumns();
         } catch (Exception ex) {
-            Logger.getLogger(TurmaPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
         }
-    }
-
-    @Override
-    public void onSearchButton(ActionEvent e) {
-        reloadTableData();
-    }
-
-    @Override
-    public void onClearButton(ActionEvent e) {
-        comboCampus.setSelectedItem(null);
-        comboCurso.setSelectedItem(null);
     }
 
     @Override
     public void addFiltersFields() {
-        boolean activeFilters = this.selectedCurso == null;
-        JPanel panel = getFilterPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-        GenJLabel lblCampus = new GenJLabel("Campus: ", JLabel.TRAILING);
-        GridLayoutHelper.set(c, 0, 0);
-        panel.add(lblCampus, c);
-        comboCampus = new GenJComboBox(new CampusComboBoxModel());
-        if (!activeFilters) {
-            comboCampus.setSelectedItem(this.selectedCurso.getId().getCampus());
-        }
-        comboCampus.setEnabled(activeFilters);
-        comboCampus.addItemListener((ItemEvent e) -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                Campus campus = (Campus) e.getItem();
-                CursoListModel cursoModel = (CursoListModel) comboCurso.getModel();
-                cursoModel.setCampus(campus);
-                cursoModel.refresh();
-                comboCurso.setSelectedItem(null);
-            }
-        });
-        GridLayoutHelper.set(c, 1, 0, 3, 1, GridBagConstraints.LINE_START);
-        panel.add(comboCampus, c);
-
-        GenJLabel lblCurso = new GenJLabel("Curso:", JLabel.TRAILING);
-        GridLayoutHelper.setRight(c, 0, 1);
-        panel.add(lblCurso, c);
-        CursoComboBoxListModel cursoListModel = new CursoComboBoxListModel();
-        cursoListModel.setSelectedItem(this.selectedCurso);
-        comboCurso = new GenJComboBox(cursoListModel);
-        comboCurso.setEnabled(activeFilters);
         
-        GridLayoutHelper.set(c, 1, 1);
-        panel.add(comboCurso, c);
-
-        btSearch = createButton("search", "Buscar", 0);
-        btSearch.setEnabled(activeFilters);
-        GridLayoutHelper.set(c, 2, 1);
-        panel.add(btSearch, c);
-        btClear = createButton("clear", "Limpar filtro", 0);
-        btClear.setEnabled(activeFilters);
-        GridLayoutHelper.set(c, 3, 1);
-        panel.add(btClear, c);
+    }
+    
+    @Override
+    public void onDefaultButton(ActionEvent e, Object o) {
+        if (o != null && o instanceof JTable) {
+            Object obj = getObjectFromTable((JTable) o);
+            if (obj instanceof Turma) {
+                Turma turma = (Turma) obj;
+                
+                JDialog dialog = new JDialog();
+                TurmaPanelEstudante panel = new TurmaPanelEstudante(dialog, turma);
+                showDialog(dialog, panel);
+            }
+        }
     }
 
 }
