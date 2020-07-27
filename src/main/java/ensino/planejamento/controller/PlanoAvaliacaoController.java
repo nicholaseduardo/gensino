@@ -5,6 +5,8 @@
  */
 package ensino.planejamento.controller;
 
+import ensino.configuracoes.model.EtapaEnsino;
+import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
 import ensino.planejamento.model.PlanoAvaliacao;
@@ -17,25 +19,33 @@ import java.util.List;
  * @author nicho
  */
 public class PlanoAvaliacaoController extends AbstractController<PlanoAvaliacao> {
-    
+
     public PlanoAvaliacaoController() throws Exception {
         super(DaoFactory.createPlanoAvaliacaoDao(), PlanoAvaliacaoFactory.getInstance());
     }
-    
+
     public List<PlanoAvaliacao> listar(PlanoDeEnsino o) {
+        return listar(o, null, null);
+    }
+    
+    public List<PlanoAvaliacao> listar(PlanoDeEnsino o, 
+            EtapaEnsino ee,
+            InstrumentoAvaliacao ia) {
         String filter = "";
-        Integer id = o.getId(),
-                undId = o.getUnidadeCurricular().getId().getId(),
-                cursoId = o.getUnidadeCurricular().getId().getCurso().getId().getId(),
-                campusId = o.getUnidadeCurricular().getId().getCurso().getId().getCampus().getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//PlanoAvaliacao/planoAvaliacao[@planoDeEnsinoId=%d and "
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]", 
-                    id, undId, cursoId, campusId);
-        } else {
-            filter = String.format(" AND p.id.planoDeEnsino.id = %d ", id);
+        Integer id = o.getId();
+        filter = String.format(" AND p.id.planoDeEnsino.id = %d ", id);
+        
+        if (ee != null) {
+            filter += String.format(" AND p.etapaEnsino.id.nivelEnsino.id = %d "
+                    + " AND p.etapaEnsino.id.id = %d ", 
+                    ee.getNivelEnsino().getId(), ee.getId().getId());
         }
         
+        if (ia != null) {
+            filter += String.format(" AND p.instrumentoAvaliacao.id = %d ", 
+                    ia.getId());
+        }
+
         return super.getDao().list(filter, o);
     }
 }

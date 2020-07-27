@@ -48,7 +48,7 @@ public class ObjetivoCellRenderer extends TextAreaCellRenderer {
         JPanel panel;
         panel = createLayoutPanel(labelData, FlowLayout.LEFT);
 
-        table.setRowHeight(panel.getPreferredSize().height + 5);
+        table.setRowHeight(panel.getPreferredSize().height);
         panel.setOpaque(true);
         
         return panel;

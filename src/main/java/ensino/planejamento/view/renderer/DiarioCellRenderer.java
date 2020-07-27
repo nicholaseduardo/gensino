@@ -7,7 +7,6 @@ package ensino.planejamento.view.renderer;
 
 import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
-import ensino.components.GenJTextArea;
 import ensino.helpers.DateHelper;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.view.models.DiarioTableModel;
@@ -65,35 +64,41 @@ public class DiarioCellRenderer extends GenCellRenderer {
         Border titleBorderConteudo = BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Conteúdo programático",
                 TitledBorder.LEFT, TitledBorder.CENTER);
-        GenJTextArea txtConteudo = new GenJTextArea();
-        txtConteudo.setText(diario.getConteudo());
-        txtConteudo.setBorder(titleBorderConteudo);
-        txtConteudo.setBackground(getBack());
-        txtConteudo.setForeground(getFore());
+        GenJLabel lblConteudo = createLabel(diario.getConteudo());
+        lblConteudo.setBorder(titleBorderConteudo);
+        lblConteudo.resetFontSize(12);
+        lblConteudo.getMinimumSize().width = 100;
 
+        String html = "<html><body>%s</body></html>";
+        
         Border titleBorderObservacao = BorderFactory.createTitledBorder(
                 BorderFactory.createEmptyBorder(), "Observação",
                 TitledBorder.LEFT, TitledBorder.CENTER);
-        GenJTextArea txtObservacao = new GenJTextArea();
-        txtObservacao.setBorder(titleBorderObservacao);
-        txtObservacao.setText(diario.getObservacoes());
-        txtObservacao.setBackground(getBack());
-        txtObservacao.setForeground(getFore());
+        GenJLabel lblObservacao = createLabel(String.format(html, diario.getObservacoes()));
+        lblObservacao.setBorder(titleBorderObservacao);
+        lblObservacao.resetFontSize(12);
+        lblObservacao.getMinimumSize().width = 100;
+        
+        JPanel panelCenter = new JPanel(new GridLayout(1, 2));
+        panelCenter.add(createLayoutPanel(lblConteudo, FlowLayout.LEFT));
+        panelCenter.add(createLayoutPanel(lblObservacao, FlowLayout.LEFT));
 
-        JPanel panel = new JPanel(new GridLayout(1, 2));
-        panel.add(createLayoutPanel(lblTitle, FlowLayout.LEFT));
-        panel.add(createLayoutPanel(lblTipo, FlowLayout.RIGHT));
-        panel.setBackground(getBack());
+        JPanel paneltop = new JPanel(new GridLayout(1, 2));
+        paneltop.setOpaque(true);
+        paneltop.add(createLayoutPanel(lblTitle, FlowLayout.LEFT));
+        paneltop.add(createLayoutPanel(lblTipo, FlowLayout.RIGHT));
+        paneltop.setBackground(getBack());
 
         JPanel panelContent = new JPanel(new BorderLayout());
-        panelContent.add(txtConteudo, BorderLayout.CENTER);
-        panelContent.add(txtObservacao, BorderLayout.PAGE_END);
-        panelContent.add(panel, BorderLayout.PAGE_START);
+        panelContent.add(paneltop, BorderLayout.PAGE_START);
+        panelContent.add(panelCenter, BorderLayout.CENTER);
 
         panelContent.setBackground(getBack());
-
-        table.setRowHeight(panelContent.getPreferredSize().height + 10);;
         panelContent.setOpaque(true);
+
+        if (table.getColumnCount() > 1 && table.getRowHeight(row) < 50) {
+            table.setRowHeight(55);
+        }
 
         return panelContent;
     }

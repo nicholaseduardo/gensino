@@ -6,19 +6,23 @@
 package ensino.planejamento.view.renderer;
 
 import ensino.components.renderer.GenCellRenderer;
-import ensino.configuracoes.view.renderer.*;
 import ensino.components.GenJLabel;
-import ensino.configuracoes.model.Curso;
-import ensino.configuracoes.model.UnidadeCurricular;
+import static ensino.components.GenJPanel.IMG_SOURCE;
+import ensino.helpers.GridLayoutHelper;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.PlanoDeEnsinoTableModel;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.net.URL;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.border.BevelBorder;
 
 /**
  *
@@ -41,53 +45,56 @@ public class PlanoDeEnsinoCellRenderer extends GenCellRenderer {
 
         PlanoDeEnsinoTableModel model = (PlanoDeEnsinoTableModel) table.getModel();
         PlanoDeEnsino planoDeEnsino = (PlanoDeEnsino) model.getRow(row);
-        UnidadeCurricular unidade = planoDeEnsino.getUnidadeCurricular();
+        
+        URL urlPlanos = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "plano-icon-50px.png"));
+        ImageIcon iconPlanos = new ImageIcon(urlPlanos);
 
-        GenJLabel lblUnidade = createLabel(
-                String.format("[%d] Plano de Ensino de %s",
-                        planoDeEnsino.getId(), unidade.getNome()));
-
-        Curso curso = unidade.getCurso();
-        GenJLabel lblCurso = createLabel(String.format("[Curso: %s]",
-                curso.getNome()));
+        GenJLabel lblCurso = createLabel(String.format("Curso: %s",
+                planoDeEnsino.getUnidadeCurricular().getCurso().getNome()));
         lblCurso.resetFontSize(12);
-        lblCurso.setIcon(new ImageIcon(getClass().getResource("/img/courses-icon-15px.png")));
 
-        GenJLabel lblCampus = createLabel(String.format("[Campus: %s]", curso.getCampus().getNome()));
-        lblCampus.resetFontSize(12);
-        lblCampus.setIcon(new ImageIcon(getClass().getResource("/img/university-icon-15px.png")));
+        GenJLabel lblDocente = createLabel(String.format("Docente: %s",
+                planoDeEnsino.getDocente().getNome()));
+        lblDocente.resetFontSize(12);
 
-        GenJLabel lblCalendario = createLabel(
-                String.format("Calendário: %s / Período letivo: %s",
-                        planoDeEnsino.getPeriodoLetivo().getId().getCalendario().getDescricao(),
+        GenJLabel lblUnidadeCurricular = createLabel(String.format("U.C.: %s",
+                planoDeEnsino.getUnidadeCurricular().getNome()));
+        lblUnidadeCurricular.resetFontSize(12);
+
+        GridBagConstraints cDados = new GridBagConstraints();
+        JPanel panelParentDados = new JPanel(new GridBagLayout());
+        panelParentDados.setBackground(getBack());
+        panelParentDados.setOpaque(true);
+        
+        GridLayoutHelper.set(cDados, 0, 0, 1, 1, GridBagConstraints.CENTER);
+        panelParentDados.add(lblCurso, cDados);
+        GridLayoutHelper.set(cDados, 0, 1, 1, 1, GridBagConstraints.CENTER);
+        panelParentDados.add(lblUnidadeCurricular, cDados);
+        GridLayoutHelper.set(cDados, 0, 2, 1, 1, GridBagConstraints.CENTER);
+        panelParentDados.add(lblDocente, cDados);
+
+        GenJLabel lblTitulo = createLabel(
+                String.format("[ID %d] Período Letivo: %s",
+                        planoDeEnsino.getId(),
                         planoDeEnsino.getPeriodoLetivo().getDescricao()));
-        lblCalendario.resetFontSize(12);
+        lblTitulo.setIcon(iconPlanos);
+        lblTitulo.setHorizontalAlignment(CENTER);
+        lblTitulo.setVerticalTextPosition(JLabel.BOTTOM);
+        lblTitulo.setHorizontalTextPosition(JLabel.CENTER);
 
-        GenJLabel lblDetalhamentos = createLabel(
-                String.format("Detalhamento: %d semanas letivas",
-                        planoDeEnsino.getDetalhamentos().size()));
-        lblDetalhamentos.resetFontSize(12);
+        JPanel panelTitulo = new JPanel(new BorderLayout());
+        panelTitulo.setBackground(getBack());
+        panelTitulo.add(lblTitulo, BorderLayout.PAGE_START);
+        panelTitulo.add(panelParentDados, BorderLayout.CENTER);
+        panelTitulo.setOpaque(true);
 
-        GenJLabel lblObjetivos = createLabel(
-                String.format("N.o de Objetivos: %d / "
-                        + "N.o de Avaliaçoes: %d",
-                        planoDeEnsino.getObjetivos().size(),
-                        planoDeEnsino.getPlanosAvaliacoes().size()));
-        lblObjetivos.resetFontSize(12);
-
-        // Impressão na tela
-        JPanel panel = new JPanel(new GridLayout(0, 2, 5, 0));
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(getBack());
-        panel.add(createLayoutPanel(lblUnidade, FlowLayout.LEFT));
-        panel.add(createLayoutPanel(lblCalendario, FlowLayout.RIGHT));
-        panel.add(createLayoutPanel(lblCurso, FlowLayout.LEFT));
-        panel.add(createLayoutPanel(lblDetalhamentos, FlowLayout.RIGHT));
-        panel.add(createLayoutPanel(lblCampus, FlowLayout.LEFT));
-        panel.add(createLayoutPanel(lblObjetivos, FlowLayout.RIGHT));
-
-        table.setRowHeight(panel.getPreferredSize().height + 10);
-        panel.setBackground(getBack());
+        panel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+        panel.add(panelTitulo, BorderLayout.CENTER);
         panel.setOpaque(true);
+        table.setRowHeight(row, panel.getPreferredSize().height);
+
         return panel;
     }
 

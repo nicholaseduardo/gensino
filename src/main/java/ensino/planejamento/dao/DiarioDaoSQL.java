@@ -9,8 +9,15 @@ import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.DiarioId;
 import ensino.planejamento.model.PlanoDeEnsino;
+import ensino.util.types.TipoAula;
+import java.util.Date;
 import java.util.List;
+
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -27,7 +34,7 @@ public class DiarioDaoSQL extends AbstractDaoSQL<Diario> {
         if (o.getId().getId() == null) {
             o.getId().setId(nextVal(o));
         }
-        
+
         if (findById(o.getId()) == null) {
             entityManager.persist(o);
         } else {
@@ -52,17 +59,49 @@ public class DiarioDaoSQL extends AbstractDaoSQL<Diario> {
     }
 
     @Override
-    public List<Diario> list(String criteria, Object ref) {
-        String sql = "SELECT d FROM Diario d ";
+    public List<Diario> list(String filters, Object ref) {
+        CriteriaBuilder builder = getCriteriaBuilder();
+        CriteriaQuery<Diario> criteria = builder.createQuery(Diario.class);
 
-        if (!"".equals(criteria)) {
-            sql += " WHERE d.id.id > 0 " + criteria;
+        Root<Diario> from = criteria.from(Diario.class);
+
+        Predicate p1 = builder.gt(from.get("id").get("id"), 0);
+        CriteriaQuery<Diario> select = criteria.select(from);
+        select.orderBy(builder.asc(from.get("data")), builder.asc(from.get("horario")));
+
+        TypedQuery<Diario> query = entityManager.createQuery(select.where(p1));
+        return query.getResultList();
+    }
+
+    public List<Diario> list(PlanoDeEnsino o, Date data, TipoAula tipo) {
+        CriteriaBuilder builder = getCriteriaBuilder();
+        CriteriaQuery<Diario> criteria = builder.createQuery(Diario.class);
+
+        Root<Diario> from = criteria.from(Diario.class);
+
+        Predicate pPlano = builder.equal(from.get("id").get("planoDeEnsino").get("id"), o.getId()),
+                pdata = null, ptipo = null;
+        if (data != null) {
+            pdata = builder.equal(from.get("data"), data);
+        }
+        if (tipo != null) {
+            ptipo = builder.equal(from.get("tipoAula"), data);
         }
 
-        // order
-        sql += " ORDER BY d.data, d.horario ";
+        CriteriaQuery<Diario> select = criteria.select(from);
+        if (pdata != null && ptipo != null) {
+            select.where(pPlano, pdata, ptipo);
+        } else if (pdata != null) {
+            select.where(pPlano, pdata);
+        } else if (ptipo != null) {
+            select.where(pPlano, ptipo);
+        } else {
+            select.where(pPlano);
+        }
+        
+        select.orderBy(builder.asc(from.get("data")), builder.asc(from.get("horario")));
 
-        TypedQuery query = entityManager.createQuery(sql, Diario.class);
+        TypedQuery<Diario> query = entityManager.createQuery(select);
         return query.getResultList();
     }
 

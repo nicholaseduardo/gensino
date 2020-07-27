@@ -14,39 +14,46 @@ import ensino.configuracoes.view.models.CampusComboBoxModel;
 import ensino.configuracoes.view.models.CursoComboBoxListModel;
 import ensino.configuracoes.view.models.CursoListModel;
 import ensino.configuracoes.view.panels.filters.UnidadeCurricularSearch;
-import ensino.defaults.DefaultFormPanel;
+import ensino.defaults.DefaultCleanFormPanel;
+import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.PlanoDeEnsinoController;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.PlanoDeEnsinoTableModel;
+import ensino.planejamento.view.panels.avaliacao.PlanoDeEnsinoPlanoAvaliacao;
+import ensino.planejamento.view.panels.config.PlanoDeEnsinoHorarioAula;
+import ensino.planejamento.view.panels.config.PlanoDeEnsinoIdentificacao;
+import ensino.planejamento.view.panels.detalhamento.DetalhamentoPanel;
+import ensino.planejamento.view.panels.diario.DiarioPanel;
+import ensino.planejamento.view.panels.objetivoEspecifico.PlanoDeEnsinoObjetivoEspecifico;
+import ensino.planejamento.view.panels.permanenciaEstudantil.PermanenciaEstudantilPanel;
 import ensino.planejamento.view.renderer.PlanoDeEnsinoCellRenderer;
+import ensino.util.types.AcoesBotoes;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.EnumSet;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 
 /**
  *
  * @author nicho
  */
-public class PlanoDeEnsinoPanel extends DefaultFormPanel {
+public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
 
     private GenJComboBox comboCampus;
     private GenJComboBox comboCurso;
@@ -55,11 +62,8 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
     private JButton btSearch;
     private JButton btClear;
 
-    private UnidadeCurricular selectedUnidadeCurricular;
+    private UnidadeCurricular unidadeCurricular;
     private PlanoDeEnsino selectedPlanoDeEnsino;
-
-    private JPopupMenu popupMenu;
-    private JMenuItem menuDuplicar;
 
     /**
      * Construtor da classe
@@ -79,7 +83,7 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
      */
     public PlanoDeEnsinoPanel(Component frame, UnidadeCurricular unidadeCurricular) {
         super(frame);
-        this.selectedUnidadeCurricular = unidadeCurricular;
+        this.unidadeCurricular = unidadeCurricular;
         initComponents();
     }
 
@@ -90,47 +94,11 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
             setController(ControllerFactory.createPlanoDeEnsinoController());
 
             enableTablePanel();
-            setFieldsPanel(new PlanoDeEnsinoPanelFields());
+            setFieldsPanel(new PlanoDeEnsinoIdentificacao(this.unidadeCurricular, null));
             showPanelInCard(CARD_LIST);
-
-            menuDuplicar = new JMenuItem("Duplicar");
-            menuDuplicar.addActionListener((ActionEvent e) -> {
-                JTable table = getTable();
-                int index = table.getSelectedRow();
-                if (index > -1) {
-                    PlanoDeEnsinoTableModel model = (PlanoDeEnsinoTableModel)table.getModel();
-                    PlanoDeEnsino plano = (PlanoDeEnsino) model.getRow(index);
-                    // duplicacao
-                    PlanoDeEnsinoController col = (PlanoDeEnsinoController)getController();
-                    // força a geração de uma nova numeração para o plano de ensino
-                    plano.setId(null);
-                    // remove a lista de planos de avaliações
-                    plano.setPlanosAvaliacoes(new ArrayList());
-                    // remove a lista de horários
-                    plano.setHorarios(new ArrayList());
-                    // remove o lançamento de diário
-                    plano.setDiarios(new ArrayList());
-                    try {
-                        col.salvar(plano);
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(PlanoDeEnsinoPanel.this, "Erro ao duplicar o plano de ensino: " +
-                                ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            });
-            popupMenu = new JPopupMenu();
-            popupMenu.add(menuDuplicar);
-            getTable().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getButton() == MouseEvent.BUTTON3) {
-                        // Exibe o popup menu na posição do mouse.
-                        popupMenu.show(getTable(), e.getX(), e.getY());
-                    }
-                }
-            });
         } catch (Exception ex) {
-            Logger.getLogger(PlanoDeEnsinoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
+            ex.printStackTrace();
         }
     }
 
@@ -140,11 +108,11 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
     }
 
     public UnidadeCurricular getSelectedUnidadeCurricular() {
-        return selectedUnidadeCurricular;
+        return unidadeCurricular;
     }
 
     public void setSelectedUnidadeCurricular(UnidadeCurricular selectedUnidadeCurricular) {
-        this.selectedUnidadeCurricular = selectedUnidadeCurricular;
+        this.unidadeCurricular = selectedUnidadeCurricular;
         reloadTableData();
     }
 
@@ -154,79 +122,105 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
      */
     @Override
     public void createSelectButton() {
-        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
-        button.addActionListener((ActionEvent e) -> {
-            JTable t = getTable();
-            if (t.getRowCount() > 0) {
-                int row = t.getSelectedRow();
-                PlanoDeEnsinoTableModel model = (PlanoDeEnsinoTableModel) t.getModel();
-                selectedPlanoDeEnsino = (PlanoDeEnsino) model.getRow(row);
-                JDialog dialog = (JDialog) getFrame();
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(getParent(),
-                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
-                        "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-        addButtonToToolBar(button, true);
+
     }
 
     private void resizeTableColumns() {
         JTable table = getTable();
-        table.getColumnModel().getColumn(0).
-                setCellRenderer(new PlanoDeEnsinoCellRenderer());
+
+        TableColumn tc0 = table.getColumnModel().getColumn(0);
+        tc0.setCellRenderer(new PlanoDeEnsinoCellRenderer());
+        tc0.setMinWidth(300);
+
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.ESP,
+                AcoesBotoes.DET, AcoesBotoes.PAVA, AcoesBotoes.HOR, AcoesBotoes.PE,
+                AcoesBotoes.DIARY, AcoesBotoes.REPORT,
+                AcoesBotoes.EDIT, AcoesBotoes.DELETE, AcoesBotoes.DUPLICATE);
+
+        TableColumn col1 = table.getColumnModel().getColumn(1);
+        col1.setMinWidth(350);
+        col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
+        col1.setCellEditor(new ButtonsEditor(table, null, enumSet));
     }
 
     @Override
     public void reloadTableData() {
-        Campus campus = (Campus) comboCampus.getSelectedItem();
-        Curso curso = (Curso) comboCurso.getSelectedItem();
-        selectedUnidadeCurricular = compoUnidadeSearch.getObjectValue();
+        if (compoUnidadeSearch.getObjectValue() == null) {
+            showInformationMessage("Você deve informar uma Unidade Curricular\n"
+                    + "para realizar o filtro!");
+            return;
+        }
+        unidadeCurricular = compoUnidadeSearch.getObjectValue();
 
         PlanoDeEnsinoController col = (PlanoDeEnsinoController) getController();
-        List<PlanoDeEnsino> list = new ArrayList<>();
-        if (campus != null && curso != null && selectedUnidadeCurricular != null) {
-            list = col.listar(selectedUnidadeCurricular);
-        } else {
-            list = col.listar();
-        }
-
-        setTableModel(new PlanoDeEnsinoTableModel(list));
+        setTableModel(new PlanoDeEnsinoTableModel(col.listar(unidadeCurricular)));
         resizeTableColumns();
     }
 
     @Override
-    public void onSearchButton(ActionEvent e) {
-        reloadTableData();
-    }
-
-    @Override
-    public void onClearButton(ActionEvent e) {
+    public void onClearAction(ActionEvent e) {
         comboCampus.setSelectedItem(null);
         comboCurso.setSelectedItem(null);
         compoUnidadeSearch.setObjectValue(null);
     }
 
     @Override
+    public void onDuplicateAction(ActionEvent e, Object o) {
+        if (o instanceof JTable) {
+            JTable table = (JTable) o;
+            Object object = getObjectFromTable(table);
+
+            if (object instanceof PlanoDeEnsino) {
+                PlanoDeEnsino plano = (PlanoDeEnsino) object;
+                // duplicacao
+                PlanoDeEnsinoController col = (PlanoDeEnsinoController) getController();
+                // força a geração de uma nova numeração para o plano de ensino
+                plano.setId(null);
+                // remove a lista de planos de avaliações
+                plano.setPlanosAvaliacoes(new ArrayList());
+                // remove a lista de horários
+                plano.setHorarios(new ArrayList());
+                // remove o lançamento de diário
+                plano.setDiarios(new ArrayList());
+                try {
+                    col.salvar(plano);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(PlanoDeEnsinoPanel.this, "Erro ao duplicar o plano de ensino: "
+                            + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+
+                reloadTableData();
+            }
+
+        }
+    }
+
+    @Override
     public void addFiltersFields() {
-        boolean activeFilters = this.selectedUnidadeCurricular == null;
+        boolean activeFilters = this.unidadeCurricular == null;
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
-        comboCampus = new GenJComboBox(new CampusComboBoxModel());
+        Campus campusVigente = ControllerFactory.getCampusVigente();
+
+        CampusComboBoxModel campusComboModel = new CampusComboBoxModel();
+        campusComboModel.setSelectedItem(campusVigente);
+
+        comboCampus = new GenJComboBox(campusComboModel);
         comboCampus.setEnabled(activeFilters);
+
         comboCurso = new GenJComboBox(new CursoComboBoxListModel());
         comboCurso.setEnabled(activeFilters);
+
         compoUnidadeSearch = new UnidadeCurricularSearch();
         compoUnidadeSearch.setEnable(activeFilters);
 
         if (!activeFilters) {
-            Curso curso = selectedUnidadeCurricular.getCurso();
+            Curso curso = unidadeCurricular.getCurso();
             comboCampus.setSelectedItem(curso.getCampus());
             comboCurso.setSelectedItem(curso);
-            compoUnidadeSearch.setObjectValue(selectedUnidadeCurricular);
+            compoUnidadeSearch.setObjectValue(unidadeCurricular);
         }
 
         comboCampus.addItemListener((ItemEvent e) -> {
@@ -273,25 +267,91 @@ public class PlanoDeEnsinoPanel extends DefaultFormPanel {
         GridLayoutHelper.set(c, ++col, row);
         panel.add(panelButton, c);
 
-        btSearch = createButton("search", "Buscar", 0);
+        btSearch = createButton(new ActionHandler(AcoesBotoes.SEARCH));
         btSearch.setEnabled(activeFilters);
-        panelButton.add(btSearch);
-        btClear = createButton("clear", "Limpar filtro", 0);
+        btClear = createButton(new ActionHandler(AcoesBotoes.CLEAR));
         btClear.setEnabled(activeFilters);
+
+        panelButton.add(btSearch);
         panelButton.add(btClear);
 
         JPanel filterPanel = getFilterPanel();
         filterPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         filterPanel.add(panel);
+
+        filterPanel.setVisible(activeFilters);
     }
 
     public UnidadeCurricular getUnidadeCurricular() {
-        return selectedUnidadeCurricular;
+        return unidadeCurricular;
     }
 
     public void setUnidadeCurricular(UnidadeCurricular unidadeCurricular) {
-        this.selectedUnidadeCurricular = unidadeCurricular;
+        this.unidadeCurricular = unidadeCurricular;
         reloadTableData();
+    }
+
+    private void showDialog(JDialog dialog, JPanel panel) {
+        dialog.setModal(true);
+        dialog.setLocationRelativeTo(null);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.add(panel);
+        dialog.pack();
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        Dimension dialogSize = dialog.getPreferredSize();
+        int x = 0;
+        if (dialogSize.width < screenSize.width) {
+            x = (screenSize.width / 2) - (dialogSize.width / 2);
+        }
+        int y = 0;
+        if (dialogSize.height < screenSize.height) {
+            y = (screenSize.height / 2) - (dialogSize.height / 2);
+        }
+
+        dialog.setLocation(new Point(x, y));
+        dialog.setVisible(true);
+    }
+
+    @Override
+    public void onDefaultButton(ActionEvent e, Object o) {
+        if (o != null && o instanceof JTable) {
+            PlanoDeEnsino planoDeEnsino = null;
+            Object obj = getObjectFromTable((JTable) o);
+            planoDeEnsino = (PlanoDeEnsino) obj;
+
+            JDialog dialog = new JDialog();
+            DefaultFieldsPanel panel = null;
+
+            String command = e.getActionCommand();
+
+            if (command.equals(AcoesBotoes.DET.toString())) {
+                DetalhamentoPanel p = new DetalhamentoPanel(dialog, planoDeEnsino);
+                showDialog(dialog, p);
+            } else if (command.equals(AcoesBotoes.ESP.toString())) {
+                PlanoDeEnsinoObjetivoEspecifico p = new PlanoDeEnsinoObjetivoEspecifico(dialog, planoDeEnsino);
+                showDialog(dialog, p);
+            } else if (command.equals(AcoesBotoes.PAVA.toString())) {
+                PlanoDeEnsinoPlanoAvaliacao p = new PlanoDeEnsinoPlanoAvaliacao(dialog, planoDeEnsino);
+                showDialog(dialog, p);
+            } else if (command.equals(AcoesBotoes.HOR.toString())) {
+                panel = new PlanoDeEnsinoHorarioAula(dialog);
+            } else if (command.equals(AcoesBotoes.PE.toString())) {
+                PermanenciaEstudantilPanel p = new PermanenciaEstudantilPanel(dialog, planoDeEnsino);
+                showDialog(dialog, p);
+            } else if (command.equals(AcoesBotoes.DIARY.toString())) {
+                DiarioPanel p = new DiarioPanel(dialog, planoDeEnsino);
+                showDialog(dialog, p);
+            } else if (command.equals(AcoesBotoes.REPORT.toString())) {
+                ReportsPanel p = new ReportsPanel(dialog, planoDeEnsino);
+                showDialog(dialog, p);
+            }
+            if (panel != null) {
+                panel.setFieldValues(planoDeEnsino);
+                showDialog(dialog, panel);
+            }
+        }
     }
 
 }

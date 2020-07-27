@@ -7,17 +7,17 @@ package ensino.planejamento.view.renderer;
 
 import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
-import ensino.components.GenJTextArea;
-import ensino.helpers.DateHelper;
-import ensino.planejamento.model.Diario;
-import ensino.planejamento.view.models.DiarioTableModel;
+import ensino.planejamento.model.Detalhamento;
+import ensino.planejamento.model.Metodologia;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.util.Calendar;
+import java.net.URL;
+import java.util.StringJoiner;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
@@ -27,12 +27,82 @@ import javax.swing.border.TitledBorder;
  *
  * @author nicho
  */
-public class DiarioCellRenderer extends GenCellRenderer {
+public class DetalhamentoCellRenderer extends GenCellRenderer {
+
+    private JPanel createPanel(JTable table, Detalhamento o, int row) {
+        String pathFormat = "/img/%s.png";
+        URL urlSemana = getClass().getResource(String.format(pathFormat, "calendar-image-png-25px"));
+        URL urlRecurso = getClass().getResource(String.format(pathFormat, "classroom-25px"));
+        URL urlTecnica = getClass().getResource(String.format(pathFormat, "gear-icon-25px"));
+        URL urlInstrumento = getClass().getResource(String.format(pathFormat, "duplicate-button-25px"));
+
+        GenJLabel lblSemana = createLabel(String.format("%s - %s",
+                o.getSemanaLetiva().toString(),
+                o.getSemanaLetiva().getPeriodo().toString()));
+        lblSemana.setIcon(new ImageIcon(urlSemana));
+        lblSemana.toBold();
+
+        JPanel panelSemana = new JPanel();
+        panelSemana.setBackground(getBack());
+        panelSemana.add(lblSemana);
+
+        GenJLabel textArea = createLabel("");
+        textArea.setText("<b>Conteúdo: </b>"+o.getConteudo(), 80);
+        textArea.resetFontSize(12);
+//        JPanel panelText = createLayoutPanel(textArea, FlowLayout.LEFT);
+//        Border border = BorderFactory.createLineBorder(getFore(), 1, true);
+//        panelText.setBorder(BorderFactory.createTitledBorder(border, "Conteúdo", TitledBorder.LEFT, TitledBorder.TOP));
+
+        StringJoiner sbTecnica = new StringJoiner(", "),
+                sbRecurso = new StringJoiner(", "),
+                sbInstrumento = new StringJoiner(", ");
+        for (Metodologia metodo : o.getMetodologias()) {
+            switch (metodo.getTipo()) {
+                case TECNICA:
+                    sbTecnica.add(metodo.getMetodo().getNome());
+                    break;
+                case RECURSO:
+                    sbRecurso.add(metodo.getMetodo().getNome());
+                    break;
+                case INSTRUMENTO:
+                    sbInstrumento.add(metodo.getMetodo().getNome());
+                    break;
+            }
+        }
+
+        GenJLabel lblTecnica = createLabel(sbTecnica.toString());
+        lblTecnica.resetFontSize(12);
+        lblTecnica.setIcon(new ImageIcon(urlTecnica));
+
+        GenJLabel lblRecurso = createLabel(sbRecurso.toString());
+        lblRecurso.setIcon(new ImageIcon(urlRecurso));
+        lblRecurso.resetFontSize(12);
+
+        GenJLabel lblInstrumento = createLabel(sbInstrumento.toString());
+        lblInstrumento.setIcon(new ImageIcon(urlInstrumento));
+        lblInstrumento.resetFontSize(12);
+
+        JPanel panelMetodo = new JPanel(new GridLayout(3, 1));
+        panelMetodo.add(createLayoutPanel(lblTecnica, FlowLayout.RIGHT));
+        panelMetodo.add(createLayoutPanel(lblRecurso, FlowLayout.RIGHT));
+        panelMetodo.add(createLayoutPanel(lblInstrumento, FlowLayout.RIGHT));
+        panelMetodo.setBackground(getBack());
+
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setOpaque(true);
+        panel.setBackground(getBack());
+        panel.add(createLayoutPanel(lblSemana, FlowLayout.LEFT), BorderLayout.PAGE_START);
+        panel.add(textArea, BorderLayout.CENTER);
+        panel.add(panelMetodo, BorderLayout.PAGE_END);
+        
+        table.setRowHeight(row, panel.getPreferredSize().height);
+
+        return panel;
+    }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int col) {
-
         if (isSelected) {
             setColors(new Color(table.getSelectionForeground().getRGB()),
                     new Color(table.getSelectionBackground().getRGB()));
@@ -42,60 +112,11 @@ public class DiarioCellRenderer extends GenCellRenderer {
                             ? new Color(table.getBackground().getRGB())
                             : new Color(240, 240, 240)));
         }
-
-        DiarioTableModel model = (DiarioTableModel) table.getModel();
-        Diario diario = (Diario) model.getRow(row);
-
-        String sHorario[] = diario.getHorario().split(":");
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(sHorario[0]));
-        cal.set(Calendar.MINUTE, Integer.parseInt(sHorario[1]));
-        cal.add(Calendar.MINUTE, 45);
-        String toHorario = String.format("%02d:%02d",
-                cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-        GenJLabel lblTitle = createLabel(
-                String.format("Dia: %s das %s às %s",
-                        DateHelper.dateToString(diario.getData(), "dd/MM/yyyy"),
-                        diario.getHorario(), toHorario));
-
-        GenJLabel lblTipo = createLabel(String.format("[Tipo: %s]",
-                diario.getTipoAula().toString()));
-        lblTipo.resetFontSize(12);
-
-        Border titleBorderConteudo = BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Conteúdo programático",
-                TitledBorder.LEFT, TitledBorder.CENTER);
-        GenJTextArea txtConteudo = new GenJTextArea();
-        txtConteudo.setText(diario.getConteudo());
-        txtConteudo.setBorder(titleBorderConteudo);
-        txtConteudo.setBackground(getBack());
-        txtConteudo.setForeground(getFore());
-
-        Border titleBorderObservacao = BorderFactory.createTitledBorder(
-                BorderFactory.createEmptyBorder(), "Observação",
-                TitledBorder.LEFT, TitledBorder.CENTER);
-        GenJTextArea txtObservacao = new GenJTextArea();
-        txtObservacao.setBorder(titleBorderObservacao);
-        txtObservacao.setText(diario.getObservacoes());
-        txtObservacao.setBackground(getBack());
-        txtObservacao.setForeground(getFore());
-
-        JPanel panel = new JPanel(new GridLayout(1, 2));
-        panel.add(createLayoutPanel(lblTitle, FlowLayout.LEFT));
-        panel.add(createLayoutPanel(lblTipo, FlowLayout.RIGHT));
-        panel.setBackground(getBack());
-
-        JPanel panelContent = new JPanel(new BorderLayout());
-        panelContent.add(txtConteudo, BorderLayout.CENTER);
-        panelContent.add(txtObservacao, BorderLayout.PAGE_END);
-        panelContent.add(panel, BorderLayout.PAGE_START);
-
-        panelContent.setBackground(getBack());
-
-        table.setRowHeight(panelContent.getPreferredSize().height + 10);;
-        panelContent.setOpaque(true);
-
-        return panelContent;
+        
+        if (value instanceof Detalhamento) {
+            return createPanel(table, (Detalhamento) value, row);
+        }
+        return createLabel(value.toString());
     }
 
 }

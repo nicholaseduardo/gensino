@@ -59,7 +59,7 @@ public class ObjetivoDaoSQL extends AbstractDaoSQL<Objetivo> {
         }
 
         // order
-        sql += " ORDER BY o.descricao ";
+        sql += " ORDER BY o.id.sequencia ";
 
         TypedQuery query = entityManager.createQuery(sql, Objetivo.class);
         return query.getResultList();

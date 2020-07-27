@@ -9,6 +9,7 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.patterns.factory.DaoFactory;
+import ensino.planejamento.dao.PlanoDeEnsinoDaoSQL;
 import ensino.planejamento.dao.PlanoDeEnsinoDaoXML;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Diario;
@@ -33,15 +34,6 @@ public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
     public PlanoDeEnsinoController(URL url) throws Exception {
         super(new PlanoDeEnsinoDaoXML(url), PlanoDeEnsinoFactory.getInstance());
     }
-//    
-//    @Override
-//    public PlanoDeEnsino salvar(PlanoDeEnsino o) throws Exception {
-//        o.criarDiarios();
-//        o.criarAvaliacoes();
-//        o = super.salvar(o);
-//        
-//        return o;
-//    }
 
     @Override
     public PlanoDeEnsino remover(PlanoDeEnsino object) throws Exception {
@@ -88,17 +80,8 @@ public class PlanoDeEnsinoController extends AbstractController<PlanoDeEnsino> {
      * @return 
      */
     public List<PlanoDeEnsino> listar(UnidadeCurricular o) {
-        String filter = "";
-        Integer id = o.getId().getId(),
-                cursoId = o.getId().getCurso().getId().getId(),
-                campusId = o.getId().getCurso().getId().getCampus().getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//PlanoDeEnsino/planoDeEnsino[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]", 
-                    id, cursoId, campusId);
-        } else {
-            filter = String.format(" AND o.id.unidadeCurricular.id.id = %d ", id);
-        }
+        PlanoDeEnsinoDaoSQL dao = (PlanoDeEnsinoDaoSQL) super.getDao();
         
-        return super.getDao().list(filter, o);
+        return dao.list(o);
     }
 }

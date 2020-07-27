@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.planejamento.view.panels.config;
+package ensino.planejamento.view.panels.detalhamento;
 
 import ensino.components.GenJButton;
 import ensino.components.GenJLabel;
@@ -20,7 +20,6 @@ import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.Recurso;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.Tecnica;
-import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.view.models.ConteudoTreeModel;
 import ensino.configuracoes.view.models.SemanaLetivaTableModel;
 import ensino.defaults.DefaultFieldsPanel;
@@ -41,10 +40,9 @@ import ensino.planejamento.model.ObjetivoDetalheFactory;
 import ensino.planejamento.model.ObjetivoFactory;
 import ensino.planejamento.model.ObjetivoId;
 import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.planejamento.view.panels.config.transferable.ListTransferHandler;
-import ensino.planejamento.view.panels.config.transferable.TableTransferHandler;
-import ensino.planejamento.view.panels.config.transferable.TreeTransferHandler;
-import ensino.reports.ChartsFactory;
+import ensino.planejamento.view.panels.transferable.ListTransferHandler;
+import ensino.planejamento.view.panels.transferable.TableTransferHandler;
+import ensino.planejamento.view.panels.transferable.TreeTransferHandler;
 import ensino.util.types.AcoesBotoes;
 import ensino.util.types.DiaDaSemana;
 import ensino.util.types.MesesDeAno;
@@ -90,7 +88,7 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * @author santos
  */
-public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
+public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
 
     private GenJTree tree;
     private ConteudoTreeModel treeModel;
@@ -98,7 +96,7 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
     private PlanoDeEnsino planoDeEnsino;
     private Component frame;
 
-    public PlanoDeEnsinoImportaConteudo(Component frame, PlanoDeEnsino planoDeEnsino) {
+    public DetalhamentoImportaConteudo(Component frame, PlanoDeEnsino planoDeEnsino) {
         super();
         this.planoDeEnsino = planoDeEnsino;
         this.frame = frame;
@@ -110,10 +108,6 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
         setName("plano.identificacao");
         setLayout(new BorderLayout(15, 15));
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        backColor = Color.WHITE;
-        foreColor = getForeground();
-        setBackground(ChartsFactory.ardoziaBlueColor);
 
         GenJLabel lblTitulo = new GenJLabel("Estruturação do Plano de Ensino", JLabel.CENTER);
         lblTitulo.toBold();
@@ -137,8 +131,8 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
         panelTitulo.add(createPanel(new FlowLayout(FlowLayout.CENTER, 0, 10)).add(lblTitulo), BorderLayout.PAGE_START);
         panelTitulo.add(textArea, BorderLayout.CENTER);
 
-        GenJButton btSave = createButton(new ActionHandler(AcoesBotoes.SAVE), backColor, foreColor);
-        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
+        GenJButton btSave = createButton(new ActionHandler(AcoesBotoes.SAVE));
+        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE));
 
         JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
         panelButton.add(btSave);
@@ -333,7 +327,14 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
     }
 
     private JPanel createSemanasPanel() {
-        SemanaLetivaTableModel model = new SemanaLetivaTableModel(planoDeEnsino.getPeriodoLetivo().getSemanasLetivas());
+        List<SemanaLetiva> l = new ArrayList();
+        /**
+         * Esse procedimento foi realizado para evitar que os dados da lista de
+         * semanas letivas fossem eliminados pelo processo de DnD da tabela de
+         * Semanas Letivas.
+         */
+        l.addAll(planoDeEnsino.getPeriodoLetivo().getSemanasLetivas());
+        SemanaLetivaTableModel model = new SemanaLetivaTableModel(l);
 
         JTable table = new JTable(model);
         // Ativa o DnD da Table
@@ -476,14 +477,20 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
                         break;
                     }
                 }
-            } else {
+            }
+            /**
+             * Se o objetivo não existir no plano de ensino, ele deve ser 
+             * cadastrado
+             */
+            if (obj == null) {
                 /**
                  * Adiciona o objetivo ao plano de ensino considerando que não
                  * existem objetivos cadastrados
                  */
                 obj = ObjetivoFactory.getInstance().createObject(
                         new ObjetivoId(null, planoDeEnsino),
-                        oucc.getObjetivoUC().getDescricao(), oucc);
+                        oucc.getObjetivoUC().getDescricao(), 
+                        oucc.getObjetivoUC());
                 ControllerFactory.createObjetivoController().salvar(obj);
                 planoDeEnsino.addObjetivo(obj);
             }
@@ -494,9 +501,21 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
         if (obj != null) {
             ObjetivoDetalhe od = ObjetivoDetalheFactory.getInstance()
                     .createObject(obj, d);
-            ControllerFactory.createObjetivoDetalheController().salvar(od);
             d.addObjetivoDetalhe(od);
         }
+    }
+    
+    private Metodologia createMetodologia(Detalhamento d, BaseObject bo) {
+        int id = 1;
+        List<Metodologia> l = d.getMetodologias();
+        if (!l.isEmpty()) {
+            id = l.get(l.size() - 1).getId().getSequencia() + 1;
+        }
+        
+        Metodologia m = MetodologiaFactory.getInstance()
+                            .createObject(new MetodologiaId(id, d),
+                                    TipoMetodo.of(bo), bo);
+        return m;
     }
 
     private void vincularMetodologia(DefaultMutableTreeNode node, Detalhamento d) throws Exception {
@@ -508,10 +527,8 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
                 if (child.getUserObject() instanceof BaseObject) {
                     bo = (BaseObject) child.getUserObject();
 
-                    Metodologia m = MetodologiaFactory.getInstance()
-                            .createObject(new MetodologiaId(null, d),
-                                    TipoMetodo.of(bo), bo);
-                    col.salvar(m);
+                    Metodologia m = createMetodologia(d, bo);
+//                    col.salvar(m);
                     d.addMetodologia(m);
                 }
             }
@@ -538,6 +555,10 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
         try {
             for (SemanaLetiva sl : listaSemanaLetiva) {
                 DefaultMutableTreeNode semanaNode = getSemanaNode(tn, sl);
+                if (semanaNode == null) {
+                    showInformationMessage("Para salvar, você deve vincular pelo menos uma Semana Letiva\n"
+                            + "ao conteúdo!");
+                }
                 /**
                  * Recupera o nó pai visto que ele sempre será um Conteudo
                  */
@@ -547,14 +568,12 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
                 /**
                  * Criar o detalhamento do plano de ensino por semana
                  */
+                List<Atividade> lat = planoDeEnsino.getPeriodoLetivo().getAtividadesPorSemana(sl);
                 Detalhamento d = DetalhamentoFactory.getInstance().createObject(
                         new DetalhamentoId(sl.getId().getId(), planoDeEnsino),
-                        getNAulasPorSemanaLetiva(sl), 0,
-                        conteudo.getDescricao(),
-                        planoDeEnsino.getPeriodoLetivo().getAtividadesPorSemana(sl).toString(),
-                        conteudo);
-                ControllerFactory.createDetalhamentoController().salvar(d);
-                planoDeEnsino.addDetalhamento(d);
+                        getNAulasPorSemanaLetiva(sl), 0, conteudo.getDescricao(),
+                        lat.toString().replaceAll("[\\[|\\]]", " ").trim(),
+                        sl, conteudo);
                 /**
                  * Vinculando o objetivo do conteúdo ao detalhamento para manter
                  * o rastreamento.
@@ -565,10 +584,8 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
                  */
                 if (!lMetodosGerais.isEmpty()) {
                     for (BaseObject bo : lMetodosGerais) {
-                        Metodologia m = MetodologiaFactory.getInstance()
-                                .createObject(new MetodologiaId(null, d),
-                                        TipoMetodo.of(bo), bo);
-                        ControllerFactory.createMetodologiaController().salvar(m);
+                        Metodologia m = createMetodologia(d, bo);
+//                        ControllerFactory.createMetodologiaController().salvar(m);
                         d.addMetodologia(m);
                     }
                 }
@@ -582,7 +599,14 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
                  * detalhamento
                  */
                 vincularMetodologia(semanaNode, d);
+                /**
+                 * Salva o detalhamento e o adiciona ao plano de ensino.
+                 */
+                ControllerFactory.createDetalhamentoController().salvar(d);
+                planoDeEnsino.addDetalhamento(d);
             }
+            showInformationMessage("Estrutura de detalhamento construída com sucesso!");
+            onCloseAction(e);
         } catch (Exception ex) {
             showErrorMessage(ex);
             ex.printStackTrace();
@@ -645,7 +669,7 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
         return map;
     }
 
-    private JPanel createTreeNodePanel(Object value, Boolean leaf, 
+    private JPanel createTreeNodePanel(Object value, Boolean leaf,
             Color defaultBackground) {
         String pathFormat = "/img/%s.png", imgPath = "", descricao = "";
         Integer fontSize = 12;
@@ -778,15 +802,17 @@ public class PlanoDeEnsinoImportaConteudo extends DefaultFieldsPanel {
         PlanoDeEnsinoController col = ControllerFactory.createPlanoDeEnsinoController();
         List<PlanoDeEnsino> l = col.listar();
         for (PlanoDeEnsino p : l) {
-            System.out.println(p);
+            if (p.getDetalhamentos().isEmpty()) {
+                System.out.println(p);
 //            col.remover(p);
-            JFrame f = new JFrame("Teste");
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.getContentPane().add(new PlanoDeEnsinoImportaConteudo(f, p));
-            f.pack();
-            f.setVisible(true);
+                JFrame f = new JFrame("Teste");
+                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                f.getContentPane().add(new DetalhamentoImportaConteudo(f, p));
+                f.pack();
+                f.setVisible(true);
 
-            break;
+                break;
+            }
         }
 //        ConteudoController conCol = ControllerFactory.createConteudoController();
 //        List<Conteudo> l = conCol.listar();

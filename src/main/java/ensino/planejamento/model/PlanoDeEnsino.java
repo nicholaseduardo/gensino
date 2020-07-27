@@ -9,15 +9,18 @@ import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.Docente;
 import ensino.configuracoes.model.Estudante;
+import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.Turma;
+import ensino.util.types.MesesDeAno;
 import ensino.util.types.Periodo;
 import ensino.util.types.TipoAula;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -60,7 +63,7 @@ public class PlanoDeEnsino implements Serializable {
 
     /**
      * Data de fechamento. Atributo utilizado para registrar da data de horário
-     * do cadastro do plano de ensino
+     * de fechamento do plano de ensino
      */
     @Column(name = "fechamento", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -386,6 +389,36 @@ public class PlanoDeEnsino implements Serializable {
             });
         }
     }
+    
+
+    /**
+     * Número de avaliações por etapa.
+     *
+     * Identifica e captura o número de avaliações cadastradas por Etapa de
+     * Ensino
+     *
+     * @return
+     */
+    public HashMap<EtapaEnsino, Integer> getNumeroDeAvaliacoesPorEtapa() {
+        HashMap<EtapaEnsino, Integer> hashMap = new HashMap();
+        List<EtapaEnsino> listaEtapaEnsino = unidadeCurricular.getCurso().getNivelEnsino().getEtapas();
+        
+        for (EtapaEnsino ee : listaEtapaEnsino) {
+            Integer n = 0;
+            for (PlanoAvaliacao pa : planoAvaliacoes) {
+                if (ee.equals(pa.getEtapaEnsino())) {
+                    n++;
+                }
+            }
+            /**
+             * Procedimento realizado para garantir ao menos uma coluna por
+             * etapa de ensino
+             */
+            hashMap.put(ee, n == 0 ? 1 : n);
+        }
+
+        return hashMap;
+    }
 
     public void criarDetalhamentos() {
         if (periodoLetivo != null) {
@@ -398,12 +431,34 @@ public class PlanoDeEnsino implements Serializable {
                 Detalhamento detalhamento = DetalhamentoFactory.getInstance()
                         .createObject(
                                 new DetalhamentoId(sl.getId().getId(), this),
-                                0, 0, "", "", null);
-                detalhamento.setSemanaLetiva(sl);
-
+                                0, 0, "", "", sl, null);
                 addDetalhamento(detalhamento);
             }
         }
+    }
+    
+    public HashMap<MesesDeAno, Integer> getNumeroDetalhamentosPorMes() {
+        HashMap<MesesDeAno, Integer> map = new HashMap();
+        for(Detalhamento d : detalhamentos) {
+            MesesDeAno mes = d.getSemanaLetiva().getPeriodo().getMesDoAno();
+            if (map.containsKey(mes)) {
+                Integer n = map.get(mes);
+                map.replace(mes, n + 1);
+            } else {
+                map.put(mes, 1);
+            }
+        }
+        return map;
+    }
+    
+    public List<Detalhamento> getDetalhamentosPorMes(MesesDeAno mes) {
+        List<Detalhamento> lista = new ArrayList();
+        for(Detalhamento d : detalhamentos) {
+            if (mes.equals(d.getSemanaLetiva().getPeriodo().getMesDoAno())) {
+                lista.add(d);
+            }
+        }
+        return lista;
     }
 
     @Override

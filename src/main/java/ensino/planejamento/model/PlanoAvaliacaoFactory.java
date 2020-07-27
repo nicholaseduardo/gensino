@@ -56,8 +56,8 @@ public class PlanoAvaliacaoFactory implements BeanFactory<PlanoAvaliacao> {
         o.setValor((Double) args[i++]);
         o.setData((Date) args[i++]);
         if (args.length > 6) {
-            o.setInstrumentoAvaliacao((InstrumentoAvaliacao)args[i++]);
-            o.setObjetivo((Objetivo)args[i++]);
+            o.setInstrumentoAvaliacao((InstrumentoAvaliacao) args[i++]);
+            o.setObjetivo((Objetivo) args[i++]);
         }
 
         return o;
@@ -95,17 +95,20 @@ public class PlanoAvaliacaoFactory implements BeanFactory<PlanoAvaliacao> {
     @Override
     public PlanoAvaliacao getObject(HashMap<String, Object> p) {
         PlanoAvaliacao o = createObject(
-                p.get("sequencia"),
+                new PlanoAvaliacaoId((Integer) p.get("sequencia"),
+                        (PlanoDeEnsino) p.get("planoDeEnsino")),
                 p.get("nome"),
                 p.get("etapaEnsino"),
                 p.get("peso"),
                 p.get("valor"),
-                p.get("data")
+                p.get("data"),
+                (InstrumentoAvaliacao) p.get("instrumentoAvaliacao"),
+                (Objetivo) p.get("objetivo")
         );
-        o.setInstrumentoAvaliacao((InstrumentoAvaliacao) p.get("instrumentoAvaliacao"));
-        o.setObjetivo((Objetivo) p.get("objetivo"));
-        o.getId().setPlanoDeEnsino((PlanoDeEnsino) p.get("planoDeEnsino"));
-        o.setAvaliacoes((List<Avaliacao>) p.get("avaliacoes"));
+
+        if (p.containsKey("avaliacoes")) {
+            o.setAvaliacoes((List<Avaliacao>) p.get("avaliacoes"));
+        }
 
         return o;
     }

@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.planejamento.view.panels.config;
+package ensino.planejamento.view.panels.diario;
 
-import ensino.components.GenJButton;
+import ensino.components.GenJLabel;
 import ensino.components.GenJRadioButton;
 import ensino.configuracoes.model.Estudante;
 import ensino.defaults.DefaultFieldsPanel;
@@ -17,18 +17,19 @@ import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.FrequenciaTableModel;
 import ensino.planejamento.view.renderer.DiarioFrequenciaCellRenderer;
-import ensino.reports.ChartsFactory;
 import ensino.util.types.Presenca;
 import ensino.util.VerticalTableHeaderCellRenderer;
-import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -37,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
@@ -47,7 +49,7 @@ import javax.swing.table.TableColumnModel;
  *
  * @author nicho
  */
-public class PlanoDeEnsinoFrequencia extends DefaultFieldsPanel {
+public class DiarioFrequenciaPanel extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
 
@@ -58,27 +60,34 @@ public class PlanoDeEnsinoFrequencia extends DefaultFieldsPanel {
     private GenJRadioButton checkFalta;
     private Component frame;
 
-    public PlanoDeEnsinoFrequencia(Component frame) {
+    public DiarioFrequenciaPanel(Component frame, PlanoDeEnsino planoDeEnsino) {
         super("Frequência dos estudantes");
         this.frame = frame;
+        this.planoDeEnsino = planoDeEnsino;
+        
         initComponents();
+
+        createFrequenciasTable();
+        refreshFrequencias();
     }
 
     private void initComponents() {
         setName("panel.frequencia");
-        setLayout(new BorderLayout(5, 5));
+        setLayout(new BorderLayout(10, 10));
 
-        backColor = ChartsFactory.ligthGreen;
-        foreColor = ChartsFactory.darkGreen;
-        setBackground(backColor);
+        URL url = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "document-frequency-icon-50px.png"));
 
-        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
-
-        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButton.add(btClose);
-        add(panelButton, BorderLayout.PAGE_END);
+        // Título da Janela
+        GenJLabel titleLabel = new GenJLabel("Frequência de participação nas aulas");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setBorder(new EmptyBorder(5, 10, 5, 0));
+        titleLabel.setIcon(new ImageIcon(url));
         
-        add(createCheckPane(), BorderLayout.PAGE_START);
+        JPanel panelTitle = createPanel(new BorderLayout());
+        panelTitle.add(titleLabel, BorderLayout.PAGE_START);
+        panelTitle.add(createCheckPane(), BorderLayout.CENTER);
+
+        add(panelTitle, BorderLayout.PAGE_START);
         add(createTablePane(), BorderLayout.CENTER);
     }
 
@@ -243,12 +252,7 @@ public class PlanoDeEnsinoFrequencia extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(Object object) {
-        if (object instanceof PlanoDeEnsino) {
-            planoDeEnsino = (PlanoDeEnsino) object;
-            
-            createFrequenciasTable();
-            refreshFrequencias();
-        }
+
     }
 
     @Override
@@ -299,7 +303,7 @@ public class PlanoDeEnsinoFrequencia extends DefaultFieldsPanel {
         public SelectionListener() {
             changed = false;
         }
-        
+
         private void salvar(DiarioFrequencia df) {
             try {
                 DiarioFrequenciaController col = ControllerFactory.createDiarioFrequenciaController();
@@ -361,7 +365,7 @@ public class PlanoDeEnsinoFrequencia extends DefaultFieldsPanel {
                          * necessário perguntar ao usuário se ele deseja aplicar
                          * a atualização para todos os estudantes
                          */
-                        if (JOptionPane.showConfirmDialog(PlanoDeEnsinoFrequencia.this,
+                        if (JOptionPane.showConfirmDialog(DiarioFrequenciaPanel.this,
                                 message, "Informação", JOptionPane.YES_NO_OPTION)
                                 == JOptionPane.YES_OPTION) {
                             /**

@@ -13,17 +13,14 @@ import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
-import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
-import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoDeEnsino;
+import ensino.planejamento.view.panels.detalhamento.DetalhamentoFields;
 import ensino.planejamento.view.renderer.ConfigTreeCellRenderer;
-import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import ensino.util.types.MesesDeAno;
 import java.awt.BorderLayout;
@@ -68,23 +65,25 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
     private List<Detalhamento> listaDetalhamentos;
     private Component frame;
 
-    public PlanoDeEnsinoDetalhamentos(Component frame) {
+    public PlanoDeEnsinoDetalhamentos(Component frame,
+            PlanoDeEnsino planoDeEnsino) {
         super("Detalhamento");
         this.frame = frame;
-        this.periodoLetivo = null;
-        this.listaAtividades = new ArrayList();
-        this.listaObjetivos = new ArrayList();
-        listaDetalhamentos = new ArrayList();
+        this.planoDeEnsino = planoDeEnsino;
+        this.periodoLetivo = planoDeEnsino.getPeriodoLetivo();
+        this.listaAtividades = periodoLetivo.getId().getCalendario().getAtividades();
+        this.listaObjetivos = planoDeEnsino.getObjetivos();
+        this.listaDetalhamentos = planoDeEnsino.getDetalhamentos();
+
         initComponents();
+
+        loadTreeDetalhamento();
+        treeDetalhamento.setSelectionRow(2);
     }
 
     private void initComponents() {
         setName("plano.detalhamento");
         setLayout(new BorderLayout());
-
-        backColor = ChartsFactory.ligthGreen;
-        foreColor = ChartsFactory.darkGreen;
-        setBackground(backColor);
 
         GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
 
@@ -161,11 +160,11 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
                         Detalhamento detalhamento = listaDetalhamentos.get(semanaLetiva.getId().getId() - 1);
                         detalhamento.setObservacao(atividadesDaSemana(semanaLetiva));
 
-                        PlanoDeEnsinoDetalhamento detalhamentoFields;
+                        DetalhamentoFields detalhamentoFields;
                         // O primeiro componente é nulo
                         if (!componentsCreated) {
                             // Cria o formulário com os campos do detalhamento
-                            detalhamentoFields = new PlanoDeEnsinoDetalhamento();
+                            detalhamentoFields = new DetalhamentoFields();
                             // armazena cada formulário no cardpanel
                             detalhamentoCardPanel.add(detalhamentoFields, String.format("%d", semanaLetiva.getId().getId()));
                         }
@@ -210,16 +209,7 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(Object object) {
-        if (object instanceof PlanoDeEnsino) {
-            planoDeEnsino = (PlanoDeEnsino) object;
-            periodoLetivo = planoDeEnsino.getPeriodoLetivo();
-            listaAtividades = periodoLetivo.getId().getCalendario().getAtividades();
-            listaObjetivos = planoDeEnsino.getObjetivos();
 
-            listaDetalhamentos = planoDeEnsino.getDetalhamentos();
-
-            loadTreeDetalhamento();
-        }
     }
 
     @Override
@@ -290,7 +280,7 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
                 SemanaLetiva semanaLetiva = (SemanaLetiva) selectedNode.getUserObject();
                 Integer index = semanaLetiva.getId().getId();
 
-                PlanoDeEnsinoDetalhamento detalhamentoFields = (PlanoDeEnsinoDetalhamento) detalhamentoCardPanel.getComponent(index);
+                DetalhamentoFields detalhamentoFields = (DetalhamentoFields) detalhamentoCardPanel.getComponent(index);
                 /**
                  * adiciona o conteúdo do detalhamento caso exista índice do
                  * detalhamento baseia-se na sequência da semana menos uma

@@ -22,13 +22,8 @@ public class DiarioTableModel extends DefaultTableModel<Diario> {
 
     public DiarioTableModel(List<Diario> lista) {
         super(lista, new String[] {
-            "Diário das aulas"
+            "Diário das aulas", "Ações"
         });
-    }
-    
-    @Override
-    public List<Diario> getData() {
-        return super.getData();
     }
 
     @Override

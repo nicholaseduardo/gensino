@@ -6,7 +6,7 @@
 package ensino.planejamento.view.frame;
 
 import ensino.configuracoes.model.UnidadeCurricular;
-import ensino.planejamento.view.PlanoDeEnsinoView;
+import ensino.planejamento.view.panels.PlanoDeEnsinoPanel;
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 
@@ -18,7 +18,7 @@ public class FrameViewPlanoDeEnsino extends JInternalFrame {
     
     public FrameViewPlanoDeEnsino(UnidadeCurricular unidadeCurricular) {
         super("Planos de Ensino", true, true, true, true);
-        PlanoDeEnsinoView panel = new PlanoDeEnsinoView(unidadeCurricular, this);
+        PlanoDeEnsinoPanel panel = new PlanoDeEnsinoPanel(this, unidadeCurricular);
         JScrollPane scroll = new JScrollPane(panel);
         scroll.setAutoscrolls(true);
         getContentPane().add(panel);

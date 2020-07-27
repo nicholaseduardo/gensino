@@ -131,6 +131,12 @@ public class PlanoAvaliacao implements Serializable {
     public void setId(PlanoAvaliacaoId id) {
         this.id = id;
     }
+    
+    public PlanoDeEnsino getPlanoDeEnsino() {
+        if (id != null)
+            return id.getPlanoDeEnsino();
+        return null;
+    }
 
     public String getNome() {
         return nome;

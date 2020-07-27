@@ -7,18 +7,17 @@ package ensino.planejamento.view.renderer;
 
 import ensino.components.GenJTextArea;
 import ensino.components.renderer.GenItemRenderer;
+import ensino.configuracoes.model.Conteudo;
 import ensino.planejamento.model.Objetivo;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import javax.swing.JList;
-import javax.swing.JPanel;
 
 /**
  *
  * @author santos
  */
-public class ObjetivoItemRenderer extends GenItemRenderer {
+public class TextAreaItemRenderer extends GenItemRenderer {
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value,
@@ -34,16 +33,23 @@ public class ObjetivoItemRenderer extends GenItemRenderer {
                             ? new Color(getBackground().getRGB())
                             : new Color(240, 240, 240)));
         }
+        String text = "";
         if (value instanceof Objetivo) {
             Objetivo o = (Objetivo) value;
-            JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            GenJTextArea textArea = new GenJTextArea();
-            textArea.setText(o.getDescricao());
-            textArea.setColumns(50);
-            panel.add(textArea);
-            return panel;
+            text = o.getDescricao();
+        } else if (value instanceof Objetivo) {
+            Conteudo o = (Conteudo) value;
+            text = o.getDescricao();
         }
-        return this;
+
+        GenJTextArea textArea = new GenJTextArea(2, 70);
+        textArea.setText(text);
+        textArea.actAsLabel();
+        textArea.setBackground(getBack());
+        textArea.setForeground(getFore());
+        textArea.setOpaque(true);
+
+        return textArea;
     }
 
 }

@@ -76,14 +76,18 @@ public class DiarioFactory implements BeanFactory<Diario> {
 
     @Override
     public Diario getObject(HashMap<String, Object> p) {
-        Diario o = createObject(p.get("id"),
+        Diario o = createObject(
+                new DiarioId((Integer) p.get("id"),
+                        (PlanoDeEnsino) p.get("planoDeEnsino")),
                 p.get("data"),
                 p.get("horario"),
                 p.get("observacoes"),
                 p.get("conteudo"),
                 p.get("tipoAula"));
-        o.getId().setPlanoDeEnsino((PlanoDeEnsino) p.get("planoDeEnsino"));
-        o.setFrequencias((List<DiarioFrequencia>) p.get("frequencias"));
+
+        if (p.containsKey("frequencias")) {
+            o.setFrequencias((List<DiarioFrequencia>) p.get("frequencias"));
+        }
 
         return o;
     }

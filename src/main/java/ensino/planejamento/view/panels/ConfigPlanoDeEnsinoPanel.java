@@ -21,7 +21,7 @@ import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.model.PlanoDeEnsinoFactory;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoAvaliacaoPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoChartsPanel;
-import ensino.planejamento.view.panels.config.PlanoDeEnsinoConteudoPanel;
+import ensino.planejamento.view.panels.diario.DiarioConteudoFieldsPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoDetalhamentoFieldsPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoFrequenciaPanel;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoHorarioAulaPanel;
@@ -79,7 +79,7 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
     private PlanoDeEnsinoDetalhamentoFieldsPanel detalhamentoPanel;
     private PlanoDeEnsinoPlanoAvaliacaoPanel planoAvaliacaoPanel;
     private PlanoDeEnsinoHorarioAulaPanel horarioAulaPanel;
-    private PlanoDeEnsinoConteudoPanel conteudoProgramaticoPanel;
+    private DiarioConteudoFieldsPanel conteudoProgramaticoPanel;
     private PlanoDeEnsinoFrequenciaPanel frequenciaPanel;
     private PlanoDeEnsinoAvaliacaoPanel avaliacaoPanel;
     private PlanoDeEnsinoHtmlPanel htmlPanel;
@@ -137,7 +137,7 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
         planoAvaliacaoPanel = new PlanoDeEnsinoPlanoAvaliacaoPanel();
         horarioAulaPanel = new PlanoDeEnsinoHorarioAulaPanel();
         frequenciaPanel = new PlanoDeEnsinoFrequenciaPanel();
-        conteudoProgramaticoPanel = new PlanoDeEnsinoConteudoPanel();
+        conteudoProgramaticoPanel = new DiarioConteudoFieldsPanel();
         avaliacaoPanel = new PlanoDeEnsinoAvaliacaoPanel();
         htmlPanel = new PlanoDeEnsinoHtmlPanel();
         htmlNotasPanel = new PlanoDeEnsinoHtmlNotasPanel();

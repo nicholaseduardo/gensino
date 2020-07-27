@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.planejamento.view.panels.config;
+package ensino.planejamento.view.panels.diario;
 
-import ensino.components.GenJButton;
 import ensino.components.GenJFormattedTextField;
+import ensino.components.GenJLabel;
+import static ensino.components.GenJPanel.IMG_SOURCE;
 import ensino.configuracoes.model.Estudante;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.factory.ControllerFactory;
@@ -16,15 +17,14 @@ import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.AvaliacaoTableModel;
 import ensino.planejamento.view.renderer.AvaliacaoCellRenderer;
-import ensino.reports.ChartsFactory;
 import ensino.util.VerticalTableHeaderCellRenderer;
-import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,13 +33,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -48,36 +47,43 @@ import javax.swing.table.TableColumnModel;
  *
  * @author nicho
  */
-public class PlanoDeEnsinoAvaliacao extends DefaultFieldsPanel {
+public class DiarioAvaliacaoPanel extends DefaultFieldsPanel {
 
     private List<PlanoAvaliacao> listaPlanoAvaliacoes;
+    private PlanoDeEnsino planoDeEnsino;
 
     private JTable avaliacaoTable;
     private AvaliacaoTableModel avaliacaoTableModel;
     private Component frame;
 
-    public PlanoDeEnsinoAvaliacao(Component frame) {
+    public DiarioAvaliacaoPanel(Component frame, PlanoDeEnsino planoDeEnsino) {
         super("Registro das notas das avaliações");
         this.frame = frame;
+        this.planoDeEnsino = planoDeEnsino;
+        listaPlanoAvaliacoes = planoDeEnsino.getPlanosAvaliacoes();
+
         initComponents();
+
+        createAvaliacoesTable();
+        refreshAvaliacoes();
     }
 
     private void initComponents() {
         setName("panel.avaliacao");
         setLayout(new BorderLayout(5, 5));
+        
+        URL url = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Status-mail-task-icon-50px.png"));
 
-        backColor = ChartsFactory.ligthGreen;
-        foreColor = ChartsFactory.darkGreen;
-        setBackground(backColor);
-
-        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
-
-        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButton.add(btClose);
-        add(panelButton, BorderLayout.PAGE_END);
-
-        listaPlanoAvaliacoes = new ArrayList();
-
+        // Título da Janela
+        GenJLabel titleLabel = new GenJLabel("Registro de Notas das Avaliações");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setBorder(new EmptyBorder(5, 10, 5, 0));
+        titleLabel.setIcon(new ImageIcon(url));
+        
+        JPanel panelTitle = createPanel(new BorderLayout());
+        panelTitle.add(titleLabel, BorderLayout.CENTER);
+        
+        add(panelTitle, BorderLayout.PAGE_START);
         add(createTablePane(), BorderLayout.CENTER);
     }
 
@@ -102,8 +108,8 @@ public class PlanoDeEnsinoAvaliacao extends DefaultFieldsPanel {
         if (!listaPlanoAvaliacoes.isEmpty()) {
             /**
              * O número de colunas de registro de avaliações é equivalente ao
-             * número de planos de avaliações lançados no sistema.
-             * Considera mais uma unidade para adicionar a coluna com os dados do
+             * número de planos de avaliações lançados no sistema. Considera
+             * mais uma unidade para adicionar a coluna com os dados do
              * estudante
              */
             int columnCount = listaPlanoAvaliacoes.size() + 1;
@@ -119,7 +125,7 @@ public class PlanoDeEnsinoAvaliacao extends DefaultFieldsPanel {
             int i = 1;
             while (itPlanoAvaliacao.hasNext()) {
                 PlanoAvaliacao planoAvaliacao = itPlanoAvaliacao.next();
-                String colName = String.format("%s [%s]", 
+                String colName = String.format("%s [%s]",
                         planoAvaliacao.getNome(),
                         planoAvaliacao.getEtapaEnsino().getNome());
                 aColumnNames[i++] = colName;
@@ -142,7 +148,7 @@ public class PlanoDeEnsinoAvaliacao extends DefaultFieldsPanel {
                 itPlanoAvaliacao = listaPlanoAvaliacoes.iterator();
                 while (itPlanoAvaliacao.hasNext()) {
                     PlanoAvaliacao planoAvaliacao = itPlanoAvaliacao.next();
-                    
+
                     inList.add(planoAvaliacao.getAvaliacaoDo(estudante));
                 }
             }
@@ -215,12 +221,7 @@ public class PlanoDeEnsinoAvaliacao extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(Object object) {
-        if (object instanceof PlanoDeEnsino) {
-            PlanoDeEnsino planoDeEnsino = (PlanoDeEnsino) object;
-            listaPlanoAvaliacoes = planoDeEnsino.getPlanosAvaliacoes();
-            createAvaliacoesTable();
-            refreshAvaliacoes();
-        }
+
     }
 
     @Override
@@ -242,20 +243,6 @@ public class PlanoDeEnsinoAvaliacao extends DefaultFieldsPanel {
 
     }
 
-    @Override
-    public void onCloseAction(ActionEvent e) {
-        if (frame instanceof JInternalFrame) {
-            JInternalFrame f = (JInternalFrame) frame;
-            f.dispose();
-        } else if (frame instanceof JDialog) {
-            JDialog d = (JDialog) frame;
-            d.dispose();
-        } else {
-            JFrame f = (JFrame) frame;
-            f.dispose();
-        }
-    }
-
     private class TextActionEvent implements ActionListener {
 
         private AvaliacaoController col;
@@ -264,7 +251,7 @@ public class PlanoDeEnsinoAvaliacao extends DefaultFieldsPanel {
             try {
                 col = ControllerFactory.createAvaliacaoController();
             } catch (Exception ex) {
-                Logger.getLogger(PlanoDeEnsinoAvaliacao.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DiarioAvaliacaoPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 

@@ -51,6 +51,7 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
         o.setNAulasTeoricas((Integer) args[i++]);
         o.setConteudo((String) args[i++]);
         o.setObservacao((String) args[i++]);
+        o.setSemanaLetiva((SemanaLetiva) args[i++]);
         o.setConteudoUC((Conteudo) args[i++]);
 
         return o;
@@ -85,6 +86,8 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
         o.setNAulasTeoricas((Integer) p.get("nAulasTeoricas"));
         o.setConteudo((String) p.get("conteudo"));
         o.setObservacao((String) p.get("observacao"));
+        o.setSemanaLetiva((SemanaLetiva) p.get("semanaLetiva"));
+        o.setConteudoUC((Conteudo) p.get("conteudoUC"));
         
         if (p.get("metodologias") != null) {
             ((List<Metodologia>) p.get("metodologias")).forEach((metodo) -> {
@@ -102,13 +105,12 @@ public class DetalhamentoFactory implements BeanFactory<Detalhamento> {
     @Override
     public Detalhamento getObject(HashMap<String, Object> p) {
         Detalhamento o = createObject(
-                p.get("sequencia"),
-                p.get("nAulasPraticas"),
-                p.get("nAulasTeoricas"),
-                p.get("conteudo"),
-                p.get("observacao"));
-        o.getId().setPlanoDeEnsino((PlanoDeEnsino) p.get("planoDeEnsino"));
-        o.setSemanaLetiva((SemanaLetiva) p.get("semanaLetiva"));
+                new DetalhamentoId((Integer)p.get("sequencia"),
+                        (PlanoDeEnsino) p.get("planoDeEnsino")),
+                p.get("nAulasPraticas"), p.get("nAulasTeoricas"),
+                p.get("conteudo"), p.get("observacao"),
+                (SemanaLetiva) p.get("semanaLetiva"), (Conteudo) p.get("conteudoUC"));
+        
         if (p.get("metodologias") != null) {
             ((List<Metodologia>) p.get("metodologias")).forEach((metodo) -> {
                 o.addMetodologia(metodo);

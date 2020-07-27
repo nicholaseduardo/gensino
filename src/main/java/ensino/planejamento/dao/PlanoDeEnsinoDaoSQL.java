@@ -5,10 +5,15 @@
  */
 package ensino.planejamento.dao;
 
+import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.util.List;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -30,7 +35,7 @@ public class PlanoDeEnsinoDaoSQL extends AbstractDaoSQL<PlanoDeEnsino> {
     }
 
     @Override
-    public void delete(PlanoDeEnsino o){
+    public void delete(PlanoDeEnsino o) {
         entityManager.remove(entityManager.getReference(PlanoDeEnsino.class, o.getId()));
     }
 
@@ -60,6 +65,33 @@ public class PlanoDeEnsinoDaoSQL extends AbstractDaoSQL<PlanoDeEnsino> {
                 + " p.id ";
 
         TypedQuery query = entityManager.createQuery(sql, PlanoDeEnsino.class);
+        return query.getResultList();
+    }
+
+    public List<PlanoDeEnsino> list(UnidadeCurricular uc) {
+        CriteriaBuilder builder = getCriteriaBuilder();
+        CriteriaQuery<PlanoDeEnsino> criteria = builder.createQuery(PlanoDeEnsino.class);
+
+        Root<PlanoDeEnsino> from = criteria.from(PlanoDeEnsino.class);
+
+        Predicate pUc = builder.equal(from.get("unidadeCurricular").get("id"),
+                uc.getId());
+//        Predicate pCurso = builder.equal(from.get("unidadeCurricular").get("id")
+//                .get("curso").get("id").get("id"), uc.getCurso().getId());
+//        Predicate pCampus = builder.equal(from.get("unidadeCurricular").get("id")
+//                .get("curso").get("id").get("campus").get("id"), uc.getCurso()
+//                        .getCampus().getId());
+        CriteriaQuery<PlanoDeEnsino> select = criteria.select(from);
+        select.where(pUc);
+
+        select.orderBy(
+                builder.asc(from.get("unidadeCurricular").get("id")
+                        .get("curso").get("id").get("campus").get("nome")),
+                builder.asc(from.get("unidadeCurricular").get("id")
+                        .get("curso").get("nome")),
+                builder.asc(from.get("unidadeCurricular").get("nome")));
+
+        TypedQuery<PlanoDeEnsino> query = entityManager.createQuery(select);
         return query.getResultList();
     }
 

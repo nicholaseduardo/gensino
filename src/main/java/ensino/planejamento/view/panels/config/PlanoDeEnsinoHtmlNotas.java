@@ -5,22 +5,16 @@
  */
 package ensino.planejamento.view.panels.config;
 
-import ensino.components.GenJButton;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.reports.ChartsFactory;
 import ensino.reports.NotasReport;
-import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -35,9 +29,10 @@ public class PlanoDeEnsinoHtmlNotas extends DefaultFieldsPanel {
     private JScrollPane scrollPane;
     private Component frame;
 
-    public PlanoDeEnsinoHtmlNotas(Component frame) {
+    public PlanoDeEnsinoHtmlNotas(Component frame, PlanoDeEnsino planoDeEnsino) {
         super();
         this.frame = frame;
+        this.planoDeEnsino = planoDeEnsino;
         initComponents();
     }
 
@@ -47,16 +42,6 @@ public class PlanoDeEnsinoHtmlNotas extends DefaultFieldsPanel {
         setBorder(BorderFactory.createEtchedBorder());
         setLayout(new BorderLayout());
 
-        backColor = ChartsFactory.ligthGreen;
-        foreColor = ChartsFactory.darkGreen;
-        setBackground(backColor);
-
-        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
-
-        JPanel pb = createPanel(new FlowLayout(FlowLayout.RIGHT));
-        pb.add(btClose);
-        add(pb, BorderLayout.PAGE_END);
-
         // create a scrollpane; modify its attributes as desired
         scrollPane = new JScrollPane();
         scrollPane.setPreferredSize(new Dimension(1240, 800));
@@ -65,6 +50,23 @@ public class PlanoDeEnsinoHtmlNotas extends DefaultFieldsPanel {
         JPanel panel = new JPanel();
         panel.add(scrollPane);
         this.add(scrollPane, BorderLayout.CENTER);
+
+        if (!planoDeEnsino.getPlanosAvaliacoes().isEmpty()) {
+            try {
+                /**
+                 * Criando o PDF de acordo com o plano de ensino
+                 */
+                NotasReport notasReport = new NotasReport(planoDeEnsino);
+                notasReport.initReport();
+                scrollPane.setViewportView(notasReport.getViewer());
+            } catch (IOException ex) {
+                showErrorMessage(ex);
+                ex.printStackTrace();
+            }
+        } else {
+            showWarningMessage("Você precisa montar o plano de avaliações para\n"
+                    + "visualizar as notas dos estudantes!");
+        }
     }
 
     @Override
@@ -79,25 +81,7 @@ public class PlanoDeEnsinoHtmlNotas extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(Object object) {
-        if (object instanceof PlanoDeEnsino) {
-            try {
-                planoDeEnsino = (PlanoDeEnsino) object;
-                if (!planoDeEnsino.getPlanosAvaliacoes().isEmpty()) {
-                    /**
-                     * Criando o PDF de acordo com o plano de ensino
-                     */
-                    NotasReport notasReport = new NotasReport(planoDeEnsino);
-                    notasReport.initReport();
-                    scrollPane.setViewportView(notasReport.getViewer());
-                } else {
-                    showWarningMessage("Você precisa montar o plano de avaliações para\n"
-                            + "visualizar as notas dos estudantes!");
-                    onCloseAction(null);
-                }
-            } catch (Exception ex) {
-                showErrorMessage(ex);
-            }
-        }
+
     }
 
     @Override
@@ -118,19 +102,5 @@ public class PlanoDeEnsinoHtmlNotas extends DefaultFieldsPanel {
     @Override
     public void initFocus() {
 
-    }
-
-    @Override
-    public void onCloseAction(ActionEvent e) {
-        if (frame instanceof JInternalFrame) {
-            JInternalFrame f = (JInternalFrame) frame;
-            f.dispose();
-        } else if (frame instanceof JDialog) {
-            JDialog d = (JDialog) frame;
-            d.dispose();
-        } else {
-            JFrame f = (JFrame) frame;
-            f.dispose();
-        }
     }
 }

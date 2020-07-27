@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.planejamento.view.panels.config;
+package ensino.planejamento.view.panels.detalhamento;
 
 import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;
@@ -26,12 +26,12 @@ import ensino.planejamento.model.MetodologiaId;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.ObjetivoDetalhe;
 import ensino.planejamento.model.ObjetivoDetalheFactory;
+import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.MetodologiaTableModel;
 import ensino.planejamento.view.models.ObjetivoComboBoxModel;
 import ensino.planejamento.view.models.ObjetivoDetalheTableModel;
 import ensino.planejamento.view.renderer.MetodologiaCellRenderer;
-import ensino.planejamento.view.renderer.ObjetivoItemRenderer;
-import ensino.reports.ChartsFactory;
+import ensino.planejamento.view.renderer.TextAreaItemRenderer;
 import ensino.util.types.AcoesBotoes;
 import ensino.util.types.TipoMetodo;
 import java.awt.BorderLayout;
@@ -64,7 +64,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -80,7 +79,7 @@ import javax.swing.event.ChangeListener;
  *
  * @author nicho
  */
-public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
+public class DetalhamentoFields extends DefaultFieldsPanel {
 
     private Detalhamento detalhamento;
     private SemanaLetiva semanaLetiva;
@@ -104,28 +103,26 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
 
     private GenJComboBox comboMetodo;
     private GenJComboBox comboObjetivo;
+    private GenJComboBox comboConteudo;
     private ObjetivoComboBoxModel objetivoComboModel;
 
     private JTabbedPane tabbedDetalhamento;
 
-    public PlanoDeEnsinoDetalhamento() {
+    private PlanoDeEnsino planoDeEnsino;
+
+    public DetalhamentoFields() {
+        this(null);
+    }
+
+    public DetalhamentoFields(PlanoDeEnsino planoDeEnsino) {
         super("Detalhamento das atividades da semana");
+        this.planoDeEnsino = planoDeEnsino;
         initComponents();
     }
 
     private void initComponents() {
         setName("plano.detalhamento");
         setLayout(new BorderLayout(5, 5));
-
-        backColor = ChartsFactory.ligthGreen;
-        foreColor = ChartsFactory.darkGreen;
-        setBackground(backColor);
-
-        GenJButton btSave = createButton(new ActionHandler(AcoesBotoes.SAVE), backColor, foreColor);
-
-        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButton.add(btSave);
-        add(panelButton, BorderLayout.PAGE_END);
 
         add(createPanelObservacao(), BorderLayout.PAGE_START);
 
@@ -138,9 +135,6 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
         tabbedDetalhamento.addTab("Objetivos", createPanelObjetivos());
 
         add(panelConteudo, BorderLayout.CENTER);
-
-        ButtonAction botaoAction = new ButtonAction();
-        btReplicarMetodo.addActionListener(botaoAction);
     }
 
     private void addKeyEventTo(JTable table, String keyString) {
@@ -221,18 +215,30 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
         return panel;
     }
 
-    private JScrollPane createPanelConteudo() {
-        JPanel panel = createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    private JPanel createPanelConteudo() {
+        GenJLabel lblConteudo = new GenJLabel("Conteúdo definido na U.C.:");
+        comboConteudo = new GenJComboBox(planoDeEnsino.getUnidadeCurricular().getConteudos().toArray());
+        comboConteudo.setEnabled(false);
+        lblConteudo.setLabelFor(comboConteudo);
+        
+        JPanel panelConteudo = createPanel();
+        panelConteudo.add(lblConteudo);
+        panelConteudo.add(comboConteudo);
+        
         Border titleBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK), "Conteúdo a ser desenvolvido",
                 TitledBorder.LEFT, TitledBorder.TOP);
 
         txtConteudo = new GenJTextArea(4, 50);
         txtConteudo.setBorder(titleBorder);
-        JScrollPane conteudoScroll = new JScrollPane(txtConteudo);
-        conteudoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        panel.add(conteudoScroll);
-        return conteudoScroll;
+        JScrollPane scroll = new JScrollPane(txtConteudo);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        JPanel panel = createPanel(new BorderLayout(5, 5));
+        panel.add(panelConteudo, BorderLayout.PAGE_START);
+        panel.add(scroll, BorderLayout.CENTER);
+        
+        return panel;
     }
 
     private JPanel createPanelMetodolotias() {
@@ -251,21 +257,23 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
         checkRecurso.addChangeListener(cbcl);
         checkInstrumento = new GenJRadioButton("Instrumento Avaliativo", false, bg);
         checkInstrumento.addChangeListener(cbcl);
-        
+
         JPanel panelMetodos = createPanel(new GridLayout(0, 1));
         panelMetodos.setBorder(createTitleBorder("Selecione um método"));
         panelMetodos.add(checkTecnica);
         panelMetodos.add(checkRecurso);
         panelMetodos.add(checkInstrumento);
-        
+
         comboMetodo = new GenJComboBox();
         comboMetodo.addItemListener(new ComboItemListener());
-        btReplicarMetodo = new GenJButton("Replicar");
+
+        btReplicarMetodo = createButton(new ActionHandler(AcoesBotoes.DUPLICATE));
+        btReplicarMetodo.setText("Replicar");
 
         JPanel panelComboAddMetodo = createPanel(new GridLayout(0, 1));
         panelComboAddMetodo.add(comboMetodo);
         panelComboAddMetodo.add(btReplicarMetodo);
-        
+
         // definir a posição
         Integer col = 0, row = 0;
         GridBagConstraints cMetodologia = new GridBagConstraints();
@@ -290,7 +298,7 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
         objetivoComboModel = new ObjetivoComboBoxModel();
         comboObjetivo = new GenJComboBox(objetivoComboModel);
         comboObjetivo.addItemListener(new ComboItemListener());
-        comboObjetivo.setRenderer(new ObjetivoItemRenderer());
+        comboObjetivo.setRenderer(new TextAreaItemRenderer());
 
         JPanel panelCombo = createPanel(new BorderLayout(5, 5));
         panelCombo.add(comboObjetivo, BorderLayout.PAGE_START);
@@ -338,7 +346,9 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
         ObservacaoListModel obsModel = (ObservacaoListModel) txtObservacao.getModel();
 
         map.put("sequencia", detalhamento.getId().getSequencia());
+        map.put("planoDeEnsino", this.planoDeEnsino);
         map.put("semanaLetiva", semanaLetiva);
+        map.put("conteudoUC", comboConteudo.getSelectedItem());
         map.put("conteudo", txtConteudo.getText());
         map.put("observacao", obsModel.toString());
         map.put("nAulasPraticas", txtNAulasP.getValue());
@@ -382,6 +392,7 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
             txtObservacao.setModel(new ObservacaoListModel(detalhamento.getObservacao()));
             txtNAulasP.setValue(detalhamento.getNAulasPraticas());
             txtNAulasT.setValue(detalhamento.getNAulasTeoricas());
+            comboConteudo.setSelectedItem(detalhamento.getConteudoUC());
 
             // inicializa o combo de objetivos
             objetivoComboModel = new ObjetivoComboBoxModel(detalhamento.getId().getPlanoDeEnsino().getObjetivos());
@@ -392,7 +403,6 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
             objetivoDetalheTableModel = new ObjetivoDetalheTableModel(detalhamento.getObjetivoDetalhes());
             reloadObjetivoTable();
             tabbedDetalhamento.setSelectedIndex(0);
-            enableFields(true);
         }
     }
 
@@ -443,40 +453,70 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
     }
 
     @Override
-    public void onSaveAction(ActionEvent e, Object o) {
-        detalhamento.setConteudo(txtConteudo.getText());
-        ObservacaoListModel obsModel = (ObservacaoListModel) txtObservacao.getModel();
-        detalhamento.setObservacao(obsModel.toString());
-        detalhamento.setNAulasPraticas((Integer) txtNAulasP.getValue());
-        detalhamento.setNAulasTeoricas((Integer) txtNAulasT.getValue());
+    public void onDuplicateAction(ActionEvent e, Object o) {
+        Object source = e.getSource();
+        if (source == btReplicarMetodo) {
+            if (metodologiaTableModel.isEmpty()) {
+                showWarningMessage("Não é possível importar dados pois a tabela de metodologias"
+                        + " está vazia.");
+                return;
+            }
 
-        try {
-            ControllerFactory.createDetalhamentoController().salvar(detalhamento);
-            showInformationMessage("As alterações foram salvas!");
-        } catch (Exception ex) {
-            showErrorMessage(ex);
+            if (confirmDialog("Confirma a replicação das metodologias para todas as demais"
+                    + " semanas?")) {
+                /**
+                 * Recupera a lista de detalhamento
+                 */
+                List<Detalhamento> lDetalhamento = planoDeEnsino.getDetalhamentos();
+                try {
+                    for (int i = 1; i < lDetalhamento.size(); i++) {
+                        Detalhamento d = lDetalhamento.get(i);
+                        d.getMetodologias().clear();
+                        Iterator<Metodologia> it = metodologiaTableModel.getData().iterator();
+                        while (it.hasNext()) {
+                            d.addMetodologia(it.next());
+                        }
+                        ControllerFactory.createDetalhamentoController().salvar(d);
+                    }
+                    showInformationMessage("A replicação das metodologias foi realizada com sucesso.");
+                } catch (Exception ex) {
+                    showErrorMessage(ex);
+                }
+            }
         }
     }
 
     private class CheckBoxChangeListener implements ChangeListener {
+
+        private List<BaseObject> tecnicas;
+        private List<BaseObject> recursos;
+        private List<BaseObject> instrumentos;
+
+        public CheckBoxChangeListener() {
+            super();
+            try {
+                tecnicas = ControllerFactory.createTecnicaController().listar();
+                recursos = ControllerFactory.createRecursoController().listar();
+                instrumentos = ControllerFactory.createInstrumentoAvaliacaoController().listar();
+            } catch (Exception ex) {
+                Logger.getLogger(DetalhamentoFields.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
+            }
+        }
 
         @Override
         public void stateChanged(ChangeEvent e) {
             AbstractButton aButton = (AbstractButton) e.getSource();
             ButtonModel aModel = aButton.getModel();
 
-            try {
-                if (aModel.isSelected()) {
-                    if (e.getSource() == checkTecnica) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createTecnicaController()));
-                    } else if (e.getSource() == checkRecurso) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createRecursoController()));
-                    } else if (e.getSource() == checkInstrumento) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createInstrumentoAvaliacaoController()));
-                    }
+            if (aModel.isSelected()) {
+                if (e.getSource() == checkTecnica) {
+                    comboMetodo.setModel(new MetodoComboBoxModel(tecnicas));
+                } else if (e.getSource() == checkRecurso) {
+                    comboMetodo.setModel(new MetodoComboBoxModel(recursos));
+                } else if (e.getSource() == checkInstrumento) {
+                    comboMetodo.setModel(new MetodoComboBoxModel(instrumentos));
                 }
-            } catch (Exception ex) {
-                Logger.getLogger(PlanoDeEnsinoDetalhamento.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -506,47 +546,6 @@ public class PlanoDeEnsinoDetalhamento extends DefaultFieldsPanel {
                 }
             }
         }
-    }
-
-    private class ButtonAction implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object source = e.getSource();
-            if (source == btReplicarMetodo) {
-                if (metodologiaTableModel.isEmpty()) {
-                    showWarningMessage("Não é possível importar dados pois a tabela de metodologias"
-                            + " está vazia.");
-                    return;
-                }
-
-                int confirmForm = JOptionPane.showConfirmDialog(PlanoDeEnsinoDetalhamento.this,
-                        "Confirma a replicação das metodologias para todas as demais"
-                        + " semanas?", "Confirmação", JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (confirmForm == JOptionPane.OK_OPTION) {
-                    /**
-                     * Recupera a lista de detalhamento
-                     */
-                    List<Detalhamento> lDetalhamento = detalhamento.getPlanoDeEnsino().getDetalhamentos();
-                    try {
-                        for (int i = 1; i < lDetalhamento.size(); i++) {
-                            Detalhamento o = lDetalhamento.get(i);
-                            o.getMetodologias().clear();
-                            Iterator<Metodologia> it = metodologiaTableModel.getData().iterator();
-                            while (it.hasNext()) {
-                                o.addMetodologia(it.next());
-                            }
-                            ControllerFactory.createDetalhamentoController().salvar(o);
-                        }
-                        showInformationMessage("A replicação das metodologias foi realizada com sucesso.");
-                    } catch (Exception ex) {
-                        showErrorMessage(ex);
-                    }
-                }
-            }
-        }
-
     }
 
     private class ComboItemListener implements ItemListener {

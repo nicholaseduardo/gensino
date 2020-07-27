@@ -8,11 +8,14 @@ package ensino.planejamento.controller;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.DaoFactory;
+import ensino.planejamento.dao.PermanenciaEstudantilDaoSQL;
 import ensino.planejamento.model.PermanenciaEstudantil;
 import ensino.planejamento.model.PermanenciaEstudantilFatory;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
+import static java.util.Locale.filter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,5 +87,11 @@ public class PermanenciaEstudantilController extends AbstractController<Permanen
         }
         
         return super.getDao().list(filter, o);
+    }
+    
+    public List<PermanenciaEstudantil> listar(PlanoDeEnsino o, Date data) {
+        PermanenciaEstudantilDaoSQL dao = (PermanenciaEstudantilDaoSQL)getDao();
+        
+        return dao.list(o, data);
     }
 }

@@ -5,23 +5,37 @@
  */
 package ensino.planejamento.view.panels.permanenciaEstudantil;
 
-import ensino.defaults.DefaultFormPanel;
+import ensino.components.GenJButton;
+import ensino.components.GenJComboBox;
+import ensino.components.GenJFormattedTextField;
+import ensino.components.GenJLabel;
+import ensino.defaults.DefaultCleanFormPanel;
+import ensino.helpers.DateHelper;
+import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.PermanenciaEstudantilController;
 import ensino.planejamento.model.PermanenciaEstudantil;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.PermanenciaEstudantilTableModel;
 import ensino.planejamento.view.renderer.PermanenciaEstudantilCellRenderer;
-import ensino.reports.ChartsFactory;
+import ensino.util.types.AcoesBotoes;
+import ensino.util.types.TipoAula;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -29,12 +43,13 @@ import javax.swing.table.TableColumnModel;
  *
  * @author nicho
  */
-public class PermanenciaEstudantilPanel extends DefaultFormPanel {
+public class PermanenciaEstudantilPanel extends DefaultCleanFormPanel {
 
-    private JButton btSearch;
+    private PlanoDeEnsino planoDeEnsino;
     
-    private PlanoDeEnsino selectedPlanoDeEnsino;
-    private PermanenciaEstudantil selectedPermanenciaEstudantil;
+    private GenJFormattedTextField txtData;
+    private GenJButton btSearch;
+    private GenJButton btClear;
 
     public PermanenciaEstudantilPanel(Component frame) {
         this(frame, null);
@@ -43,11 +58,7 @@ public class PermanenciaEstudantilPanel extends DefaultFormPanel {
     public PermanenciaEstudantilPanel(Component frame, PlanoDeEnsino planoDeEnsino) {
         super(frame);
 
-        backColor = ChartsFactory.ligthGreen;
-        foreColor = ChartsFactory.darkGreen;
-        setBackground(backColor);
-        
-        this.selectedPlanoDeEnsino = planoDeEnsino;
+        this.planoDeEnsino = planoDeEnsino;
         try {
             super.setName("panel.permanenciaEstudantil");
             super.setTitlePanel("Dados da Permanencia Estudantil");
@@ -55,7 +66,7 @@ public class PermanenciaEstudantilPanel extends DefaultFormPanel {
             super.setController(ControllerFactory.createPermanenciaEstudantilController());
 
             super.enableTablePanel();
-            super.setFieldsPanel(new PermanenciaEstudantilFieldsPanel(selectedPlanoDeEnsino));
+            super.setFieldsPanel(new PermanenciaEstudantilFieldsPanel(planoDeEnsino));
             super.showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             Logger.getLogger(PermanenciaEstudantilPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -63,58 +74,47 @@ public class PermanenciaEstudantilPanel extends DefaultFormPanel {
     }
 
     @Override
-    public PermanenciaEstudantil getSelectedObject() {
-        return selectedPermanenciaEstudantil;
+    public Object getSelectedObject() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    public void setSelectedPlanoDeEnsino(PlanoDeEnsino selectedPlanoDeEnsino) {
-        this.selectedPlanoDeEnsino = selectedPlanoDeEnsino;
-        reloadTableData();
-    }
+    
     /**
      * Cria um botão para selecionar um planoDeEnsino na tabela e fecha 
      * a janela do planoDeEnsino
      */
     @Override
     public void createSelectButton() {
-        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
-        button.addActionListener((ActionEvent e) -> {
-            JTable t = getTable();
-            if (t.getRowCount() > 0) {
-                int row = t.getSelectedRow();
-                PermanenciaEstudantilTableModel model = (PermanenciaEstudantilTableModel) t.getModel();
-                selectedPermanenciaEstudantil = (PermanenciaEstudantil) model.getRow(row);
-                JDialog dialog = (JDialog)getFrame();
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(getParent(), 
-                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
-                        "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-        addButtonToToolBar(button, true);
+        
     }
     
     private void resizeTableColumns() {
         JTable table = getTable();
+        getModel().activateButtons();
+        ListSelectionModel cellSelectionModel = table.getSelectionModel();
+        cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         TableColumnModel tcm = table.getColumnModel();
-        TableColumn tcNome = tcm.getColumn(0);
-        tcNome.setMinWidth(50);
-        tcNome.setCellRenderer(new PermanenciaEstudantilCellRenderer());;
+        TableColumn col0 = tcm.getColumn(0);
+        col0.setMinWidth(400);
+        col0.setCellRenderer(new PermanenciaEstudantilCellRenderer());
+
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.DELETE, AcoesBotoes.EDIT);
+
+        TableColumn col1 = tcm.getColumn(1);
+        col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
+        col1.setCellEditor(new ButtonsEditor(table, null, enumSet));
     }
 
     @Override
     public void reloadTableData() {
         try {
-            setController(ControllerFactory.createPermanenciaEstudantilController());
-            
             PermanenciaEstudantilController col = (PermanenciaEstudantilController) getController();
-            PermanenciaEstudantilTableModel model;
-            List<PermanenciaEstudantil> list;
-            list = col.listar(selectedPlanoDeEnsino);
             
-            model = new PermanenciaEstudantilTableModel(list);
-            setTableModel(model);
+            String sDate = (String) txtData.getValue();
+            Date data = sDate == null ? null : DateHelper.stringToDate(sDate, "dd/MM/yyyy");
+            
+            setTableModel(new PermanenciaEstudantilTableModel(col
+                    .listar(planoDeEnsino, data)));
             resizeTableColumns();
         } catch (Exception ex) {
             Logger.getLogger(PermanenciaEstudantilPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -122,36 +122,44 @@ public class PermanenciaEstudantilPanel extends DefaultFormPanel {
     }
 
     @Override
-    public void onSearchButton(ActionEvent e) {
-        reloadTableData();
-    }
-
-    @Override
-    public void onClearButton(ActionEvent e) {
-        
-    }
-
-    @Override
     public void addFiltersFields() {
-        
-    }    
+        try {
+            GenJLabel lblData = new GenJLabel("Data:");
+            Calendar cal = Calendar.getInstance();
+            txtData = GenJFormattedTextField.createFormattedField("##/##/####", 1);
+            txtData.setColumns(8);
+            lblData.setLabelFor(txtData);
 
-//    public static void main(String args[]) {
-//        try {
-//            PlanoDeEnsino plano = ControllerFactory.createPlanoDeEnsinoController().buscarPorId(13);
-//            
-//            JFrame f = new JFrame();
-//            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//
-//            PermanenciaEstudantilPanel p = new PermanenciaEstudantilPanel(f, plano);
-//
-//            f.getContentPane().add(p);
-//            f.pack();
-//            f.setLocationRelativeTo(null);
-//            f.setVisible(true);
-//        } catch (Exception ex) {
-//            Logger.getLogger(PermanenciaEstudantilPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+            btSearch = createButton(new ActionHandler(AcoesBotoes.SEARCH));
+            btClear = createButton(new ActionHandler(AcoesBotoes.CLEAR));
+
+            JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
+            panelButton.add(btSearch);
+            panelButton.add(btClear);
+
+            JPanel panel = getFilterPanel();
+            panel.setLayout(new GridBagLayout());
+            GridBagConstraints c = new GridBagConstraints();
+
+            int col = 0, row = 0;
+            GridLayoutHelper.setRight(c, col++, row);
+            panel.add(lblData, c);
+
+            GridLayoutHelper.set(c, col++, row++);
+            panel.add(txtData, c);
+
+            GridLayoutHelper.set(c, 0, row, 4, 1, GridBagConstraints.LINE_END);
+            panel.add(panelButton, c);
+        } catch (ParseException ex) {
+            showErrorMessage(ex);
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onClearAction(ActionEvent e) {
+        txtData.setValue(null);
+        onSearchAction(e);
+    }
 
 }

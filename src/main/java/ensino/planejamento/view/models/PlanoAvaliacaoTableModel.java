@@ -23,7 +23,7 @@ public class PlanoAvaliacaoTableModel extends DefaultTableModel<PlanoAvaliacao> 
 
     public PlanoAvaliacaoTableModel(List<PlanoAvaliacao> lista) {
         super(lista, new String[]{
-            "Plano de Avaliação"
+            "Plano de Avaliação", "Ações"
         });
     }
 

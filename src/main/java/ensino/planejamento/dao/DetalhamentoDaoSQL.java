@@ -33,9 +33,6 @@ public class DetalhamentoDaoSQL extends AbstractDaoSQL<Detalhamento> {
         } else {
             entityManager.merge(o);
         }
-
-        entityManager.flush();
-        entityManager.clear();
     }
 
     @Override

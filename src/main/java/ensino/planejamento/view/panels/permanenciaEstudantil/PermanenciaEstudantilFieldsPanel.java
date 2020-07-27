@@ -56,6 +56,7 @@ import javax.swing.SpinnerDateModel;
 public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
+    private List<AtendimentoEstudante> listaAtendimentoEstudantes;
 
     private GenJLabel lblStatus;
 
@@ -73,16 +74,27 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
     public PermanenciaEstudantilFieldsPanel(PlanoDeEnsino planoDeEnsino) {
         super();
         this.planoDeEnsino = planoDeEnsino;
+        
+        /**
+         * Pega os estudantes do plano de ensino e adiciona automaticamente na
+         * tabela
+         */
+        List<Estudante> l = planoDeEnsino.getTurma().getEstudantes();
+        listaAtendimentoEstudantes = new ArrayList();
+        Integer seq = 1;
+        for (Estudante e : l) {
+            AtendimentoEstudante ae = AtendimentoEstudanteFactory.getInstance().
+                    createObject(new AtendimentoEstudanteId(seq++, null, e),
+                            Presenca.FALTA);
+            listaAtendimentoEstudantes.add(ae);
+        }
+        
         initComponents();
     }
 
     private void initComponents() {
         try {
             setLayout(new BorderLayout(5, 5));
-
-            backColor = ChartsFactory.ligthGreen;
-            foreColor = ChartsFactory.darkGreen;
-            setBackground(backColor);
 
             add(createHeaderPanel(), BorderLayout.PAGE_START);
             add(createIdentificacaoPanel(), BorderLayout.CENTER);
@@ -195,11 +207,6 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
         }
     }
 
-    private void setData(List<AtendimentoEstudante> data) {
-        atendimentoEstudanteListModel = new AtendimentoEstudanteListModel(data);
-        refreshAtendimentoEstudante();
-    }
-
     private JPanel createListPanel() {
         ButtonAction btAction = new ButtonAction();
 
@@ -216,28 +223,16 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
         JPanel panelStatus = createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         panelStatus.setBackground(Color.DARK_GRAY);
         panelStatus.add(lblStatus);
-        /**
-         * Pega os estudantes do plano de ensino e adiciona automaticamente na
-         * tabela
-         */
-        List<Estudante> l = planoDeEnsino.getTurma().getEstudantes();
-        List<AtendimentoEstudante> lae = new ArrayList();
-        Integer seq = 1;
-        for (Estudante e : l) {
-            AtendimentoEstudante ae = AtendimentoEstudanteFactory.getInstance().
-                    createObject(new AtendimentoEstudanteId(seq++, null, e),
-                            Presenca.FALTA);
-            lae.add(ae);
-        }
-        atendimentoEstudanteListModel = new AtendimentoEstudanteListModel(new ArrayList());
-        atendimentoEstudanteList = new GenJList(atendimentoEstudanteListModel);
+
+        atendimentoEstudanteList = new GenJList();
         atendimentoEstudanteList.addMouseListener(new PermanenciaEstudantilListMouseListener());
         atendimentoEstudanteList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         atendimentoEstudanteList.setLayoutOrientation(JList.VERTICAL);
         atendimentoEstudanteList.setVisibleRowCount(10);
         atendimentoEstudanteList.setCellRenderer(new AtendimentoEstudanteListCellRenderer());
+        atendimentoEstudanteList.clearSelection();
+        setData(listaAtendimentoEstudantes);
 
-        setData(lae);
         JScrollPane scroll = new JScrollPane(atendimentoEstudanteList);
         scroll.setAutoscrolls(true);
 
@@ -248,6 +243,11 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
         panel.add(panelStatus, BorderLayout.PAGE_END);
 
         return panel;
+    }
+
+    private void setData(List<AtendimentoEstudante> data) {
+        atendimentoEstudanteListModel = new AtendimentoEstudanteListModel(data);
+        refreshAtendimentoEstudante();
     }
 
     private void refreshAtendimentoEstudante() {
@@ -298,11 +298,13 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
     public void setFieldValues(Object object) {
         if (object instanceof PermanenciaEstudantil) {
             PermanenciaEstudantil permanenciaEstudantil = (PermanenciaEstudantil) object;
+
             setFieldValues(
                     permanenciaEstudantil.getId().getSequencia(),
                     permanenciaEstudantil.getDescricao(),
                     permanenciaEstudantil.getDataAtendimento(),
                     permanenciaEstudantil.getHoraAtendimento());
+
             setData(permanenciaEstudantil.getAtendimentos());
         }
     }
@@ -334,6 +336,8 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
         Calendar cal = Calendar.getInstance();
         txtData.setText(DateHelper.dateToString(cal.getTime(), "dd/MM/yyyy"));
         spinHora.setValue(cal.getTime());
+        
+        setData(listaAtendimentoEstudantes);
     }
 
     @Override

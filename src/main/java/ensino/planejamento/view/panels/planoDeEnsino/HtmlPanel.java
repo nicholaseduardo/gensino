@@ -5,9 +5,6 @@
  */
 package ensino.planejamento.view.panels.planoDeEnsino;
 
-import com.itextpdf.html2pdf.ConverterProperties;
-import com.itextpdf.html2pdf.HtmlConverter;
-import com.itextpdf.html2pdf.resolver.font.DefaultFontProvider;
 import com.itextpdf.layout.font.FontProvider;
 import ensino.components.GenJButton;
 import ensino.configuracoes.model.EtapaEnsino;
@@ -458,10 +455,6 @@ public class HtmlPanel extends DefaultFieldsPanel {
                 fos.close();
                 
                 if (type == 1) {
-                    ConverterProperties converterProperties = new ConverterProperties();
-                    FontProvider fp = new DefaultFontProvider(true, true, false);
-                    converterProperties.setFontProvider(fp);
-                    HtmlConverter.convertToPdf(htmlFile, fileToSave, converterProperties);
                     /**
                      * Remove o arquivo temporário
                      */

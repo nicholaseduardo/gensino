@@ -82,99 +82,90 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
 
     private void initComponents() {
         setName("plano.identificacao");
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createEtchedBorder());
 
-        backColor = ChartsFactory.ligthGreen;
-        foreColor = ChartsFactory.darkGreen;
-        setBackground(backColor);
-
-        GenJButton btSave = createButton(new ActionHandler(AcoesBotoes.SAVE), backColor, foreColor);
-        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
-
-        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButton.add(btSave);
-        panelButton.add(btClose);
-        add(panelButton, BorderLayout.PAGE_END);
-
         JPanel panel = createPanel(new GridBagLayout());
-        add(panel, BorderLayout.LINE_START);
         int col = 0, row = 0;
         GridBagConstraints c = new GridBagConstraints();
-
-        col = 0;
+        
         GenJLabel lblId = new GenJLabel("Código: ");
-        GridLayoutHelper.setRight(c, col++, row);
-        panel.add(lblId, c);
-
         txtId = new GenJTextField(5, false);
         txtId.setEnabled(false);
         lblId.setLabelFor(txtId);
-        GridLayoutHelper.set(c, col, row++);
-        panel.add(txtId, c);
-
-        col = 0;
+        
         GenJLabel lblAno = new GenJLabel("Calendário: ");
-        GridLayoutHelper.setRight(c, col++, row);
-        panel.add(lblAno, c);
-
         Curso curso = selectedUnidadeCurricular.getCurso();
         compoCalendario = new CalendarioSearch();
         compoCalendario.setSelectedCampus(curso.getCampus());
         compoCalendario.addDocumentListener(new CompoSearchListener(compoCalendario));
         compoCalendario.setBackground(backColor);
         lblAno.setLabelFor(compoCalendario);
-        GridLayoutHelper.set(c, col, row++);
-        panel.add(compoCalendario, c);
-
-        col = 0;
+        
+        
         GenJLabel lblPeriodoLetivo = new GenJLabel("PeriodoLetivo: ");
-        GridLayoutHelper.setRight(c, col++, row);
-        panel.add(lblPeriodoLetivo, c);
-
         comboPeriodoLetivo = new GenJComboBox(new PeriodoLetivoComboBoxListModel());
         refreshComboPeriodoLetivo(compoCalendario.getObjectValue());
         lblPeriodoLetivo.setLabelFor(comboPeriodoLetivo);
-        GridLayoutHelper.set(c, col, row++);
-        panel.add(comboPeriodoLetivo, c);
-
-        col = 0;
+        
+        
         GenJLabel lblTurma = new GenJLabel("Turma: ");
-        GridLayoutHelper.setRight(c, col++, row);
-        panel.add(lblTurma, c);
-
         compoTurma = new TurmaSearch();
         compoTurma.setSelectedCurso(curso);
         compoTurma.addDocumentListener(new CompoSearchListener(compoTurma));
         compoTurma.setBackground(backColor);
+        
+        
+        GenJLabel lblProfessor = new GenJLabel("Docente: ", JLabel.TRAILING);
+        comboDocente = new GenJComboBox(new DocenteComboBoxModel());
+                
+        txtObjetivo = new GenJTextArea(3, 50);
+        JScrollPane objetivoScroll = new JScrollPane(txtObjetivo);
+        objetivoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        objetivoScroll.setBorder(createTitleBorder("Descrição do objetivo geral"));
+        
+        txtRecuperacao = new GenJTextArea(3, 50);
+        JScrollPane recuperacaoScroll = new JScrollPane(txtRecuperacao);
+        recuperacaoScroll.setBorder(createTitleBorder("Recuperação da aprendizagem"));
+        recuperacaoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        GridLayoutHelper.setRight(c, col++, row);
+        panel.add(lblId, c);
+        GridLayoutHelper.set(c, col, row++);
+        panel.add(txtId, c);
+
+        col = 0;
+        GridLayoutHelper.setRight(c, col++, row);
+        panel.add(lblAno, c);
+        GridLayoutHelper.set(c, col, row++);
+        panel.add(compoCalendario, c);
+
+        col = 0;
+        GridLayoutHelper.setRight(c, col++, row);
+        panel.add(lblPeriodoLetivo, c);
+        GridLayoutHelper.set(c, col, row++);
+        panel.add(comboPeriodoLetivo, c);
+
+        col = 0;
+        GridLayoutHelper.setRight(c, col++, row);
+        panel.add(lblTurma, c);
         GridLayoutHelper.set(c, col, row++);
         panel.add(compoTurma, c);
 
         col = 0;
-        GenJLabel lblProfessor = new GenJLabel("Docente: ", JLabel.TRAILING);
         GridLayoutHelper.setRight(c, col++, row);
         panel.add(lblProfessor, c);
-        comboDocente = new GenJComboBox(new DocenteComboBoxModel());
         GridLayoutHelper.set(c, col, row++);
         panel.add(comboDocente, c);
 
         col = 0;
-        txtObjetivo = new GenJTextArea(5, 50);
-        JScrollPane objetivoScroll = new JScrollPane(txtObjetivo);
-        objetivoScroll.setBorder(createTitleBorder("Objetivo geral"));
-        objetivoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        GridLayoutHelper.set(c, col, row++, 2, 1, GridBagConstraints.BASELINE);
+        GridLayoutHelper.set(c, col, row++, 2, 1, GridBagConstraints.LINE_START);
         panel.add(objetivoScroll, c);
-
-        col = 0;
-        txtRecuperacao = new GenJTextArea(5, 50);
-        JScrollPane recuperacaoScroll = new JScrollPane(txtRecuperacao);
-        recuperacaoScroll.setBorder(createTitleBorder("Recuperação da aprendizagem"));
-        recuperacaoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        GridLayoutHelper.set(c, col, row++, 2, 1, GridBagConstraints.BASELINE);
+        
+        GridLayoutHelper.set(c, col, row++, 2, 1, GridBagConstraints.LINE_START);
         panel.add(recuperacaoScroll, c);
+        
+        add(panel, BorderLayout.CENTER);
     }
 
     private void refreshComboPeriodoLetivo(Calendario cal) {
@@ -287,41 +278,6 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
     @Override
     public void initFocus() {
         compoCalendario.requestFocusInWindow();
-    }
-
-    @Override
-    public void onCloseAction(ActionEvent e) {
-        if (frame instanceof JInternalFrame) {
-            JInternalFrame f = (JInternalFrame) frame;
-            f.dispose();
-        } else if (frame instanceof JDialog) {
-            JDialog d = (JDialog) frame;
-            d.dispose();
-        } else {
-            JFrame f = (JFrame) frame;
-            f.dispose();
-        }
-    }
-
-    @Override
-    public void onSaveAction(ActionEvent e, Object o) {
-        if (isValidated()) {
-            if ("".equals(txtId.getText())) {
-                planoDeEnsino = PlanoDeEnsinoFactory.getInstance()
-                        .getObject(getFieldValues());
-                selectedUnidadeCurricular.addPlanoDeEnsino(planoDeEnsino);
-            } else {
-                PlanoDeEnsinoFactory.getInstance()
-                        .updateObject(planoDeEnsino, getFieldValues());
-            }
-            
-        }
-        try {
-            ControllerFactory.createPlanoDeEnsinoController().salvar(planoDeEnsino);
-            onCloseAction(e);
-        } catch (Exception ex) {
-            showErrorMessage(ex);
-        }
     }
 
     private class CompoSearchListener implements DocumentListener {

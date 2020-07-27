@@ -144,6 +144,13 @@ public class Detalhamento implements Serializable {
     public List<Metodologia> getMetodologias() {
         return metodologias;
     }
+    
+    public String getMetodologiasToString() {
+        if (!metodologias.isEmpty()) {
+            return metodologias.toString().replaceAll("[\\[|\\]]", " ").trim();
+        }
+        return "";
+    }
 
     public void setMetodologias(List<Metodologia> metodologias) {
         this.metodologias = metodologias;

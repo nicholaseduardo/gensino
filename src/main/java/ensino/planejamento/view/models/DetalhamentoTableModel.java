@@ -6,7 +6,7 @@
 package ensino.planejamento.view.models;
 
 import ensino.defaults.DefaultTableModel;
-import ensino.planejamento.model.Diario;
+import ensino.planejamento.model.Detalhamento;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,28 +14,23 @@ import java.util.List;
  *
  * @author nicho
  */
-public class DiarioTableModel extends DefaultTableModel<Diario> {
+public class DetalhamentoTableModel extends DefaultTableModel<Detalhamento> {
 
-    public DiarioTableModel() {
-        this(new ArrayList<Diario>());
+    public DetalhamentoTableModel() {
+        this(new ArrayList<Detalhamento>());
     }
 
-    public DiarioTableModel(List<Diario> lista) {
+    public DetalhamentoTableModel(List<Detalhamento> lista) {
         super(lista, new String[] {
-            "Diário das aulas"
+            "Detalhamento do Conteúdo Programático", "Ações"
         });
-    }
-    
-    @Override
-    public List<Diario> getData() {
-        return super.getData();
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Diario obj = (Diario) getRow(rowIndex);
+        Detalhamento obj = (Detalhamento) getRow(rowIndex);
         switch(columnIndex) {
-            case 0: return obj.getId();
+            case 0: return obj;
             default: return null;
         }
     }

@@ -9,8 +9,13 @@ import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.PermanenciaEstudantil;
 import ensino.planejamento.model.PermanenciaEstudantilId;
 import ensino.planejamento.model.PlanoDeEnsino;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -63,6 +68,31 @@ public class PermanenciaEstudantilDaoSQL extends AbstractDaoSQL<PermanenciaEstud
         sql += " ORDER BY pe.dataAtendimento ";
 
         TypedQuery query = entityManager.createQuery(sql, PermanenciaEstudantil.class);
+        return query.getResultList();
+    }
+
+    public List<PermanenciaEstudantil> list(PlanoDeEnsino o, Date data) {
+        CriteriaBuilder builder = getCriteriaBuilder();
+        CriteriaQuery<PermanenciaEstudantil> criteria = builder.createQuery(PermanenciaEstudantil.class);
+
+        Root<PermanenciaEstudantil> from = criteria.from(PermanenciaEstudantil.class);
+
+        Predicate pPlano = builder.equal(from.get("id").get("planoDeEnsino").get("id"), o.getId()),
+                pdata = null, ptipo = null;
+        if (data != null) {
+            pdata = builder.equal(from.get("dataAtendimento"), data);
+        }
+
+        CriteriaQuery<PermanenciaEstudantil> select = criteria.select(from);
+        if (pdata != null) {
+            select.where(pPlano, pdata);
+        } else {
+            select.where(pPlano);
+        }
+        
+        select.orderBy(builder.asc(from.get("dataAtendimento")), builder.asc(from.get("horaAtendimento")));
+
+        TypedQuery<PermanenciaEstudantil> query = entityManager.createQuery(select);
         return query.getResultList();
     }
 

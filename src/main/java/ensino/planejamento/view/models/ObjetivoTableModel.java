@@ -23,7 +23,7 @@ public class ObjetivoTableModel extends DefaultTableModel<Objetivo> {
 
     public ObjetivoTableModel(List<Objetivo> lista) {
         super(lista, new String[]{
-            "Objetivo específico"
+            "Objetivo específico", "Ações"
         });
     }
 

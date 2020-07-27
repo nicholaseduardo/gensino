@@ -24,17 +24,9 @@ public class ObjetivoController extends AbstractController<Objetivo> {
     
     public List<Objetivo> listar(PlanoDeEnsino o) {
         String filter = "";
-        Integer id = o.getId(),
-                undId = o.getUnidadeCurricular().getId().getId(),
-                cursoId = o.getUnidadeCurricular().getId().getCurso().getId().getId(),
-                campusId = o.getUnidadeCurricular().getId().getCurso().getId().getCampus().getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//Objetivo/objetivo[@planoDeEnsinoId=%d and "
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                    id, undId, cursoId, campusId);
-        } else {
-            filter = String.format(" AND o.id.planoDeEnsino.id = %d ", id);
-        }
+        Integer id = o.getId();
+        
+        filter = String.format(" AND o.id.planoDeEnsino.id = %d ", id);
         
         return super.getDao().list(filter, o);
     }

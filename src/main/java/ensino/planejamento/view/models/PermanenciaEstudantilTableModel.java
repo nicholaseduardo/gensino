@@ -22,7 +22,7 @@ public class PermanenciaEstudantilTableModel extends DefaultTableModel {
     
     public PermanenciaEstudantilTableModel(List<PermanenciaEstudantil> lista) {
         super(lista, new String[] {
-            "Atendimento"
+            "Atendimento", "Ações"
         });
     }
 

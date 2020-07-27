@@ -34,6 +34,11 @@ public class MetodologiaDaoSQL extends AbstractDaoSQL<Metodologia> {
     }
 
     @Override
+    public void delete(Metodologia o) {
+        entityManager.remove(entityManager.getReference(Metodologia.class, o.getId()));
+    }
+
+    @Override
     public List<Metodologia> list() {
         return this.list(null);
     }
