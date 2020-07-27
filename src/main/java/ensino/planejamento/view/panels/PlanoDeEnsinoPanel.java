@@ -31,12 +31,9 @@ import ensino.planejamento.view.panels.permanenciaEstudantil.PermanenciaEstudant
 import ensino.planejamento.view.renderer.PlanoDeEnsinoCellRenderer;
 import ensino.util.types.AcoesBotoes;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.ArrayList;
@@ -289,29 +286,6 @@ public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
     public void setUnidadeCurricular(UnidadeCurricular unidadeCurricular) {
         this.unidadeCurricular = unidadeCurricular;
         reloadTableData();
-    }
-
-    private void showDialog(JDialog dialog, JPanel panel) {
-        dialog.setModal(true);
-        dialog.setLocationRelativeTo(null);
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.add(panel);
-        dialog.pack();
-
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = toolkit.getScreenSize();
-        Dimension dialogSize = dialog.getPreferredSize();
-        int x = 0;
-        if (dialogSize.width < screenSize.width) {
-            x = (screenSize.width / 2) - (dialogSize.width / 2);
-        }
-        int y = 0;
-        if (dialogSize.height < screenSize.height) {
-            y = (screenSize.height / 2) - (dialogSize.height / 2);
-        }
-
-        dialog.setLocation(new Point(x, y));
-        dialog.setVisible(true);
     }
 
     @Override
