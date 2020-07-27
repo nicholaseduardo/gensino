@@ -37,7 +37,7 @@ public class UnidadeCurricular implements Serializable {
     @Column(name = "ementa", columnDefinition = "CLOB")
     private String ementa;
     
-    @OneToMany(mappedBy = "id.unidadeCurricular", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.unidadeCurricular", fetch = FetchType.LAZY)
     private List<ReferenciaBibliografica> referencias;
     
     @OneToMany(mappedBy = "id.unidadeCurricular", fetch = FetchType.LAZY, orphanRemoval = true)
