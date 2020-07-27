@@ -46,6 +46,7 @@ public abstract class DefaultFieldsPanel extends GenJPanel implements
         super();
         super.addComponentListener(this);
         super.setBorder(createTitleBorder(titleBorder));
+        
         imageSourceAdd = String.format("/img/%s", "add-icon-png-25px.png");
         imageSourceUpdate = String.format("/img/%s", "update-button-25px.png");
         imageSourceNew = String.format("/img/%s", "view-button-25px.png");
