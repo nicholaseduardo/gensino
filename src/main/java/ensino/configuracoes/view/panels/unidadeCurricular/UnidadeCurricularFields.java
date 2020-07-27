@@ -5,32 +5,22 @@
  */
 package ensino.configuracoes.view.panels.unidadeCurricular;
 
-import ensino.components.GenJButton;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextArea;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
-import ensino.configuracoes.model.UnidadeCurricularFactory;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
-import ensino.reports.ChartsFactory;
-import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -56,17 +46,15 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
     private Component frame;
     private UnidadeCurricular unidadeCurricular;
 
-    public UnidadeCurricularFields(Curso curso) {
-        this();
+    public UnidadeCurricularFields(Curso curso, Component frame) {
+        super();
         this.selectedCurso = curso;
         this.frame = frame;
+        initComponents();
     }
 
     public UnidadeCurricularFields() {
-        super();
-        initComponents();
-        enableFields(true);
-        initFocus();
+        this(null, null);
     }
     
     public void setFrame(Component frame) {
@@ -78,19 +66,8 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEtchedBorder());
 
-        backColor = ChartsFactory.lightBlue;
-        foreColor = ChartsFactory.ardoziaBlueColor;
-        setBackground(backColor);
-
         URL urlUnidade = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "school-icon-50px.png"));
-        URL urlInfo = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Info-icon-25px.png"));
-        URL urlEmenta = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Status-mail-task-icon-25px.png"));
-        URL urlReferencias = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "library-icon-25px.png"));
-
-        Icon iconInfo = new ImageIcon(urlInfo);
-        Icon iconEmenta = new ImageIcon(urlEmenta);
-        Icon iconReferencia = new ImageIcon(urlReferencias);
-
+        
         GenJLabel lblTitulo = new GenJLabel("Ficha da Unidade Curricular",
                 new ImageIcon(urlUnidade), JLabel.CENTER);
         lblTitulo.setVerticalTextPosition(JLabel.BOTTOM);
@@ -98,16 +75,11 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
         lblTitulo.resetFontSize(20);
         lblTitulo.setForeground(foreColor);
         lblTitulo.toBold();
-        add(lblTitulo, BorderLayout.PAGE_START);
-
-        GenJButton btSave = createButton(new ActionHandler(AcoesBotoes.SAVE), backColor, foreColor);
-        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
-
-        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButton.add(btSave);
-        panelButton.add(btClose);
-        add(panelButton, BorderLayout.PAGE_END);
-
+        
+        JPanel panel = createPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.add(lblTitulo);
+        
+        add(panel, BorderLayout.PAGE_START);
         add(createIdentificacaoPanel(), BorderLayout.CENTER);
     }
 
@@ -219,6 +191,7 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
     public void setFieldValues(Object object) {
         if (object instanceof UnidadeCurricular) {
             unidadeCurricular = (UnidadeCurricular) object;
+            selectedCurso = unidadeCurricular.getCurso();
             setFieldValues(
                     unidadeCurricular.getId().getId(),
                     unidadeCurricular.getNome(),
@@ -236,14 +209,19 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
                 campo = "";
         if ("".equals(txtNome.getText())) {
             campo = "NOME";
+            txtNome.requestFocusInWindow();
         } else if ("".equals(txtAulasTeoricas.getText())) {
             campo = "N. AULAS TEÓRICAS";
+            txtAulasTeoricas.requestFocusInWindow();
         } else if ("".equals(txtAulasPraticas.getText())) {
             campo = "N. AULAS PRÁTICAS";
+            txtAulasPraticas.requestFocusInWindow();
         } else if ("".equals(txtCargaHoraria.getText())) {
             campo = "CARGA HORÁRIA";
+            txtCargaHoraria.requestFocusInWindow();
         } else if ("".equals(txtEmenta.getText())) {
             campo = "EMENTA";
+            txtEmenta.requestFocusInWindow();
         } else {
             return true;
         }
@@ -274,39 +252,6 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
     @Override
     public void initFocus() {
         txtCargaHoraria.requestFocusInWindow();
-    }
-
-    @Override
-    public void onCloseAction(ActionEvent e) {
-        if (frame instanceof JInternalFrame) {
-            JInternalFrame f = (JInternalFrame) frame;
-            f.dispose();
-        } else if (frame instanceof JDialog) {
-            JDialog d = (JDialog) frame;
-            d.dispose();
-        } else {
-            JFrame f = (JFrame) frame;
-            f.dispose();
-        }
-    }
-
-    @Override
-    public void onSaveAction(ActionEvent e, Object o) {
-        if (isValidated()) {
-            if ("".equals(txtId.getText())) {
-                unidadeCurricular = UnidadeCurricularFactory.getInstance()
-                        .getObject(getFieldValues());
-            } else {
-                UnidadeCurricularFactory.getInstance()
-                        .updateObject(unidadeCurricular, getFieldValues());
-            }
-            try {
-                ControllerFactory.createUnidadeCurricularController().salvar(unidadeCurricular);
-                onCloseAction(e);
-            } catch (Exception ex) {
-                showErrorMessage(ex);
-            }
-        }
     }
 
 }

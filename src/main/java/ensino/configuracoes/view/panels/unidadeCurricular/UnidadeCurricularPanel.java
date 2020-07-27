@@ -5,34 +5,31 @@
  */
 package ensino.configuracoes.view.panels.unidadeCurricular;
 
-import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
+import static ensino.components.GenJPanel.IMG_SOURCE;
 import ensino.configuracoes.controller.UnidadeCurricularController;
-import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
-import ensino.configuracoes.view.models.CampusComboBoxModel;
-import ensino.configuracoes.view.models.CursoComboBoxListModel;
-import ensino.configuracoes.view.models.CursoListModel;
 import ensino.configuracoes.view.models.UnidadeCurricularTableModel;
 import ensino.configuracoes.view.panels.curso.CursoPanel;
 import ensino.configuracoes.view.renderer.UnidadeCurricularCellRenderer;
-import ensino.defaults.DefaultFormPanel;
-import ensino.helpers.GridLayoutHelper;
+import ensino.defaults.DefaultCleanFormPanel;
+import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.view.panels.PlanoDeEnsinoPanel;
+import ensino.util.types.AcoesBotoes;
+import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.util.EnumSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
@@ -42,12 +39,7 @@ import javax.swing.table.TableColumnModel;
  *
  * @author nicho
  */
-public class UnidadeCurricularPanel extends DefaultFormPanel {
-
-    private GenJComboBox comboCampus;
-    private GenJComboBox comboCurso;
-    private JButton btSearch;
-    private JButton btClear;
+public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
 
     private Curso selectedCurso;
     private UnidadeCurricular selectedUnidadeCurricular;
@@ -59,6 +51,10 @@ public class UnidadeCurricularPanel extends DefaultFormPanel {
     public UnidadeCurricularPanel(Component frame, Curso curso) {
         super(frame);
         this.selectedCurso = curso;
+        initComponents();
+    }
+
+    private void initComponents() {
         try {
             super.setName("panel.unidadeCurricular");
             super.setTitlePanel("Dados da Unidade Curricular");
@@ -66,8 +62,12 @@ public class UnidadeCurricularPanel extends DefaultFormPanel {
             super.setController(ControllerFactory.createUnidadeCurricularController());
 
             super.enableTablePanel();
-            super.setFieldsPanel(new UnidadeCurricularFieldsPanel());
+            super.setFieldsPanel(new UnidadeCurricularFields(selectedCurso, null));
             super.showPanelInCard(CARD_LIST);
+            /**
+             * Desabilita o botão de fechar
+             */
+            super.disableCloseButton();
         } catch (Exception ex) {
             Logger.getLogger(CursoPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -93,54 +93,96 @@ public class UnidadeCurricularPanel extends DefaultFormPanel {
      */
     @Override
     public void createSelectButton() {
-        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
-        button.addActionListener((ActionEvent e) -> {
-            JTable t = getTable();
-            if (t.getRowCount() > 0) {
-                int row = t.getSelectedRow();
-                UnidadeCurricularTableModel model = (UnidadeCurricularTableModel) t.getModel();
-                selectedUnidadeCurricular = (UnidadeCurricular) model.getRow(row);
-                JDialog dialog = (JDialog) getFrame();
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(getParent(),
-                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
-                        "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-        addButtonToToolBar(button, true);
+//        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
+//        button.addActionListener((ActionEvent e) -> {
+//            JTable t = getTable();
+//            if (t.getRowCount() > 0) {
+//                int row = t.getSelectedRow();
+//                UnidadeCurricularTableModel model = (UnidadeCurricularTableModel) t.getModel();
+//                selectedUnidadeCurricular = (UnidadeCurricular) model.getRow(row);
+//                JDialog dialog = (JDialog) getFrame();
+//                dialog.dispose();
+//            } else {
+//                JOptionPane.showMessageDialog(getParent(),
+//                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
+//                        "Aviso", JOptionPane.WARNING_MESSAGE);
+//            }
+//        });
+//        addButtonToToolBar(button, true);
+    }
+
+    private JPanel createUCPanel(UnidadeCurricular uc) {
+        URL urlUnidade = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "school-icon-25px.png"));
+        URL urlPlanos = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "plano-icon-15px.png"));
+        ImageIcon iconUnidade = new ImageIcon(urlUnidade);
+        ImageIcon iconPlanos = new ImageIcon(urlPlanos);
+
+        GenJLabel lblTitulo = new GenJLabel(uc.getNome(), iconUnidade, JLabel.LEFT);
+        lblTitulo.setHorizontalTextPosition(JLabel.RIGHT);
+        GenJLabel lblPlanos = new GenJLabel(String.format("%d Planos de Ensino", uc.getPlanosDeEnsino().size()),
+                iconPlanos, JLabel.LEFT);
+        lblPlanos.setHorizontalTextPosition(JLabel.RIGHT);
+        lblPlanos.resetFontSize(12);
+
+        GenJLabel lblReferencias = new GenJLabel(String.format("Referências bibliográficas: %d", uc.getReferenciasBibliograficas().size()), JLabel.RIGHT);
+        lblReferencias.resetFontSize(12);
+        lblReferencias.setIcon(new ImageIcon(getClass().getResource("/img/library-icon-15px.png")));
+
+        GenJLabel lblObjetivos = new GenJLabel(String.format("Objetivos: %d", uc.getObjetivos().size()), JLabel.RIGHT);
+        lblObjetivos.resetFontSize(12);
+        lblObjetivos.setIcon(new ImageIcon(getClass().getResource("/img/target-icon-15px.png")));
+
+        GenJLabel lblConteudos = new GenJLabel(String.format("Conteúdo Base: %d", uc.getConteudos().size()), JLabel.LEFT);
+        lblConteudos.resetFontSize(12);
+        lblConteudos.setIcon(new ImageIcon(getClass().getResource("/img/Clipboard-icon-15px.png")));
+
+        JPanel panelPlanos = createPanel(new GridLayout(0, 2));
+        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblTitulo));
+        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblReferencias));
+        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblPlanos));
+        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblObjetivos));
+        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblConteudos));
+
+        JPanel panel = createPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(panelPlanos, BorderLayout.CENTER);
+
+        return panel;
     }
 
     private void resizeTableColumns() {
         JTable table = getTable();
         TableColumnModel tcm = table.getColumnModel();
-        TableColumn tcNome = tcm.getColumn(0);
-        tcNome.setMinWidth(50);
-        tcNome.setCellRenderer(new UnidadeCurricularCellRenderer());
+        TableColumn col0 = tcm.getColumn(0);
+        col0.setCellRenderer(new UnidadeCurricularCellRenderer());
+//        col0.setCellRenderer(new GenCellRenderer() {
+//            @Override
+//            public Component getTableCellRendererComponent(JTable table, Object value,
+//                    boolean isSelected, boolean hasFocus, int row, int col) {
+//                JPanel inPanel = createUCPanel((UnidadeCurricular) value);
+//                inPanel.setOpaque(true);
+//                table.setRowHeight(row, inPanel.getPreferredSize().height);
+//
+//                return inPanel;
+//            }
+//        });
+
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.PLAN,
+                AcoesBotoes.REFBIB, AcoesBotoes.CONT_EMENTA, AcoesBotoes.ESP,
+                AcoesBotoes.DELETE);
+
+        TableColumn col1 = tcm.getColumn(1);
+        col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
+        col1.setCellEditor(new ButtonsEditor(table, null, enumSet));
+
+        table.repaint();
     }
 
     @Override
     public void reloadTableData() {
         try {
-            setController(ControllerFactory.createUnidadeCurricularController());
-            Campus campus = (Campus) comboCampus.getSelectedItem();
-            if (selectedCurso == null) {
-                selectedCurso = (Curso) comboCurso.getSelectedItem();
-            } else {
-                comboCurso.setSelectedItem(selectedCurso);
-            }
             UnidadeCurricularController col = (UnidadeCurricularController) getController();
-            UnidadeCurricularTableModel model;
-            List<UnidadeCurricular> list = new ArrayList<>();
-            if (campus != null && selectedCurso != null) {
-                list = col.listar(selectedCurso);
-            } else if (campus != null) {
-                list = col.listar(campus);
-            } else {
-                list = col.listar();
-            }
-            model = new UnidadeCurricularTableModel(list);
-            setTableModel(model);
+            setTableModel(new UnidadeCurricularTableModel(col.listar(selectedCurso)));
             resizeTableColumns();
         } catch (Exception ex) {
             Logger.getLogger(UnidadeCurricularPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -148,62 +190,47 @@ public class UnidadeCurricularPanel extends DefaultFormPanel {
     }
 
     @Override
-    public void onSearchButton(ActionEvent e) {
-        reloadTableData();
-    }
-
-    @Override
-    public void onClearButton(ActionEvent e) {
-        comboCampus.setSelectedItem(null);
-        comboCurso.setSelectedItem(null);
-    }
-
-    @Override
     public void addFiltersFields() {
-        boolean activeFilters = this.selectedCurso == null;
-        JPanel panel = getFilterPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
 
-        GenJLabel lblCampus = new GenJLabel("Campus: ", JLabel.TRAILING);
-        GridLayoutHelper.set(c, 0, 0);
-        panel.add(lblCampus, c);
-        comboCampus = new GenJComboBox(new CampusComboBoxModel());
-        if (!activeFilters) {
-            comboCampus.setSelectedItem(this.selectedCurso.getId().getCampus());
-        }
-        comboCampus.setEnabled(activeFilters);
-        comboCampus.addItemListener((ItemEvent e) -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                Campus campus = (Campus) e.getItem();
-                CursoListModel cursoModel = (CursoListModel) comboCurso.getModel();
-                cursoModel.setCampus(campus);
-                cursoModel.refresh();
-                comboCurso.setSelectedItem(null);
+    }
+
+    @Override
+    public void onPlanAction(ActionEvent e, Object o) {
+        if (o instanceof JTable) {
+            JDialog dialog = new JDialog();
+            Object obj = getObjectFromTable((JTable) o);
+            if (obj instanceof UnidadeCurricular) {
+                PlanoDeEnsinoPanel panel = new PlanoDeEnsinoPanel(dialog, (UnidadeCurricular) obj);
+                showDialog(dialog, panel);
             }
-        });
-        GridLayoutHelper.set(c, 1, 0, 3, 1, GridBagConstraints.LINE_START);
-        panel.add(comboCampus, c);
+        }
+    }
 
-        GenJLabel lblCurso = new GenJLabel("Curso:", JLabel.TRAILING);
-        GridLayoutHelper.setRight(c, 0, 1);
-        panel.add(lblCurso, c);
-        CursoComboBoxListModel cursoListBox = new CursoComboBoxListModel();
-        cursoListBox.setSelectedItem(this.selectedCurso);
-        
-        comboCurso = new GenJComboBox(cursoListBox);
-        comboCurso.setEnabled(activeFilters);
-        GridLayoutHelper.set(c, 1, 1);
-        panel.add(comboCurso, c);
+    @Override
+    public void onDefaultButton(ActionEvent e, Object o) {
+        if (o != null && o instanceof JTable) {
+            Object obj = getObjectFromTable((JTable) o);
+            if (obj instanceof UnidadeCurricular) {
+                UnidadeCurricular uc = (UnidadeCurricular) obj;
 
-        btSearch = createButton("search", "Buscar", 0);
-        btSearch.setEnabled(activeFilters);
-        GridLayoutHelper.set(c, 2, 1);
-        panel.add(btSearch, c);
-        btClear = createButton("clear", "Limpar filtro", 0);
-        btClear.setEnabled(activeFilters);
-        GridLayoutHelper.set(c, 3, 1);
-        panel.add(btClear, c);
+                JDialog dialog = new JDialog();
+                DefaultFieldsPanel panel = null;
+
+                String actionCommant = e.getActionCommand();
+                if (actionCommant.equals(AcoesBotoes.REFBIB.toString())) {
+                    panel = new UnidadeCurricularFieldsReferencias(uc, dialog);
+                } else if (actionCommant.equals(AcoesBotoes.CONT_EMENTA.toString())) {
+                    panel = new UnidadeCurricularFieldsConteudo(uc, dialog);
+                } else if (actionCommant.equals(AcoesBotoes.ESP.toString())) {
+                    panel = new UnidadeCurricularFieldsObjetivoUCConteudo(uc, dialog);
+                }
+                
+                if (panel != null) {
+                    showDialog(dialog, panel);
+                }
+
+            }
+        }
     }
 
 }
