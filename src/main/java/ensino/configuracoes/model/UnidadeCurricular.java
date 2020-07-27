@@ -54,6 +54,8 @@ public class UnidadeCurricular implements Serializable {
     public UnidadeCurricular() {
         id = new UnidadeCurricularId();
         this.referencias = new ArrayList();
+        this.conteudos = new ArrayList();
+        this.objetivos = new ArrayList();
         this.planosDeEnsino = new ArrayList();
     }
 
