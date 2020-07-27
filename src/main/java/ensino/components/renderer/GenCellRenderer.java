@@ -8,6 +8,7 @@ package ensino.components.renderer;
 import ensino.components.GenJLabel;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -121,5 +122,34 @@ public abstract class GenCellRenderer extends DefaultTableCellRenderer {
             super.firePropertyChange(propertyName, oldValue, newValue);
         }
     }
+
+    @Override
+    public void firePropertyChange(String propertyName, boolean oldValue, boolean newValue) {
+        /* Overridden for performance reasons. */ }
+
+    @Override
+    public void repaint(long tm, int x, int y, int width, int height) {
+        /* Overridden for performance reasons. */ }
+
+    @Override
+    public void repaint(Rectangle r) {
+        /* Overridden for performance reasons. */ }
+
+    @Override
+    public void repaint() {
+        /* Overridden for performance reasons. */ }
+
+    @Override
+    public void invalidate() {
+        /* Overridden for performance reasons. */ }
+
+    @Override
+    public void validate() {
+        /* Overridden for performance reasons. */ }
+
+    @Override
+    public void revalidate() {
+        /* Overridden for performance reasons. */ }
+    // <---- Overridden for performance reasons.   
 
 }
