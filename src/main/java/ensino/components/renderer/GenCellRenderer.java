@@ -8,10 +8,12 @@ package ensino.components.renderer;
 import ensino.components.GenJLabel;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,10 +49,18 @@ public abstract class GenCellRenderer extends DefaultTableCellRenderer {
         return createLabel(text, JLabel.LEFT);
     }
 
-    protected GenJLabel createLabel(String text, int position) {
-        GenJLabel label = new GenJLabel(text, position);
+    protected GenJLabel createLabel(String text, int horizontalAlignment) {
+        GenJLabel label = new GenJLabel(text, horizontalAlignment);
         label.setForeground(this.fore);
         label.setBackground(this.back);
+        return label;
+    }
+    
+    protected GenJLabel createLabel(String text, Icon image, int horizontalAlignment) {
+        GenJLabel label = new GenJLabel(text, image, horizontalAlignment);
+        label.setForeground(this.fore);
+        label.setBackground(this.back);
+        
         return label;
     }
 
@@ -58,6 +68,16 @@ public abstract class GenCellRenderer extends DefaultTableCellRenderer {
         JPanel panel = new JPanel(new FlowLayout(orientation, 10, 0));
         panel.add(component);
         panel.setBackground(getBack());
+        return panel;
+    }
+
+    public JPanel createPanel() {
+        return createPanel(new FlowLayout(FlowLayout.LEFT));
+    }
+
+    public JPanel createPanel(LayoutManager layout) {
+        JPanel panel = new JPanel(layout);
+        panel.setBackground(back);
         return panel;
     }
 
