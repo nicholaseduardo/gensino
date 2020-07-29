@@ -123,7 +123,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
                     }
                     renderer.setForeground(Color.WHITE);
                     panel.setBackground(leg.getCor());
-                    
+
                     panel.add(renderer);
                 }
 
@@ -437,8 +437,9 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
                 }
                 atividadeTableModel.removeRow(selectedRow);
                 atividadeTable.repaint();
+
+                clear();
             }
-            clear();
         }
     }
 
