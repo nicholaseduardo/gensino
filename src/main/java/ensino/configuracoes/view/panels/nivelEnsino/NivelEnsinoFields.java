@@ -231,6 +231,7 @@ public class NivelEnsinoFields extends DefaultFieldsPanel {
     public void clearFields() {
         txtId.setText("");
         txtNome.setText("");
+        nivelEnsino = new NivelEnsino();
         setData(new ArrayList());
     }
 
