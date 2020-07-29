@@ -38,7 +38,7 @@ public class BibliografiaController extends AbstractController<Bibliografia> {
             filter = String.format("%s[contains(@autor, '%s')]",
                 "//Bibliografia/bibliografia", autor);
         } else {
-            filter = " AND b.autor LIKE ('%"+autor+"%') ";
+            filter = " AND UPPER(b.autor) LIKE UPPER('"+autor+"') ";
         }
         
         return super.getDao().list(filter);
@@ -55,7 +55,7 @@ public class BibliografiaController extends AbstractController<Bibliografia> {
             filter = String.format("%s[contains(@titulo, '%s')]",
                 "//Bibliografia/bibliografia", titulo);
         } else {
-            filter = " AND b.titulo LIKE UPPER('%"+titulo+"%') ";
+            filter = " AND UPPER(b.titulo) LIKE UPPER('"+titulo+"') ";
         }
         
         return super.getDao().list(filter);
