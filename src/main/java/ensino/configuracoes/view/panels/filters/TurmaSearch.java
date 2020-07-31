@@ -142,6 +142,8 @@ public class TurmaSearch extends JPanel {
                 
                 TurmaPanel bPanel = new TurmaPanel(dialog, selectedCurso);
                 bPanel.createSelectButton();
+                bPanel.enableCloseButton();
+                        
                 dialog.getContentPane().add(bPanel);
                 dialog.addWindowListener(new WindowAdapter() {
                     @Override

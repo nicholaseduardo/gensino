@@ -29,7 +29,7 @@ import javax.swing.table.TableColumnModel;
 public class TurmaPanel extends DefaultCleanFormPanel {
 
     private Curso selectedCurso;
-    private Turma selectedTurma;
+    private EnumSet enumSet;
 
     public TurmaPanel(Component frame) {
         this(frame, null);
@@ -48,6 +48,8 @@ public class TurmaPanel extends DefaultCleanFormPanel {
             // para capturar os dados do curso, usa-se a estrutura do campus
             super.setController(ControllerFactory.createTurmaController());
 
+            enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.ESTUD, AcoesBotoes.DELETE);
+            
             super.enableTablePanel();
             super.setFieldsPanel(new TurmaFields(this.selectedCurso, null));
             super.showPanelInCard(CARD_LIST);
@@ -57,11 +59,6 @@ public class TurmaPanel extends DefaultCleanFormPanel {
             showErrorMessage(ex);
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    public Turma getSelectedObject() {
-        return selectedTurma;
     }
 
     public void setSelectedCurso(Curso selectedCurso) {
@@ -75,22 +72,8 @@ public class TurmaPanel extends DefaultCleanFormPanel {
      */
     @Override
     public void createSelectButton() {
-//        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
-//        button.addActionListener((ActionEvent e) -> {
-//            JTable t = getTable();
-//            if (t.getRowCount() > 0) {
-//                int row = t.getSelectedRow();
-//                TurmaTableModel model = (TurmaTableModel) t.getModel();
-//                selectedTurma = (Turma) model.getRow(row);
-//                JDialog dialog = (JDialog) getFrame();
-//                dialog.dispose();
-//            } else {
-//                JOptionPane.showMessageDialog(getParent(),
-//                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
-//                        "Aviso", JOptionPane.WARNING_MESSAGE);
-//            }
-//        });
-//        addButtonToToolBar(button, true);
+        enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.SELECTION, AcoesBotoes.DELETE);
+        reloadTableData();
     }
 
     private void resizeTableColumns() {
@@ -98,8 +81,6 @@ public class TurmaPanel extends DefaultCleanFormPanel {
         TableColumnModel tcm = table.getColumnModel();
         TableColumn col0 = tcm.getColumn(0);
         col0.setCellRenderer(new TurmaCellRenderer());
-
-        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.ESTUD, AcoesBotoes.DELETE);
 
         TableColumn col1 = tcm.getColumn(1);
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
