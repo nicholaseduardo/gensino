@@ -5,13 +5,13 @@
  */
 package ensino.configuracoes.view.panels.unidadeCurricular;
 
+import ensino.configuracoes.view.panels.unidadeCurricular.conteudo.UnidadeCurricularConteudoTreePanel;
 import ensino.components.GenJLabel;
 import static ensino.components.GenJPanel.IMG_SOURCE;
 import ensino.configuracoes.controller.UnidadeCurricularController;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.view.models.UnidadeCurricularTableModel;
-import ensino.configuracoes.view.panels.curso.CursoPanel;
 import ensino.configuracoes.view.renderer.UnidadeCurricularCellRenderer;
 import ensino.defaults.DefaultCleanFormPanel;
 import ensino.defaults.DefaultFieldsPanel;
@@ -25,8 +25,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.EnumSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -192,6 +190,7 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
             if (obj instanceof UnidadeCurricular) {
                 PlanoDeEnsinoPanel panel = new PlanoDeEnsinoPanel(dialog, (UnidadeCurricular) obj);
                 showDialog(dialog, panel);
+                reloadTableData();
             }
         }
     }
@@ -210,13 +209,14 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
                 if (actionCommant.equals(AcoesBotoes.REFBIB.toString())) {
                     panel = new UnidadeCurricularFieldsReferencias(uc, dialog);
                 } else if (actionCommant.equals(AcoesBotoes.CONT_EMENTA.toString())) {
-                    panel = new UnidadeCurricularFieldsConteudo(uc, dialog);
+                    panel = new UnidadeCurricularConteudoTreePanel(uc, dialog);
                 } else if (actionCommant.equals(AcoesBotoes.ESP.toString())) {
                     panel = new UnidadeCurricularFieldsObjetivoUCConteudo(uc, dialog);
                 }
                 
                 if (panel != null) {
                     showDialog(dialog, panel);
+                    reloadTableData();
                 }
 
             }
