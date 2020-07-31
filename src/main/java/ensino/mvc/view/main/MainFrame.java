@@ -15,6 +15,7 @@ import ensino.configuracoes.view.frame.FrameTecnica;
 import ensino.patterns.factory.ControllerFactory;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -58,6 +59,7 @@ public class MainFrame extends javax.swing.JFrame {
     private List<JButton> listButtons;
     private JInternalFrame framePainel;
     private JInternalFrame frameButtons;
+    private JInternalFrame frameMemory;
 
     private BufferedImage img;
 
@@ -94,48 +96,60 @@ public class MainFrame extends javax.swing.JFrame {
         initDesktopView();
     }
 
-    private void initDesktopView() {
-        frameButtons = new JInternalFrame();
-        framePainel = new JInternalFrame();
-        JPanel paneButtons = new JPanel();
+    private JInternalFrame createIFrame(String title, Component component) {
+        JInternalFrame f = new JInternalFrame();
+        f.setTitle(title);
+        if (component != null) {
+            f.getContentPane().add(component);
+        }
+        f.setMaximizable(false);
+        f.setResizable(false);
+        f.setIconifiable(false);
+        f.setClosable(false);
+        f.pack();
+        f.setVisible(true);
 
+        return f;
+    }
+
+    private void createFrameButton() {
+        JPanel paneButtons = new JPanel();
         for (JButton b : listButtons) {
             paneButtons.add(b);
         }
-        frameButtons.getContentPane().add(paneButtons);
 
-        frameButtons.setMaximizable(false);
-        frameButtons.setResizable(false);
-        frameButtons.setIconifiable(false);
-        frameButtons.setClosable(false);
-        frameButtons.pack();
-
-        frameButtons.setVisible(true);
+        frameButtons = createIFrame("", paneButtons);
         desktop.add(frameButtons);
+    }
 
-        Dimension dd = desktop.getPreferredSize(),
-                df = frameButtons.getSize(),
-                d = null;
-
+    private void createFramePainel() {
         Campus campusVigente = ControllerFactory.getCampusVigente();
         if (campusVigente != null) {
+
+            framePainel = createIFrame("Lista de Cursos do Campus", null);
             AreaDeTrabalhoView p = new AreaDeTrabalhoView(campusVigente, framePainel);
             p.setDesktop(desktop);
 
             JScrollPane scroll = new JScrollPane(p);
             scroll.setAutoscrolls(true);
 
-            framePainel.setTitle("Lista de Cursos do Campus");
             framePainel.getContentPane().add(scroll);
-            framePainel.setMaximizable(false);
-            framePainel.setResizable(false);
-            framePainel.setIconifiable(false);
-            framePainel.setClosable(false);
             framePainel.pack();
-            framePainel.setVisible(true);
-
             desktop.add(framePainel);
         }
+    }
+
+    private void createFrameMemory() {
+        MemoryPanel mp = new MemoryPanel();
+        mp.startMonitor();
+        frameMemory = createIFrame("", mp);
+        desktop.add(frameMemory);
+    }
+
+    private void initDesktopView() {
+        createFrameButton();
+        createFramePainel();
+        createFrameMemory();
 
         JInternalFrame frames[] = desktop.getAllFrames();
         if (frames.length > 0) {
@@ -229,15 +243,30 @@ public class MainFrame extends javax.swing.JFrame {
         } else {
             dbf = new Dimension(distance.width, nButtons * distance.height);
         }
+        /**
+         * Coloca os botões à esquerda
+         */
         if (frameButtons != null) {
             frameButtons.setSize(dbf);
         }
 
+        /**
+         * Coloca o painel ao lado dos botões, à esquerda.
+         */
         if (framePainel != null) {
             dpf = framePainel.getSize();
             dpf = new Dimension(dpf.width + 5, dpf.height + 5);
             framePainel.setSize(dpf);
             framePainel.setLocation(new Point(dbf.width + 5, 0));
+        }
+
+        /**
+         * Coloca o monitoramento de memória à direita
+         */
+        if (frameMemory != null) {
+            Dimension dfm = frameMemory.getSize();
+            Point p = new Point(dDesktop.width - dfm.width, 0);
+            frameMemory.setLocation(p);
         }
     }
 
@@ -297,7 +326,7 @@ public class MainFrame extends javax.swing.JFrame {
                         System.out.println("\nMemória depois da criação dos objetos: " + rt.freeMemory());
                         rt.gc();
                         System.out.println("Memória depois executar o gc: " + rt.freeMemory());
-                        
+
                         System.exit(0);
                         break;
                 }
