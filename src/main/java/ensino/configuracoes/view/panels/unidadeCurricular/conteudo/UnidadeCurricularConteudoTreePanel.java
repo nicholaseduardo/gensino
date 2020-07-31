@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.view.panels.unidadeCurricular;
+package ensino.configuracoes.view.panels.unidadeCurricular.conteudo;
 
 import ensino.components.GenJButton;
 import ensino.components.GenJLabel;
@@ -20,7 +20,6 @@ import ensino.configuracoes.view.renderer.UCTreeCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.view.panels.transferable.TreeTransferHandler;
-import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -43,6 +42,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -53,7 +53,7 @@ import javax.swing.tree.TreeSelectionModel;
  *
  * @author santos
  */
-public class UnidadeCurricularFieldsConteudo extends DefaultFieldsPanel {
+public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
 
     private Component frame;
     private final UnidadeCurricular unidadeCurricular;
@@ -63,8 +63,10 @@ public class UnidadeCurricularFieldsConteudo extends DefaultFieldsPanel {
     private JPopupMenu popupMenu;
     private JMenuItem menuNovo;
     private JMenuItem menuDelete;
+    
+    private JTabbedPane tabs;
 
-    public UnidadeCurricularFieldsConteudo(UnidadeCurricular unidadeCurricular,
+    public UnidadeCurricularConteudoTreePanel(UnidadeCurricular unidadeCurricular,
             Component frame) {
         super();
         this.unidadeCurricular = unidadeCurricular;
@@ -85,10 +87,6 @@ public class UnidadeCurricularFieldsConteudo extends DefaultFieldsPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEtchedBorder());
 
-        backColor = ChartsFactory.lightBlue;
-        foreColor = ChartsFactory.ardoziaBlueColor;
-        setBackground(backColor);
-
         URL urlReferencias = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "binary-tree-icon-50px.png"));
         GenJLabel lblTitulo = new GenJLabel("Bases Científicos-Tecnológicas (Conteúdos)",
                 new ImageIcon(urlReferencias), JLabel.CENTER);
@@ -98,13 +96,22 @@ public class UnidadeCurricularFieldsConteudo extends DefaultFieldsPanel {
         lblTitulo.setForeground(foreColor);
         lblTitulo.toBold();
         add(lblTitulo, BorderLayout.PAGE_START);
-
+        
         GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
-
         JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
         panelButton.add(btClose);
-        add(panelButton, BorderLayout.PAGE_END);
-        add(createTreePanel(), BorderLayout.CENTER);
+        
+        JPanel panelTree = createPanel(new BorderLayout());
+        panelTree.add(panelButton, BorderLayout.PAGE_END);
+        panelTree.add(createTreePanel(), BorderLayout.CENTER);
+        
+        ImageIcon iconTree = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "binary-tree-icon-25px.png")));
+        ImageIcon iconTable = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "tables-icon-25px.png")));
+        
+        tabs = new JTabbedPane();
+        tabs.addTab("Árvore", iconTree, panelTree);
+        tabs.addTab("Tabela", iconTable, new UnidadeCurricularConteudoPanel(this.frame, this.unidadeCurricular));
+        add(tabs, BorderLayout.CENTER);
 
         createPopupMenu();
     }
