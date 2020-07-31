@@ -5,10 +5,13 @@
  */
 package ensino.configuracoes.view.models;
 
-import ensino.configuracoes.controller.CampusController;
-import ensino.configuracoes.model.Campus;
+import ensino.configuracoes.controller.ConteudoController;
+import ensino.configuracoes.model.Conteudo;
+import ensino.configuracoes.model.ConteudoFactory;
+import ensino.configuracoes.model.ConteudoId;
+import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.factory.ControllerFactory;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,33 +22,61 @@ import javax.swing.ComboBoxModel;
  *
  * @author nicho
  */
-public class CampusComboBoxModel extends AbstractListModel implements ComboBoxModel {
-    private CampusController campusCol;
-    private List<Campus> list;
+public class ConteudoComboBoxModel extends AbstractListModel implements ComboBoxModel {
+    private ConteudoController col;
+    private List<Conteudo> list;
+    private UnidadeCurricular unidadeCurricular;
     
-    private Campus selection;
+    private Conteudo selection;
     
-    public CampusComboBoxModel() {
+    public ConteudoComboBoxModel(UnidadeCurricular uc) {
+        this.unidadeCurricular = uc;
+        
         initComponents();
     }
     
     private void initComponents() {
         try {
-            campusCol = ControllerFactory.createCampusController();
+            col = ControllerFactory.createConteudoController();
             refresh();
         } catch (Exception ex) {
-            Logger.getLogger(CampusComboBoxModel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ConteudoComboBoxModel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     public void refresh() {
+        refresh(null);
+    }
+    
+    /**
+     * Atualiza a lista dos conteúdos removendo o item informado por
+     * parâmetro
+     * 
+     * @param except 
+     */
+    public void refresh(Conteudo except) {
         int index = 0;
-        list = (List<Campus>) campusCol.listar();
-        
-        if (!list.isEmpty()) {
-            list.sort(Comparator.comparing(Campus::getNome));
-            index = list.size() - 1;
+        Conteudo c = ConteudoFactory.getInstance()
+                .createObject(new ConteudoId(null, this.unidadeCurricular),
+                        -1, " <-- Raiz Principal -->", null, 0);
+        /**
+         * Captura dos conteúdos sem conteudo superior vinculado
+         */
+        List<Conteudo> l = col.listar(this.unidadeCurricular);
+        for(Conteudo o : l) {
+            if (!o.hasParent()) {
+                c.addChild(o);
+            }
         }
+        
+        list = new ArrayList();
+        list.add(c);
+        list.addAll(1, l);
+        if (except != null) {
+            list.remove(except);
+        }
+        
+        index = list.size() - 1;
         setSelectedItem(null);
         fireIntervalAdded(this, 0, index);
     }
@@ -62,7 +93,7 @@ public class CampusComboBoxModel extends AbstractListModel implements ComboBoxMo
 
     @Override
     public void setSelectedItem(Object anItem) {
-        selection = (Campus)anItem;
+        selection = (Conteudo)anItem;
     }
 
     @Override
