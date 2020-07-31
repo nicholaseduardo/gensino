@@ -292,6 +292,12 @@ public class MainFrame extends javax.swing.JFrame {
                         addFrame(new ensino.configuracoes.view.frame.FrameBibliografia());
                         break;
                     case SAIR:
+
+                        Runtime rt = Runtime.getRuntime();
+                        System.out.println("\nMemória depois da criação dos objetos: " + rt.freeMemory());
+                        rt.gc();
+                        System.out.println("Memória depois executar o gc: " + rt.freeMemory());
+                        
                         System.exit(0);
                         break;
                 }
