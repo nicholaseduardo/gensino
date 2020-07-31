@@ -24,7 +24,7 @@ public class ConteudoTreeModel extends GenTreeModel<Conteudo> {
     @Override
     protected void loadTree() {
         if (!lista.isEmpty()) {
-            for(Conteudo conteudo : lista) {
+            for (Conteudo conteudo : lista) {
                 ToolTipTreeNode node = null;
                 if (!conteudo.hasParent()) {
                     /**
@@ -39,11 +39,13 @@ public class ConteudoTreeModel extends GenTreeModel<Conteudo> {
                      * sequencia
                      */
                     Conteudo oParent = conteudo.getConteudoParent();
-                    ToolTipTreeNode parentNode = (ToolTipTreeNode)searchNode(oParent);
+                    ToolTipTreeNode parentNode = (ToolTipTreeNode) searchNode(oParent);
                     node = new ToolTipTreeNode(conteudo.getDescricao());
                     node.setUserObject(conteudo);
-                    
-                    insertNodeInto(node, parentNode, conteudo.getSequencia());
+
+                    if (conteudo.getSequencia() != null) {
+                        insertNodeInto(node, parentNode, conteudo.getSequencia());
+                    }
                 }
             }
         }
