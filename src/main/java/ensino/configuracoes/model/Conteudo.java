@@ -6,6 +6,8 @@
 package ensino.configuracoes.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -14,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -49,6 +52,9 @@ public class Conteudo implements Serializable {
      */
     @Column(name = "nivel")
     private Integer nivel;
+    
+    @OneToMany(mappedBy = "conteudoParent", fetch = FetchType.LAZY)
+    private List<Conteudo> children;
 
     /**
      * Atributo criado para estabelecer a hierarquia entre os conteúdos
@@ -64,6 +70,7 @@ public class Conteudo implements Serializable {
 
     public Conteudo() {
         id = new ConteudoId();
+        children = new ArrayList();
     }
 
     public ConteudoId getId() {
@@ -72,6 +79,13 @@ public class Conteudo implements Serializable {
 
     public void setId(ConteudoId id) {
         this.id = id;
+    }
+    
+    public UnidadeCurricular getUnidadeCurricular() {
+        if (id != null) {
+            return id.getUnidadeCurricular();
+        }
+        return null;
     }
 
     public String getDescricao() {
@@ -108,6 +122,18 @@ public class Conteudo implements Serializable {
 
     public Boolean hasParent() {
         return conteudoParent != null;
+    }
+
+    public List<Conteudo> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Conteudo> children) {
+        this.children = children;
+    }
+    
+    public void addChild(Conteudo child) {
+        this.children.add(child);
     }
 
     @Override
