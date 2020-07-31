@@ -18,7 +18,9 @@ public enum AcoesBotoes {
     REFBIB(22), ESTUD(23), CONT_EMENTA(24), PLAN(9), DIARY(28), REPORT(29),
 
     ADD(0), NEW(8), DELETE(1), EDIT(2), SAVE(3), DUPLICATE(5), CLOSE(4), GENERATE(6),
-    IMPORT(7), CANCEL(25), SEARCH(26), CLEAR(27), STRUCTURE(30);
+    IMPORT(7), CANCEL(25), SEARCH(26), CLEAR(27), STRUCTURE(30),
+    
+    SELECTION(31);
     
     private final Integer value;
     
@@ -70,6 +72,7 @@ public enum AcoesBotoes {
             case 28: return "Diário";
             case 29: return "Relatórios";
             case 30: return "Estrutura";
+            case 31: return "Seleção";
         }
     }
 }
