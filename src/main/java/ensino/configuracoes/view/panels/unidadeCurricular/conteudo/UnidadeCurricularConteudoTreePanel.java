@@ -31,6 +31,8 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DropMode;
 import javax.swing.ImageIcon;
@@ -43,6 +45,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -63,7 +67,7 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
     private JPopupMenu popupMenu;
     private JMenuItem menuNovo;
     private JMenuItem menuDelete;
-    
+
     private JTabbedPane tabs;
 
     public UnidadeCurricularConteudoTreePanel(UnidadeCurricular unidadeCurricular,
@@ -96,19 +100,20 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         lblTitulo.setForeground(foreColor);
         lblTitulo.toBold();
         add(lblTitulo, BorderLayout.PAGE_START);
-        
+
         GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
         JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
         panelButton.add(btClose);
-        
+
         JPanel panelTree = createPanel(new BorderLayout());
         panelTree.add(panelButton, BorderLayout.PAGE_END);
         panelTree.add(createTreePanel(), BorderLayout.CENTER);
-        
+
         ImageIcon iconTree = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "binary-tree-icon-25px.png")));
         ImageIcon iconTable = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "tables-icon-25px.png")));
-        
+
         tabs = new JTabbedPane();
+        tabs.addChangeListener(new TabbedHandler());
         tabs.addTab("Árvore", iconTree, panelTree);
         tabs.addTab("Tabela", iconTable, new UnidadeCurricularConteudoPanel(this.frame, this.unidadeCurricular));
         add(tabs, BorderLayout.CENTER);
@@ -137,29 +142,28 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         tree.setCellRenderer(new UCTreeCellRenderer());
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         tree.addMouseListener(new TreeMouseEvent());
-        
+
         ConteudoTreeCellEditor cellEditor = new ConteudoTreeCellEditor(tree);
-            cellEditor.addCellEditorListener(new TreeCellEditorListener());
+        cellEditor.addCellEditorListener(new TreeCellEditorListener());
         tree.setCellEditor(cellEditor);
 
-        refreshTree();
         JScrollPane scroll = new JScrollPane(tree);
         scroll.setAutoscrolls(true);
         scroll.setPreferredSize(new Dimension(800, 600));
 
+        refreshTree();
+        
         JPanel panel = createPanel();
         panel.add(scroll);
         return panel;
     }
 
     private void refreshTree() {
+        List<Conteudo> lista;
         try {
-            List<Conteudo> lista = ControllerFactory.createConteudoController().listar(unidadeCurricular);
+            lista = ControllerFactory.createConteudoController().listar(unidadeCurricular);
             treeModel = new ConteudoTreeModel(lista);
-            treeModel.addTreeModelListener(new ConteudoTreeModelListener());
             tree.setModel(treeModel);
-            tree.repaint();
-            expandAllNodes(tree, 0, 0);
         } catch (Exception ex) {
             showErrorMessage(ex);
         }
@@ -261,6 +265,19 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
                 showInformationMessage(String.format("O nó [%s] não pode ser excluído", value));
             }
         }
+    }
+
+    private class TabbedHandler implements ChangeListener {
+
+        @Override
+        public void stateChanged(ChangeEvent evt) {
+            JTabbedPane pane = (JTabbedPane) evt.getSource();
+
+            if (pane.getSelectedIndex() == 0) {
+                refreshTree();
+            }
+        }
+
     }
 
     private class TreeMouseEvent extends MouseAdapter {
@@ -417,5 +434,4 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
 //            Logger.getLogger(UnidadeCurricularFieldsConteudo.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
-
 }
