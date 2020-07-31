@@ -673,6 +673,10 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
             JFrame f = (JFrame) frame;
             f.dispose();
         }
+        Runtime rt = Runtime.getRuntime();
+        System.out.println("\nMemória depois da criação dos objetos: " + rt.freeMemory());
+        rt.gc();
+        System.out.println("Memória depois executar o gc: " + rt.freeMemory());
     }
 
     /**
