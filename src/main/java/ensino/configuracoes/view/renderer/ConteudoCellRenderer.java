@@ -21,6 +21,14 @@ import javax.swing.JTable;
  */
 public class ConteudoCellRenderer extends GenCellRenderer {
 
+    public String repeatString(String value, Integer number) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < number; i++) {
+            sb.append(value);
+        }
+        return value.toString();
+    }
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int col) {
@@ -37,11 +45,11 @@ public class ConteudoCellRenderer extends GenCellRenderer {
         if (value instanceof Conteudo) {
             Conteudo c = (Conteudo) value;
             GenJLabel lblTitle = createLabel("");
-            
+
             int n = c.getNivel() != null && c.getNivel() > 1 ? c.getNivel() - 1 : 0;
-            String t = "--".repeat(n).concat(c.getDescricao());
-            
-            lblTitle.setText(t, 60+(n*2));
+            String t = repeatString("--", n).concat(c.getDescricao());
+
+            lblTitle.setText(t, 60 + (n * 2));
             lblTitle.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
             lblTitle.toBold();
 
@@ -53,7 +61,7 @@ public class ConteudoCellRenderer extends GenCellRenderer {
             GenJLabel lblParent = createLabel("");
             lblParent.setText(conteudoParent, 60);
             lblParent.resetFontSize(12);
-            
+
             GenJLabel lblNivel = createLabel(
                     String.format("Nivel: %d / Sequência: %d",
                             c.getNivel(), c.getSequencia()));
