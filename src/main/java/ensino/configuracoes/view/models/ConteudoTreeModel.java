@@ -8,7 +8,10 @@ package ensino.configuracoes.view.models;
 import ensino.components.GenTreeModel;
 import ensino.components.ToolTipTreeNode;
 import ensino.configuracoes.model.Conteudo;
+import ensino.patterns.factory.ControllerFactory;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -21,8 +24,13 @@ public class ConteudoTreeModel extends GenTreeModel<Conteudo> {
         super(lista, new DefaultMutableTreeNode("Conteúdo"));
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @Override
     protected void loadTree() {
+        StringBuffer sb = new StringBuffer();
         if (!lista.isEmpty()) {
             for (Conteudo conteudo : lista) {
                 ToolTipTreeNode node = null;
@@ -44,7 +52,22 @@ public class ConteudoTreeModel extends GenTreeModel<Conteudo> {
                     node.setUserObject(conteudo);
 
                     if (conteudo.getSequencia() != null) {
-                        insertNodeInto(node, parentNode, conteudo.getSequencia());
+                        try {
+                            insertNodeInto(node, parentNode, conteudo.getSequencia());
+                        } catch (ArrayIndexOutOfBoundsException ex) {
+                            try {
+                                /**
+                                 * Força a correção do indice do conteúdo colocando-o
+                                 * em última posição
+                                 */
+                                conteudo.setSequencia(parentNode.getChildCount()-1);
+                                ControllerFactory.createConteudoController().salvar(conteudo);
+                                insertNodeInto(node, parentNode, conteudo.getSequencia());
+                            } catch (Exception ex1) {
+                                Logger.getLogger(ConteudoTreeModel.class.getName()).log(Level.SEVERE, null, ex1);
+                                ex1.printStackTrace();
+                            }
+                        }
                     }
                 }
             }
