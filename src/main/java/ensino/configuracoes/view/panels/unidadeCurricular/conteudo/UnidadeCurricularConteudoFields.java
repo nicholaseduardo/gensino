@@ -146,7 +146,7 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
         map.put("id", id);
         map.put("unidadeCurricular", unidadeCurricular);
         map.put("descricao", txtDescricao.getText());
-        map.put("conteudoParent", comboModel.getSelectedItem());
+        map.put("conteudoParent", comboConteudo.getSelectedIndex() == 0 ? null : comboModel.getSelectedItem());
         map.put("sequencia", sequencia);
         map.put("nivel", nivel);
 
@@ -267,6 +267,14 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
     private class ComboRenderer implements ListCellRenderer {
 
         protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+        
+        public String repeatString(String value, Integer number) {
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < number; i++) {
+                sb.append(value);
+            }
+            return sb.toString();
+        }
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index,
@@ -274,9 +282,15 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
             if (value instanceof Conteudo) {
                 Conteudo c = (Conteudo) value;
                 Color theForeground = null;
-
-                int n = c.getNivel() != null && c.getNivel() > 1 ? c.getNivel() - 1 : 0;
-                String theText = "--".repeat(n).concat(c.getDescricao());
+                
+                Integer nivel = c.getNivel();
+                
+                int n = nivel != null && nivel > 1 ? nivel - 1 : 0;
+                String theText = "";
+                if (n > 0)
+                    theText = repeatString("--", n).concat(c.getDescricao());
+                else
+                    theText = c.getDescricao();
 
                 theForeground = list.getForeground();
 
