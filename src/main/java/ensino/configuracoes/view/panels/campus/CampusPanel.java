@@ -14,8 +14,6 @@ import ensino.defaults.DefaultFieldsPanel;
 import ensino.defaults.DefaultFormPanel;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ensino.components.GenJLabel;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Curso;
