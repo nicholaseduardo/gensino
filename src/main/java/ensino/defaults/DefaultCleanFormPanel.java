@@ -5,6 +5,7 @@
  */
 package ensino.defaults;
 
+import ensino.components.GenJButton;
 import ensino.components.GenJLabel;
 import ensino.components.GenJPanel;
 import ensino.patterns.AbstractController;
@@ -92,10 +93,10 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
 
     private JLabel titlePanel;
 
-    private JButton btAdd;
-    private JButton btSave;
-    private JButton btCancel;
-    private JButton btExit;
+    private GenJButton btAdd;
+    private GenJButton btSave;
+    private GenJButton btCancel;
+    private GenJButton btExit;
 
     /**
      * Atributo utilizado para indicar qual é a origem da janela que instanciou
@@ -107,6 +108,11 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
      * Atributo utilizado para mostrar o status do panel
      */
     private GenJLabel labelStatus;
+    
+    /**
+     * Atributo utilizado para retornar o objeto selecionado na JTable
+     */
+    private Object selectedObject;
 
     public DefaultCleanFormPanel(Component frame) {
         super(new BorderLayout());
@@ -257,7 +263,7 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
         scrollPane = new JScrollPane();
         if (component instanceof JTable) {
             table = new JTable(model);
-            
+
             scrollPane.setViewportView(table);
             // adiciona a tabela no centro do painel de tabela
             tablePanel.add(scrollPane, BorderLayout.CENTER);
@@ -294,7 +300,9 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
      */
     public abstract void createSelectButton();
 
-    public abstract Object getSelectedObject();
+    public Object getSelectedObject() {
+        return selectedObject;
+    }
 
     private void addKeyEventTo(JButton button, int keyChar) {
         // controla os eventos de tecla dos botoes
@@ -413,10 +421,17 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
 
     protected void disableAddButton() {
         btAdd.setEnabled(false);
+        btAdd.setVisible(false);
     }
-    
-    protected void disableCloseButton() {
+
+    public void disableCloseButton() {
         btExit.setEnabled(false);
+        btExit.setVisible(false);
+    }
+
+    public void enableCloseButton() {
+        btExit.setEnabled(true);
+        btExit.setVisible(true);
     }
 
     public void enableFields(boolean active) {
@@ -516,6 +531,18 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
             }
         } else {
             showInformationMessage("Os campos em Asterisco (*) não foram preenchidos/selecioados.");
+        }
+    }
+
+    @Override
+    public void onSelectAction(ActionEvent e, Object o) {
+        if (o != null && o instanceof JTable) {
+            selectedObject = getObjectFromTable((JTable) o);
+            JDialog dialog = (JDialog) getFrame();
+            dialog.dispose();
+        } else {
+            showInformationMessage("Não existem dados a serem selecionados.\n"
+                    + "Favor, cadastrar um dado primeiro.");
         }
     }
 
