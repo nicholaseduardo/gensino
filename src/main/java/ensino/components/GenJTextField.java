@@ -124,6 +124,14 @@ public class GenJTextField extends JTextField {
     public void setTextWrittenIn(boolean textWrittenIn) {
         this.textWrittenIn = textWrittenIn;
     }
+    
+    @Override
+    public String getText() {
+        if (isSetPlaceholderText() && !isTextWrittenIn()) {
+            return "";
+        }
+        return super.getText();
+    }
 
     public void setPlaceholder(final String text) {
         placeholderText = text;
