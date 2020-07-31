@@ -9,6 +9,7 @@ import ensino.configuracoes.model.Conteudo;
 import ensino.configuracoes.model.ConteudoId;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoSQL;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.TypedQuery;
 
@@ -65,7 +66,28 @@ public class ConteudoDaoSQL extends AbstractDaoSQL<Conteudo> {
                 + " c.nivel, sequencia ";
 
         TypedQuery query = entityManager.createQuery(sql, Conteudo.class);
-        return query.getResultList();
+        List<Conteudo> l = query.getResultList();
+        
+        return addChildren(null, l);
+    }
+    
+    private List<Conteudo> addChildren(Conteudo root, List<Conteudo> l) {
+        List<Conteudo> list = new ArrayList();
+        
+        /**
+         * Localizar os childs do root
+         */
+        for(Conteudo c : l) {
+            if ((root == null && !c.hasParent()) ||
+                    (c.hasParent() && c.getConteudoParent().equals(root))){
+                list.add(c);
+                /**
+                 * Adiciona os childs de C
+                 */
+                list.addAll(addChildren(c, l));
+            }
+        }
+        return list;
     }
 
     @Override
