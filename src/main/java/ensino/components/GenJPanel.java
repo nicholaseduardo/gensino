@@ -68,6 +68,7 @@ public class GenJPanel extends JPanel {
     protected ImageIcon iconImport;
     protected ImageIcon iconNew;
     protected ImageIcon iconPlan;
+    protected ImageIcon iconSelect;
 
     protected ImageIcon iconInfo;
     protected ImageIcon iconTarget;
@@ -110,6 +111,7 @@ public class GenJPanel extends JPanel {
         URL urlImport = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "import-button-25px.png"));
         URL urlNew = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "view-button-25px.png"));
         URL urlPlan = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "plano-icon-25px.png"));
+        URL urlSelection = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "selection-button-25px.png"));
 
         iconInfo = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Info-icon-25px.png")));
         iconTarget = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "target-icon-25px.png")));
@@ -140,6 +142,7 @@ public class GenJPanel extends JPanel {
         iconImport = new ImageIcon(urlImport);
         iconNew = new ImageIcon(urlNew);
         iconPlan = new ImageIcon(urlPlan);
+        iconSelect = new ImageIcon(urlSelection);
 
         backColor = Color.WHITE;
         foreColor = Color.BLACK;
@@ -301,6 +304,10 @@ public class GenJPanel extends JPanel {
 
     }
 
+    public void onSelectAction(ActionEvent e, Object o) {
+
+    }
+
     public void onDefaultButton(ActionEvent e, Object o) {
 
     }
@@ -416,6 +423,7 @@ public class GenJPanel extends JPanel {
                     : AcoesBotoes.DIARY.equals(acaoBotao) ? iconDiario
                     : AcoesBotoes.REPORT.equals(acaoBotao) ? iconReport
                     : AcoesBotoes.STRUCTURE.equals(acaoBotao) ? iconStructure
+                    : AcoesBotoes.SELECTION.equals(acaoBotao) ? iconSelect
                     : null);
             this.acaoBotao = acaoBotao;
             this.object = object;
@@ -466,6 +474,9 @@ public class GenJPanel extends JPanel {
                     break;
                 case PLAN:
                     onPlanAction(ae, object);
+                    break;
+                case SELECTION:
+                    onSelectAction(ae, object);
                     break;
                 default:
                     onDefaultButton(ae, object);
