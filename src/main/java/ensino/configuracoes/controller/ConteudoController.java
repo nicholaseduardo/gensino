@@ -34,6 +34,10 @@ public class ConteudoController extends AbstractController<Conteudo> {
     }
 
     public List<Conteudo> listar(UnidadeCurricular o) {
+        return listar(o, null);
+    }
+
+    public List<Conteudo> listar(UnidadeCurricular o, String descricao) {
         String filter = "";
         filter = String.format(" AND c.id.unidadeCurricular.id.id = %d "
                 + " AND c.id.unidadeCurricular.id.curso.id.id = %d "
@@ -41,6 +45,9 @@ public class ConteudoController extends AbstractController<Conteudo> {
                 o.getId().getId(),
                 o.getId().getCurso().getId().getId(),
                 o.getId().getCurso().getId().getCampus().getId());
+        if (descricao != null && !"".equals(descricao)) {
+            filter += (" AND UPPER(c.descricao) LIKE UPPER('%"+descricao+"%') ");
+        }
 
         return super.getDao().list(filter, o);
     }
