@@ -530,6 +530,10 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
             JFrame f = (JFrame) frame;
             f.dispose();
         }
+        Runtime rt = Runtime.getRuntime();
+        System.out.println("\nMemória depois da criação dos objetos: " + rt.freeMemory());
+        rt.gc();
+        System.out.println("Memória depois executar o gc: " + rt.freeMemory());
     }
 
     public abstract void addFiltersFields();
