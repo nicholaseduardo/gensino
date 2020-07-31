@@ -17,7 +17,7 @@ public class ConteudoTableModel extends DefaultTableModel<Conteudo> {
     
     public ConteudoTableModel(List<Conteudo> lista) {
         super(lista, new String[] {
-            "Nome"
+            "Nome", "Ações"
         });
     }
 
