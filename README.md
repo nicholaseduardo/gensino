@@ -18,3 +18,5 @@ Neste software é possível:
 
 A Ferramenta está disponível para download no link abaixo:
 
+* Executável: [GESTINO v1.1](https://github.com/nicholaseduardo/gensino/blob/master/versions/snapshot/gensino-1.1-SNAPSHOT.jar)
+* Bibliotecas: [LIBS v1.1](https://github.com/nicholaseduardo/gensino/blob/master/versions/snapshot/lib-1.1.zip)
