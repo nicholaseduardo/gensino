@@ -7,12 +7,13 @@ package ensino.configuracoes.view.renderer;
 
 import ensino.components.renderer.GenCellRenderer;
 import ensino.components.GenJLabel;
-import ensino.configuracoes.view.models.CursoTableModel;
+import static ensino.components.GenJPanel.IMG_SOURCE;
 import ensino.configuracoes.model.Curso;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,6 +24,66 @@ import javax.swing.JTable;
  * @author nicho
  */
 public class CursoCellRenderer extends GenCellRenderer {
+
+    private JPanel panel;
+    private GenJLabel lblTitle;
+    private GenJLabel lblCampus;
+    private GenJLabel lblTurma;
+    private GenJLabel lblUnd;
+    private GenJLabel lblNivel;
+
+    public CursoCellRenderer() {
+        super();
+        initComponents();
+    }
+
+    private void initComponents() {
+        URL urlCurso = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "courses-icon-25px.png"));
+        lblTitle = createLabel("");
+        lblTitle.setIcon(new ImageIcon(urlCurso));
+
+        lblCampus = createLabel("");
+        lblCampus.resetFontSize(12);
+        lblCampus.setIcon(new ImageIcon(getClass().getResource("/img/university-icon-15px.png")));
+
+        lblTurma = createLabel("");
+        lblTurma.resetFontSize(12);
+        lblTurma.setHorizontalAlignment(JLabel.RIGHT);
+        lblTurma.setIcon(new ImageIcon(getClass().getResource("/img/classroom-15px.png")));
+
+        lblUnd = createLabel("");
+        lblUnd.setHorizontalAlignment(JLabel.RIGHT);
+        lblUnd.resetFontSize(12);
+        lblUnd.setIcon(new ImageIcon(getClass().getResource("/img/school-icon-15px.png")));
+
+        lblNivel = createLabel("");
+        lblNivel.setHorizontalAlignment(JLabel.RIGHT);
+        lblNivel.resetFontSize(12);
+
+        JPanel panelIcons = createPanel(new GridLayout(2, 2));
+        panelIcons.add(lblCampus);
+        panelIcons.add(lblUnd);
+        panelIcons.add(lblNivel);
+        panelIcons.add(lblTurma);
+
+        panel = createPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(lblTitle, BorderLayout.CENTER);
+        panel.add(panelIcons, BorderLayout.PAGE_END);
+        panel.setOpaque(true);
+    }
+
+    private void setData(Object value) {
+        Curso o = (Curso) value;
+        lblTitle.setText(o.getNome());
+        lblCampus.setText(String.format("[Campus: %s]", o.getId().getCampus().getNome()));
+        lblTurma.setText(String.format("Turmas: %d", o.getTurmas().size()));
+        lblUnd.setText(String.format("Disciplinas: %d", o.getUnidadesCurriculares().size()));
+        lblNivel.setText(String.format("[Nível de Ensino: %s]",
+                o.getNivelEnsino() != null ? o.getNivelEnsino().getNome() : ""));
+        
+        panel.setBackground(getBack());
+    }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
@@ -36,41 +97,15 @@ public class CursoCellRenderer extends GenCellRenderer {
                             ? new Color(table.getBackground().getRGB())
                             : new Color(240, 240, 240)));
         }
-
-        CursoTableModel model = (CursoTableModel) table.getModel();
-        Curso o = (Curso) model.getRow(row);
-        GenJLabel lblTitle = createLabel(o.getNome());
-
-        GenJLabel lblCampus = createLabel(String.format("[Campus: %s]", o.getId().getCampus().getNome()));
-        lblCampus.resetFontSize(12);
-        lblCampus.setIcon(new ImageIcon(getClass().getResource("/img/university-icon-15px.png")));
         
-        GenJLabel lblTurma = createLabel(String.format("Turmas: %d", o.getTurmas().size()), JLabel.RIGHT);
-        lblTurma.resetFontSize(12);
-        lblTurma.setIcon(new ImageIcon(getClass().getResource("/img/classroom-15px.png")));
+        setData(value);
 
-        GenJLabel lblUnd = createLabel(String.format("Disciplinas: %d", o.getUnidadesCurriculares().size()), JLabel.RIGHT);
-        lblUnd.resetFontSize(12);
-        lblUnd.setIcon(new ImageIcon(getClass().getResource("/img/school-icon-15px.png")));
-        
-        GenJLabel lblNivel = createLabel(String.format("[Nível de Ensino: %s]", 
-                o.getNivelEnsino() != null ? o.getNivelEnsino().getNome() : ""), JLabel.RIGHT);
-        lblNivel.resetFontSize(12);
+        int altura = panel.getPreferredSize().height;
+        if (altura < 60) {
+            altura = 60;
+        }
 
-        JPanel panelIcons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        panelIcons.add(lblTurma);
-        panelIcons.add(lblUnd);
-        panelIcons.setBackground(getBack());
-
-        JPanel panel = new JPanel(new GridLayout(2, 2, 10, 0));
-        panel.add(lblTitle);
-        panel.add(lblNivel);
-        panel.add(lblCampus);
-        panel.add(panelIcons);
-        panel.setBackground(getBack());
-
-        table.setRowHeight(panel.getPreferredSize().height + 10);
-        panel.setOpaque(true);
+        table.setRowHeight(altura);
         return panel;
     }
 
