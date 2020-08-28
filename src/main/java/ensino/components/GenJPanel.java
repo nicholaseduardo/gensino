@@ -80,11 +80,16 @@ public class GenJPanel extends JPanel {
     protected ImageIcon iconEvaluation;
     protected ImageIcon iconReport;
     protected ImageIcon iconChart;
+    protected ImageIcon iconRefBib;
     protected ImageIcon iconPE;
     protected ImageIcon iconRB;
     protected ImageIcon iconEstudante;
     protected ImageIcon iconDiario;
     protected ImageIcon iconStructure;
+
+    protected ImageIcon iconCurso;
+    protected ImageIcon iconUnidade;
+    protected ImageIcon iconTurma;
 
     public GenJPanel() {
         super();
@@ -98,7 +103,7 @@ public class GenJPanel extends JPanel {
 
     private void initPanel() {
         URL urlAdd = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "add-black-icon-png-25px.png"));
-        URL urlDel = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "del-button-png-25px.png"));
+        URL urlDel = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "delete-button-25px.png"));
         URL urlEdit = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "edit-icon-png-25px.png"));
         URL urlClose = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "exit-button-25px.png"));
         URL urlClear = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "clear-icon-25px.png"));
@@ -113,6 +118,14 @@ public class GenJPanel extends JPanel {
         URL urlPlan = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "plano-icon-25px.png"));
         URL urlSelection = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "selection-button-25px.png"));
 
+        URL urlCurso = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "courses-icon-25px.png"));
+        URL urlUnidade = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "school-icon-25px.png"));
+        URL urlTurma = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "classroom-25px.png"));
+
+        iconCurso = new ImageIcon(urlCurso);
+        iconUnidade = new ImageIcon(urlUnidade);
+        iconTurma = new ImageIcon(urlTurma);
+
         iconInfo = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Info-icon-25px.png")));
         iconTarget = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "target-icon-25px.png")));
         iconDetail = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Logos-Details-icon-25px.png")));
@@ -123,6 +136,8 @@ public class GenJPanel extends JPanel {
         iconEvaluation = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Status-mail-task-icon-25px.png")));
         iconReport = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Custom-reports-icon-25px.png")));
         iconChart = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "chart-icon-25px.png")));
+        iconRefBib= new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Books-2-icon-25px.png")));
+        
         iconPE = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Clipboard-icon-25px.png")));
         iconRB = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "library-icon-25px.png")));
         iconEstudante = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "student-icon-25px.png")));
@@ -146,7 +161,7 @@ public class GenJPanel extends JPanel {
 
         backColor = Color.WHITE;
         foreColor = Color.BLACK;
-        
+
         setBackground(backColor);
         setForeground(foreColor);
     }
@@ -417,13 +432,15 @@ public class GenJPanel extends JPanel {
                     : AcoesBotoes.VIEW_PLAN.equals(acaoBotao) ? iconReport
                     : AcoesBotoes.NOTAS.equals(acaoBotao) ? iconReport
                     : AcoesBotoes.CONTROLE.equals(acaoBotao) ? iconChart
-                    : AcoesBotoes.REFBIB.equals(acaoBotao) ? iconChart
+                    : AcoesBotoes.REFBIB.equals(acaoBotao) ? iconRefBib
                     : AcoesBotoes.ESTUD.equals(acaoBotao) ? iconEstudante
                     : AcoesBotoes.CONT_EMENTA.equals(acaoBotao) ? iconPE
                     : AcoesBotoes.DIARY.equals(acaoBotao) ? iconDiario
                     : AcoesBotoes.REPORT.equals(acaoBotao) ? iconReport
                     : AcoesBotoes.STRUCTURE.equals(acaoBotao) ? iconStructure
                     : AcoesBotoes.SELECTION.equals(acaoBotao) ? iconSelect
+                    : AcoesBotoes.UC.equals(acaoBotao) ? iconUnidade
+                    : AcoesBotoes.TURMA.equals(acaoBotao) ? iconTurma
                     : null);
             this.acaoBotao = acaoBotao;
             this.object = object;
