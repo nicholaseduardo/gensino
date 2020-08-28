@@ -5,94 +5,71 @@
  */
 package ensino.configuracoes.view.panels.curso;
 
+import ensino.components.GenJButton;
+import ensino.components.GenJLabel;
+import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.CursoController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.view.models.CursoTableModel;
-import ensino.defaults.DefaultFormPanel;
-import java.awt.event.ActionEvent;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
-import ensino.configuracoes.view.panels.filters.CampusFilter;
+import ensino.configuracoes.view.panels.turma.TurmaPanel;
+import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularPanel;
 import ensino.configuracoes.view.renderer.CursoCellRenderer;
+import ensino.defaults.DefaultCleanFormPanel;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.util.types.AcoesBotoes;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.util.EnumSet;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
  * @author nicho
  */
-public class CursoPanel extends DefaultFormPanel {
+public class CursoPanel extends DefaultCleanFormPanel {
 
     private Campus selectedCampus;
-    private CampusFilter campusFilter;
-    private Curso selectedCurso;
+    private EnumSet enumSet;
+    
+    private GenJTextField txtNome;
+    private GenJButton btSearch;
+
+    public CursoPanel(Component frame) {
+        this(frame, ControllerFactory.getCampusVigente());
+    }
 
     public CursoPanel(Component frame, Campus campus) {
         super(frame);
         this.selectedCampus = campus;
 
+        initComponents();
+    }
+
+    private void initComponents() {
         try {
             setName("panel.curso");
             setTitlePanel("Dados de Cursos");
             // para capturar os dados do curso, usa-se a estrutura do campus
             setController(ControllerFactory.createCursoController());
 
+            enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.UC,
+                AcoesBotoes.TURMA, AcoesBotoes.DELETE);
+            
             enableTablePanel();
             setFieldsPanel(new CursoFieldsPanel());
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
-            Logger.getLogger(CursoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
         }
-    }
-
-    public CursoPanel(Component frame) {
-        this(frame, null);
     }
 
     public Campus getCampus() {
         return selectedCampus;
-    }
-
-    /**
-     * Recupera o curso selecionado na tabela quando o botao de selecao de curso
-     * é criado
-     *
-     * @return
-     */
-    @Override
-    public Curso getSelectedObject() {
-        return selectedCurso;
-    }
-
-    /**
-     * Cria um botão para selecionar um curso na tabela e fecha a janela do
-     * curso
-     */
-    @Override
-    public void createSelectButton() {
-        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
-        button.addActionListener((ActionEvent e) -> {
-            JTable t = getTable();
-            if (t.getRowCount() > 0) {
-                int row = t.getSelectedRow();
-                CursoTableModel model = (CursoTableModel) t.getModel();
-                selectedCurso = (Curso) model.getRow(row);
-                JDialog dialog = (JDialog) getFrame();
-                dialog.dispose();
-            } else {
-                JOptionPane.showMessageDialog(getParent(),
-                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
-                        "Aviso", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-        addButtonToToolBar(button, true);
     }
 
     public void setCampus(Campus campus) {
@@ -102,40 +79,75 @@ public class CursoPanel extends DefaultFormPanel {
 
     private void resizeTableColumns() {
         JTable table = getTable();
-        table.getColumnModel().getColumn(0).setCellRenderer(new CursoCellRenderer());
+        TableColumnModel tcm = table.getColumnModel();
+        TableColumn col0 = tcm.getColumn(0);
+        col0.setCellRenderer(new CursoCellRenderer());
+
+        TableColumn col1 = tcm.getColumn(1);
+        col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
+        col1.setCellEditor(new ButtonsEditor(table, null, enumSet));
+
+        table.repaint();
     }
 
     @Override
     public void reloadTableData() {
         try {
-            setController(ControllerFactory.createCursoController());
-
-            selectedCampus = campusFilter.getSelectedCampus();
-
             CursoController col = (CursoController) getController();
-            List<Curso> list;
-            if (selectedCampus == null) {
-                list = col.listar();
-            } else {
-                // recupera a lista de cursos pelo campus
-                list = col.listar(selectedCampus);
-            }
-            setTableModel(new CursoTableModel(list));
+            setTableModel(new CursoTableModel(col.listar(selectedCampus,
+                    txtNome.getText())));
             resizeTableColumns();
         } catch (Exception ex) {
-            Logger.getLogger(CursoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
         }
     }
 
+    /**
+     * Cria um botão para selecionar um curso na tabela e fecha a janela do
+     * curso
+     */
     @Override
-    public void onSearchButton(ActionEvent e) {
-
+    public void createSelectButton() {
+        enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.SELECTION);
+        reloadTableData();
     }
 
     @Override
     public void addFiltersFields() {
-        campusFilter = new CampusFilter(this, selectedCampus);
+        GenJLabel lblNome = new GenJLabel("Nome: ");
+        txtNome = new GenJTextField(30, false);
+        
+        btSearch = createButton(new ActionHandler(AcoesBotoes.SEARCH));
+        
         JPanel panel = getFilterPanel();
-        panel.add(campusFilter);
+        panel.add(lblNome);
+        panel.add(txtNome);
+        panel.add(btSearch);
+    }
+
+    @Override
+    public void onDefaultButton(ActionEvent e, Object o) {
+        if (o != null && o instanceof JTable) {
+            Object obj = getObjectFromTable((JTable) o);
+            if (obj instanceof Curso) {
+                Curso curso = (Curso) obj;
+
+                JDialog dialog = new JDialog();
+                DefaultCleanFormPanel panel = null;
+
+                String actionCommant = e.getActionCommand();
+                if (actionCommant.equals(AcoesBotoes.TURMA.toString())) {
+                    panel = new TurmaPanel(null, curso);
+                } else if (actionCommant.equals(AcoesBotoes.UC.toString())) {
+                    panel = new UnidadeCurricularPanel(null, curso);
+                }
+                
+                if (panel != null) {
+                    showDialog(dialog, panel);
+                    reloadTableData();
+                }
+
+            }
+        }
     }
 }

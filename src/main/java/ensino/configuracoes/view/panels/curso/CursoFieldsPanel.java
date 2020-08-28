@@ -50,7 +50,7 @@ public class CursoFieldsPanel extends DefaultFieldsPanel {
     private void initComponents() {
         setLayout(new BorderLayout(5, 5));
         try {
-            JPanel fieldsPanel = new JPanel(new GridBagLayout());
+            JPanel fieldsPanel = createPanel(new GridBagLayout());
             GridBagConstraints c = new GridBagConstraints();
 
             GenJLabel lblId = new GenJLabel("Código:", JLabel.TRAILING);

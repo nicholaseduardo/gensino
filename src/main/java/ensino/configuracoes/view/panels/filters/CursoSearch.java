@@ -6,6 +6,7 @@
 package ensino.configuracoes.view.panels.filters;
 
 import ensino.components.GenJButton;
+import ensino.components.GenJPanel;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.CursoController;
 import ensino.configuracoes.model.Curso;
@@ -26,14 +27,13 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.event.DocumentListener;
 
 /**
  *
  * @author nicho
  */
-public class CursoSearch extends JPanel {
+public class CursoSearch extends GenJPanel {
 
     private GenJTextField txtId;
     private GenJTextField txtNome;
@@ -121,9 +121,8 @@ public class CursoSearch extends JPanel {
     public void onSearchListener(AWTEvent e) {
         try {
             if (selectedCampus == null) {
-                JOptionPane.showMessageDialog(this, 
-                        "O Campus não foi selecionado. Entre em contato com o administrador!", 
-                        "Erro", JOptionPane.ERROR_MESSAGE);
+                showWarningMessage("O Campus não foi selecionado. Entre em "
+                        + "contato com o administrador!");
                 setObjectValue(null);
                 return;
             }

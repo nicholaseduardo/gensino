@@ -22,7 +22,7 @@ public class CursoTableModel extends DefaultTableModel {
     
     public CursoTableModel(List<Curso> lista) {
         super(lista, new String[] {
-            "Nome"
+            "Nome", "Ações"
         });
     }
 
@@ -30,7 +30,7 @@ public class CursoTableModel extends DefaultTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Curso curso = (Curso) getRow(rowIndex);
         switch(columnIndex) {
-            case 0: return curso.getNome();
+            case 0: return curso;
             default: return null;
         }
     }
