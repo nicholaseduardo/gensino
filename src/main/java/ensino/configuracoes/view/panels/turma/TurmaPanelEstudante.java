@@ -99,11 +99,6 @@ public class TurmaPanelEstudante extends DefaultCleanFormPanel {
     }
 
     @Override
-    public void createSelectButton() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Object getSelectedObject() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

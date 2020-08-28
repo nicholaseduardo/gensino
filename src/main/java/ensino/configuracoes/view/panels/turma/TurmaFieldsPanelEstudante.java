@@ -5,30 +5,23 @@
  */
 package ensino.configuracoes.view.panels.turma;
 
-import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJSpinner;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.model.Estudante;
-import ensino.configuracoes.model.EstudanteFactory;
 import ensino.configuracoes.model.Turma;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.DateHelper;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
-import ensino.util.types.AcoesBotoes;
 import ensino.util.types.SituacaoEstudante;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
