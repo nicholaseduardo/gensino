@@ -43,6 +43,7 @@ import javax.swing.JTree;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import org.hibernate.exception.ConstraintViolationException;
 
 /**
  *
@@ -94,6 +95,8 @@ public class GenJPanel extends JPanel {
 
     protected ImageIcon iconBackward;
     protected ImageIcon iconForward;
+    protected ImageIcon iconUp;
+    protected ImageIcon iconDown;
 
     public GenJPanel() {
         super();
@@ -149,6 +152,8 @@ public class GenJPanel extends JPanel {
 
         iconBackward = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "backward-icon-25px.png")));
         iconForward = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "forward-icon-25px.png")));
+        iconUp = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Arrows-Up-icon-25px.png")));
+        iconDown = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Arrows-Down-icon-25px.png")));
         iconDelete = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "del-black-icon-png-25px.png")));
 
         iconDiario = new ImageIcon(urlDiary);
@@ -235,13 +240,13 @@ public class GenJPanel extends JPanel {
     }
 
     protected void showErrorMessage(Exception ex) {
+        String msg = String.format("Operação cancelada!\nErro: %s", ex.getMessage());
+        if (ex.getCause() != null) {
+            msg += "\nCausa: Operação cancelada porque o dado"
+                    + "\npossui dependências funcionais";
+        }
         JOptionPane.showMessageDialog(getParent(),
-                String.format("Operação cancelada!"
-                        + "\nErro: %s [caused by: %s]",
-                        ex.getMessage(),
-                        ex.getCause() != null ? ex.getCause().getMessage() : ""),
-                "Erro", JOptionPane.ERROR_MESSAGE);
-        System.err.print(ex);
+                msg, "Erro", JOptionPane.ERROR_MESSAGE);
         ex.printStackTrace();
     }
 
@@ -260,6 +265,11 @@ public class GenJPanel extends JPanel {
     }
 
     protected String showIntputTextAreaDialog(String msgTitle, String msg) {
+        return this.showIntputTextAreaDialog(msgTitle, msg, null);
+    }
+
+    protected String showIntputTextAreaDialog(String msgTitle, String msg, 
+            String initialSelectionValue) {
         Icon icon = new ImageIcon(getClass().getResource("/img/Open-folder-add-icon-100px.png"));
         Object[] options = {"Ok", "Cancelar"};
         GenJTextArea text = new GenJTextArea(3, 30);
@@ -269,7 +279,7 @@ public class GenJPanel extends JPanel {
         };
         int result = JOptionPane.showOptionDialog(getParent(), inputs, msgTitle,
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, icon,
-                options, null);
+                options, initialSelectionValue);
         if (result == JOptionPane.OK_OPTION) {
             return text.getText();
         }
@@ -452,6 +462,8 @@ public class GenJPanel extends JPanel {
                     : AcoesBotoes.TURMA.equals(acaoBotao) ? iconTurma
                     : AcoesBotoes.BACKWARD.equals(acaoBotao) ? iconBackward
                     : AcoesBotoes.FORWARD.equals(acaoBotao) ? iconForward
+                    : AcoesBotoes.UP.equals(acaoBotao) ? iconUp
+                    : AcoesBotoes.DOWN.equals(acaoBotao) ? iconDown
                     : AcoesBotoes.DELETE.equals(acaoBotao) ? iconDelete
                     : null);
             this.acaoBotao = acaoBotao;
