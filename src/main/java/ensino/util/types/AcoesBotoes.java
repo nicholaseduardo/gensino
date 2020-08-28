@@ -76,6 +76,9 @@ public enum AcoesBotoes {
             case 31: return "Seleção";
             case 32: return "Unidade Curricular";
             case 33: return "Turma";
+            case 34: return "Para trás";
+            case 35: return "Para frente";
+            case 36: return "Delete";
         }
     }
 }
