@@ -9,8 +9,10 @@ import ensino.components.listener.GenFocusAdapter;
 import ensino.components.listener.GenKeyAdapter;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -38,6 +40,13 @@ public class GenJTextField extends JTextField {
     private boolean textWrittenIn;
     private String placeholderText;
 
+    /**
+     * Atributos utilizados para incluir um ícone ao campo
+     */
+    private static final int ICON_SPACING = 4;
+    private Border mBorder;
+    private Icon mIcon;
+
     public GenJTextField(boolean required) {
         super();
         this.required = required;
@@ -56,6 +65,8 @@ public class GenJTextField extends JTextField {
             Border lineBorder = BorderFactory.createLineBorder(Color.RED);
             Border outsider = BorderFactory.createEmptyBorder(6, 6, 6, 6);
             super.setBorder(BorderFactory.createCompoundBorder(lineBorder, outsider));
+            originalFont = getFont();
+            originalForeground = getForeground();
         } else {
             super.setMargin(new Insets(6, 6, 6, 6));
         }
@@ -108,7 +119,7 @@ public class GenJTextField extends JTextField {
     public Color getPlaceholderForeground() {
         return placeholderForeground;
     }
-    
+
     public Boolean isSetPlaceholderText() {
         return !"".equals(placeholderText);
     }
@@ -124,7 +135,7 @@ public class GenJTextField extends JTextField {
     public void setTextWrittenIn(boolean textWrittenIn) {
         this.textWrittenIn = textWrittenIn;
     }
-    
+
     @Override
     public String getText() {
         if (isSetPlaceholderText() && !isTextWrittenIn()) {
@@ -154,8 +165,8 @@ public class GenJTextField extends JTextField {
             }
 
             public void warn() {
-                if (isSetPlaceholderText() &&
-                        getText().trim().length() != 0) {
+                if (isSetPlaceholderText()
+                        && getText().trim().length() != 0) {
                     setFont(originalFont);
                     setForeground(originalForeground);
                     setTextWrittenIn(true);
@@ -177,6 +188,43 @@ public class GenJTextField extends JTextField {
             setForeground(getPlaceholderForeground());
             setTextWrittenIn(false);
         }
+    }
+
+    @Override
+    public void setBorder(Border border) {
+        mBorder = border;
+
+        if (mIcon == null) {
+            super.setBorder(border);
+        } else {
+            Border margin = BorderFactory.createEmptyBorder(0, mIcon.getIconWidth() + ICON_SPACING, 0, 0);
+            Border compoud = BorderFactory.createCompoundBorder(border, margin);
+            super.setBorder(compoud);
+        }
+    }
+
+    /**
+     * Método reescrito para adicionar o ícone ao JTextField
+     * 
+     * @param graphics
+     */
+    @Override
+    protected void paintComponent(Graphics graphics) {
+        super.paintComponent(graphics);
+
+        if (mIcon != null) {
+            Insets iconInsets = mBorder.getBorderInsets(this);
+            mIcon.paintIcon(this, graphics, iconInsets.left, iconInsets.top);
+        }
+    }
+
+    public void setIcon(Icon icon) {
+        mIcon = icon;
+        resetBorder();
+    }
+
+    private void resetBorder() {
+        setBorder(mBorder);
     }
 
 }
