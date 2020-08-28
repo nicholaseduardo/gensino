@@ -64,6 +64,7 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
 
     private JPopupMenu popupMenu;
     private JMenuItem menuNovo;
+    private JMenuItem menuEditar;
     private JMenuItem menuDelete;
 
     private JTabbedPane tabs;
@@ -76,9 +77,6 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         this.frame = frame;
 
         initComponents();
-
-        enableFields(true);
-        initFocus();
     }
 
     public void setFrame(Component frame) {
@@ -120,16 +118,24 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         add(tabs, BorderLayout.CENTER);
 
         createPopupMenu();
+
+        enableFields(true);
+        initFocus();
     }
 
     private void createPopupMenu() {
         menuNovo = new JMenuItem(new ActionHandler(AcoesBotoes.ADD));
         menuNovo.setActionCommand(AcoesBotoes.ADD.toString());
-        menuDelete = new JMenuItem(new ActionHandler(AcoesBotoes.DEL));
-        menuDelete.setActionCommand(AcoesBotoes.DEL.toString());
+
+        menuEditar = new JMenuItem(new ActionHandler(AcoesBotoes.EDIT));
+        menuEditar.setActionCommand(AcoesBotoes.EDIT.toString());
+
+        menuDelete = new JMenuItem(new ActionHandler(AcoesBotoes.DELETE));
+        menuDelete.setActionCommand(AcoesBotoes.DELETE.toString());
 
         popupMenu = new JPopupMenu("Ações");
         popupMenu.add(menuNovo);
+        popupMenu.add(menuEditar);
         popupMenu.add(menuDelete);
     }
 
@@ -221,26 +227,127 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         }
     }
 
-    @Override
-    public void onAddAction(ActionEvent e, Object o) {
-        Object source = e.getSource();
+    private void autoSave(DefaultMutableTreeNode node) {
+        try {
+            ConteudoController col = ControllerFactory.createConteudoController();
+            /**
+             * Verifica se o nó tem filhos
+             */
+            int childs = node.getChildCount(),
+                    indexNode = 0;
 
+            if (childs > 0) {
+                for (int i = 0; i < childs; i++) {
+                    DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
+                    autoSave(child);
+                }
+            }
+            /**
+             * Captura do objeto Conteudo do nó a ser salvo
+             */
+            Object data = node.getUserObject();
+            if (data instanceof Conteudo) {
+                /**
+                 * Variável criada para identificar o conteudo pai
+                 */
+                Conteudo parentConteudo = null;
+                /**
+                 * Variável utilizada para armazenar o nó Pai do nó sendo
+                 * adicionado
+                 */
+                DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
+                if (parentNode != null) {
+                    /**
+                     * Captura do objeto vinculado ao nó pai.
+                     */
+                    Object parentObject = parentNode.getUserObject();
+                    if (parentObject instanceof Conteudo) {
+                        parentConteudo = (Conteudo) parentObject;
+                    }
+                    indexNode = parentNode.getIndex(node);
+                }
+                Conteudo conteudo = (Conteudo) data;
+                /**
+                 * Atualiza o nível do conteúdo visto que ele pode ter sido
+                 * alterado via DnD. O getlevel do node traz o nível atualizado
+                 * do nó.
+                 */
+                conteudo.setNivel(node.getLevel());
+                /**
+                 * Atualiza a sequência em que ele foi adicionado
+                 */
+                conteudo.setSequencia(indexNode);
+                /**
+                 * Atualiza o parent
+                 */
+                conteudo.setConteudoParent(parentConteudo);
+                /**
+                 * Salva o conteudo
+                 */
+                col.salvar(conteudo);
+            }
+
+        } catch (Exception ex) {
+            showErrorMessage(ex);
+        }
+    }
+
+    private void autoSave() {
+        expandAllNodes(tree, 0, 0);
+        int startIndex = 0;
+        /**
+         * Atualiza/insere os dados da árvore a partir do nó raiz
+         */
+        TreePath tp = tree.getPathForRow(startIndex);
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tp.getLastPathComponent();
+
+        autoSave(node);
+    }
+
+    private DefaultMutableTreeNode getSelectedNode() {
         TreePath selectedTreePath = tree.getSelectionPath();
         if (selectedTreePath != null) {
             Object obj = selectedTreePath.getLastPathComponent();
 
             if (obj instanceof DefaultMutableTreeNode) {
-                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) obj;
-
-                String descricao = showIntputTextAreaDialog("Descrição do conteúdo", "Conteudo:");
-                ConteudoId cId = new ConteudoId(null, unidadeCurricular);
-                Conteudo conteudo = ConteudoFactory.getInstance()
-                        .createObject(cId, null, descricao, null, null);
-                DefaultMutableTreeNode node = new DefaultMutableTreeNode(conteudo);
-                treeModel.insertNodeInto(node, selectedNode, selectedNode.getChildCount());
+                return (DefaultMutableTreeNode) obj;
             }
+        }
+        return null;
+    }
+
+    @Override
+    public void onAddAction(ActionEvent e, Object o) {
+        DefaultMutableTreeNode selectedNode = getSelectedNode();
+        if (selectedNode != null) {
+            String descricao = showIntputTextAreaDialog("Descrição do conteúdo", "Conteudo:");
+            ConteudoId cId = new ConteudoId(null, unidadeCurricular);
+            Conteudo conteudo = ConteudoFactory.getInstance()
+                    .createObject(cId, null, descricao, null, null);
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(conteudo);
+            treeModel.insertNodeInto(node, selectedNode, selectedNode.getChildCount());
         } else {
             showInformationMessage("Para inserir um conteúdo, você deve "
+                    + "selecionar\num item da árvore de conteúdos!");
+        }
+    }
+
+    @Override
+    public void onEditAction(ActionEvent e, Object o) {
+        DefaultMutableTreeNode selectedNode = getSelectedNode();
+        if (selectedNode != null) {
+            Conteudo conteudo = (Conteudo) selectedNode.getUserObject();
+
+            String descricao = showIntputTextAreaDialog("Descrição do conteúdo",
+                    "Conteudo:", conteudo.getDescricao());
+            conteudo.setDescricao(descricao);
+
+            DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
+
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(conteudo);
+            treeModel.insertNodeInto(node, parentNode, parentNode.getIndex(selectedNode));
+        } else {
+            showInformationMessage("Para alterar um conteúdo, você deve "
                     + "selecionar\num item da árvore de conteúdos!");
         }
     }
@@ -257,9 +364,10 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
                 try {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) obj;
                     treeModel.removeNodeFromParent(node);
-
                     Conteudo conteudo = (Conteudo) node.getUserObject();
                     ControllerFactory.createConteudoController().remover(conteudo);
+
+                    autoSave();
                 } catch (Exception ex) {
                     showErrorMessage(ex);
                 }
@@ -301,91 +409,6 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
 
     private class ConteudoTreeModelListener implements TreeModelListener {
 
-        private ConteudoController col;
-
-        public ConteudoTreeModelListener() {
-            try {
-                col = ControllerFactory.createConteudoController();
-            } catch (Exception ex) {
-                showErrorMessage(ex);
-            }
-        }
-
-        private void autoSave(DefaultMutableTreeNode node) {
-            /**
-             * Verifica se o nó tem filhos
-             */
-            int childs = node.getChildCount(),
-                    indexNode = 0;
-            
-            if (childs > 0) {
-                for (int i = 0; i < childs; i++) {
-                    DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
-                    autoSave(child);
-                }
-            }
-            /**
-             * Captura do objeto Conteudo do nó a ser salvo
-             */
-            Object data = node.getUserObject();
-            if (data instanceof Conteudo) {
-                try {
-                    /**
-                     * Variável criada para identificar o conteudo pai
-                     */
-                    Conteudo parentConteudo = null;
-                    /**
-                     * Variável utilizada para armazenar o nó Pai do nó sendo
-                     * adicionado
-                     */
-                    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
-                    if (parentNode != null) {
-                        /**
-                         * Captura do objeto vinculado ao nó pai.
-                         */
-                        Object parentObject = parentNode.getUserObject();
-                        if (parentObject instanceof Conteudo) {
-                            parentConteudo = (Conteudo) parentObject;
-                        }
-                        indexNode = parentNode.getIndex(node);
-                    }
-                    Conteudo conteudo = (Conteudo) data;
-                    /**
-                     * Atualiza o nível do conteúdo visto que ele pode ter sido
-                     * alterado via DnD. O getlevel do node traz o nível atualizado
-                     * do nó.
-                     */
-                    conteudo.setNivel(node.getLevel());
-                    /**
-                     * Atualiza a sequência em que ele foi adicionado
-                     */
-                    conteudo.setSequencia(indexNode);
-                    /**
-                     * Atualiza o parent
-                     */
-                    conteudo.setConteudoParent(parentConteudo);
-                    /**
-                     * Salva o conteudo
-                     */
-                    col.salvar(conteudo);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-
-        private void autoSave() {
-            expandAllNodes(tree, 0, 0);
-            int startIndex = 0;
-            /**
-             * Atualiza/insere os dados da árvore a partir do nó raiz
-             */
-            TreePath tp = tree.getPathForRow(startIndex);
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tp.getLastPathComponent();
-
-            autoSave(node);
-        }
-
         @Override
         public void treeNodesChanged(TreeModelEvent e) {
             autoSave();
@@ -403,7 +426,7 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
 
         @Override
         public void treeStructureChanged(TreeModelEvent e) {
-            
+
         }
 
     }
