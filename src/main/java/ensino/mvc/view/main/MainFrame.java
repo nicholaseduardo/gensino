@@ -167,6 +167,9 @@ public class MainFrame extends javax.swing.JFrame {
         mapPathIcons.put(MenuOpcoes.CAMPI, "/img/university-icon-50px.png");
         mapPathIcons.put(MenuOpcoes.CALENDARIO, "/img/calendar-image-png-50px.png");
         mapPathIcons.put(MenuOpcoes.BIBLIOGRAFIA, "/img/library-icon-50px.png");
+//        mapPathIcons.put(MenuOpcoes.CURSO, "/img/courses-icon-50px.png");
+//        mapPathIcons.put(MenuOpcoes.TURMA, "/img/classroom-50px.png");
+//        mapPathIcons.put(MenuOpcoes.UC, "/img/school-icon-50px.png");
         mapPathIcons.put(MenuOpcoes.SAIR, "/img/exit-button-50px.png");
     }
 
@@ -320,6 +323,12 @@ public class MainFrame extends javax.swing.JFrame {
                     case BIBLIOGRAFIA:
                         addFrame(new ensino.configuracoes.view.frame.FrameBibliografia());
                         break;
+//                    case CURSO:
+//                        addFrame(new ensino.configuracoes.view.frame.FrameCursos());
+//                        break;
+//                    case UC:
+//                        addFrame(new ensino.configuracoes.view.frame.FrameUnidadeCurricular());
+//                        break;
                     case SAIR:
 
                         Runtime rt = Runtime.getRuntime();
@@ -338,8 +347,9 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private enum MenuOpcoes {
-        CAMPI("campi"), CALENDARIO("cal"),
-        BIBLIOGRAFIA("bib"), SAIR("sair");
+        CAMPI("campi"), CALENDARIO("cal"), BIBLIOGRAFIA("bib"), 
+        //CURSO("curso"), TURMA("turma"), UC("uc"), 
+        SAIR("sair");
 
         private String value;
 
@@ -367,7 +377,7 @@ public class MainFrame extends javax.swing.JFrame {
                     return "Curso";
                 case "turma":
                     return "Turma";
-                case "undCurr":
+                case "uc":
                     return "Unidade Curricular";
                 case "bib":
                     return "Bibliografia";

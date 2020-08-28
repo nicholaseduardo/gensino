@@ -156,7 +156,7 @@ public class UnidadeCurricularSearch extends JPanel {
                 dialog.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosed(WindowEvent e) {
-                        Object selected = bPanel.getSelectedUnidadeCurricular();
+                        Object selected = bPanel.getSelectedObject();
                         if (selected != null) {
                             setObjectValue((UnidadeCurricular) selected);
                         }

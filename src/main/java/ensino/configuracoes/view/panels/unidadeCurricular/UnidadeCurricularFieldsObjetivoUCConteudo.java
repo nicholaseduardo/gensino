@@ -80,9 +80,6 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
         this.frame = frame;
 
         initComponents();
-
-        enableFields(true);
-        initFocus();
     }
 
     public void setFrame(Component frame) {
@@ -93,10 +90,6 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
         setName("unidadeCurricular.cadastro.objetivoUC.conteudo");
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEtchedBorder());
-
-        backColor = ChartsFactory.lightBlue;
-        foreColor = ChartsFactory.ardoziaBlueColor;
-        setBackground(backColor);
 
         URL urlReferencias = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "binary-tree-icon-50px.png"));
         GenJLabel lblTitulo = new GenJLabel("Organização de Objetivos por Conteúdos",
@@ -122,6 +115,9 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
         add(splitPane, BorderLayout.CENTER);
 
         createPopupMenu();
+
+        enableFields(true);
+        initFocus();
     }
 
     private void createPopupMenu() {
@@ -431,16 +427,8 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
 
         @Override
         public void treeNodesChanged(TreeModelEvent e) {
-            System.out.println("changed");
             DefaultMutableTreeNode node;
             node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
-
-            /*
-                * If the event lists children, then the changed
-                * node is the child of the node we have already
-                * gotten.  Otherwise, the changed node and the
-                * specified node are the same.
-             */
             try {
                 int index = e.getChildIndices()[0];
                 node = (DefaultMutableTreeNode) (node.getChildAt(index));
@@ -452,7 +440,6 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
 
         @Override
         public void treeNodesInserted(TreeModelEvent e) {
-            System.out.println("inserted");
             for (Object o : e.getChildren()) {
                 salvar(o);
             }
@@ -460,12 +447,12 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
 
         @Override
         public void treeNodesRemoved(TreeModelEvent e) {
-            System.out.println("removed");
+            
         }
 
         @Override
         public void treeStructureChanged(TreeModelEvent e) {
-            System.out.println("treeStructureChanged");
+            
         }
 
     }

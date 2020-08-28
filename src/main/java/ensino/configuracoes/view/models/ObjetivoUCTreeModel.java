@@ -33,14 +33,14 @@ public class ObjetivoUCTreeModel extends GenTreeModel<ObjetivoUC> {
                  */
                 insertNodeInto(node, (DefaultMutableTreeNode) getRoot(), i);
                 /**
-                 * Adiicona os conteúdos relacionados ao objetivo
+                 * Adiciona os conteúdos relacionados ao objetivo
                  */
                 List<ObjetivoUCConteudo> lOCC= o.getConteudos();
                 if (!lOCC.isEmpty()) {
                     for(int j = 0; j < lOCC.size(); j++) {
                         ObjetivoUCConteudo oucc = lOCC.get(j);
                         DefaultMutableTreeNode child = new DefaultMutableTreeNode(oucc.getConteudo().getDescricao());
-                        child.setUserObject(oucc.getConteudo());
+                        child.setUserObject(oucc);
                         
                         insertNodeInto(child, node, j);
                     }

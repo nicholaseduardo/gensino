@@ -5,22 +5,30 @@
  */
 package ensino.configuracoes.view.panels.unidadeCurricular;
 
+import ensino.configuracoes.view.panels.unidadeCurricular.referenciaBibliografica.UnidadeCurricularReferenciaBiliograficaFields;
+import ensino.components.GenJButton;
 import ensino.configuracoes.view.panels.unidadeCurricular.conteudo.UnidadeCurricularConteudoTreePanel;
 import ensino.components.GenJLabel;
 import static ensino.components.GenJPanel.IMG_SOURCE;
+import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.UnidadeCurricularController;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.view.models.UnidadeCurricularTableModel;
+import ensino.configuracoes.view.panels.filters.CursoSearch;
+import ensino.configuracoes.view.panels.unidadeCurricular.referenciaBibliografica.UnidadeCurricularReferenciaBibliograficaPanel;
 import ensino.configuracoes.view.renderer.UnidadeCurricularCellRenderer;
 import ensino.defaults.DefaultCleanFormPanel;
 import ensino.defaults.DefaultFieldsPanel;
+import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.view.panels.PlanoDeEnsinoPanel;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.net.URL;
@@ -41,6 +49,11 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
 
     private Curso selectedCurso;
     private UnidadeCurricular selectedUnidadeCurricular;
+    private EnumSet enumSet;
+
+    private CursoSearch compoCurso;
+    private GenJTextField txtNome;
+    private GenJButton btSearch;
 
     public UnidadeCurricularPanel(Component frame) {
         this(frame, null);
@@ -59,31 +72,16 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
             // para capturar os dados do curso, usa-se a estrutura do campus
             super.setController(ControllerFactory.createUnidadeCurricularController());
 
+            enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.PLAN,
+                    AcoesBotoes.REFBIB, AcoesBotoes.CONT_EMENTA, AcoesBotoes.ESP,
+                    AcoesBotoes.DELETE);
+
             super.enableTablePanel();
             super.setFieldsPanel(new UnidadeCurricularFields(selectedCurso, null));
             super.showPanelInCard(CARD_LIST);
-            /**
-             * Desabilita o botão de fechar
-             */
-            super.disableCloseButton();
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
-    }
-
-    public UnidadeCurricular getSelectedUnidadeCurricular() {
-        return this.selectedUnidadeCurricular;
-    }
-
-    @Override
-    public Curso getSelectedObject() {
-        return selectedCurso;
-    }
-
-    public void setSelectedCurso(Curso selectedCurso) {
-        this.selectedCurso = selectedCurso;
-        reloadTableData();
     }
 
     /**
@@ -92,22 +90,18 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
      */
     @Override
     public void createSelectButton() {
-//        JButton button = createButton("selection-button-50px.png", "Selecionar", 1);
-//        button.addActionListener((ActionEvent e) -> {
-//            JTable t = getTable();
-//            if (t.getRowCount() > 0) {
-//                int row = t.getSelectedRow();
-//                UnidadeCurricularTableModel model = (UnidadeCurricularTableModel) t.getModel();
-//                selectedUnidadeCurricular = (UnidadeCurricular) model.getRow(row);
-//                JDialog dialog = (JDialog) getFrame();
-//                dialog.dispose();
-//            } else {
-//                JOptionPane.showMessageDialog(getParent(),
-//                        "Não existem dados a serem selecionados.\nFavor, cadastrar um dado primeiro.",
-//                        "Aviso", JOptionPane.WARNING_MESSAGE);
-//            }
-//        });
-//        addButtonToToolBar(button, true);
+        enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.SELECTION);
+        reloadTableData();
+    }
+
+    @Override
+    public UnidadeCurricular getSelectedObject() {
+        return selectedUnidadeCurricular;
+    }
+
+    public void setSelectedCurso(Curso selectedCurso) {
+        this.selectedCurso = selectedCurso;
+        reloadTableData();
     }
 
     private JPanel createUCPanel(UnidadeCurricular uc) {
@@ -155,10 +149,6 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
         TableColumn col0 = tcm.getColumn(0);
         col0.setCellRenderer(new UnidadeCurricularCellRenderer());
 
-        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.PLAN,
-                AcoesBotoes.REFBIB, AcoesBotoes.CONT_EMENTA, AcoesBotoes.ESP,
-                AcoesBotoes.DELETE);
-
         TableColumn col1 = tcm.getColumn(1);
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
         col1.setCellEditor(new ButtonsEditor(table, null, enumSet));
@@ -169,8 +159,15 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
     @Override
     public void reloadTableData() {
         try {
+            String nome = "";
+            if (compoCurso != null) {
+                selectedCurso = compoCurso.getObjectValue();
+                nome = txtNome.getText();
+            }
+
             UnidadeCurricularController col = (UnidadeCurricularController) getController();
-            setTableModel(new UnidadeCurricularTableModel(col.listar(selectedCurso)));
+            setTableModel(new UnidadeCurricularTableModel(
+                    col.listar(selectedCurso, nome)));
             resizeTableColumns();
         } catch (Exception ex) {
             showErrorMessage(ex);
@@ -179,7 +176,36 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
 
     @Override
     public void addFiltersFields() {
+        GenJLabel lblNome = new GenJLabel("Nome da U.C.: ");
+        txtNome = new GenJTextField(30, false);
 
+        btSearch = createButton(new ActionHandler(AcoesBotoes.SEARCH));
+
+        GridBagConstraints c = new GridBagConstraints();
+        JPanel panel = getFilterPanel();
+        panel.setLayout(new GridBagLayout());
+
+        int col = 0, row = 0;
+        if (selectedCurso == null) {
+            GenJLabel lblCurso = new GenJLabel("Curso");
+            compoCurso = new CursoSearch(ControllerFactory.getCampusVigente());
+
+            GridLayoutHelper.setRight(c, col++, row);
+            panel.add(lblCurso, c);
+
+            GridLayoutHelper.set(c, col++, row++, 2, 1, GridBagConstraints.LINE_START);
+            panel.add(compoCurso, c);
+        }
+
+        col = 0;
+        GridLayoutHelper.setRight(c, col++, row);
+        panel.add(lblNome, c);
+
+        GridLayoutHelper.set(c, col++, row);
+        panel.add(txtNome, c);
+
+        GridLayoutHelper.set(c, col++, row);
+        panel.add(btSearch, c);
     }
 
     @Override
@@ -207,18 +233,19 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
 
                 String actionCommant = e.getActionCommand();
                 if (actionCommant.equals(AcoesBotoes.REFBIB.toString())) {
-                    panel = new UnidadeCurricularFieldsReferencias(uc, dialog);
+                    UnidadeCurricularReferenciaBibliograficaPanel p = new UnidadeCurricularReferenciaBibliograficaPanel(dialog, uc);
+                    showDialog(dialog, p);
                 } else if (actionCommant.equals(AcoesBotoes.CONT_EMENTA.toString())) {
                     panel = new UnidadeCurricularConteudoTreePanel(uc, dialog);
                 } else if (actionCommant.equals(AcoesBotoes.ESP.toString())) {
                     panel = new UnidadeCurricularFieldsObjetivoUCConteudo(uc, dialog);
                 }
-                
+
                 if (panel != null) {
                     showDialog(dialog, panel);
-                    reloadTableData();
                 }
-
+                reloadTableData();
+                panel = null;
             }
         }
     }

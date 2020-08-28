@@ -31,8 +31,6 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.DropMode;
 import javax.swing.ImageIcon;
@@ -69,6 +67,7 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
     private JMenuItem menuDelete;
 
     private JTabbedPane tabs;
+    private UnidadeCurricularConteudoPanel ucPanel;
 
     public UnidadeCurricularConteudoTreePanel(UnidadeCurricular unidadeCurricular,
             Component frame) {
@@ -112,10 +111,12 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         ImageIcon iconTree = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "binary-tree-icon-25px.png")));
         ImageIcon iconTable = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "tables-icon-25px.png")));
 
+        ucPanel = new UnidadeCurricularConteudoPanel(this.frame, this.unidadeCurricular);
+
         tabs = new JTabbedPane();
         tabs.addChangeListener(new TabbedHandler());
         tabs.addTab("Árvore", iconTree, panelTree);
-        tabs.addTab("Tabela", iconTable, new UnidadeCurricularConteudoPanel(this.frame, this.unidadeCurricular));
+        tabs.addTab("Tabela", iconTable, ucPanel);
         add(tabs, BorderLayout.CENTER);
 
         createPopupMenu();
@@ -137,9 +138,10 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         tree.setDragEnabled(true);
         tree.setDropMode(DropMode.INSERT);
         tree.setTransferHandler(new TreeTransferHandler(Boolean.TRUE));
-        tree.setEditable(true);
+        tree.setEditable(false);
         tree.setShowsRootHandles(true);
         tree.setCellRenderer(new UCTreeCellRenderer());
+
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         tree.addMouseListener(new TreeMouseEvent());
 
@@ -152,7 +154,7 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         scroll.setPreferredSize(new Dimension(800, 600));
 
         refreshTree();
-        
+
         JPanel panel = createPanel();
         panel.add(scroll);
         return panel;
@@ -163,6 +165,7 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         try {
             lista = ControllerFactory.createConteudoController().listar(unidadeCurricular);
             treeModel = new ConteudoTreeModel(lista);
+            treeModel.addTreeModelListener(new ConteudoTreeModelListener());
             tree.setModel(treeModel);
         } catch (Exception ex) {
             showErrorMessage(ex);
@@ -273,8 +276,13 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
         public void stateChanged(ChangeEvent evt) {
             JTabbedPane pane = (JTabbedPane) evt.getSource();
 
-            if (pane.getSelectedIndex() == 0) {
-                refreshTree();
+            switch (tabs.getSelectedIndex()) {
+                case 0:
+                    refreshTree();
+                    break;
+                case 1:
+                    ucPanel.reloadTableData();
+                    break;
             }
         }
 
@@ -303,18 +311,25 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
             }
         }
 
-        private void salvar(Object o) {
-            if (o instanceof DefaultMutableTreeNode) {
+        private void autoSave(DefaultMutableTreeNode node) {
+            /**
+             * Verifica se o nó tem filhos
+             */
+            int childs = node.getChildCount(),
+                    indexNode = 0;
+            
+            if (childs > 0) {
+                for (int i = 0; i < childs; i++) {
+                    DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
+                    autoSave(child);
+                }
+            }
+            /**
+             * Captura do objeto Conteudo do nó a ser salvo
+             */
+            Object data = node.getUserObject();
+            if (data instanceof Conteudo) {
                 try {
-                    /**
-                     * TypeCast do objeto para TreeNode
-                     */
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) o;
-                    /**
-                     * Índice para identificar em que posição o nó foi
-                     * adicionado
-                     */
-                    Integer childs = 0, indexNode = 0;
                     /**
                      * Variável criada para identificar o conteudo pai
                      */
@@ -325,7 +340,6 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
                      */
                     DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
                     if (parentNode != null) {
-                        childs = parentNode.getChildCount();
                         /**
                          * Captura do objeto vinculado ao nó pai.
                          */
@@ -335,14 +349,11 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
                         }
                         indexNode = parentNode.getIndex(node);
                     }
-                    /**
-                     * Captura do objeto Conteudo do nó a ser salvo
-                     */
-                    Conteudo conteudo = (Conteudo) node.getUserObject();
+                    Conteudo conteudo = (Conteudo) data;
                     /**
                      * Atualiza o nível do conteúdo visto que ele pode ter sido
-                     * alterado via DnD. O getlevel do node traz o nível
-                     * atualizado do nó.
+                     * alterado via DnD. O getlevel do node traz o nível atualizado
+                     * do nó.
                      */
                     conteudo.setNivel(node.getLevel());
                     /**
@@ -357,65 +368,42 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
                      * Salva o conteudo
                      */
                     col.salvar(conteudo);
-                    /**
-                     * Caso o nó tenha sido adicionado entre outros nós, os
-                     * demais devem ter suas posições atualizadas
-                     */
-                    if (indexNode < childs - 1) {
-                        DefaultMutableTreeNode child = null;
-                        for (int i = indexNode + 1; i < childs; i++) {
-                            child = (DefaultMutableTreeNode) parentNode.getChildAt(i);
-                            if (child != null) {
-                                Conteudo next = (Conteudo) child.getUserObject();
-                                /**
-                                 * modifica-se apenas a sequência do nó
-                                 */
-                                next.setSequencia(i);
-                                col.salvar(next);
-                            }
-                        }
-                    }
                 } catch (Exception ex) {
-                    showErrorMessage(ex);
+                    ex.printStackTrace();
                 }
             }
         }
 
+        private void autoSave() {
+            expandAllNodes(tree, 0, 0);
+            int startIndex = 0;
+            /**
+             * Atualiza/insere os dados da árvore a partir do nó raiz
+             */
+            TreePath tp = tree.getPathForRow(startIndex);
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tp.getLastPathComponent();
+
+            autoSave(node);
+        }
+
         @Override
         public void treeNodesChanged(TreeModelEvent e) {
-            DefaultMutableTreeNode node;
-            node = (DefaultMutableTreeNode) (e.getTreePath().getLastPathComponent());
-
-            /*
-                * If the event lists children, then the changed
-                * node is the child of the node we have already
-                * gotten.  Otherwise, the changed node and the
-                * specified node are the same.
-             */
-            try {
-                int index = e.getChildIndices()[0];
-                node = (DefaultMutableTreeNode) (node.getChildAt(index));
-            } catch (NullPointerException exc) {
-            }
-
-            salvar(node);
+            autoSave();
         }
 
         @Override
         public void treeNodesInserted(TreeModelEvent e) {
-            for (Object o : e.getChildren()) {
-                salvar(o);
-            }
+            autoSave();
         }
 
         @Override
         public void treeNodesRemoved(TreeModelEvent e) {
-            System.out.println("removed");
+            autoSave();
         }
 
         @Override
         public void treeStructureChanged(TreeModelEvent e) {
-            System.out.println("treeStructureChanged");
+            
         }
 
     }
@@ -431,7 +419,7 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
 //                l.remove(c);
 //            }
 //        } catch (Exception ex) {
-//            Logger.getLogger(UnidadeCurricularFieldsConteudo.class.getName()).log(Level.SEVERE, null, ex);
+//            ex.printStackTrace();
 //        }
 //    }
 }

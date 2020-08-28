@@ -41,7 +41,6 @@ public class UnidadeCurricular implements Serializable {
     private List<ReferenciaBibliografica> referencias;
     
     @OneToMany(mappedBy = "id.unidadeCurricular", fetch = FetchType.LAZY, orphanRemoval = true)
-    @OrderBy(clause = "nivel ASC, sequencia ASC")
     private List<Conteudo> conteudos;
     
     @OneToMany(mappedBy = "id.unidadeCurricular", fetch = FetchType.LAZY, orphanRemoval = true)

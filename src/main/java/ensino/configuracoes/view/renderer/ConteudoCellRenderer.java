@@ -21,12 +21,61 @@ import javax.swing.JTable;
  */
 public class ConteudoCellRenderer extends GenCellRenderer {
 
-    public String repeatString(String value, Integer number) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < number; i++) {
-            sb.append(value);
+    private JPanel panel;
+
+    private GenJLabel lblTitle;
+    private GenJLabel lblParent;
+    private GenJLabel lblNivel;
+
+    public ConteudoCellRenderer() {
+        super();
+        initComponents();
+    }
+
+    private void initComponents() {
+        lblTitle = createLabel("");
+        lblTitle.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
+        lblTitle.toBold();
+
+        lblParent = createLabel("");
+        lblParent.resetFontSize(12);
+
+        lblNivel = createLabel("");
+        lblNivel.resetFontSize(12);
+
+        panel = createPanel(new BorderLayout());
+        panel.add(lblTitle, BorderLayout.CENTER);
+        panel.add(lblNivel, BorderLayout.LINE_END);
+        panel.add(lblParent, BorderLayout.PAGE_END);
+        panel.setOpaque(true);
+    }
+
+    private void setData(Object value) {
+        Conteudo c = (Conteudo) value;
+
+        int n = c.getNivel() != null && c.getNivel() > 1 ? c.getNivel() - 1 : 0;
+        String t = repeatString("--", n).concat(c.getDescricao());
+
+        lblTitle.setText(t, 60 + (n * 2));
+
+        String conteudoParent = "";
+        if (c.hasParent()) {
+            conteudoParent = c.getConteudoParent().getDescricao();
         }
-        return value.toString();
+        lblParent.setText(conteudoParent, 60);
+        lblNivel.setText(String.format("Nivel: %d / Sequência: %d",
+                c.getNivel(), c.getSequencia()));
+        panel.setBackground(getBack());
+    }
+
+    private String repeatString(String value, Integer number) {
+        StringBuilder sb = new StringBuilder();
+        if (number > 0) {
+            for (int i = 0; i < number; i++) {
+                sb.append(value);
+            }
+        }
+        return sb.toString();
     }
 
     @Override
@@ -43,34 +92,7 @@ public class ConteudoCellRenderer extends GenCellRenderer {
         }
 
         if (value instanceof Conteudo) {
-            Conteudo c = (Conteudo) value;
-            GenJLabel lblTitle = createLabel("");
-
-            int n = c.getNivel() != null && c.getNivel() > 1 ? c.getNivel() - 1 : 0;
-            String t = repeatString("--", n).concat(c.getDescricao());
-
-            lblTitle.setText(t, 60 + (n * 2));
-            lblTitle.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
-            lblTitle.toBold();
-
-            String conteudoParent = "";
-            if (c.hasParent()) {
-                conteudoParent = c.getConteudoParent().getDescricao();
-            }
-
-            GenJLabel lblParent = createLabel("");
-            lblParent.setText(conteudoParent, 60);
-            lblParent.resetFontSize(12);
-
-            GenJLabel lblNivel = createLabel(
-                    String.format("Nivel: %d / Sequência: %d",
-                            c.getNivel(), c.getSequencia()));
-            lblNivel.resetFontSize(12);
-
-            JPanel panel = createPanel(new BorderLayout());
-            panel.add(lblTitle, BorderLayout.CENTER);
-            panel.add(lblNivel, BorderLayout.LINE_END);
-            panel.add(lblParent, BorderLayout.PAGE_END);
+            setData(value);
 
             int height = panel.getPreferredSize().height;
             if (height < 55) {
@@ -78,7 +100,6 @@ public class ConteudoCellRenderer extends GenCellRenderer {
             }
 
             table.setRowHeight(height);
-            panel.setOpaque(true);
             return panel;
         }
         return null;

@@ -8,6 +8,7 @@ package ensino.configuracoes.view.renderer;
 import ensino.components.GenJLabel;
 import ensino.configuracoes.model.Conteudo;
 import ensino.configuracoes.model.ObjetivoUC;
+import ensino.configuracoes.model.ObjetivoUCConteudo;
 import ensino.configuracoes.model.SemanaLetiva;
 import java.awt.Color;
 import java.awt.Component;
@@ -37,6 +38,8 @@ public class UCTreeCellRenderer implements TreeCellRenderer {
         Object o = ((DefaultMutableTreeNode) value).getUserObject();
         if (o instanceof Conteudo) {
             descricao = ((Conteudo) o).getDescricao();
+        } else if (o instanceof ObjetivoUCConteudo) {
+            descricao = ((ObjetivoUCConteudo) o).getConteudo().getDescricao();
         } else if (o instanceof ObjetivoUC) {
             imgPath = "target-icon-25px";
             descricao = ((ObjetivoUC) o).getDescricao();

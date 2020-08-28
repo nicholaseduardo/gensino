@@ -173,6 +173,13 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
      * Método usado para fazer a atualização dos dados do painel de filtrabem
      */
     public abstract void reloadTableData();
+    
+    /**
+     * Deve ser sobrescrito
+     */
+    public void createSelectButton() {
+        
+    }
 
     public void setFrame(Component frame) {
         this.frame = frame;
@@ -294,12 +301,7 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
         table = new JTable(model);
         createTablePanel(table);
     }
-
-    /**
-     * Permite a abstração do método para criar o botao de selecao
-     */
-    public abstract void createSelectButton();
-
+    
     public Object getSelectedObject() {
         return selectedObject;
     }
