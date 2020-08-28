@@ -48,7 +48,7 @@ public class TurmaPanel extends DefaultCleanFormPanel {
             // para capturar os dados do curso, usa-se a estrutura do campus
             super.setController(ControllerFactory.createTurmaController());
 
-            enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.ESTUD, AcoesBotoes.DELETE);
+            enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.ESTUD, AcoesBotoes.DEL);
             
             super.enableTablePanel();
             super.setFieldsPanel(new TurmaFields(this.selectedCurso, null));
@@ -72,7 +72,7 @@ public class TurmaPanel extends DefaultCleanFormPanel {
      */
     @Override
     public void createSelectButton() {
-        enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.SELECTION, AcoesBotoes.DELETE);
+        enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.SELECTION, AcoesBotoes.DEL);
         reloadTableData();
     }
 

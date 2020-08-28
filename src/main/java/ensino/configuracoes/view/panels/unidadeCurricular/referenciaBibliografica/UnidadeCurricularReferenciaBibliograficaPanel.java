@@ -69,7 +69,7 @@ public class UnidadeCurricularReferenciaBibliograficaPanel extends DefaultCleanF
         TableColumn tc0 = table.getColumnModel().getColumn(0);
         tc0.setCellRenderer(new ReferenciaBibliograficaCellRenderer());
 
-        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.DELETE);
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.DEL);
 
         TableColumn col1 = table.getColumnModel().getColumn(1);
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));

@@ -170,7 +170,7 @@ public class NivelEnsinoFields extends DefaultFieldsPanel {
         TableColumn col0 = tcm.getColumn(0);
         col0.setCellRenderer(getCellRenderer());
 
-        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.DELETE);
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.DEL);
 
         TableColumn col1 = tcm.getColumn(1);
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));

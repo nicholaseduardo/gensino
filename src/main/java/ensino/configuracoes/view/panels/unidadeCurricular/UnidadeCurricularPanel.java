@@ -74,7 +74,7 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
 
             enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.PLAN,
                     AcoesBotoes.REFBIB, AcoesBotoes.CONT_EMENTA, AcoesBotoes.ESP,
-                    AcoesBotoes.DELETE);
+                    AcoesBotoes.DEL);
 
             super.enableTablePanel();
             super.setFieldsPanel(new UnidadeCurricularFields(selectedCurso, null));

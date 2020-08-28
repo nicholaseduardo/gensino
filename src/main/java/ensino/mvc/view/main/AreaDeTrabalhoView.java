@@ -132,7 +132,7 @@ public class AreaDeTrabalhoView extends GenJPanel {
 
         GenJButton btEdit = createButton(new ActionHandler(AcoesBotoes.EDIT, curso));
         btEdit.setText("Alterar Curso");
-        GenJButton btDel = createButton(new ActionHandler(AcoesBotoes.DELETE, curso));
+        GenJButton btDel = createButton(new ActionHandler(AcoesBotoes.DEL, curso));
         btDel.setText("Excluir Curso");
 
         JPanel panelButton = createPanel(new FlowLayout(FlowLayout.CENTER));

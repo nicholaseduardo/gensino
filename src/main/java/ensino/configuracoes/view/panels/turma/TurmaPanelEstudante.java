@@ -83,7 +83,7 @@ public class TurmaPanelEstudante extends DefaultCleanFormPanel {
         col0.setMinWidth(300);
         col0.setCellRenderer(new EstudanteCellRenderer());
 
-        EnumSet enumSet = EnumSet.of(AcoesBotoes.DELETE, AcoesBotoes.EDIT);
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.DEL, AcoesBotoes.EDIT);
 
         TableColumn col1 = tcm.getColumn(1);
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));

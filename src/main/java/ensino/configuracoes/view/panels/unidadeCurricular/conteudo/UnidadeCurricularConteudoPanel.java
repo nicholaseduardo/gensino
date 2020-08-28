@@ -48,7 +48,7 @@ public class UnidadeCurricularConteudoPanel extends DefaultCleanFormPanel {
 
     private void initComponents() {
         try {
-            setName("panel.planoDeEnsino");
+            setName("panel.unidadeCurricular.conteudo");
             setTitlePanel("Dados do Conteúdo da U.C.");
             setController(ControllerFactory.createConteudoController());
 
@@ -67,7 +67,7 @@ public class UnidadeCurricularConteudoPanel extends DefaultCleanFormPanel {
         tc0.setCellRenderer(new ConteudoCellRenderer());
         tc0.setMinWidth(300);
 
-        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.DELETE);
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.DEL);
 
         TableColumn col1 = table.getColumnModel().getColumn(1);
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
@@ -84,26 +84,20 @@ public class UnidadeCurricularConteudoPanel extends DefaultCleanFormPanel {
     }
 
     @Override
-    public void createSelectButton() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Object getSelectedObject() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void addFiltersFields() {
+        GenJLabel lblDescricao = new GenJLabel("Descrição: ", JLabel.TRAILING);
+        txtDescricao = new GenJTextField(30, false);
+
+        btSearch = createButton(new ActionHandler(AcoesBotoes.SEARCH));
+        
         JPanel panel = createPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-
-        GenJLabel lblDescricao = new GenJLabel("Descrição: ", JLabel.TRAILING);
-        txtDescricao = new GenJTextField(30, false);
-        txtDescricao.setPlaceholder("Digite a descrição para pesquisar");
-
-        btSearch = createButton(new ActionHandler(AcoesBotoes.SEARCH));
         
         int col = 0, row = 0;
         GridLayoutHelper.setRight(c, col++, row);

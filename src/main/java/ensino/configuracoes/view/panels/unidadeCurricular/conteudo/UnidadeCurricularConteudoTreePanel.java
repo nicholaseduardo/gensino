@@ -125,8 +125,8 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
     private void createPopupMenu() {
         menuNovo = new JMenuItem(new ActionHandler(AcoesBotoes.ADD));
         menuNovo.setActionCommand(AcoesBotoes.ADD.toString());
-        menuDelete = new JMenuItem(new ActionHandler(AcoesBotoes.DELETE));
-        menuDelete.setActionCommand(AcoesBotoes.DELETE.toString());
+        menuDelete = new JMenuItem(new ActionHandler(AcoesBotoes.DEL));
+        menuDelete.setActionCommand(AcoesBotoes.DEL.toString());
 
         popupMenu = new JPopupMenu("Ações");
         popupMenu.add(menuNovo);

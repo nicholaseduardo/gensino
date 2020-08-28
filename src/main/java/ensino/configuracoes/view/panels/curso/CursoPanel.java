@@ -58,7 +58,7 @@ public class CursoPanel extends DefaultCleanFormPanel {
             setController(ControllerFactory.createCursoController());
 
             enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.UC,
-                AcoesBotoes.TURMA, AcoesBotoes.DELETE);
+                AcoesBotoes.TURMA, AcoesBotoes.DEL);
             
             enableTablePanel();
             setFieldsPanel(new CursoFieldsPanel());
