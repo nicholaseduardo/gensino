@@ -43,6 +43,10 @@ public class ReferenciaBibliograficaController extends AbstractController<Refere
     }
     
     public List<ReferenciaBibliografica> listar(UnidadeCurricular o) {
+        return this.listar(o, null);
+    }
+    
+    public List<ReferenciaBibliografica> listar(UnidadeCurricular o, Integer tipoReferencia) {
         String filter = "";
         if (DaoFactory.isXML()) {
             filter = String.format("//ReferenciaBibliografica/referenciaBibliografica["
@@ -57,6 +61,9 @@ public class ReferenciaBibliograficaController extends AbstractController<Refere
                     o.getId().getId(),
                     o.getId().getCurso().getId().getId(),
                     o.getId().getCurso().getId().getCampus().getId());
+            if (tipoReferencia != null && tipoReferencia > -1) {
+                filter += String.format(" AND rb.tipo = %d ", tipoReferencia);
+            }
         }
         
         return super.getDao().list(filter, o);

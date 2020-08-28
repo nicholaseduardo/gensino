@@ -12,6 +12,7 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.UnidadeCurricularFactory;
 import ensino.patterns.AbstractController;
 import ensino.patterns.DaoPattern;
+import ensino.patterns.factory.ControllerFactory;
 import ensino.patterns.factory.DaoFactory;
 import java.net.URL;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * @author nicho
  */
 public class UnidadeCurricularController extends AbstractController<UnidadeCurricular> {
-    
+
     public UnidadeCurricularController() throws Exception {
         super(DaoFactory.createUnidadeCurricularDao(), UnidadeCurricularFactory.getInstance());
     }
@@ -51,16 +52,45 @@ public class UnidadeCurricularController extends AbstractController<UnidadeCurri
      */
     public List<UnidadeCurricular> listar(Curso curso) {
         String filter = "";
-        Integer id = curso.getId().getId(),
-                campusId = curso.getId().getCampus().getId();
+        Integer id = null,
+                campusId = ControllerFactory.getCampusVigente().getId();
+
+        if (curso != null) {
+            id = curso.getId().getId();
+            campusId = curso.getId().getCampus().getId();
+        }
+
         if (DaoFactory.isXML()) {
             filter = String.format("//UnidadeCurricular/unidadeCurricular[@cursoId=%d and @campusId=%d]",
-                curso.getId().getId(), curso.getId().getCampus().getId());
+                    curso.getId().getId(), curso.getId().getCampus().getId());
         } else {
-            filter = String.format(" AND u.id.curso.id.id = %d "
-                    + " AND u.id.curso.id.campus.id = %d ", id, campusId);
+            filter = String.format(" AND u.id.curso.id.campus.id = %d ", campusId);
+            if (id != null) {
+                filter += String.format(" AND u.id.curso.id.id = %d ", id);
+            }
+        }
+
+        return super.getDao().list(filter, curso);
+    }
+
+    public List<UnidadeCurricular> listar(Curso curso, String nome) {
+        String filter = "";
+        Integer id = null,
+                campusId = ControllerFactory.getCampusVigente().getId();
+
+        if (curso != null) {
+            id = curso.getId().getId();
+            campusId = curso.getId().getCampus().getId();
+            
+            filter += String.format(" AND u.id.curso.id.id = %d ", id);
         }
         
+        filter += String.format(" AND u.id.curso.id.campus.id = %d ", campusId);
+
+        if (nome != null && !"".equals(nome)) {
+            filter += " AND UPPER(u.nome) LIKE UPPER('%"+ nome +"%') ";
+        }
+
         return super.getDao().list(filter, curso);
     }
 
@@ -75,11 +105,11 @@ public class UnidadeCurricularController extends AbstractController<UnidadeCurri
         Integer id = campus.getId();
         if (DaoFactory.isXML()) {
             filter = String.format("//UnidadeCurricular/unidadeCurricular[@campusId=%d]",
-                id);
+                    id);
         } else {
             filter = String.format(" AND u.id.curso.id.campus.id = %d ", id);
         }
-        
+
         return super.getDao().list(filter);
     }
 

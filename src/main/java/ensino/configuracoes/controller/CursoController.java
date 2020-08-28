@@ -55,16 +55,22 @@ public class CursoController extends AbstractController<Curso> {
         return super.getDao().list(filter, campus);
     }
     
+    public List<Curso> listar(Campus campus, String text) {
+        String filter = "";
+        Integer id = campus.getId();
+        
+        filter = String.format(" AND c.id.campus.id = %d ", id);
+        if (text != null && !"".equals(text)) {
+            filter += " AND UPPER(c.nome) LIKE UPPER('%"+text+"%') ";
+        }
+        
+        return super.getDao().list(filter, campus);
+        
+    }
+    
     @Override
     public Curso salvar(Curso o) throws Exception {
         o = super.salvar(o);
-        // salvar cascade
-//        AbstractController<Turma> turmaCol = ControllerFactory.createTurmaController();
-//        turmaCol.salvarEmCascata(o.getTurmas());
-//        
-//        AbstractController<UnidadeCurricular> unidadeCurricularCol = ControllerFactory.createUnidadeCurricularController();
-//        unidadeCurricularCol.salvarEmCascata(o.getUnidadesCurriculares());
-
         return o;
     }
     
