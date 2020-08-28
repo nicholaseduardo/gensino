@@ -61,6 +61,7 @@ public class GenJPanel extends JPanel {
     protected ImageIcon iconCancel;
     protected ImageIcon iconSearch;
     protected ImageIcon iconDel;
+    protected ImageIcon iconDelete;
     protected ImageIcon iconEdit;
     protected ImageIcon iconSave;
     protected ImageIcon iconDuplicate;
@@ -90,6 +91,9 @@ public class GenJPanel extends JPanel {
     protected ImageIcon iconCurso;
     protected ImageIcon iconUnidade;
     protected ImageIcon iconTurma;
+
+    protected ImageIcon iconBackward;
+    protected ImageIcon iconForward;
 
     public GenJPanel() {
         super();
@@ -136,12 +140,17 @@ public class GenJPanel extends JPanel {
         iconEvaluation = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Status-mail-task-icon-25px.png")));
         iconReport = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Custom-reports-icon-25px.png")));
         iconChart = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "chart-icon-25px.png")));
-        iconRefBib= new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Books-2-icon-25px.png")));
-        
+        iconRefBib = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Books-2-icon-25px.png")));
+
         iconPE = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Clipboard-icon-25px.png")));
         iconRB = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "library-icon-25px.png")));
         iconEstudante = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "student-icon-25px.png")));
         iconStructure = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Action-view-tree-icon-25px.png")));
+
+        iconBackward = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "backward-icon-25px.png")));
+        iconForward = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "forward-icon-25px.png")));
+        iconDelete = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "del-black-icon-png-25px.png")));
+
         iconDiario = new ImageIcon(urlDiary);
 
         iconAdd = new ImageIcon(urlAdd);
@@ -409,7 +418,7 @@ public class GenJPanel extends JPanel {
         public ActionHandler(AcoesBotoes acaoBotao, Object object) {
             super(acaoBotao.toString(),
                     AcoesBotoes.ADD.equals(acaoBotao) ? iconAdd
-                    : AcoesBotoes.DELETE.equals(acaoBotao) ? iconDel
+                    : AcoesBotoes.DEL.equals(acaoBotao) ? iconDel
                     : AcoesBotoes.EDIT.equals(acaoBotao) ? iconEdit
                     : AcoesBotoes.SAVE.equals(acaoBotao) ? iconSave
                     : AcoesBotoes.CLOSE.equals(acaoBotao) ? iconClose
@@ -441,6 +450,9 @@ public class GenJPanel extends JPanel {
                     : AcoesBotoes.SELECTION.equals(acaoBotao) ? iconSelect
                     : AcoesBotoes.UC.equals(acaoBotao) ? iconUnidade
                     : AcoesBotoes.TURMA.equals(acaoBotao) ? iconTurma
+                    : AcoesBotoes.BACKWARD.equals(acaoBotao) ? iconBackward
+                    : AcoesBotoes.FORWARD.equals(acaoBotao) ? iconForward
+                    : AcoesBotoes.DELETE.equals(acaoBotao) ? iconDelete
                     : null);
             this.acaoBotao = acaoBotao;
             this.object = object;
@@ -456,6 +468,7 @@ public class GenJPanel extends JPanel {
                 case ADD:
                     onAddAction(ae, object);
                     break;
+                case DEL:
                 case DELETE:
                     onDelAction(ae, object);
                     break;
