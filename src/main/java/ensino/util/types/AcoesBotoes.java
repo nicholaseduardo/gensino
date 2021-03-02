@@ -5,6 +5,8 @@
  */
 package ensino.util.types;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
@@ -21,9 +23,18 @@ public enum AcoesBotoes {
     IMPORT(7), CANCEL(25), SEARCH(26), CLEAR(27), STRUCTURE(30),
     
     SELECTION(31), UC(32), TURMA(33),
-    BACKWARD(34), FORWARD(35), DELETE(36);
+    BACKWARD(34), FORWARD(35), DELETE(36), UP(37), DOWN(38);
     
     private final Integer value;
+    private static String[] sData = {"Adicionar", "Excluir", "Alterar", "Salvar",
+        "Fechar", "Duplicar", "Gerar", "Importar", "Novo", "Plano de Ensino",
+        "Identificação", "Obj. Específicos", "Detalhamento", "Plano de Avaliações",
+        "Horários das aulas", "Conteúdo Programático", "Frequência", "Avaliações",
+        "Plano de Ensino", "Notas do Diário", "Painel de Controle", "Permanência Estudantil",
+        "Referências bibliográficas", "Estudantes", "Conteudo da U.C.", "Cancelar",
+        "Buscar", "Limpar", "Diário", "Relatórios", "Estrutura", "Seleção",
+        "Unidade Curricular", "Turma", "Para trás", "Para frente", "Delete",
+        "Para cima", "Para baixo"};
     
     AcoesBotoes(Integer value) {
         this.value = value;
@@ -37,48 +48,14 @@ public enum AcoesBotoes {
         return Stream.of(AcoesBotoes.values()).filter(t -> t.getValue().equals(value))
                 .findFirst().orElseThrow(IllegalArgumentException::new );
     }
+    
+    public static AcoesBotoes of(String value) {
+        int index = Arrays.binarySearch(sData, value);
+        return of(index);
+    }
 
     @Override
     public String toString() {
-        switch(value) {
-            default:
-            case 0: return "Adicionar";
-            case 1: return "Excluir";
-            case 2: return "Alterar";
-            case 3: return "Salvar";
-            case 4: return "Fechar";
-            case 5: return "Duplicar";
-            case 6: return "Gerar";
-            case 7: return "Importar";
-            case 8: return "Novo";
-            case 9: return "Plano de Ensino";
-            case 10: return "Identificação";
-            case 11: return "Obj. Específicos";
-            case 12: return "Detalhamento";
-            case 13: return "Plano de Avaliações";
-            case 14: return "Horários das aulas";
-            case 15: return "Conteúdo Programático";
-            case 16: return "Frequência";
-            case 17: return "Avaliações";
-            case 18: return "Plano de Ensino";
-            case 19: return "Notas do Diário";
-            case 20: return "Painel de Controle";
-            case 21: return "Permanência Estudantil";
-            case 22: return "Referências bibliográficas";
-            case 23: return "Estudantes";
-            case 24: return "Conteudo da U.C.";
-            case 25: return "Cancelar";
-            case 26: return "Buscar";
-            case 27: return "Limpar";
-            case 28: return "Diário";
-            case 29: return "Relatórios";
-            case 30: return "Estrutura";
-            case 31: return "Seleção";
-            case 32: return "Unidade Curricular";
-            case 33: return "Turma";
-            case 34: return "Para trás";
-            case 35: return "Para frente";
-            case 36: return "Delete";
-        }
+        return sData[this.value];
     }
 }

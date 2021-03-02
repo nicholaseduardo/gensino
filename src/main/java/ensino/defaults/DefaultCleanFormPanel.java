@@ -516,11 +516,6 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
             HashMap<String, Object> params = fieldsPanel.getFieldValues();
             try {
                 Object object = controller.salvar(params);
-                if (fieldsPanel.getStatusPanel() == DefaultFieldsPanel.UPDATE_STATUS_PANEL) {
-                    model.updateRow(table.getSelectedRow(), object);
-                } else {
-                    model.addRow(object);
-                }
                 showInformationMessage("Dados gravados com sucesso!");
 
                 componentsControl(0);
@@ -529,7 +524,6 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
                 showPanelInCard(CARD_LIST);
             } catch (Exception ex) {
                 showErrorMessage(ex);
-                ex.printStackTrace();
             }
         } else {
             showInformationMessage("Os campos em Asterisco (*) não foram preenchidos/selecioados.");

@@ -93,7 +93,7 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
         col0.setMinWidth(400);
         col0.setCellRenderer(new PlanoAvaliacaoCellRenderer());
 
-        EnumSet enumSet = EnumSet.of(AcoesBotoes.DELETE, AcoesBotoes.EDIT);
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.DEL, AcoesBotoes.EDIT);
 
         TableColumn col1 = tcm.getColumn(1);
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
@@ -107,11 +107,6 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
                 (EtapaEnsino) modelEtapaEnsino.getSelectedItem(),
                 (InstrumentoAvaliacao) comboInstrumento.getSelectedItem())));
         resizeTableColumns();
-    }
-
-    @Override
-    public void createSelectButton() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

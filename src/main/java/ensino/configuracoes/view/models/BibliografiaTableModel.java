@@ -16,7 +16,7 @@ import java.util.List;
 public class BibliografiaTableModel extends DefaultTableModel {
      public BibliografiaTableModel(List<?> lista) {
         super(lista, new String[] {
-            "Bibliografia"
+            "Bibliografia", "Ações"
         });
     }
 
@@ -25,9 +25,7 @@ public class BibliografiaTableModel extends DefaultTableModel {
         Bibliografia bibliografia = (Bibliografia) getRow(rowIndex);
         
         switch(columnIndex) {
-            case 0: return bibliografia.getId();
-            case 1: return bibliografia.getTitulo();
-            case 2: return bibliografia.getAutor();
+            case 0: return bibliografia;
             default: return null;
         }
     }
@@ -35,9 +33,7 @@ public class BibliografiaTableModel extends DefaultTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
-            case 0: return Integer.class;
-            case 1: return String.class;
-            case 2: return String.class;
+            case 0: return Bibliografia.class;
             default:
                 throw new IndexOutOfBoundsException("columnIndex out of bounds");
         }

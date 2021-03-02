@@ -66,14 +66,11 @@ public class EtapaEnsinoId implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
         final EtapaEnsinoId other = (EtapaEnsinoId) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.id, other.getId())) {
             return false;
         }
-        if (!Objects.equals(this.nivelEnsino, other.nivelEnsino)) {
+        if (!Objects.equals(this.nivelEnsino, other.getNivelEnsino())) {
             return false;
         }
         return true;

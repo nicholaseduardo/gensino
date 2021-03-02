@@ -10,7 +10,6 @@ import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.configuracoes.controller.ReferenciaBibliograficaController;
 import ensino.configuracoes.model.UnidadeCurricular;
-import ensino.configuracoes.view.models.ConteudoTableModel;
 import ensino.configuracoes.view.models.ReferenciaBibliograficaTableModel;
 import ensino.configuracoes.view.renderer.ReferenciaBibliograficaCellRenderer;
 import ensino.defaults.DefaultCleanFormPanel;

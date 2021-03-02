@@ -5,7 +5,6 @@
  */
 package ensino.configuracoes.view.panels.unidadeCurricular;
 
-import ensino.configuracoes.view.panels.unidadeCurricular.referenciaBibliografica.UnidadeCurricularReferenciaBiliograficaFields;
 import ensino.components.GenJButton;
 import ensino.configuracoes.view.panels.unidadeCurricular.conteudo.UnidadeCurricularConteudoTreePanel;
 import ensino.components.GenJLabel;
@@ -105,15 +104,13 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
     }
 
     private JPanel createUCPanel(UnidadeCurricular uc) {
-        URL urlUnidade = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "school-icon-25px.png"));
         URL urlPlanos = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "plano-icon-15px.png"));
-        ImageIcon iconUnidade = new ImageIcon(urlUnidade);
-        ImageIcon iconPlanos = new ImageIcon(urlPlanos);
+        ImageIcon icon = new ImageIcon(urlPlanos);
 
         GenJLabel lblTitulo = new GenJLabel(uc.getNome(), iconUnidade, JLabel.LEFT);
         lblTitulo.setHorizontalTextPosition(JLabel.RIGHT);
         GenJLabel lblPlanos = new GenJLabel(String.format("%d Planos de Ensino", uc.getPlanosDeEnsino().size()),
-                iconPlanos, JLabel.LEFT);
+                icon, JLabel.LEFT);
         lblPlanos.setHorizontalTextPosition(JLabel.RIGHT);
         lblPlanos.resetFontSize(12);
 

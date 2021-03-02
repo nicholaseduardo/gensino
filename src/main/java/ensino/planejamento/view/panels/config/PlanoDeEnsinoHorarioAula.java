@@ -154,7 +154,7 @@ public class PlanoDeEnsinoHorarioAula extends DefaultFieldsPanel {
 
         btAdd = createButton(new ActionHandler(AcoesBotoes.ADD), backColor, foreColor);
         btUpdate = createButton(new ActionHandler(AcoesBotoes.EDIT), backColor, foreColor);
-        btDel = createButton(new ActionHandler(AcoesBotoes.DELETE), backColor, foreColor);
+        btDel = createButton(new ActionHandler(AcoesBotoes.DEL), backColor, foreColor);
         btNew = createButton(new ActionHandler(AcoesBotoes.NEW), backColor, foreColor);
         btGen = createButton(new ActionHandler(AcoesBotoes.GENERATE), backColor, foreColor);
         btGen.setText("Gerar Frequências");

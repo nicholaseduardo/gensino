@@ -28,7 +28,7 @@ public abstract class DefaultTableModel<T> extends AbstractTableModel {
     /**
      * Construtor
      *
-     * @param data Lista de dados de uma classe
+     * @param lista Lista de dados de uma classe
      * @param columnNames Os nomes das colunas devem respeitar os nomes dos
      * atributos
      * @param hasButtons Se verdadeiro, indica que a última coluna representa os

@@ -9,7 +9,7 @@ import ensino.components.GenJButton;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.BibliografiaController;
 import ensino.configuracoes.model.Bibliografia;
-import ensino.configuracoes.view.panels.BibliografiaPanel;
+import ensino.configuracoes.view.panels.bibliografia.BibliografiaPanel;
 import ensino.patterns.factory.ControllerFactory;
 import java.awt.AWTEvent;
 import java.awt.FlowLayout;

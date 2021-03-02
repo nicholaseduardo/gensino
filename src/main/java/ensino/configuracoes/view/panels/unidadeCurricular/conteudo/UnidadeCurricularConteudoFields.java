@@ -286,11 +286,9 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
                 Integer nivel = c.getNivel();
                 
                 int n = nivel != null && nivel > 1 ? nivel - 1 : 0;
-                String theText = "";
+                String theText = c.getDescricao() != null ? c.getDescricao() : "";
                 if (n > 0)
-                    theText = repeatString("--", n).concat(c.getDescricao());
-                else
-                    theText = c.getDescricao();
+                    theText = repeatString("--", n).concat(theText);
 
                 theForeground = list.getForeground();
 

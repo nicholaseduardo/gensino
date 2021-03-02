@@ -43,7 +43,6 @@ import javax.swing.JTree;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import org.hibernate.exception.ConstraintViolationException;
 
 /**
  *

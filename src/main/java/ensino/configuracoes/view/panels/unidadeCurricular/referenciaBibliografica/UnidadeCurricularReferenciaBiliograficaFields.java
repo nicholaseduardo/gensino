@@ -5,7 +5,6 @@
  */
 package ensino.configuracoes.view.panels.unidadeCurricular.referenciaBibliografica;
 
-import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextField;
@@ -15,10 +14,8 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.view.panels.filters.BibliografiaSearch;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.net.URL;
@@ -67,12 +64,6 @@ public class UnidadeCurricularReferenciaBiliograficaFields extends DefaultFields
         lblTitulo.setForeground(foreColor);
         lblTitulo.toBold();
         add(lblTitulo, BorderLayout.PAGE_START);
-
-        GenJButton btClose = createButton(new ActionHandler(AcoesBotoes.CLOSE), backColor, foreColor);
-
-        JPanel panelButton = createPanel(new FlowLayout(FlowLayout.RIGHT));
-        panelButton.add(btClose);
-        add(panelButton, BorderLayout.PAGE_END);
         add(createReferenciasPanel(), BorderLayout.CENTER);
     }
 

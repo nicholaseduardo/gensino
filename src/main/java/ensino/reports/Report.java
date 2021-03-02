@@ -34,10 +34,12 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import static ensino.components.GenJPanel.IMG_SOURCE;
 import ensino.helpers.DateHelper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import javax.swing.JPanel;
 import org.icepdf.ri.common.ComponentKeyBinding;
@@ -51,7 +53,7 @@ import org.icepdf.ri.common.SwingViewBuilder;
 public abstract class Report {
 
     public static final String DEST_PATH = "resources/reports/";
-    private static final String RESOURCE_IMG = "resources/templates/img/";
+    private static final String RESOURCE_IMG = "/img";
 
     protected static final PdfNumber PORTRAIT = new PdfNumber(0);
     protected static final PdfNumber LANDSCAPE = new PdfNumber(90);
@@ -89,8 +91,11 @@ public abstract class Report {
         helvetica = PdfFontFactory.createFont(FontConstants.HELVETICA);
         helveticaBold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
 
-        brasaoImage = new Image(ImageDataFactory.create(RESOURCE_IMG + "brasao-do-brasil-republica.50px.png"));
-        ifmsImage = new Image(ImageDataFactory.create(RESOURCE_IMG + "marcaifms.50px.png"));
+        URL urlBrasao = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "brasao-do-brasil-republica.50px.png"));
+        URL urlIfms = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "marcaifms.50px.png"));
+        
+        brasaoImage = new Image(ImageDataFactory.create(urlBrasao));
+        ifmsImage = new Image(ImageDataFactory.create(urlIfms));
     }
 
     public abstract void createReport(Document document);

@@ -57,7 +57,6 @@ public class TurmaPanel extends DefaultCleanFormPanel {
             
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
     }
 

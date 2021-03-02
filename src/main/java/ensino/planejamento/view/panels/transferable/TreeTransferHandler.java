@@ -8,7 +8,6 @@ package ensino.planejamento.view.panels.transferable;
 import ensino.components.GenJTree;
 import ensino.components.GenTreeModel;
 import ensino.configuracoes.model.Conteudo;
-import ensino.configuracoes.model.ObjetivoUC;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.defaults.GensinoTransferable;
 import ensino.patterns.BaseObject;

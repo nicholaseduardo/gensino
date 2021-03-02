@@ -6,7 +6,7 @@
 package ensino.configuracoes.view.frame;
 
 import ensino.configuracoes.model.Bibliografia;
-import ensino.configuracoes.view.panels.BibliografiaPanel;
+import ensino.configuracoes.view.panels.bibliografia.BibliografiaPanel;
 
 /**
  *

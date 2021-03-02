@@ -6,7 +6,6 @@
 package ensino.planejamento.view.panels.permanenciaEstudantil;
 
 import ensino.components.GenJButton;
-import ensino.components.GenJComboBox;
 import ensino.components.GenJFormattedTextField;
 import ensino.components.GenJLabel;
 import ensino.defaults.DefaultCleanFormPanel;
@@ -14,12 +13,10 @@ import ensino.helpers.DateHelper;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.PermanenciaEstudantilController;
-import ensino.planejamento.model.PermanenciaEstudantil;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.PermanenciaEstudantilTableModel;
 import ensino.planejamento.view.renderer.PermanenciaEstudantilCellRenderer;
 import ensino.util.types.AcoesBotoes;
-import ensino.util.types.TipoAula;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -29,10 +26,8 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -78,15 +73,6 @@ public class PermanenciaEstudantilPanel extends DefaultCleanFormPanel {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    /**
-     * Cria um botão para selecionar um planoDeEnsino na tabela e fecha 
-     * a janela do planoDeEnsino
-     */
-    @Override
-    public void createSelectButton() {
-        
-    }
-    
     private void resizeTableColumns() {
         JTable table = getTable();
         getModel().activateButtons();
@@ -98,7 +84,7 @@ public class PermanenciaEstudantilPanel extends DefaultCleanFormPanel {
         col0.setMinWidth(400);
         col0.setCellRenderer(new PermanenciaEstudantilCellRenderer());
 
-        EnumSet enumSet = EnumSet.of(AcoesBotoes.DELETE, AcoesBotoes.EDIT);
+        EnumSet enumSet = EnumSet.of(AcoesBotoes.DEL, AcoesBotoes.EDIT);
 
         TableColumn col1 = tcm.getColumn(1);
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));

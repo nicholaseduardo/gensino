@@ -31,6 +31,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -231,11 +232,11 @@ public class EtapasChartPanel extends JPanel {
 
     private JPanel createTablePanel() {
         JTable table = new JTable(rowsData, columnNames);
-        Iterator<TableColumn> it = table.getColumnModel().getColumns().asIterator();
-        int i = 0;
+        TableColumnModel tcm = table.getColumnModel();
+        int size = tcm.getColumnCount();
         GenCellRenderer cellRenderer = createCellRenderer();
-        while (it.hasNext()) {
-            TableColumn tc = it.next();
+        for (int i = 0; i < size; i++) {
+            TableColumn tc = tcm.getColumn(i);
             tc.setCellRenderer(cellRenderer);
             if (i == 0) {
                 tc.setMinWidth(250);

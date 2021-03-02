@@ -19,6 +19,7 @@ import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.BaseObject;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.DetalhamentoController;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.MetodologiaFactory;
@@ -42,7 +43,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -220,11 +220,11 @@ public class DetalhamentoFields extends DefaultFieldsPanel {
         comboConteudo = new GenJComboBox(planoDeEnsino.getUnidadeCurricular().getConteudos().toArray());
         comboConteudo.setEnabled(false);
         lblConteudo.setLabelFor(comboConteudo);
-        
+
         JPanel panelConteudo = createPanel();
         panelConteudo.add(lblConteudo);
         panelConteudo.add(comboConteudo);
-        
+
         Border titleBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK), "Conteúdo a ser desenvolvido",
                 TitledBorder.LEFT, TitledBorder.TOP);
@@ -233,11 +233,11 @@ public class DetalhamentoFields extends DefaultFieldsPanel {
         txtConteudo.setBorder(titleBorder);
         JScrollPane scroll = new JScrollPane(txtConteudo);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        
+
         JPanel panel = createPanel(new BorderLayout(5, 5));
         panel.add(panelConteudo, BorderLayout.PAGE_START);
         panel.add(scroll, BorderLayout.CENTER);
-        
+
         return panel;
     }
 
@@ -464,19 +464,17 @@ public class DetalhamentoFields extends DefaultFieldsPanel {
 
             if (confirmDialog("Confirma a replicação das metodologias para todas as demais"
                     + " semanas?")) {
-                /**
-                 * Recupera a lista de detalhamento
-                 */
-                List<Detalhamento> lDetalhamento = planoDeEnsino.getDetalhamentos();
                 try {
+                    /**
+                     * Recupera a lista de detalhamento
+                     */
+                    DetalhamentoController detalhaCol = ControllerFactory.createDetalhamentoController();
+                    List<Detalhamento> lDetalhamento = detalhaCol.listar(planoDeEnsino);
+
                     for (int i = 1; i < lDetalhamento.size(); i++) {
                         Detalhamento d = lDetalhamento.get(i);
-                        d.getMetodologias().clear();
-                        Iterator<Metodologia> it = metodologiaTableModel.getData().iterator();
-                        while (it.hasNext()) {
-                            d.addMetodologia(it.next());
-                        }
-                        ControllerFactory.createDetalhamentoController().salvar(d);
+                        d.getMetodologias().addAll(metodologiaTableModel.getData());
+                        detalhaCol.salvar(d);
                     }
                     showInformationMessage("A replicação das metodologias foi realizada com sucesso.");
                 } catch (Exception ex) {

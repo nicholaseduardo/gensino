@@ -26,6 +26,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.border.BevelBorder;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -177,18 +178,17 @@ public class ObjetivosChartPanel extends JPanel {
 
     private JPanel createTablePanel() {
         JTable table = new JTable(rowsData, columnNames);
-        Iterator<TableColumn> it = table.getColumnModel().getColumns().asIterator();
-        int i = 0;
         GenCellRenderer cellRenderer = createCellRenderer();
-        while (it.hasNext()) {
-            TableColumn tc = it.next();
+        TableColumnModel tcm = table.getColumnModel();
+        int size = table.getColumnModel().getColumnCount();
+        for (int i = 0; i < size; i++) {
+            TableColumn tc = tcm.getColumn(i);
             tc.setCellRenderer(cellRenderer);
             if (i == 0) {
                 tc.setMinWidth(250);
             } else {
                 tc.setMaxWidth(200);
             }
-            i++;
         }
 
         GenJLabel labelStatus = new GenJLabel(
@@ -315,9 +315,11 @@ public class ObjetivosChartPanel extends JPanel {
              */
             DefaultPieDataset pieDataset = new DefaultPieDataset();
             HashMap<String, Integer> mapEtapa = pieMap.get(obj);
-            mapEtapa.forEach((k, v) -> {
-                pieDataset.setValue(k, v);
-            });
+            if (mapEtapa != null) {
+                mapEtapa.forEach((k, v) -> {
+                    pieDataset.setValue(k, v);
+                });
+            }
 
             panelEE.add(createDetailDashboardByObjetivo(pieDataset, obj), BorderLayout.LINE_START);
 
@@ -353,7 +355,9 @@ public class ObjetivosChartPanel extends JPanel {
         DefaultCategoryDataset barCategoryDataset = new DefaultCategoryDataset();
         for (int i = 0; i < lObjetivos.size(); i++) {
             Objetivo obj = lObjetivos.get(i);
-            barCategoryDataset.setValue(barMap.get(obj) / nEstudante, "Média", obj.getShortName());
+            barCategoryDataset.setValue(
+                    barMap.get(obj) == null ? 0 : barMap.get(obj) / nEstudante, "Média",
+                    obj.getShortName());
         }
 
         d = new Dimension(w, Double.valueOf(h * scala).intValue());

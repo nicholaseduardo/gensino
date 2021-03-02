@@ -47,7 +47,7 @@ public class DetalhamentoCellRenderer extends GenCellRenderer {
         panelSemana.add(lblSemana);
 
         GenJLabel textArea = createLabel("");
-        textArea.setText("<b>Conteúdo: </b>"+o.getConteudo(), 80);
+        textArea.setText("<b>Conteúdo: </b>" + o.getConteudo(), 80);
         textArea.resetFontSize(12);
 //        JPanel panelText = createLayoutPanel(textArea, FlowLayout.LEFT);
 //        Border border = BorderFactory.createLineBorder(getFore(), 1, true);
@@ -94,7 +94,7 @@ public class DetalhamentoCellRenderer extends GenCellRenderer {
         panel.add(createLayoutPanel(lblSemana, FlowLayout.LEFT), BorderLayout.PAGE_START);
         panel.add(textArea, BorderLayout.CENTER);
         panel.add(panelMetodo, BorderLayout.PAGE_END);
-        
+
         table.setRowHeight(row, panel.getPreferredSize().height);
 
         return panel;
@@ -112,11 +112,14 @@ public class DetalhamentoCellRenderer extends GenCellRenderer {
                             ? new Color(table.getBackground().getRGB())
                             : new Color(240, 240, 240)));
         }
-        
+
         if (value instanceof Detalhamento) {
             return createPanel(table, (Detalhamento) value, row);
         }
-        return createLabel(value.toString());
+        if (value != null) {
+            return createLabel(value.toString());
+        }
+        return null;
     }
 
 }

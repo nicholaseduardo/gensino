@@ -113,15 +113,6 @@ public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
         reloadTableData();
     }
 
-    /**
-     * Cria um botão para selecionar um curso na tabela e fecha a janela do
-     * calendario
-     */
-    @Override
-    public void createSelectButton() {
-
-    }
-
     private void resizeTableColumns() {
         JTable table = getTable();
 
@@ -132,7 +123,7 @@ public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
         EnumSet enumSet = EnumSet.of(AcoesBotoes.ESP,
                 AcoesBotoes.DET, AcoesBotoes.PAVA, AcoesBotoes.HOR, AcoesBotoes.PE,
                 AcoesBotoes.DIARY, AcoesBotoes.REPORT,
-                AcoesBotoes.EDIT, AcoesBotoes.DELETE, AcoesBotoes.DUPLICATE);
+                AcoesBotoes.EDIT, AcoesBotoes.DEL, AcoesBotoes.DUPLICATE);
 
         TableColumn col1 = table.getColumnModel().getColumn(1);
         col1.setMinWidth(350);
@@ -311,6 +302,8 @@ public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
                 showDialog(dialog, p);
             } else if (command.equals(AcoesBotoes.HOR.toString())) {
                 panel = new PlanoDeEnsinoHorarioAula(dialog);
+                panel.setFieldValues(planoDeEnsino);
+                showDialog(dialog, panel);
             } else if (command.equals(AcoesBotoes.PE.toString())) {
                 PermanenciaEstudantilPanel p = new PermanenciaEstudantilPanel(dialog, planoDeEnsino);
                 showDialog(dialog, p);
@@ -321,10 +314,7 @@ public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
                 ReportsPanel p = new ReportsPanel(dialog, planoDeEnsino);
                 showDialog(dialog, p);
             }
-            if (panel != null) {
-                panel.setFieldValues(planoDeEnsino);
-                showDialog(dialog, panel);
-            }
+            reloadTableData();
         }
     }
 

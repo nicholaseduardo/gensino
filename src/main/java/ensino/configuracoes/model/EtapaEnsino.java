@@ -106,20 +106,17 @@ public class EtapaEnsino implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
         final EtapaEnsino other = (EtapaEnsino) obj;
-        if (!Objects.equals(this.nome, other.nome)) {
+        if (!Objects.equals(this.nome, other.getNome())) {
             return false;
         }
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.id, other.getId())) {
             return false;
         }
-        if (!Objects.equals(this.recuperacao, other.recuperacao)) {
+        if (!Objects.equals(this.recuperacao, other.getRecuperacao())) {
             return false;
         }
-        if (!Objects.equals(this.nivelDependente, other.nivelDependente)) {
+        if (!Objects.equals(this.nivelDependente, other.getNivelDependente())) {
             return false;
         }
         return true;

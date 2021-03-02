@@ -52,7 +52,7 @@ public class Conteudo implements Serializable {
      */
     @Column(name = "nivel")
     private Integer nivel;
-    
+
     @OneToMany(mappedBy = "conteudoParent", fetch = FetchType.LAZY)
     private List<Conteudo> children;
 
@@ -80,7 +80,7 @@ public class Conteudo implements Serializable {
     public void setId(ConteudoId id) {
         this.id = id;
     }
-    
+
     public UnidadeCurricular getUnidadeCurricular() {
         if (id != null) {
             return id.getUnidadeCurricular();
@@ -89,6 +89,9 @@ public class Conteudo implements Serializable {
     }
 
     public String getDescricao() {
+        if (descricao == null) {
+            descricao = "";
+        }
         return descricao;
     }
 
@@ -131,7 +134,7 @@ public class Conteudo implements Serializable {
     public void setChildren(List<Conteudo> children) {
         this.children = children;
     }
-    
+
     public void addChild(Conteudo child) {
         this.children.add(child);
     }
