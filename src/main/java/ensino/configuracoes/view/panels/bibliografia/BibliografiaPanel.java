@@ -19,6 +19,7 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -82,6 +83,17 @@ public class BibliografiaPanel extends DefaultCleanFormPanel {
         col1.setCellRenderer(new ButtonsRenderer(null, enumSet));
         col1.setCellEditor(new ButtonsEditor(table, null, enumSet));
 
+        int buttonWidth = 0;
+        Iterator it = enumSet.iterator();
+        while (it.hasNext()) {
+            Object o = it.next();
+            if (o instanceof AcoesBotoes) {
+                buttonWidth += 120;
+            }
+        }
+        col1.setMaxWidth(buttonWidth);
+        col1.setMinWidth(buttonWidth);
+        
         table.repaint();
     }
 
