@@ -161,8 +161,8 @@ public class LegendaPanel extends DefaultFormPanel {
         public HashMap<String, Object> getFieldValues() {
             HashMap<String, Object> map = new HashMap<>();
             
-            map.put("id", ("".equals(txtId.getText()) ? null : 
-                    Integer.parseInt(txtId.getText())));
+            map.put("id", "".equals(txtId.getText()) ? null : 
+                    Integer.parseInt(txtId.getText()));
             map.put("nome", txtNome.getText());
             map.put("letivo", checkLetivo.isSelected());
             map.put("informativo", checkInformativo.isSelected());

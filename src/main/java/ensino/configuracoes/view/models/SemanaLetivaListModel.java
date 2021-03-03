@@ -6,19 +6,15 @@
 package ensino.configuracoes.view.models;
 
 import ensino.configuracoes.controller.SemanaLetivaController;
-import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.patterns.factory.ControllerFactory;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -55,7 +51,6 @@ public class SemanaLetivaListModel extends AbstractListModel {
         if (periodoLetivo == null) {
             list = (List<SemanaLetiva>) semanaLetivaCol.listar();
         } else {
-            Calendario cal = periodoLetivo.getId().getCalendario();
             list = semanaLetivaCol.listar(periodoLetivo);
         }
         if (!list.isEmpty()) {

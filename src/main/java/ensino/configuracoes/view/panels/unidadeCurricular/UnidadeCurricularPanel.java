@@ -8,7 +8,6 @@ package ensino.configuracoes.view.panels.unidadeCurricular;
 import ensino.components.GenJButton;
 import ensino.configuracoes.view.panels.unidadeCurricular.conteudo.UnidadeCurricularConteudoTreePanel;
 import ensino.components.GenJLabel;
-import static ensino.components.GenJPanel.IMG_SOURCE;
 import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.UnidadeCurricularController;
 import ensino.configuracoes.model.Curso;
@@ -23,18 +22,12 @@ import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.view.panels.PlanoDeEnsinoPanel;
 import ensino.util.types.AcoesBotoes;
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.net.URL;
 import java.util.EnumSet;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
@@ -76,7 +69,7 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
                     AcoesBotoes.DEL);
 
             super.enableTablePanel();
-            super.setFieldsPanel(new UnidadeCurricularFields(selectedCurso, null));
+            super.setFieldsPanel(new UnidadeCurricularFields(selectedCurso));
             super.showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);
@@ -101,43 +94,6 @@ public class UnidadeCurricularPanel extends DefaultCleanFormPanel {
     public void setSelectedCurso(Curso selectedCurso) {
         this.selectedCurso = selectedCurso;
         reloadTableData();
-    }
-
-    private JPanel createUCPanel(UnidadeCurricular uc) {
-        URL urlPlanos = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "plano-icon-15px.png"));
-        ImageIcon icon = new ImageIcon(urlPlanos);
-
-        GenJLabel lblTitulo = new GenJLabel(uc.getNome(), iconUnidade, JLabel.LEFT);
-        lblTitulo.setHorizontalTextPosition(JLabel.RIGHT);
-        GenJLabel lblPlanos = new GenJLabel(String.format("%d Planos de Ensino", uc.getPlanosDeEnsino().size()),
-                icon, JLabel.LEFT);
-        lblPlanos.setHorizontalTextPosition(JLabel.RIGHT);
-        lblPlanos.resetFontSize(12);
-
-        GenJLabel lblReferencias = new GenJLabel(String.format("Referências bibliográficas: %d", uc.getReferenciasBibliograficas().size()), JLabel.RIGHT);
-        lblReferencias.resetFontSize(12);
-        lblReferencias.setIcon(new ImageIcon(getClass().getResource("/img/library-icon-15px.png")));
-
-        GenJLabel lblObjetivos = new GenJLabel(String.format("Objetivos: %d", uc.getObjetivos().size()), JLabel.RIGHT);
-        lblObjetivos.resetFontSize(12);
-        lblObjetivos.setIcon(new ImageIcon(getClass().getResource("/img/target-icon-15px.png")));
-
-        GenJLabel lblConteudos = new GenJLabel(String.format("Conteúdo Base: %d", uc.getConteudos().size()), JLabel.LEFT);
-        lblConteudos.resetFontSize(12);
-        lblConteudos.setIcon(new ImageIcon(getClass().getResource("/img/Clipboard-icon-15px.png")));
-
-        JPanel panelPlanos = createPanel(new GridLayout(0, 2));
-        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblTitulo));
-        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblReferencias));
-        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblPlanos));
-        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblObjetivos));
-        panelPlanos.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblConteudos));
-
-        JPanel panel = createPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(panelPlanos, BorderLayout.CENTER);
-
-        return panel;
     }
 
     private void resizeTableColumns() {

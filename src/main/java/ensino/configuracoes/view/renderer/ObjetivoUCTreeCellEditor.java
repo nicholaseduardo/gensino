@@ -33,12 +33,10 @@ public class ObjetivoUCTreeCellEditor extends AbstractCellEditor implements Tree
     private final GenJPanel p = new GenJPanel(new BorderLayout());
     private String str = null;
     private ObjetivoUC objetivoUC;
-    private final GenJTree tree;
 
     public ObjetivoUCTreeCellEditor(GenJTree tree) {
         super();
         
-        this.tree = tree;
         txtDescricao.addFocusListener(new TextFocusEvent(tree));
 
         p.setFocusable(false);

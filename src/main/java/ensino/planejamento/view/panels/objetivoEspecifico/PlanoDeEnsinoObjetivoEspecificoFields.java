@@ -5,47 +5,21 @@
  */
 package ensino.planejamento.view.panels.objetivoEspecifico;
 
-import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextArea;
-import ensino.components.renderer.TextAreaCellRenderer;
-import ensino.configuracoes.model.ObjetivoUC;
-import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
-import ensino.planejamento.controller.ObjetivoController;
 import ensino.planejamento.model.Objetivo;
-import ensino.planejamento.model.ObjetivoFactory;
-import ensino.planejamento.model.ObjetivoId;
 import ensino.planejamento.model.PlanoDeEnsino;
-import ensino.planejamento.view.models.ObjetivoTableModel;
-import ensino.reports.ChartsFactory;
-import ensino.util.types.AcoesBotoes;
-import ensino.util.types.TipoAula;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -59,16 +33,9 @@ public class PlanoDeEnsinoObjetivoEspecificoFields extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
 
-    private Component frame;
-
-    public PlanoDeEnsinoObjetivoEspecificoFields(Component frame) {
-        this(frame, null);
-    }
-
-    public PlanoDeEnsinoObjetivoEspecificoFields(Component frame,
-            PlanoDeEnsino planoDeEnsino) {
+    public PlanoDeEnsinoObjetivoEspecificoFields(PlanoDeEnsino planoDeEnsino) {
         super("Objetivos específicos");
-        this.frame = frame;
+
         this.planoDeEnsino = planoDeEnsino;
         initComponents();
     }

@@ -6,7 +6,6 @@
 package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.DaoFactory;
 import ensino.planejamento.model.Avaliacao;
 import ensino.planejamento.model.AvaliacaoFactory;

@@ -21,7 +21,6 @@ import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.util.types.MesesDeAno;
-import ensino.util.types.Periodo;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;

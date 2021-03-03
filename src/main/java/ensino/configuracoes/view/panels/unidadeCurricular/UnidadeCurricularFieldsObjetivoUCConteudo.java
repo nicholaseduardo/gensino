@@ -25,7 +25,6 @@ import ensino.configuracoes.view.renderer.ObjetivoUCTreeCellEditor;
 import ensino.configuracoes.view.renderer.UCTreeCellRenderer;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.factory.ControllerFactory;
-import ensino.reports.ChartsFactory;
 import ensino.util.types.AcoesBotoes;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -249,7 +248,6 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
 
     @Override
     public void onAddAction(ActionEvent e, Object o) {
-        Object source = e.getSource();
         String warningMsg = "Para inserir um Objetivo, você deve "
                 + "selecionar\no nó raiz!";
 
@@ -297,8 +295,6 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
         @Override
         public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-                Object source = e.getSource();
-
                 TreePath selectedTreePaths[] = objetivoTree.getSelectionPaths();
                 for (int i = 0; i < selectedTreePaths.length; i++) {
                     Object obj = selectedTreePaths[i].getLastPathComponent();
@@ -433,6 +429,7 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
                 int index = e.getChildIndices()[0];
                 node = (DefaultMutableTreeNode) (node.getChildAt(index));
             } catch (NullPointerException exc) {
+                showErrorMessage(exc);
             }
 
             salvar(node);

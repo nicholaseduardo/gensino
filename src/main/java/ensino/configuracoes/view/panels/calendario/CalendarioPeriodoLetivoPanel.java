@@ -357,7 +357,7 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
             try {
                 String sid = txtId.getText();
                 PeriodoLetivo o = PeriodoLetivoFactory.getInstance()
-                        .createObject((sid.matches("\\d+") ? Integer.parseInt(sid) : null),
+                        .createObject(sid.matches("\\d+") ? Integer.parseInt(sid) : null,
                                 txtDescricao.getText(),
                                 new Periodo(txtDe.getText(), txtAte.getText()));
                 o.getId().setCalendario(selectedCalendario);
@@ -541,7 +541,7 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
                      * sábado (7 - 7 == 0), +2 leva para segunda Se for sexta (7
                      * - 6 = 1), +2 == 3, logo, leva para a segunda
                      */
-                    cal.add(Calendar.DATE, (7 - cal.get(Calendar.DAY_OF_WEEK) + 2));
+                    cal.add(Calendar.DATE, 7 - cal.get(Calendar.DAY_OF_WEEK) + 2);
                     // atualiza a data de referencia para gerar uma nova semana
                     dataReferencia = cal.getTime();
                 }

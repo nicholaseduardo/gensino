@@ -48,8 +48,7 @@ public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
         try {
             Calendario o = getBeanFactory().getObject(e);
             // Identifica o objeto Pai (Campus)
-            Integer campusId = Integer.parseInt(e.getAttribute("campusId")),
-                    ano = Integer.parseInt(e.getAttribute("ano"));
+            Integer campusId = Integer.parseInt(e.getAttribute("campusId"));
             // Adiciona a referência, que é a classe pai
             Campus campus;
             if (ref != null && ref instanceof Campus) {
@@ -60,19 +59,6 @@ public class CalendarioDaoXML extends AbstractDaoXML<Calendario> {
                 campus = dao.findById(campusId);
             }
             campus.addCalendario(o);
-
-            // load children
-//            String formatter = "%s[@ano=%d and @campusId=%d]";
-//            String filter = String.format(formatter,
-//                    "//Atividade/atividade", ano, campusId);
-//            DaoPattern<Atividade> atividadeDao = AtividadeDaoXML.getInstance();
-//            o.setAtividades(atividadeDao.list(filter, o));
-//
-//            DaoPattern<PeriodoLetivo> periodoLetivoDao = PeriodoLetivoDaoXML.getInstance();
-//            filter = String.format(formatter,
-//                    "//PeriodoLetivo/periodoLetivo", ano, campusId);
-//            o.setPeriodosLetivos(periodoLetivoDao.list(filter, o));
-
             return o;
         } catch (Exception ex) {
             Logger.getLogger(CursoFactory.class.getName()).log(Level.SEVERE, null, ex);

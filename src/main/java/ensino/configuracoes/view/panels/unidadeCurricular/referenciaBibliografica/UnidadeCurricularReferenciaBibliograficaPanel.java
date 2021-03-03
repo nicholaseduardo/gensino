@@ -55,7 +55,7 @@ public class UnidadeCurricularReferenciaBibliograficaPanel extends DefaultCleanF
             setController(ControllerFactory.createReferenciaBibliograficaController());
 
             enableTablePanel();
-            setFieldsPanel(new UnidadeCurricularReferenciaBiliograficaFields(this.unidadeCurricular, null));
+            setFieldsPanel(new UnidadeCurricularReferenciaBiliograficaFields(this.unidadeCurricular));
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);

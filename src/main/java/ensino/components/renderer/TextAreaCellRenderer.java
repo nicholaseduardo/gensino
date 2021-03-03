@@ -93,9 +93,9 @@ public class TextAreaCellRenderer extends JTextArea implements TableCellRenderer
             setBackground(new Color(table.getSelectionBackground().getRGB()));
         } else {
             setForeground(new Color(table.getForeground().getRGB()));
-            setBackground((row % 2 == 0 ? 
+            setBackground(row % 2 == 0 ? 
                         new Color(table.getBackground().getRGB()) : 
-                        new Color(240,240,240)));
+                        new Color(240,240,240));
         }
         
         if (table.getColumnCount() > 1 && table.getRowHeight(row) < 50) {

@@ -68,7 +68,6 @@ public class TurmaPanelEstudante extends DefaultCleanFormPanel {
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
     }
 
@@ -148,7 +147,6 @@ public class TurmaPanelEstudante extends DefaultCleanFormPanel {
         List<HashMap<String, Object>> dadosImportados = dialog.getData();
         if (!dadosImportados.isEmpty()) {
             try {
-                int id = 1;
                 for (int i = 0; i < dadosImportados.size(); i++) {
                     HashMap<String, Object> mapValue = dadosImportados.get(i);
 
@@ -163,7 +161,6 @@ public class TurmaPanelEstudante extends DefaultCleanFormPanel {
                 }
             } catch (Exception ex) {
                 showErrorMessage(ex);
-                ex.printStackTrace();
             }
         }
     }

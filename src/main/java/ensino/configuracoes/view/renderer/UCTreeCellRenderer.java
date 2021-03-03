@@ -26,8 +26,6 @@ import javax.swing.tree.TreeCellRenderer;
  */
 public class UCTreeCellRenderer implements TreeCellRenderer {
 
-    private int height;
-
     @Override
     public Component getTreeCellRendererComponent(JTree tree, Object value,
             boolean selected, boolean expanded, boolean leaf, int row,

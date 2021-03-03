@@ -137,9 +137,9 @@ public class NivelEnsinoFields extends DefaultFieldsPanel {
                             new Color(table.getSelectionBackground().getRGB()));
                 } else {
                     setColors(new Color(table.getForeground().getRGB()),
-                            (row % 2 == 0
+                            row % 2 == 0
                                     ? new Color(table.getBackground().getRGB())
-                                    : new Color(240, 240, 240)));
+                                    : new Color(240, 240, 240));
                 }
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
                 EtapaEnsino base = (EtapaEnsino) model.getRow(row);
@@ -183,8 +183,8 @@ public class NivelEnsinoFields extends DefaultFieldsPanel {
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("id", ("".equals(txtId.getText()) ? null
-                : Integer.parseInt(txtId.getText())));
+        map.put("id", "".equals(txtId.getText()) ? null
+                : Integer.parseInt(txtId.getText()));
         map.put("nome", txtNome.getText());
         map.put("etapas", etapaEnsinoTableModel.getData());
         return map;

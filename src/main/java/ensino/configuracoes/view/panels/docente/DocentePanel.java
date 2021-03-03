@@ -5,23 +5,13 @@
  */
 package ensino.configuracoes.view.panels.docente;
 
-import ensino.components.GenJTextField;
-import ensino.configuracoes.model.Docente;
 import ensino.configuracoes.view.models.DocenteTableModel;
-import ensino.defaults.DefaultFieldsPanel;
 import ensino.defaults.DefaultFormPanel;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ensino.components.GenJLabel;
-import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  *

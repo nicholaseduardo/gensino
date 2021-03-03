@@ -51,7 +51,7 @@ public class TurmaPanel extends DefaultCleanFormPanel {
             enumSet = EnumSet.of(AcoesBotoes.EDIT, AcoesBotoes.ESTUD, AcoesBotoes.DEL);
             
             super.enableTablePanel();
-            super.setFieldsPanel(new TurmaFields(this.selectedCurso, null));
+            super.setFieldsPanel(new TurmaFields(this.selectedCurso));
             super.showPanelInCard(CARD_LIST);
             super.disableCloseButton();
             

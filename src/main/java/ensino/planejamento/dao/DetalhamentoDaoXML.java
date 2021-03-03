@@ -60,21 +60,6 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
                         cursoId, campusId);
             }
             planoDeEnsino.addDetalhamento(o);
-
-            // load children
-//            String formatter = "%s[@detalhamentoSequencia=%d and @planoDeEnsinoId=%d and @unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
-//            UnidadeCurricular und = o.getPlanoDeEnsino().getUnidadeCurricular();
-//            
-//            // Cria mecanismo para buscar o conteudo no xml
-//            DaoPattern<Metodologia> dao = MetodologiaDaoXML.getInstance();
-//            String filter = String.format(formatter, "//Metodologia/metodologia", 
-//                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
-//            o.setMetodologias(dao.list(filter, o));
-//            
-//            DaoPattern<ObjetivoDetalhe> daoDetalhe = ObjetivoDetalheDaoXML.getInstance();
-//            filter = String.format(formatter, "//ObjetivoDetalhe/objetivoDetalhe", 
-//                    o.getSequencia(), planoDeEnsinoId, undId, cursoId, campusId);
-//            o.setObjetivoDetalhes(daoDetalhe.list(filter, o));
             return o;
         } catch (Exception ex) {
             Logger.getLogger(PlanoDeEnsinoDaoXML.class.getName()).log(Level.SEVERE, null, ex);
@@ -134,7 +119,6 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
     public void save(Detalhamento o) {
         // cria a expressão de acordo com o código do campus
         Integer planoId = o.getId().getPlanoDeEnsino().getId(),
-                sequencia = o.getId().getSequencia(),
                 undId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getId(),
                 cursoId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getId(),
                 campusId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getCampus().getId();
@@ -164,7 +148,6 @@ public class DetalhamentoDaoXML extends AbstractDaoXML<Detalhamento> {
             });
 
             Integer planoId = o.getId().getPlanoDeEnsino().getId(),
-                    sequencia = o.getId().getSequencia(),
                     undId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getId(),
                     cursoId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getId(),
                     campusId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getCampus().getId();

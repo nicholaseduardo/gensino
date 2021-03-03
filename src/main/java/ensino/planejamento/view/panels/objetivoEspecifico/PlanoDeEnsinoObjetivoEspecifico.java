@@ -53,13 +53,11 @@ public class PlanoDeEnsinoObjetivoEspecifico extends DefaultCleanFormPanel {
             setTitlePanel("Dados de Objetivos Específicos", icon);
             setController(ControllerFactory.createObjetivoController());
 
-            setFieldsPanel(new PlanoDeEnsinoObjetivoEspecificoFields(null, 
-                    this.planoDeEnsino));
+            setFieldsPanel(new PlanoDeEnsinoObjetivoEspecificoFields(this.planoDeEnsino));
             enableTablePanel();
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
     }
 

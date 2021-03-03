@@ -23,7 +23,6 @@ import ensino.planejamento.model.PermanenciaEstudantil;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.AtendimentoEstudanteListModel;
 import ensino.planejamento.view.renderer.AtendimentoEstudanteListCellRenderer;
-import ensino.reports.ChartsFactory;
 import ensino.util.types.Presenca;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -261,8 +260,8 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
         try {
             HashMap<String, Object> map = new HashMap<>();
 
-            map.put("id", ("".equals(txtId.getText()) ? null
-                    : Integer.parseInt(txtId.getText())));
+            map.put("id", "".equals(txtId.getText()) ? null
+                    : Integer.parseInt(txtId.getText()));
             map.put("descricao", txtDescricao.getText());
             map.put("dataAtendimento", DateHelper.stringToDate(txtData.getText(), "dd/MM/yyyy"));
             map.put("horaAtendimento", (Date) spinHora.getValue());

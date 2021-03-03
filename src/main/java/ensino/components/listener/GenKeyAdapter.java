@@ -18,11 +18,9 @@ public class GenKeyAdapter extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent evt) {
         int key = evt.getKeyCode();
-        if (key == KeyEvent.VK_ENTER) {
-            if (evt.getSource() instanceof JTextField) {
-                JTextField t = (JTextField) evt.getSource();
-                t.transferFocus();
-            }
+        if (key == KeyEvent.VK_ENTER && evt.getSource() instanceof JTextField) {
+            JTextField t = (JTextField) evt.getSource();
+            t.transferFocus();
         }
     }
 

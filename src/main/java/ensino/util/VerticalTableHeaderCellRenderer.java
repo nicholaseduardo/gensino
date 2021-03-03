@@ -71,7 +71,7 @@ public class VerticalTableHeaderCellRenderer
         DESCENDING(UIManager.getIcon("Table.descendingSortIcon"));
         private final Icon icon;// = ;
 
-        private VerticalSortIcon(Icon icon) {
+        VerticalSortIcon(Icon icon) {
             this.icon = icon;
         }
 
@@ -93,7 +93,7 @@ public class VerticalTableHeaderCellRenderer
         public void paintIcon(Component c, Graphics g, int x, int y) {
             int maxSide = Math.max(getIconWidth(), getIconHeight());
             Graphics2D g2 = (Graphics2D) g.create(x, y, maxSide, maxSide);
-            g2.rotate((Math.PI / 2));
+            g2.rotate(Math.PI / 2);
             g2.translate(0, -maxSide);
             icon.paintIcon(c, g2, 0, 0);
             g2.dispose();

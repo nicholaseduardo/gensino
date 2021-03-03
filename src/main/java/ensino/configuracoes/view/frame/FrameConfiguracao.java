@@ -9,20 +9,20 @@ import ensino.configuracoes.view.panels.TecnicaPanel;
 import ensino.configuracoes.view.panels.LegendaPanel;
 import ensino.configuracoes.view.panels.RecursoPanel;
 import ensino.configuracoes.view.panels.InstrumentoAvaliacaoPanel;
-import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.view.models.ConfiguracoesTreeModel;
 import ensino.configuracoes.view.panels.docente.DocentePanel;
 import ensino.configuracoes.view.panels.nivelEnsino.NivelEnsinoPanel;
 import ensino.defaults.DefaultFormPanel;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.util.concurrent.Flow;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -32,10 +32,10 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public class FrameConfiguracao extends javax.swing.JInternalFrame {
 
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JScrollPane scrollTree;
-    private javax.swing.JTree treeConfiguracoes;
-    private javax.swing.JPanel treePanel;
+    private JPanel mainPanel;
+    private JScrollPane scrollTree;
+    private JTree treeConfiguracoes;
+    private JPanel treePanel;
 
     private JPanel configuracaoCardPanel;
     // painel de legenda
@@ -99,25 +99,25 @@ public class FrameConfiguracao extends javax.swing.JInternalFrame {
     private void initialization() {
         getContentPane().setLayout(new BorderLayout(5, 5));
         
-        mainPanel = new javax.swing.JPanel();
-        treePanel = new javax.swing.JPanel();
-        scrollTree = new javax.swing.JScrollPane();
-        treeConfiguracoes = new javax.swing.JTree();
+        mainPanel = new JPanel();
+        treePanel = new JPanel();
+        scrollTree = new JScrollPane();
+        treeConfiguracoes = new JTree();
 
         setTitle("Configurações");
 
-        mainPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
-        getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
+        mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
 
-        treeConfiguracoes.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+        treeConfiguracoes.setBorder(BorderFactory.createCompoundBorder());
         treeConfiguracoes.setModel(new ConfiguracoesTreeModel());
-        treeConfiguracoes.setMaximumSize(new java.awt.Dimension(120, 64));
+        treeConfiguracoes.setMaximumSize(new Dimension(120, 64));
         scrollTree.setViewportView(treeConfiguracoes);
 
         treePanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         treePanel.add(scrollTree);
 
-        getContentPane().add(treePanel, java.awt.BorderLayout.LINE_START);
+        getContentPane().add(treePanel, BorderLayout.LINE_START);
 
         pack();
     }
@@ -163,10 +163,7 @@ public class FrameConfiguracao extends javax.swing.JInternalFrame {
             TreePath tp = e.getPath();
             CardLayout layout = (CardLayout) configuracaoCardPanel.getLayout();
             String lastPath = tp.getLastPathComponent().toString();
-            // recuperar o nó superior para identificar o campus
-            TreePath parent = tp.getParentPath();
-            DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) parent.getLastPathComponent();
-            Campus campus;
+            
             switch (lastPath) {
                 case "Legenda":
                     layout.show(configuracaoCardPanel, legendaPanel.getName());

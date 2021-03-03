@@ -23,7 +23,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.logging.Level;
@@ -103,7 +102,7 @@ public class PermanenciaEstudantilPanel extends DefaultCleanFormPanel {
                     .listar(planoDeEnsino, data)));
             resizeTableColumns();
         } catch (Exception ex) {
-            Logger.getLogger(PermanenciaEstudantilPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
         }
     }
 
@@ -111,7 +110,7 @@ public class PermanenciaEstudantilPanel extends DefaultCleanFormPanel {
     public void addFiltersFields() {
         try {
             GenJLabel lblData = new GenJLabel("Data:");
-            Calendar cal = Calendar.getInstance();
+            
             txtData = GenJFormattedTextField.createFormattedField("##/##/####", 1);
             txtData.setColumns(8);
             lblData.setLabelFor(txtData);
@@ -138,7 +137,6 @@ public class PermanenciaEstudantilPanel extends DefaultCleanFormPanel {
             panel.add(panelButton, c);
         } catch (ParseException ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
     }
 

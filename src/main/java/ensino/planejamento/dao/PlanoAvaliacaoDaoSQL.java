@@ -6,19 +6,12 @@
 package ensino.planejamento.dao;
 
 import ensino.configuracoes.model.Campus;
-import ensino.configuracoes.model.EtapaEnsino;
-import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.connection.AbstractDaoSQL;
-import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoAvaliacaoId;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.util.List;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 /**
  *

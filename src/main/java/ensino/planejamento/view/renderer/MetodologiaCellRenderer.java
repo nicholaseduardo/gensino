@@ -6,7 +6,6 @@
 package ensino.planejamento.view.renderer;
 
 import ensino.components.renderer.GenCellRenderer;
-import ensino.configuracoes.view.renderer.*;
 import ensino.components.GenJLabel;
 import ensino.defaults.DefaultTableModel;
 import ensino.planejamento.model.Metodologia;
@@ -31,9 +30,9 @@ public class MetodologiaCellRenderer extends GenCellRenderer {
                     new Color(table.getSelectionBackground().getRGB()));
         } else {
             setColors(new Color(table.getForeground().getRGB()),
-                    (row % 2 == 0 ? 
+                    row % 2 == 0 ? 
                         new Color(table.getBackground().getRGB()) : 
-                        new Color(240,240,240)));
+                        new Color(240,240,240));
         }
         DefaultTableModel model = (DefaultTableModel)table.getModel();
         Metodologia metodologia = (Metodologia) model.getRow(row);

@@ -78,7 +78,7 @@ public class PermanenciaEstudantilDaoSQL extends AbstractDaoSQL<PermanenciaEstud
         Root<PermanenciaEstudantil> from = criteria.from(PermanenciaEstudantil.class);
 
         Predicate pPlano = builder.equal(from.get("id").get("planoDeEnsino").get("id"), o.getId()),
-                pdata = null, ptipo = null;
+                pdata = null;
         if (data != null) {
             pdata = builder.equal(from.get("dataAtendimento"), data);
         }

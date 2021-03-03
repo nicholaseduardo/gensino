@@ -78,8 +78,8 @@ public class ConteudoDaoSQL extends AbstractDaoSQL<Conteudo> {
          * Localizar os childs do root
          */
         for(Conteudo c : l) {
-            if ((root == null && !c.hasParent()) ||
-                    (c.hasParent() && c.getConteudoParent().equals(root))){
+            if (root == null && !c.hasParent() ||
+                    c.hasParent() && c.getConteudoParent().equals(root)){
                 list.add(c);
                 /**
                  * Adiciona os childs de C

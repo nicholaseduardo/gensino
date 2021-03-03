@@ -26,7 +26,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
 import javax.swing.ImageIcon;
@@ -114,7 +113,6 @@ public class DiarioConteudoPanel extends DefaultCleanFormPanel {
     public void addFiltersFields() {
         try {
             GenJLabel lblData = new GenJLabel("Data:");
-            Calendar cal = Calendar.getInstance();
             txtData = GenJFormattedTextField.createFormattedField("##/##/####", 1);
             txtData.setColumns(8);
             lblData.setLabelFor(txtData);

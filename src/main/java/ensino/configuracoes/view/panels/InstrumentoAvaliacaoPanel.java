@@ -26,6 +26,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SpringLayout;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -53,8 +54,8 @@ public class InstrumentoAvaliacaoPanel extends DefaultFormPanel {
     }
 
     private void resizeTableColumns() {
-        javax.swing.JTable table = getTable();
-        javax.swing.table.TableColumnModel tcm = table.getColumnModel();
+        JTable table = getTable();
+        TableColumnModel tcm = table.getColumnModel();
         tcm.getColumn(0).setCellRenderer(new BaseObjectCellRenderer());
     }
 
@@ -132,8 +133,8 @@ public class InstrumentoAvaliacaoPanel extends DefaultFormPanel {
         public HashMap<String, Object> getFieldValues() {
             HashMap<String, Object> map = new HashMap<>();
 
-            map.put("id", ("".equals(txtId.getText()) ? null
-                    : Integer.parseInt(txtId.getText())));
+            map.put("id", "".equals(txtId.getText()) ? null
+                    : Integer.parseInt(txtId.getText()));
             map.put("nome", txtNome.getText());
             return map;
         }

@@ -61,7 +61,6 @@ public class AvaliacaoPanel extends DefaultFieldsPanel {
     }
 
     private JScrollPane createTablePane() {
-        JPanel panel = new JPanel();
         avaliacaoTable = new JTable();
         ListSelectionModel cellSelectionModel = avaliacaoTable.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

@@ -9,7 +9,6 @@ import ensino.components.GenJButton;
 import ensino.components.GenJCheckBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextArea;
-import ensino.components.GenJTextField;
 import ensino.configuracoes.controller.BibliografiaController;
 import ensino.configuracoes.controller.InstrumentoAvaliacaoController;
 import ensino.configuracoes.controller.LegendaController;
@@ -30,8 +29,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -56,7 +57,6 @@ public class PanelInformacao extends JFrame {
     private GenJButton btAnterior;
     private JPanel cardPanel;
     private String selectedCard;
-    private GenJTextField txtNome;
 
     public PanelInformacao() {
         super();
@@ -166,28 +166,9 @@ public class PanelInformacao extends JFrame {
     }
 
     private JPanel docentePanel() {
-//        txtNome = new GenJTextField(40, true);
-//        txtNome.setLabelFor("Digite seu Nome");
-//
-//        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-//        panel.add(txtNome);
-//        return panel;
         return new DocenteFields(null);
     }
-
-//    private void salvarNome() {
-//        try {
-//            DocenteController col = ControllerFactory.createDocenteController();
-//            Docente o = DocenteFactory.getInstance()
-//                    .createObject(null, txtNome.getText());
-//            col.salvar(o);
-//        } catch (Exception ex) {
-//            JOptionPane.showMessageDialog(this,
-//                    "Erro no sistema. Contate o desenvolvedor relatando o erro: \n" + ex.getMessage()
-//                    + ex.getCause() != null ? "\nCausa: " + ex.getCause().getMessage() : "",
-//                    "Erro de sistema", JOptionPane.ERROR_MESSAGE);
-//        }
-//    }
+    
     /**
      * Método utilizado para importar os dados de legenda, recursos, técnicas e
      * instrumentos de avaliação direto do ambiente de desenvolvimento:
@@ -228,7 +209,7 @@ public class PanelInformacao extends JFrame {
                     }
                 }
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(PanelInformacao.this,
+                JOptionPane.showMessageDialog(this,
                         "Erro no sistema. Contate o desenvolvedor relatando o erro: " + ex.getMessage()
                         + ex.getCause() != null ? "\nCausa: " + ex.getCause().getMessage() : "",
                         "Erro de sistema", JOptionPane.ERROR_MESSAGE);
@@ -240,10 +221,10 @@ public class PanelInformacao extends JFrame {
         String errorMessage = "";
         while (true) {
             try {
-                java.net.URL mandarMail = new java.net.URL("https://www.github.com");
-                java.net.URLConnection conn = mandarMail.openConnection();
+                URL mandarMail = new URL("https://www.github.com");
+                URLConnection conn = mandarMail.openConnection();
 
-                java.net.HttpURLConnection httpConn = (java.net.HttpURLConnection) conn;
+                HttpURLConnection httpConn = (HttpURLConnection) conn;
                 httpConn.connect();
                 int x = httpConn.getResponseCode();
                 if (x == 200) {
@@ -255,7 +236,7 @@ public class PanelInformacao extends JFrame {
                 errorMessage = ex.getMessage();
             }
             if (!"".equals(errorMessage)) {
-                JOptionPane.showMessageDialog(PanelInformacao.this,
+                JOptionPane.showMessageDialog(this,
                         "Não é possível importar os dados básicos do sistema.\n"
                         + "Motivo: sem acesso a internet.",
                         "Aviso de sistema",

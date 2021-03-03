@@ -8,7 +8,6 @@ package ensino.planejamento.model;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.Docente;
-import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
@@ -367,29 +366,7 @@ public class PlanoDeEnsino implements Serializable {
             }
 
         }
-    }
-
-    public void criarAvaliacoes() {
-        if (detalhamentos != null && !detalhamentos.isEmpty()
-                && periodoLetivo != null
-                && turma != null && turma.hasEstudantes()
-                && (planoAvaliacoes != null || !planoAvaliacoes.isEmpty())) {
-            /**
-             * Recupera a lista de estudantes
-             */
-            List<Estudante> lEstudantes = turma.getEstudantes();
-            planoAvaliacoes.forEach((planoAvaliacao) -> {
-                /**
-                 * Cria avaliações para cada plano de avaliação que estiver
-                 * vazia para a lista de estudantes
-                 */
-                if (!planoAvaliacao.hasAvaliacoes()) {
-                    planoAvaliacao.criarAvaliacoes(lEstudantes);
-                }
-            });
-        }
-    }
-    
+    }    
 
     /**
      * Número de avaliações por etapa.

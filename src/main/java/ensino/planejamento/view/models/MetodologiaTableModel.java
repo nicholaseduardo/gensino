@@ -44,11 +44,6 @@ public class MetodologiaTableModel extends DefaultTableModel<Metodologia> {
     }
 
     @Override
-    public List<Metodologia> getData() {
-        return super.getData();
-    }
-
-    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Metodologia obj = (Metodologia) getRow(rowIndex);
         switch (columnIndex) {

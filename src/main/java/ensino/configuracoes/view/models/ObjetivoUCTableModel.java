@@ -43,11 +43,6 @@ public class ObjetivoUCTableModel extends DefaultTableModel<ObjetivoUC> {
     }
 
     @Override
-    public List<ObjetivoUC> getData() {
-        return super.getData();
-    }
-
-    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         ObjetivoUC obj = (ObjetivoUC) getRow(rowIndex);
         switch (columnIndex) {

@@ -15,7 +15,6 @@ import ensino.configuracoes.view.panels.filters.BibliografiaSearch;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.net.URL;
@@ -35,19 +34,12 @@ public class UnidadeCurricularReferenciaBiliograficaFields extends DefaultFields
     private BibliografiaSearch compoBiblioSearch;
     private GenJComboBox comboTipoRef;
     
-    private Component frame;
     private UnidadeCurricular unidadeCurricular;
 
-    public UnidadeCurricularReferenciaBiliograficaFields(UnidadeCurricular unidadeCurricular,
-            Component frame) {
+    public UnidadeCurricularReferenciaBiliograficaFields(UnidadeCurricular unidadeCurricular) {
         super();
-        this.frame = frame;
         this.unidadeCurricular = unidadeCurricular;
         initComponents();
-    }
-
-    public void setFrame(Component frame) {
-        this.frame = frame;
     }
 
     private void initComponents() {
@@ -111,8 +103,8 @@ public class UnidadeCurricularReferenciaBiliograficaFields extends DefaultFields
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("sequencia", ("".equals(txtId.getText()) ? null
-                : Integer.parseInt(txtId.getText())));
+        map.put("sequencia", "".equals(txtId.getText()) ? null
+                : Integer.parseInt(txtId.getText()));
         map.put("tipo", comboTipoRef.getSelectedIndex());
         map.put("unidadeCurricular", unidadeCurricular);
         map.put("bibliografia", compoBiblioSearch.getObjectValue());

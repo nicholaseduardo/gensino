@@ -5,7 +5,6 @@
  */
 package ensino.planejamento.view.panels.config;
 
-import ensino.planejamento.view.panels.planoDeEnsino.*;
 import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
@@ -55,22 +54,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.AbstractListModel;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -108,17 +103,11 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
     private ObjetivoComboBoxModel objetivoComboModel;
 
     private JTabbedPane tabbedDetalhamento;
-    private DetalhamentoPanel parent;
 
     private GenJButton btSalvar;
 
     public PlanoDeEnsinoDetalhamentoFieldsPanel() {
-        this(null);
-    }
-
-    public PlanoDeEnsinoDetalhamentoFieldsPanel(DetalhamentoPanel parent) {
         super("Detalhamento das atividades da semana");
-        this.parent = parent;
         initComponents();
     }
 
@@ -129,7 +118,6 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
         add(createPanelObservacao(), BorderLayout.PAGE_START);
 
         JPanel panelConteudo = new JPanel(new BorderLayout(5, 5));
-//        panelConteudo.add(createPanelAulas(), BorderLayout.PAGE_START);
         panelConteudo.add(createPanelConteudo(), BorderLayout.PAGE_START);
         
         tabbedDetalhamento = new JTabbedPane();
@@ -147,37 +135,6 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
         btSalvar.addActionListener(botaoAction);
         btReplicarMetodo.addActionListener(botaoAction);
 
-    }
-
-    private void addKeyEventTo(JTable table, String keyString) {
-        Action action = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Object source = ae.getSource();
-                int selectedRow;
-                if (source == metodologiaTable) {
-                    selectedRow = metodologiaTable.getSelectedRow();
-                    if (selectedRow == -1) {
-                        showWarningMessage("Você não selecionou o Método que será removido.\n"
-                                + "Favor, clique sobre um Método!");
-                        return;
-                    }
-                    metodologiaTableModel.removeRow(selectedRow);
-                    reloadMetodologiaTable();
-                } else if (source == objetivosDetalheTable) {
-                    selectedRow = objetivosDetalheTable.getSelectedRow();
-                    if (selectedRow == -1) {
-                        showWarningMessage("Você não selecionou o Objetivo que será removido.\n"
-                                + "Favor, clique sobre um Objetivo!");
-                        return;
-                    }
-                    objetivoDetalheTableModel.removeRow(selectedRow);
-                    reloadObjetivoTable();
-                }
-            }
-        };
-        table.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(keyString), "evento");
-        table.getActionMap().put("evento", action);
     }
 
     private JPanel createPanelObservacao() {
@@ -228,7 +185,6 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
     }
 
     private JScrollPane createPanelConteudo() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         Border titleBorder = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(Color.BLACK), "Conteúdo a ser desenvolvido",
                 TitledBorder.LEFT, TitledBorder.TOP);
@@ -237,7 +193,7 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
         txtConteudo.setBorder(titleBorder);
         JScrollPane conteudoScroll = new JScrollPane(txtConteudo);
         conteudoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        panel.add(conteudoScroll);
+        
         return conteudoScroll;
     }
 

@@ -12,7 +12,7 @@ import javax.swing.JInternalFrame;
  *
  * @author nicho
  */
-public class FrameCampus extends javax.swing.JInternalFrame {
+public class FrameCampus extends JInternalFrame {
 
     public FrameCampus(JInternalFrame areaDeTrabalho) {
         super("Campi", true, true, true, true);

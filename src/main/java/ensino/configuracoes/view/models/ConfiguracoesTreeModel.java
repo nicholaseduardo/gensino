@@ -29,7 +29,7 @@ public class ConfiguracoesTreeModel implements TreeModel {
 
     public ConfiguracoesTreeModel() {
         modeloInterno = new DefaultTreeModel(noRaiz);
-        int rootIndex = 0, geralIndex = 0, metodoIndex = 0, campusIndex = 0;
+        int rootIndex = 0, geralIndex = 0, metodoIndex = 0;
 
         DefaultMutableTreeNode geraisNode = new DefaultMutableTreeNode("Dados gerais");
         modeloInterno.insertNodeInto(geraisNode, noRaiz, rootIndex++);

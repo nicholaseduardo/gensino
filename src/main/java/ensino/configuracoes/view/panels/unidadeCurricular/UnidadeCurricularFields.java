@@ -13,7 +13,6 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -43,24 +42,14 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
     private GenJTextField txtCargaHoraria;
     private GenJTextArea txtEmenta;
 
-    private Component frame;
     private UnidadeCurricular unidadeCurricular;
 
-    public UnidadeCurricularFields(Curso curso, Component frame) {
+    public UnidadeCurricularFields(Curso curso) {
         super();
         this.selectedCurso = curso;
-        this.frame = frame;
         initComponents();
     }
-
-    public UnidadeCurricularFields() {
-        this(null, null);
-    }
     
-    public void setFrame(Component frame) {
-        this.frame = frame;
-    }
-
     private void initComponents() {
         setName("unidadeCurricular.cadastro");
         setLayout(new BorderLayout(10, 10));
@@ -150,8 +139,8 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("id", ("".equals(txtId.getText()) ? null
-                : Integer.parseInt(txtId.getText())));
+        map.put("id", "".equals(txtId.getText()) ? null
+                : Integer.parseInt(txtId.getText()));
         map.put("nome", txtNome.getText());
         map.put("nAulasTeoricas", "".equals(txtAulasTeoricas.getText()) ? null
                 : Integer.parseInt(txtAulasTeoricas.getText()));
@@ -173,6 +162,7 @@ public class UnidadeCurricularFields extends DefaultFieldsPanel {
         txtAulasPraticas.setText(nAulasPraticas.toString());
         txtCargaHoraria.setText(cargaHoraria.toString());
         txtEmenta.setText(ementa);
+        this.selectedCurso = curso;
     }
 
     @Override

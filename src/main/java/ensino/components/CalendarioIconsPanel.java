@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
@@ -113,7 +112,7 @@ public class CalendarioIconsPanel extends JPanel {
         }
 
         @Override
-        public void mouseEntered(java.awt.event.MouseEvent evt) {
+        public void mouseEntered(MouseEvent evt) {
             Object source = evt.getSource();
             if (source == CalendarioIconsPanel.this) {
                 JPanel p = (JPanel) source;
@@ -122,7 +121,7 @@ public class CalendarioIconsPanel extends JPanel {
         }
 
         @Override
-        public void mouseExited(java.awt.event.MouseEvent evt) {
+        public void mouseExited(MouseEvent evt) {
             Object source = evt.getSource();
             if (source == CalendarioIconsPanel.this) {
                 JPanel p = (JPanel) source;
@@ -156,16 +155,16 @@ public class CalendarioIconsPanel extends JPanel {
         }
     }
 
-    public static void main(String args[]) {
-        CalendarioIconsPanel panel = new CalendarioIconsPanel();
-        
-        JPanel p = new JPanel(new BorderLayout());
-        p.add(panel, BorderLayout.PAGE_START);
-
-        JFrame f = new JFrame("Teste");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.getContentPane().add(p);
-        f.setSize(new Dimension(640, 480));
-        f.setVisible(true);
-    }
+//    public static void main(String args[]) {
+//        CalendarioIconsPanel panel = new CalendarioIconsPanel();
+//        
+//        JPanel p = new JPanel(new BorderLayout());
+//        p.add(panel, BorderLayout.PAGE_START);
+//
+//        JFrame f = new JFrame("Teste");
+//        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        f.getContentPane().add(p);
+//        f.setSize(new Dimension(640, 480));
+//        f.setVisible(true);
+//    }
 }

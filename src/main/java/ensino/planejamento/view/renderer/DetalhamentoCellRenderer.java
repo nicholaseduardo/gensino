@@ -16,12 +16,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.net.URL;
 import java.util.StringJoiner;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -49,9 +46,6 @@ public class DetalhamentoCellRenderer extends GenCellRenderer {
         GenJLabel textArea = createLabel("");
         textArea.setText("<b>Conteúdo: </b>" + o.getConteudo(), 80);
         textArea.resetFontSize(12);
-//        JPanel panelText = createLayoutPanel(textArea, FlowLayout.LEFT);
-//        Border border = BorderFactory.createLineBorder(getFore(), 1, true);
-//        panelText.setBorder(BorderFactory.createTitledBorder(border, "Conteúdo", TitledBorder.LEFT, TitledBorder.TOP));
 
         StringJoiner sbTecnica = new StringJoiner(", "),
                 sbRecurso = new StringJoiner(", "),
@@ -108,9 +102,9 @@ public class DetalhamentoCellRenderer extends GenCellRenderer {
                     new Color(table.getSelectionBackground().getRGB()));
         } else {
             setColors(new Color(table.getForeground().getRGB()),
-                    (row % 2 == 0
+                    row % 2 == 0
                             ? new Color(table.getBackground().getRGB())
-                            : new Color(240, 240, 240)));
+                            : new Color(240, 240, 240));
         }
 
         if (value instanceof Detalhamento) {

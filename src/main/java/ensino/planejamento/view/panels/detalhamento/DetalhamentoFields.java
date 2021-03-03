@@ -51,24 +51,19 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.AbstractListModel;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -135,37 +130,6 @@ public class DetalhamentoFields extends DefaultFieldsPanel {
         tabbedDetalhamento.addTab("Objetivos", createPanelObjetivos());
 
         add(panelConteudo, BorderLayout.CENTER);
-    }
-
-    private void addKeyEventTo(JTable table, String keyString) {
-        Action action = new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                Object source = ae.getSource();
-                int selectedRow;
-                if (source == metodologiaTable) {
-                    selectedRow = metodologiaTable.getSelectedRow();
-                    if (selectedRow == -1) {
-                        showWarningMessage("Você não selecionou o Método que será removido.\n"
-                                + "Favor, clique sobre um Método!");
-                        return;
-                    }
-                    metodologiaTableModel.removeRow(selectedRow);
-                    reloadMetodologiaTable();
-                } else if (source == objetivosDetalheTable) {
-                    selectedRow = objetivosDetalheTable.getSelectedRow();
-                    if (selectedRow == -1) {
-                        showWarningMessage("Você não selecionou o Objetivo que será removido.\n"
-                                + "Favor, clique sobre um Objetivo!");
-                        return;
-                    }
-                    objetivoDetalheTableModel.removeRow(selectedRow);
-                    reloadObjetivoTable();
-                }
-            }
-        };
-        table.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(keyString), "evento");
-        table.getActionMap().put("evento", action);
     }
 
     private JPanel createPanelObservacao() {

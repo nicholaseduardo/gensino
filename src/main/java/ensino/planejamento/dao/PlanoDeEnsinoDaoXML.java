@@ -50,8 +50,7 @@ public class PlanoDeEnsinoDaoXML extends AbstractDaoXML<PlanoDeEnsino> {
     protected PlanoDeEnsino createObject(Element e, Object ref) {
         try {
             PlanoDeEnsino o = getBeanFactory().getObject(e);
-            Integer id = o.getId(),
-                    undId = Integer.parseInt(e.getAttribute("unidadeCurricularId")),
+            Integer undId = Integer.parseInt(e.getAttribute("unidadeCurricularId")),
                     cursoId = Integer.parseInt(e.getAttribute("cursoId")),
                     campusId = Integer.parseInt(e.getAttribute("campusId"));
 

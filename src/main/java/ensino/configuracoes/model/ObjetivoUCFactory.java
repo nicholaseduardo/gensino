@@ -5,7 +5,6 @@
  */
 package ensino.configuracoes.model;
 
-import ensino.planejamento.model.*;
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
 import org.w3c.dom.Document;

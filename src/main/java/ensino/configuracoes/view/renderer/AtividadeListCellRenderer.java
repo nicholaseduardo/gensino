@@ -31,7 +31,7 @@ public class AtividadeListCellRenderer implements ListCellRenderer {
             backgroundColor = new Color(list.getSelectionBackground().getRGB());
         } else {
             foregroundColor = new Color(list.getForeground().getRGB());
-            backgroundColor = (index % 2 == 0 ? new Color(list.getBackground().getRGB()) : new Color(240, 240, 240));
+            backgroundColor = index % 2 == 0 ? new Color(list.getBackground().getRGB()) : new Color(240, 240, 240);
         }
 
         JLabel lblTexto = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,

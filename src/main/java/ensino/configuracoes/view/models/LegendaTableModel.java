@@ -9,7 +9,6 @@ import ensino.configuracoes.model.Legenda;
 import ensino.defaults.DefaultTableModel;
 import java.awt.Color;
 import java.util.List;
-import javax.swing.JLabel;
 
 /**
  *
@@ -29,8 +28,8 @@ public class LegendaTableModel extends DefaultTableModel {
         switch(columnIndex) {
             case 0: return legenda.getId();
             case 1: return legenda.getNome();
-            case 2: return (legenda.isLetivo()?"Sim":"Não");
-            case 3: return (legenda.isInformativo()?"Sim":"Não");
+            case 2: return legenda.isLetivo()?"Sim":"Não";
+            case 3: return legenda.isInformativo()?"Sim":"Não";
             case 4: return legenda.getCor();
             default: return null;
         }

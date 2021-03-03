@@ -178,16 +178,12 @@ public class Estudante implements Serializable {
             Avaliacao a = avaliacoes.get(i);
             PlanoAvaliacao pa = a.getId().getPlanoAvaliacao();
             /**
-             * Calcula a média somente do plano de ensino identificado
+             * Calcula a média somente do plano de ensino identificado e a média
+             * da etapa de ensino
              */
-            if (planoDeEnsino.equals(pa.getId().getPlanoDeEnsino())) {
-                /**
-                 * Calcula a média da etapa de ensino
-                 */
-                if (etapaEnsino.equals(pa.getEtapaEnsino())) {
-                    soma += a.getNotaCalculada();
-                    pesos += pa.getPeso();
-                }
+            if (planoDeEnsino.equals(pa.getId().getPlanoDeEnsino()) && etapaEnsino.equals(pa.getEtapaEnsino())) {
+                soma += a.getNotaCalculada();
+                pesos += pa.getPeso();
             }
         }
 
@@ -215,19 +211,11 @@ public class Estudante implements Serializable {
              * Calcula a média somente das notas que não estejam relacionadas a
              * recuperação
              */
-            if (!pa.getEtapaEnsino().isRecuperacao()) {
-                /**
-                 * Calcula a média somente do plano de ensino identificado
-                 */
-                if (planoDeEnsino.equals(pa.getId().getPlanoDeEnsino())) {
-                    /**
-                     * Calcula a média da etapa de ensino
-                     */
-                    if (objetivo.equals(pa.getObjetivo())) {
-                        soma += a.getNotaCalculada();
-                        pesos += pa.getPeso();
-                    }
-                }
+            if (!pa.getEtapaEnsino().isRecuperacao()
+                    && planoDeEnsino.equals(pa.getId().getPlanoDeEnsino())
+                    && objetivo.equals(pa.getObjetivo())) {
+                soma += a.getNotaCalculada();
+                pesos += pa.getPeso();
             }
         }
 
@@ -251,10 +239,8 @@ public class Estudante implements Serializable {
              * Se a média da recuperação for maior que zero e maior do que a
              * média anterior, ela deve substituir a média anterior
              */
-            if (ee.isRecuperacao()) {
-                if (media > mediaAnterior) {
-                    total += media - mediaAnterior;
-                }
+            if (ee.isRecuperacao() && media > mediaAnterior) {
+                total += media - mediaAnterior;
             } else {
                 mediaAnterior = media;
                 total += media;

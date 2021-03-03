@@ -127,7 +127,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
             panel.add(new GenJLabel("Descrição: "), c);
             GridLayoutHelper.set(c, ++col, row++, 2, 1, GridBagConstraints.LINE_START);
             panel.add(new GenJLabel("Bimestre: "), c);
-            
+
             col = 0;
             GridLayoutHelper.set(c, col++, row, 2, 1, GridBagConstraints.LINE_START);
             c.fill = GridBagConstraints.HORIZONTAL;
@@ -228,7 +228,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
         objetivoComboModel.refresh();
         comboObjetivo.setModel(objetivoComboModel);
         comboObjetivo.repaint();
-        
+
         refreshPlanoAvaliacao();
     }
 
@@ -312,10 +312,6 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
     private class ButtonAction implements ActionListener {
 
         private int sequencia = 1;
-        
-        public ButtonAction() {
-            PlanoAvaliacao planoAvaliacao = planoAvaliacaoTableModel.getLast();
-        }
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -369,7 +365,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                             "Já existem avalições lançadas. Essa operação lançará novas avaliações "
                             + "no final da lista.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 }
-                
+
                 listaDetalhamento.forEach((detalhe) -> {
                     // para cada detalhe, verifica-se os métodos vinculados
                     detalhe.getMetodologias().forEach((metodologia) -> {
@@ -384,7 +380,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                             plano.setPeso(1.0);
                             // Inicializa com o valor 10.0 (nota máxima)
                             plano.setValor(10.0);
-                            
+
                             /**
                              * atribui o último dia da semana letiva ao qual o
                              * método foi atribuído
@@ -424,16 +420,16 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                 txtNome.setText(plano.getNome());
                 comboInstrumento.setSelectedItem(plano.getInstrumentoAvaliacao());
                 comboInstrumento.repaint();
-                
+
                 spinPeso.setValue(plano.getPeso());
                 spinValor.setValue(plano.getValor());
                 spinData.setValue(plano.getData());
 //                comboBimestre.setSelectedItem(plano.getBimestre());
                 comboBimestre.repaint();
-                
+
                 comboObjetivo.setSelectedItem(plano.getObjetivo());
                 comboObjetivo.repaint();
-                
+
                 refreshPlanoAvaliacao();
             }
         }

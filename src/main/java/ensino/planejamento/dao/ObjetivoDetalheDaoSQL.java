@@ -5,7 +5,6 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.Campus;
 import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Objetivo;

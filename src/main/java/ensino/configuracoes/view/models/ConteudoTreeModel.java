@@ -30,7 +30,6 @@ public class ConteudoTreeModel extends GenTreeModel<Conteudo> {
      */
     @Override
     protected void loadTree() {
-        StringBuffer sb = new StringBuffer();
         if (!lista.isEmpty()) {
             for (Conteudo conteudo : lista) {
                 ToolTipTreeNode node = null;

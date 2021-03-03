@@ -88,10 +88,10 @@ public class TreeTransferHandler extends TransferHandler {
          */
         for (int i = 0; i < data.length; i++) {
             Object oData = data[i];
-            if ((parentObject instanceof SemanaLetiva && oData instanceof SemanaLetiva)
-                    || (parentObject instanceof String && oData instanceof SemanaLetiva)
-                    || (parentObject instanceof BaseObject && oData instanceof BaseObject)
-                    || (parentObject instanceof BaseObject && oData instanceof SemanaLetiva)) {
+            if (parentObject instanceof SemanaLetiva && oData instanceof SemanaLetiva
+                    || parentObject instanceof String && oData instanceof SemanaLetiva
+                    || parentObject instanceof BaseObject && oData instanceof BaseObject
+                    || parentObject instanceof BaseObject && oData instanceof SemanaLetiva) {
                 return false;
             } else if (oData instanceof BaseObject) {
                 BaseObject baseObject = (BaseObject) oData;
@@ -194,6 +194,7 @@ public class TreeTransferHandler extends TransferHandler {
         return null;
     }
 
+    @Override
     public void exportDone(JComponent comp, Transferable trans, int action) {
         if (action != MOVE) {
             return;
@@ -206,7 +207,6 @@ public class TreeTransferHandler extends TransferHandler {
              * A remoção dos índices deve ser realizada de forma decresente para
              * não alterar os índices da tabela.
              */
-            DefaultMutableTreeNode parentNode = null;
             for (int i = indexes.length - 1; i >= 0; i--) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) indexes[i].getLastPathComponent();
                 model.removeNodeFromParent(node);

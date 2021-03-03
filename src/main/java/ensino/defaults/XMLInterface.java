@@ -14,6 +14,6 @@ import org.w3c.dom.Node;
  * @author nicho
  */
 public interface XMLInterface {
-    public Node toXml(Document doc);
-    public HashMap<String, Object> getKey();
+    Node toXml(Document doc);
+    HashMap<String, Object> getKey();
 }

@@ -354,8 +354,6 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
 
     @Override
     public void onDelAction(ActionEvent e, Object o) {
-        Object source = e.getSource();
-
         TreePath selectedTreePaths[] = tree.getSelectionPaths();
         for (int i = 0; i < selectedTreePaths.length; i++) {
             Object obj = selectedTreePaths[i].getLastPathComponent();
@@ -382,8 +380,6 @@ public class UnidadeCurricularConteudoTreePanel extends DefaultFieldsPanel {
 
         @Override
         public void stateChanged(ChangeEvent evt) {
-            JTabbedPane pane = (JTabbedPane) evt.getSource();
-
             switch (tabs.getSelectedIndex()) {
                 case 0:
                     refreshTree();

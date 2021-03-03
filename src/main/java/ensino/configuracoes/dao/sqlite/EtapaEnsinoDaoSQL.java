@@ -54,7 +54,7 @@ public class EtapaEnsinoDaoSQL extends AbstractDaoSQL<EtapaEnsino> {
     @Override
     public List<EtapaEnsino> list(Object ref) {
         String sql = ref instanceof String ? (String) ref : "";
-        return this.list(ref.toString(), ref);
+        return this.list(sql, ref);
     }
 
     @Override

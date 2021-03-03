@@ -13,7 +13,6 @@ import ensino.configuracoes.model.Turma;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -43,21 +42,11 @@ public class TurmaFields extends DefaultFieldsPanel {
     private GenJSpinner spinAno;
 
     private Turma turma;
-    private Component frame;
 
-    public TurmaFields(Curso curso, Component frame) {
+    public TurmaFields(Curso curso) {
         super();
-        this.frame = frame;
         this.selectedCurso = curso;
         initComponents();
-    }
-
-    public TurmaFields() {
-        this(null, null);
-    }
-
-    public void setFrame(Component frame) {
-        this.frame = frame;
     }
 
     private void initComponents() {
@@ -129,8 +118,8 @@ public class TurmaFields extends DefaultFieldsPanel {
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("id", ("".equals(txtId.getText()) ? null
-                : Integer.parseInt(txtId.getText())));
+        map.put("id", "".equals(txtId.getText()) ? null
+                : Integer.parseInt(txtId.getText()));
         map.put("nome", txtNome.getText());
         map.put("ano", (Integer) spinAno.getValue());
         map.put("curso", selectedCurso);

@@ -29,9 +29,9 @@ public class TextAreaItemRenderer extends GenItemRenderer {
                     new Color(getBackground().getRGB()));
         } else {
             setColors(new Color(getForeground().getRGB()),
-                    (index % 2 == 0
+                    index % 2 == 0
                             ? new Color(getBackground().getRGB())
-                            : new Color(240, 240, 240)));
+                            : new Color(240, 240, 240));
         }
         String text = "";
         if (value instanceof Objetivo) {

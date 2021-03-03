@@ -14,7 +14,6 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -30,13 +29,13 @@ public class BaseObjectCellRenderer extends GenCellRenderer {
                     new Color(table.getSelectionBackground().getRGB()));
         } else {
             setColors(new Color(table.getForeground().getRGB()),
-                    (row % 2 == 0 ? 
+                    row % 2 == 0 ? 
                         new Color(table.getBackground().getRGB()) : 
-                        new Color(240,240,240)));
+                        new Color(240,240,240));
         }
         DefaultTableModel model = (DefaultTableModel)table.getModel();
         BaseObject base = (BaseObject) model.getRow(row);
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        
         GenJLabel label = createLabel(String.format("[%d] %s", base.getId(),
                 base.getNome()));
         label.setForeground(getFore());

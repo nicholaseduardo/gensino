@@ -53,14 +53,12 @@ import org.icepdf.ri.common.SwingViewBuilder;
 public abstract class Report {
 
     public static final String DEST_PATH = "resources/reports/";
-    private static final String RESOURCE_IMG = "/img";
 
     protected static final PdfNumber PORTRAIT = new PdfNumber(0);
     protected static final PdfNumber LANDSCAPE = new PdfNumber(90);
 
     private PdfDocument pdf;
     private PdfFont helvetica;
-    private PdfFont helveticaBold;
 
     private Image brasaoImage;
     private Image ifmsImage;
@@ -89,7 +87,6 @@ public abstract class Report {
         pdf.addEventHandler(PdfDocumentEvent.END_PAGE, new HeaderFooterHandler());
 
         helvetica = PdfFontFactory.createFont(FontConstants.HELVETICA);
-        helveticaBold = PdfFontFactory.createFont(FontConstants.HELVETICA_BOLD);
 
         URL urlBrasao = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "brasao-do-brasil-republica.50px.png"));
         URL urlIfms = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "marcaifms.50px.png"));

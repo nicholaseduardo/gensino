@@ -5,11 +5,6 @@
  */
 package ensino.util.helper;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import javax.swing.text.html.StyleSheet;
-
 /**
  *
  * @author santos

@@ -44,11 +44,6 @@ public class PeriodoLetivoTableModel extends DefaultTableModel<PeriodoLetivo> {
     }
 
     @Override
-    public List<PeriodoLetivo> getData() {
-        return super.getData();
-    }
-
-    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         PeriodoLetivo periodoLetivo = getRow(rowIndex);
         switch (columnIndex) {

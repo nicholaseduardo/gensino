@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 

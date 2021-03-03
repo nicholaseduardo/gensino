@@ -9,23 +9,19 @@ import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJSpinner;
 import ensino.components.GenJTextField;
-import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.view.models.EtapaEnsinoComboBoxModel;
 import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
-import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.ObjetivoComboBoxModel;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -40,7 +36,6 @@ import javax.swing.SpinnerNumberModel;
 public class PlanoDeEnsinoPlanoAvaliacaoFields extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
-    private EtapaEnsino etapaPadrao;
 
     private GenJTextField txtId;
     private GenJTextField txtDescricao;
@@ -53,27 +48,9 @@ public class PlanoDeEnsinoPlanoAvaliacaoFields extends DefaultFieldsPanel {
     private GenJComboBox comboInstrumento;
     private GenJComboBox comboObjetivo;
     private ObjetivoComboBoxModel objetivoComboModel;
-
-    /**
-     * atributos adicionais para tratativa de automatização e atribuição de
-     * valores
-     */
-    private List<Detalhamento> listaDetalhamento;
-    private Component frame;
-
-    public PlanoDeEnsinoPlanoAvaliacaoFields(Component frame) {
-        this(frame, null);
-    }
-
+    
     public PlanoDeEnsinoPlanoAvaliacaoFields(PlanoDeEnsino planoDeEnsino) {
-        this(null, planoDeEnsino);
-    }
-    
-    
-    public PlanoDeEnsinoPlanoAvaliacaoFields(Component frame,
-            PlanoDeEnsino planoDeEnsino) {
         super("Planejamento de Avaliações");
-        this.frame = frame;
         this.planoDeEnsino = planoDeEnsino;
         initComponents();
     }

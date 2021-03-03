@@ -152,7 +152,6 @@ public class UCConteudoTreeTransferHandler extends TransferHandler {
              * A remoção dos índices deve ser realizada de forma decresente para
              * não alterar os índices da tabela.
              */
-            DefaultMutableTreeNode parentNode = null;
             for (int i = indexes.length - 1; i >= 0; i--) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) indexes[i].getLastPathComponent();
                 model.removeNodeFromParent(node);

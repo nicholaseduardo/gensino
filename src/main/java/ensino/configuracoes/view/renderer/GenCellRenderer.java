@@ -100,11 +100,11 @@ public abstract class GenCellRenderer extends DefaultTableCellRenderer {
     // Overridden for performance reasons. ---->
     @Override
     public boolean isOpaque() {
-        Color back = getBackground();
+        Color background = getBackground();
         Object o = SwingUtilities.getAncestorOfClass(JTable.class, this);
         if (o instanceof JTable) {
             JTable table = (JTable) o;
-            boolean colorMatch = Objects.nonNull(back) && back.equals(table.getBackground()) && table.isOpaque();
+            boolean colorMatch = Objects.nonNull(background) && background.equals(table.getBackground()) && table.isOpaque();
             return !colorMatch && super.isOpaque();
         } else {
             return super.isOpaque();

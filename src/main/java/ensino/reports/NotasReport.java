@@ -170,8 +170,7 @@ public class NotasReport extends Report {
      *
      * @return
      */
-    private List<HashMap<String, Object>> createTitleTableHeader(
-            List<PlanoAvaliacao> planosDeAvaliacoes) {
+    private List<HashMap<String, Object>> createTitleTableHeader() {
         List<HashMap<String, Object>> lHeader = new ArrayList<>();
         /**
          * Procedimento realizado para determinar o número de colunas que cada
@@ -250,7 +249,7 @@ public class NotasReport extends Report {
         /**
          * Constrói os cabeçalhos de forma padronizada para adição na tabela
          */
-        List<HashMap<String, Object>> lHeaders = createTitleTableHeader(planosDeAvaliacoes);
+        List<HashMap<String, Object>> lHeaders = createTitleTableHeader();
 
         /**
          * Cria a parte superior do cabeçalho

@@ -48,7 +48,7 @@ public class GenTreeDragSource implements DragSourceListener, DragGestureListene
     @Override
     public void dragGestureRecognized(DragGestureEvent dge) {
         TreePath path = sourceTree.getSelectionPath();
-        if ((path == null) || (path.getPathCount() <= 1)) {
+        if (path == null || path.getPathCount() <= 1) {
             // We can't move the root node or an empty selection
             return;
         }
@@ -90,7 +90,7 @@ public class GenTreeDragSource implements DragSourceListener, DragGestureListene
          */
         System.out.println("Drop Action: " + dsde.getDropAction());
         if (dsde.getDropSuccess()
-                && (dsde.getDropAction() == DnDConstants.ACTION_MOVE)) {
+                && dsde.getDropAction() == DnDConstants.ACTION_MOVE) {
             ((GenTreeModel) sourceTree.getModel())
                     .removeNodeFromParent(oldNode);
         }

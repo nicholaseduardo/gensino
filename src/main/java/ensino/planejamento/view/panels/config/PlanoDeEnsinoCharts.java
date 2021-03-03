@@ -11,7 +11,6 @@ import ensino.reports.EtapasChartPanel;
 import ensino.reports.FrequenciaChartPanel;
 import ensino.reports.ObjetivosChartPanel;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JTabbedPane;
@@ -24,11 +23,9 @@ public class PlanoDeEnsinoCharts extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
     private JTabbedPane tabs;
-    private Component frame;
 
-    public PlanoDeEnsinoCharts(Component frame, PlanoDeEnsino planoDeEnsino) {
+    public PlanoDeEnsinoCharts(PlanoDeEnsino planoDeEnsino) {
         super();
-        this.frame = frame;
         this.planoDeEnsino = planoDeEnsino;
         
         setName("objetivos.chart");

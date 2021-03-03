@@ -5,7 +5,6 @@
  */
 package ensino.planejamento.view.panels.config;
 
-import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextArea;
@@ -49,21 +48,13 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
 
     private GenJTextArea txtObjetivo;
     private GenJTextArea txtRecuperacao;
-    private GenJButton btSalvar;
 
     private UnidadeCurricular selectedUnidadeCurricular;
     private PlanoDeEnsino planoDeEnsino;
-    private Component frame;
 
-    public PlanoDeEnsinoIdentificacao(Component frame) {
-        this(null, frame);
-    }
-
-    public PlanoDeEnsinoIdentificacao(UnidadeCurricular unidadeCurricular,
-            Component frame) {
+    public PlanoDeEnsinoIdentificacao(UnidadeCurricular unidadeCurricular) {
         super();
         this.selectedUnidadeCurricular = unidadeCurricular;
-        this.frame = frame;
         initComponents();
     }
 
@@ -74,12 +65,12 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
 
         int col = 0, row = 0;
         GridBagConstraints c = new GridBagConstraints();
-        
+
         GenJLabel lblId = new GenJLabel("Código: ");
         txtId = new GenJTextField(5, false);
         txtId.setEnabled(false);
         lblId.setLabelFor(txtId);
-        
+
         GenJLabel lblAno = new GenJLabel("Calendário: ");
         Curso curso = selectedUnidadeCurricular.getCurso();
         compoCalendario = new CalendarioSearch();
@@ -87,34 +78,31 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
         compoCalendario.addDocumentListener(new CompoSearchListener(compoCalendario));
         compoCalendario.setBackground(backColor);
         lblAno.setLabelFor(compoCalendario);
-        
-        
+
         GenJLabel lblPeriodoLetivo = new GenJLabel("PeriodoLetivo: ");
         comboPeriodoLetivo = new GenJComboBox(new PeriodoLetivoComboBoxListModel());
         refreshComboPeriodoLetivo(compoCalendario.getObjectValue());
         lblPeriodoLetivo.setLabelFor(comboPeriodoLetivo);
-        
-        
+
         GenJLabel lblTurma = new GenJLabel("Turma: ");
         compoTurma = new TurmaSearch();
         compoTurma.setSelectedCurso(curso);
         compoTurma.addDocumentListener(new CompoSearchListener(compoTurma));
         compoTurma.setBackground(backColor);
-        
-        
+
         GenJLabel lblProfessor = new GenJLabel("Docente: ", JLabel.TRAILING);
         comboDocente = new GenJComboBox(new DocenteComboBoxModel());
-                
+
         txtObjetivo = new GenJTextArea(3, 50);
         JScrollPane objetivoScroll = new JScrollPane(txtObjetivo);
         objetivoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         objetivoScroll.setBorder(createTitleBorder("Descrição do objetivo geral"));
-        
+
         txtRecuperacao = new GenJTextArea(3, 50);
         JScrollPane recuperacaoScroll = new JScrollPane(txtRecuperacao);
         recuperacaoScroll.setBorder(createTitleBorder("Recuperação da aprendizagem"));
         recuperacaoScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        
+
         JPanel panel = createPanel(new GridBagLayout());
         GridLayoutHelper.setRight(c, col++, row);
         panel.add(lblId, c);
@@ -148,10 +136,10 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
         col = 0;
         GridLayoutHelper.set(c, col, row++, 2, 1, GridBagConstraints.LINE_START);
         panel.add(objetivoScroll, c);
-        
+
         GridLayoutHelper.set(c, col, row++, 2, 1, GridBagConstraints.LINE_START);
         panel.add(recuperacaoScroll, c);
-        
+
         add(panel, BorderLayout.CENTER);
     }
 
@@ -282,7 +270,7 @@ public class PlanoDeEnsinoIdentificacao extends DefaultFieldsPanel {
                 PeriodoLetivoComboBoxListModel periodoLetivoListModel = (PeriodoLetivoComboBoxListModel) comboPeriodoLetivo.getModel();
                 PeriodoLetivo pl = (PeriodoLetivo) periodoLetivoListModel.getSelectedItem();
 
-                if ((pl == null) || (pl != null && !pl.getCalendario().equals(cal))) {
+                if (pl == null || !pl.getCalendario().equals(cal)) {
                     refreshComboPeriodoLetivo(cal);
                 }
             }

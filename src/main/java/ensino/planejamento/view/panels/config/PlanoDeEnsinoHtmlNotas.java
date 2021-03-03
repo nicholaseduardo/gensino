@@ -9,7 +9,6 @@ import ensino.defaults.DefaultFieldsPanel;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.reports.NotasReport;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.IOException;
@@ -27,11 +26,9 @@ public class PlanoDeEnsinoHtmlNotas extends DefaultFieldsPanel {
     private PlanoDeEnsino planoDeEnsino;
 
     private JScrollPane scrollPane;
-    private Component frame;
 
-    public PlanoDeEnsinoHtmlNotas(Component frame, PlanoDeEnsino planoDeEnsino) {
+    public PlanoDeEnsinoHtmlNotas(PlanoDeEnsino planoDeEnsino) {
         super();
-        this.frame = frame;
         this.planoDeEnsino = planoDeEnsino;
         initComponents();
     }

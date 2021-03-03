@@ -9,7 +9,6 @@ import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricularFactory;
 import ensino.connection.AbstractDaoXML;
-import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -45,29 +44,6 @@ public class UnidadeCurricularDaoXML extends AbstractDaoXML<UnidadeCurricular> {
     public UnidadeCurricular createObject(Element e, Object ref) {
         try {
             UnidadeCurricular o = getBeanFactory().getObject(e);
-            // Identifica o objeto Pai (Campus)
-            Integer campusId = new Integer(e.getAttribute("campusId")),
-                    cursoId = new Integer(e.getAttribute("cursoId"));
-            Curso curso;
-            if (ref != null && ref instanceof Curso) {
-                curso = (Curso) ref;
-            } else {
-                DaoPattern<Curso> dao = CursoDaoXML.getInstance();
-                curso = dao.findById(cursoId, campusId);
-            }
-//            curso.addUnidadeCurricular(o);
-            
-            // load children
-//            String formatter = "%s[@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]";
-//            String filter = String.format(formatter,
-//                    "//ReferenciaBibliografica/referenciaBibliografica", o.getId(), cursoId, campusId);
-//            DaoPattern<ReferenciaBibliografica> dao = ReferenciaBibliograficaDaoXML.getInstance();
-//            o.setReferenciasBibliograficas(dao.list(filter, o));
-//            
-//            filter = "" + String.format(formatter,
-//                    "//PlanoDeEnsino/planoDeEnsino", o.getId(), cursoId, campusId);
-//            DaoPattern<PlanoDeEnsino> daoPlano = PlanoDeEnsinoDaoXML.getInstance();
-//            o.setPlanosDeEnsino(daoPlano.list(filter, o));
             
             return o;
         } catch (Exception ex) {

@@ -25,6 +25,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -104,8 +105,8 @@ public class CalendarioPanel extends DefaultFormPanel {
     }
 
     private void resizeTableColumns() {
-        javax.swing.JTable table = getTable();
-        javax.swing.table.TableColumnModel tcm = table.getColumnModel();
+        JTable table = getTable();
+        TableColumnModel tcm = table.getColumnModel();
         TableColumn tcNome = tcm.getColumn(0);
         tcNome.setMinWidth(50);
         tcNome.setCellRenderer(new CalendarioCellRenderer());

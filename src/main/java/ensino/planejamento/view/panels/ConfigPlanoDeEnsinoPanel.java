@@ -7,7 +7,6 @@ package ensino.planejamento.view.panels;
 
 import ensino.components.GenJTree;
 import ensino.components.ToolTipTreeNode;
-import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.Docente;
@@ -16,7 +15,6 @@ import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.PlanoDeEnsinoController;
-import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.model.PlanoDeEnsinoFactory;
 import ensino.planejamento.view.panels.config.PlanoDeEnsinoAvaliacaoPanel;
@@ -363,23 +361,6 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
         return listaSemanas;
     }
 
-    private String atividadesDaSemana(SemanaLetiva semanaLetiva) {
-        // Procura pelas atividades da semana
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(semanaLetiva.getPeriodo().getDe());
-        int weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
-
-        StringBuilder sb = new StringBuilder();
-        List<Atividade> listaAtividades = semanaLetiva.getId().getPeriodoLetivo().getId().getCalendario().getAtividades();
-        listaAtividades.forEach((at) -> {
-            cal.setTime(at.getPeriodo().getDe());
-            if (weekOfYear == cal.get(Calendar.WEEK_OF_YEAR)) {
-                sb.append(String.format("%s,", at.toString()));
-            }
-        });
-        return sb.toString();
-    }
-
     public void loadDetalhamentoTree() {
         /**
          * Recupera o nó do plano de ensino selecionado
@@ -394,8 +375,6 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
 
         PeriodoLetivo periodoLetivo = planoDeEnsino.getPeriodoLetivo();
         if (periodoLetivo != null) {
-            List<Detalhamento> listaDetalhamentos = planoDeEnsino.getDetalhamentos();
-
             Calendar cal = Calendar.getInstance();
             cal.setTime(periodoLetivo.getPeriodo().getDe());
             int mesInicio = cal.get(Calendar.MONTH);
@@ -536,7 +515,6 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
 
             TreePath tp = planoDeEnsinoTree.getSelectionPath();
             TreePath parent = tp.getParentPath();
-            ToolTipTreeNode parentNode = (ToolTipTreeNode) parent.getLastPathComponent();
             ToolTipTreeNode childNode = (ToolTipTreeNode) tp.getLastPathComponent();
             Object object = childNode.getUserObject();
             if (source == menuNovo) {

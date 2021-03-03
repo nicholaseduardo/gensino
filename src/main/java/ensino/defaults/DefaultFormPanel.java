@@ -392,10 +392,6 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
         panelCenter.add(titlePanel, BorderLayout.PAGE_START);
     }
 
-    private JLabel getTitlePanel() {
-        return this.titlePanel;
-    }
-
     /**
      * Atribui um título na tela do painel
      *
@@ -438,7 +434,7 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
                     onDeleteButton(e);
                     break;
                 case "exit":
-                    onExitButton(e);
+                    onExitButton();
                     break;
                 case "save":
                     onSaveAction(e);
@@ -463,7 +459,7 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
      * @return
      */
     protected boolean hasData() {
-        return (model != null && !model.isEmpty());
+        return model != null && !model.isEmpty();
     }
 
     /**
@@ -662,7 +658,7 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
 
     }
 
-    private void onExitButton(ActionEvent e) {
+    private void onExitButton() {
         if (frame instanceof JInternalFrame) {
             JInternalFrame f = (JInternalFrame) frame;
             f.dispose();
@@ -688,11 +684,11 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
         }
 
         @Override
-        public void keyReleased(java.awt.event.KeyEvent evt) {
+        public void keyReleased(KeyEvent evt) {
             if (!Pattern.matches("[\\d]", "" + evt.getKeyChar())
                     && evt.getSource() instanceof JTextField) {
                 JTextField field = (JTextField) evt.getSource();
-                JOptionPane.showMessageDialog(frame, "Este campo aceita somente números.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                showWarningMessage("Este campo aceita somente números.");
                 field.setText("");
             }
         }
@@ -716,7 +712,7 @@ public abstract class DefaultFormPanel extends GenJPanel implements ActionListen
             } else if (source == btSave) {
                 onSaveAction(e);
             } else if (source == btExit) {
-                onExitButton(e);
+                onExitButton();
             } else if (source == btExport) {
                 onExportButton(e);
             } else if (source == btImport) {

@@ -87,9 +87,4 @@ public class EstudanteController extends AbstractController<Estudante> {
         
         return estudanteDao.list(filter, turma);
     }
-
-    @Override
-    public Estudante salvar(Estudante o) throws Exception {
-        return super.salvar(o);
-    }
 }

@@ -19,7 +19,6 @@ import ensino.patterns.factory.ControllerFactory;
 import ensino.util.types.Periodo;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -30,8 +29,6 @@ import javax.swing.JPanel;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -141,8 +138,8 @@ public class AtividadeFields extends DefaultFieldsPanel {
         try {
             HashMap<String, Object> map = new HashMap<>();
 
-            map.put("id", ("".equals(txtId.getText()) ? null
-                    : Integer.parseInt(txtId.getText())));
+            map.put("id", "".equals(txtId.getText()) ? null
+                    : Integer.parseInt(txtId.getText()));
             map.put("periodo", new Periodo(txtDe.getText(), txtAte.getText()));
             map.put("descricao", txtDescricao.getText());
             map.put("legenda", comboLegenda.getSelectedItem());
@@ -188,7 +185,7 @@ public class AtividadeFields extends DefaultFieldsPanel {
             txtAte.commitEdit();
             return txtDe.getValue() != null
                     && txtAte.getValue() != null
-                    && (!"".equals(txtDescricao.getText()))
+                    && !"".equals(txtDescricao.getText())
                     && comboLegenda.getSelectedItem() != null;
         } catch (ParseException ex) {
             Logger.getLogger(AtividadePanel.class.getName()).log(Level.SEVERE, null, ex);

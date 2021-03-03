@@ -42,9 +42,9 @@ public class AtendimentoEstudanteListCellRenderer extends GenListCellRenderer {
                     new Color(list.getSelectionBackground().getRGB()));
         } else {
             setColors(new Color(list.getForeground().getRGB()),
-                    (index % 2 == 0
+                    index % 2 == 0
                             ? new Color(list.getBackground().getRGB())
-                            : new Color(240, 240, 240)));
+                            : new Color(240, 240, 240));
         }
 
         GenJLabel lblSituacao = createLabel(String.format("[Situação: %s]",

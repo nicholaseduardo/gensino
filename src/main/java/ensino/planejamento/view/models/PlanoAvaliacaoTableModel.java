@@ -44,11 +44,6 @@ public class PlanoAvaliacaoTableModel extends DefaultTableModel<PlanoAvaliacao> 
     }
 
     @Override
-    public List<PlanoAvaliacao> getData() {
-        return super.getData();
-    }
-
-    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         PlanoAvaliacao obj = (PlanoAvaliacao) getRow(rowIndex);
         switch (columnIndex) {

@@ -31,7 +31,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -355,10 +354,6 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
         return panel;
     }
 
-    private JLabel getTitlePanel() {
-        return this.titlePanel;
-    }
-
     /**
      * Atribui um título na tela do painel
      *
@@ -396,7 +391,7 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
      * @return
      */
     protected boolean hasData() {
-        return (model != null && !model.isEmpty());
+        return model != null && !model.isEmpty();
     }
 
     /**
@@ -408,12 +403,7 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
      * habilita os botões Editar/Excluir/Sair e desabilita os demais
      */
     protected void componentsControl(int option) {
-        boolean hasData = hasData();
-
         btAdd.setVisible(option == 0);
-//        btEdit.setEnabled((option == 0 || option == 2) && hasData);
-//        btView.setEnabled(option == 0 && hasData);
-//        btDelete.setEnabled((option == 0 || option == 2) && hasData);
         btSave.setVisible(option == 1);
         btCancel.setVisible(option == 1 || option == 2);
         btExit.setVisible(option == 0);
@@ -515,7 +505,7 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
         if (fieldsPanel.isValidated()) {
             HashMap<String, Object> params = fieldsPanel.getFieldValues();
             try {
-                Object object = controller.salvar(params);
+                controller.salvar(params);
                 showInformationMessage("Dados gravados com sucesso!");
 
                 componentsControl(0);
@@ -601,11 +591,11 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
         }
 
         @Override
-        public void keyReleased(java.awt.event.KeyEvent evt) {
+        public void keyReleased(KeyEvent evt) {
             if (!Pattern.matches("[\\d]", "" + evt.getKeyChar())
                     && evt.getSource() instanceof JTextField) {
                 JTextField field = (JTextField) evt.getSource();
-                JOptionPane.showMessageDialog(frame, "Este campo aceita somente números.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                showWarningMessage("Este campo aceita somente números.");
                 field.setText("");
             }
         }

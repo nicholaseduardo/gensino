@@ -99,8 +99,7 @@ public class MemoryPanel extends GenJPanel {
         Thread t = new Thread(() -> {
             while (true) {
                 Runtime rt = Runtime.getRuntime();
-                double totalVMUsed = rt.totalMemory(),
-                        total = maxVMMemory,
+                double total = maxVMMemory,
                         used = total - (rt.freeMemory() / 1048576.0);
                 
                 lblConsumo.setText(String.format("Consumo: %.3f MB de %.3f MB", used, maxVMMemory));
@@ -117,16 +116,4 @@ public class MemoryPanel extends GenJPanel {
         });
         t.start();
     }
-
-//    public static void main(String args[]) {
-//        JFrame f = new JFrame("Teste");
-//        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        f.add(new MemoryPanel());
-//        f.pack();
-//        f.setVisible(true);
-//        Runtime rt = Runtime.getRuntime();
-//        double total = rt.totalMemory() / 1048576.0,
-//                used = total - rt.freeMemory() / 1048576.0;
-//        System.out.printf("Total: %.3f MB / used: %.3f MB", total, used);
-//    }
 }

@@ -102,8 +102,6 @@ public class EtapasChartPanel extends JPanel {
             columnNames[i] = ee.getNome();
             barMap.put(ee, 0.0);
 
-            HashMap<FaixaMedia, HashMap<String, Double>> mapFaixaList = new HashMap();
-
             HashMap<FaixaMedia, Integer> mapPieHash = new HashMap();
             for (FaixaMedia faixa : FaixaMedia.values()) {
                 mapPieHash.put(faixa, 0);
@@ -332,7 +330,6 @@ public class EtapasChartPanel extends JPanel {
         Integer nDesligados = 0, nEmCurso = 0,
                 nEstudantes = listaEstudantes.size();
         for (SituacaoEstudante situacao : SituacaoEstudante.values()) {
-            String sSituacao = situacao.toString();
             Integer nSituacao = turma.getNumeroDeEstudatesPor(situacao);
             switch(situacao) {
                 case DESLIGADO:

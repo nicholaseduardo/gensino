@@ -44,11 +44,6 @@ public class ObjetivoTableModel extends DefaultTableModel<Objetivo> {
     }
 
     @Override
-    public List<Objetivo> getData() {
-        return super.getData();
-    }
-
-    @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Objetivo obj = (Objetivo) getRow(rowIndex);
         switch (columnIndex) {

@@ -25,8 +25,6 @@ import ensino.configuracoes.view.models.SemanaLetivaTableModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.BaseObject;
 import ensino.patterns.factory.ControllerFactory;
-import ensino.planejamento.controller.MetodologiaController;
-import ensino.planejamento.controller.PlanoDeEnsinoController;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
 import ensino.planejamento.model.DetalhamentoId;
@@ -79,7 +77,6 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -232,34 +229,6 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
         return newTree;
     }
 
-    private DefaultMutableTreeNode createNode(Object o) {
-        return new DefaultMutableTreeNode(o);
-    }
-
-    private DefaultTreeModel loadSemanaLetivaModel() {
-        DefaultMutableTreeNode root = createNode("Semanas Letivas");
-
-        DefaultTreeModel model = new DefaultTreeModel(root);
-
-        PeriodoLetivo pl = planoDeEnsino.getPeriodoLetivo();
-        List<MesesDeAno> lMesesDeAnos = pl.getMesesDoPeriodo();
-        Integer indexRoot = 0;
-        for (MesesDeAno mes : lMesesDeAnos) {
-            DefaultMutableTreeNode mesNode = createNode(mes);
-            model.insertNodeInto(mesNode, root, indexRoot++);
-
-            Integer indexMes = 0;
-            List<SemanaLetiva> lSemanaLetiva = pl.getSemanasDoMes(mes);
-            for (SemanaLetiva sl : lSemanaLetiva) {
-                DefaultMutableTreeNode child = createNode(sl);
-                model.insertNodeInto(child, mesNode, indexMes++);
-                HashMap<DiaDaSemana, Integer> map = getNAulasPorDiaDaSemanaLetiva(sl);
-            }
-        }
-
-        return model;
-    }
-
     private JPanel createSemanaPanel(SemanaLetiva sl, Color panelColor) {
         Icon iconCalendario = new ImageIcon(getClass().getResource("/img/calendar-image-png-15px.png"));
         PeriodoLetivo pl = sl.getId().getPeriodoLetivo();
@@ -287,7 +256,7 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
                 DiaDaSemana k = entry.getKey();
                 Integer v = entry.getValue();
                 GenJLabel label = new GenJLabel(String.format("%s - %d aula%s", k, v,
-                        (v > 1 ? "s" : "")), iconCalendario, JLabel.LEFT);
+                        v > 1 ? "s" : ""), iconCalendario, JLabel.LEFT);
                 label.resetFontSize(12);
                 label.setForeground(new Color(0, 0, 128));
                 panelAulas.add(label);
@@ -520,7 +489,6 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
 
     private void vincularMetodologia(DefaultMutableTreeNode node, Detalhamento d) throws Exception {
         if (node.getChildCount() > 0) {
-            MetodologiaController col = ControllerFactory.createMetodologiaController();
             BaseObject bo = null;
             for (int i = 0; i < node.getChildCount(); i++) {
                 DefaultMutableTreeNode child = (DefaultMutableTreeNode) node.getChildAt(i);
@@ -528,7 +496,6 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
                     bo = (BaseObject) child.getUserObject();
 
                     Metodologia m = createMetodologia(d, bo);
-//                    col.salvar(m);
                     d.addMetodologia(m);
                 }
             }
@@ -767,7 +734,7 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
         public Component getTreeCellRendererComponent(JTree jtree, Object value,
                 boolean selected, boolean expanded, boolean leaf, int row,
                 boolean hasFocus) {
-            return createTreeNodePanel(value, leaf, (selected ? getBackground() : jtree.getBackground()));
+            return createTreeNodePanel(value, leaf, selected ? getBackground() : jtree.getBackground());
         }
 
     }
@@ -796,32 +763,6 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
                 }
             }
         }
-    }
-
-    public static void main(String args[]) throws Exception {
-        PlanoDeEnsinoController col = ControllerFactory.createPlanoDeEnsinoController();
-        List<PlanoDeEnsino> l = col.listar();
-        for (PlanoDeEnsino p : l) {
-            if (p.getDetalhamentos().isEmpty()) {
-                System.out.println(p);
-//            col.remover(p);
-                JFrame f = new JFrame("Teste");
-                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                f.getContentPane().add(new DetalhamentoImportaConteudo(f, p));
-                f.pack();
-                f.setVisible(true);
-
-                break;
-            }
-        }
-//        ConteudoController conCol = ControllerFactory.createConteudoController();
-//        List<Conteudo> l = conCol.listar();
-//        while (!l.isEmpty()) {
-//            Conteudo c = l.get(l.size() - 1);
-//            System.out.println(c);
-//            conCol.remover(c);
-//            l.remove(c);
-//        }
     }
 
 }

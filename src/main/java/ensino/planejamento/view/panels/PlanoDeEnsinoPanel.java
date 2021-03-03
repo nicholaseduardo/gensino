@@ -41,7 +41,6 @@ import java.util.EnumSet;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
@@ -91,7 +90,7 @@ public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
             setController(ControllerFactory.createPlanoDeEnsinoController());
 
             enableTablePanel();
-            setFieldsPanel(new PlanoDeEnsinoIdentificacao(this.unidadeCurricular, null));
+            setFieldsPanel(new PlanoDeEnsinoIdentificacao(this.unidadeCurricular));
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);
@@ -173,8 +172,7 @@ public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
                 try {
                     col.salvar(plano);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(PlanoDeEnsinoPanel.this, "Erro ao duplicar o plano de ensino: "
-                            + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                    showErrorMessage(new Exception("Erro ao duplicar o plano de ensino"));
                 }
 
                 reloadTableData();

@@ -44,9 +44,4 @@ public class ObjetivoUCController extends AbstractController<ObjetivoUC> {
 
         return super.getDao().list(filter, o);
     }
-
-    @Override
-    public ObjetivoUC salvar(ObjetivoUC o) throws Exception {
-        return super.salvar(o);
-    }
 }

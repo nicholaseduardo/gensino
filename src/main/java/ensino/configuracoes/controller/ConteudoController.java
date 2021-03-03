@@ -46,14 +46,9 @@ public class ConteudoController extends AbstractController<Conteudo> {
                 o.getId().getCurso().getId().getId(),
                 o.getId().getCurso().getId().getCampus().getId());
         if (descricao != null && !"".equals(descricao)) {
-            filter += (" AND UPPER(c.descricao) LIKE UPPER('%"+descricao+"%') ");
+            filter += " AND UPPER(c.descricao) LIKE UPPER('%"+descricao+"%') ";
         }
 
         return super.getDao().list(filter, o);
-    }
-
-    @Override
-    public Conteudo salvar(Conteudo o) throws Exception {
-        return super.salvar(o);
     }
 }

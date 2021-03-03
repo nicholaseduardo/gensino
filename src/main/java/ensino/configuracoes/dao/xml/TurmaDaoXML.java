@@ -9,7 +9,6 @@ import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.TurmaFactory;
 import ensino.connection.AbstractDaoXML;
-import ensino.patterns.DaoPattern;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -45,24 +44,6 @@ public class TurmaDaoXML extends AbstractDaoXML<Turma> {
     public Turma createObject(Element e, Object ref) {
         try {
             Turma o = getBeanFactory().getObject(e);
-            // Identifica o objeto Pai (Campus)
-            Integer campusId = new Integer(e.getAttribute("campusId")),
-                    cursoId = new Integer(e.getAttribute("cursoId"));
-            Curso curso;
-            if (ref != null && ref instanceof Curso) {
-                curso = (Curso) ref;
-            } else {
-                DaoPattern<Curso> dao = CursoDaoXML.getInstance();
-                curso = dao.findById(cursoId, campusId);
-            }
-//            curso.addTurma(o);
-            
-            // load children
-//            String formatter = "%s[@turmaId=%d and @cursoId=%d and @campusId=%d]";
-//            String filter = String.format(formatter,
-//                    "//Estudante/estudante", o.getId(), cursoId, campusId);
-//            DaoPattern<Estudante> turmaDao = EstudanteDaoXML.getInstance();
-//            o.setEstudantes(turmaDao.list(filter, o));
             
             return o;
         } catch (Exception ex) {

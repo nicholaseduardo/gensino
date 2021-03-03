@@ -5,7 +5,6 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.sqlite.InstrumentoAvaliacaoDaoSQL;
 import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDaoXML;
 import ensino.configuracoes.model.InstrumentoAvaliacaoFactory;
 import ensino.patterns.AbstractController;

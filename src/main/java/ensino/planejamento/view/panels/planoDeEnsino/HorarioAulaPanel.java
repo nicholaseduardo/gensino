@@ -218,10 +218,6 @@ public class HorarioAulaPanel extends DefaultFieldsPanel {
 
     private class ButtonAction implements ActionListener {
 
-        public ButtonAction() {
-            HorarioAula horarioAula = (HorarioAula) horarioAulaTableModel.getLast();
-        }
-
         @Override
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();

@@ -23,7 +23,7 @@ public interface BeanFactory<T> {
      *              de instância da classe
      * @return 
      */
-    public T createObject(Object ...args);
+    T createObject(Object ...args);
     /**
      * @Since("jun 18 2020")
      * 
@@ -35,7 +35,7 @@ public interface BeanFactory<T> {
      * @return 
      */
     @Deprecated
-    public T getObject(Element e);
+    T getObject(Element e);
     /**
      * Construtor por elementos de um HahsMap.
      * Método utilizado para criar um objeto a partir
@@ -45,7 +45,7 @@ public interface BeanFactory<T> {
      *              a ser criada
      * @return 
      */
-    public T getObject(HashMap<String, Object> p);
+    T getObject(HashMap<String, Object> p);
     /**
      * @Since("jun 18 2020")
      * 
@@ -58,5 +58,5 @@ public interface BeanFactory<T> {
      * @return 
      */
     @Deprecated
-    public Node toXml(Document doc, T o);
+    Node toXml(Document doc, T o);
 }

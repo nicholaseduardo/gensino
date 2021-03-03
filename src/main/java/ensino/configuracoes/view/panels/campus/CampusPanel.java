@@ -69,17 +69,16 @@ public class CampusPanel extends DefaultFormPanel {
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
     }
     
+    @Override
     public void onSaveAction(ActionEvent e) {
         super.onSaveAction(e);
         if (areaDeTrabalho != null) {
-            Campus campus = ControllerFactory.getCampusVigente();
             Container c = areaDeTrabalho.getContentPane();
             c.removeAll();
-            c.add(new AreaDeTrabalhoView(campus, areaDeTrabalho));
+            c.add(new AreaDeTrabalhoView(areaDeTrabalho));
         }
     }
 
@@ -101,8 +100,8 @@ public class CampusPanel extends DefaultFormPanel {
     }
 
     private void resizeTableColumns() {
-        javax.swing.JTable table = getTable();
-        javax.swing.table.TableColumnModel tcm = table.getColumnModel();
+        JTable table = getTable();
+        TableColumnModel tcm = table.getColumnModel();
         TableColumn tcNome = tcm.getColumn(0);
         tcNome.setMinWidth(50);
         tcNome.setCellRenderer(new CampusCellRenderer());
@@ -331,8 +330,8 @@ public class CampusPanel extends DefaultFormPanel {
         public HashMap<String, Object> getFieldValues() {
             HashMap<String, Object> map = new HashMap<>();
 
-            map.put("id", ("".equals(txtId.getText()) ? null
-                    : Integer.parseInt(txtId.getText())));
+            map.put("id", "".equals(txtId.getText()) ? null
+                    : Integer.parseInt(txtId.getText()));
             map.put("nome", txtNome.getText());
             map.put("status", comboStatus.getSelectedItem());
             map.put("cursos", (List<Curso>) cursoTableModel.getData());

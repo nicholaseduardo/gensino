@@ -62,7 +62,6 @@ public class PlanoDeEnsinoFactory implements BeanFactory<PlanoDeEnsino> {
         try {
             Integer campusId = Integer.parseInt(e.getAttribute("campusId")),
                     cursoId = Integer.parseInt(e.getAttribute("cursoId")),
-                    undId = Integer.parseInt(e.getAttribute("unidadeCurricularId")),
                     calenarioId = Integer.parseInt(e.getAttribute("ano")),
                     periodoLetivoNumero = Integer.parseInt(e.getAttribute("nPeriodoLetivo")),
                     turmaId = Integer.parseInt(e.getAttribute("turmaId"));

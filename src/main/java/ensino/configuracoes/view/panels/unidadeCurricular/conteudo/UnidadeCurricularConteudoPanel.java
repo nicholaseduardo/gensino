@@ -53,7 +53,7 @@ public class UnidadeCurricularConteudoPanel extends DefaultCleanFormPanel {
             setController(ControllerFactory.createConteudoController());
 
             enableTablePanel();
-            setFieldsPanel(new UnidadeCurricularConteudoFields(this.unidadeCurricular, null));
+            setFieldsPanel(new UnidadeCurricularConteudoFields(this.unidadeCurricular));
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);

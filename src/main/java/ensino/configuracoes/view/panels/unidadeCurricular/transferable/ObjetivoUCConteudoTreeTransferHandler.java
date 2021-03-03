@@ -87,8 +87,8 @@ public class ObjetivoUCConteudoTreeTransferHandler extends TransferHandler {
          */
         for (int i = 0; i < data.length; i++) {
             Object oData = data[i];
-            if ((parentObject instanceof ObjetivoUC && oData instanceof ObjetivoUC)
-                    || (parentObject instanceof String && oData instanceof Conteudo)) {
+            if (parentObject instanceof ObjetivoUC && oData instanceof ObjetivoUC
+                    || parentObject instanceof String && oData instanceof Conteudo) {
                 return false;
             } else if (parentObject instanceof ObjetivoUC && oData instanceof Conteudo) {
                 Conteudo conteudo = (Conteudo) oData;
@@ -184,11 +184,15 @@ public class ObjetivoUCConteudoTreeTransferHandler extends TransferHandler {
 
     /**
      * * ----------- **
+     * @param comp
+     * @return 
      */
+    @Override
     public int getSourceActions(JComponent comp) {
         return COPY_OR_MOVE;
     }
 
+    @Override
     public Transferable createTransferable(JComponent comp) {
         GenJTree t = null;
         if (comp instanceof GenJTree) {
@@ -237,9 +241,9 @@ public class ObjetivoUCConteudoTreeTransferHandler extends TransferHandler {
                 Object child = node.getUserObject();
                 Object parent = parentNode.getUserObject();
 
-                if ((child instanceof ObjetivoUC)
-                        || (parent instanceof ObjetivoUC
-                        && child instanceof Conteudo)) {
+                if (child instanceof ObjetivoUC
+                        || parent instanceof ObjetivoUC
+                        && child instanceof Conteudo) {
                     model.removeNodeFromParent(node);
                 }
             }

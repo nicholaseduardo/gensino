@@ -220,8 +220,8 @@ public class GenJPanel extends JPanel {
         }
 
         frame.setSize(df);
-        int x = (d.width / 2) - (df.width / 2),
-                y = (d.height / 2) - (df.height / 2);
+        int x = d.width / 2 - df.width / 2,
+                y = d.height / 2 - df.height / 2;
         frame.setLocation(new Point(x, y));
         frame.setVisible(true);
         desktop.add(frame);
@@ -400,11 +400,11 @@ public class GenJPanel extends JPanel {
         Dimension dialogSize = dialog.getPreferredSize();
         int x = 0;
         if (dialogSize.width < screenSize.width) {
-            x = (screenSize.width / 2) - (dialogSize.width / 2);
+            x = screenSize.width / 2 - dialogSize.width / 2;
         }
         int y = 0;
         if (dialogSize.height < screenSize.height) {
-            y = (screenSize.height / 2) - (dialogSize.height / 2);
+            y = screenSize.height / 2 - dialogSize.height / 2;
         }
 
         dialog.setLocation(new Point(x, y));
@@ -533,7 +533,7 @@ public class GenJPanel extends JPanel {
 
         public ButtonsPanel(List<GenJButton> listButtons, EnumSet enumSelectedSet) {
             super(new FlowLayout(FlowLayout.RIGHT));
-            if ((listButtons != null && listButtons.size() > 3)
+            if (listButtons != null && listButtons.size() > 3
                     || enumSelectedSet.size() > 3) {
                 setLayout(new GridLayout(0, 3));
             }
@@ -591,9 +591,9 @@ public class GenJPanel extends JPanel {
                         new Color(table.getSelectionBackground().getRGB()));
             } else {
                 setColors(new Color(table.getForeground().getRGB()),
-                        (row % 2 == 0
+                        row % 2 == 0
                                 ? new Color(table.getBackground().getRGB())
-                                : new Color(240, 240, 240)));
+                                : new Color(240, 240, 240));
             }
 
             panel.setBackground(getBack());

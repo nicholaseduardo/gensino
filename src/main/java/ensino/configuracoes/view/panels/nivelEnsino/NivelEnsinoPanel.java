@@ -19,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.TableColumnModel;
 
 /**
  * s
@@ -47,8 +48,8 @@ public class NivelEnsinoPanel extends DefaultFormPanel {
     }
 
     private void resizeTableColumns() {
-        javax.swing.JTable table = getTable();
-        javax.swing.table.TableColumnModel tcm = table.getColumnModel();
+        JTable table = getTable();
+        TableColumnModel tcm = table.getColumnModel();
         tcm.getColumn(0).setCellRenderer(new BaseObjectCellRenderer());
     }
 

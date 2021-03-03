@@ -68,9 +68,4 @@ public class ReferenciaBibliograficaController extends AbstractController<Refere
         
         return super.getDao().list(filter, o);
     }
-
-    @Override
-    public ReferenciaBibliografica salvar(ReferenciaBibliografica o) throws Exception {
-        return super.salvar(o);
-    }
 }

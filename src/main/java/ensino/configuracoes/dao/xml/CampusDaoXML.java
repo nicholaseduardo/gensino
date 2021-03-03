@@ -44,9 +44,6 @@ public class CampusDaoXML extends AbstractDaoXML<Campus> {
     protected Campus createObject(Element e, Object ref) {
         try {
             Campus o = getBeanFactory().getObject(e);
-            Integer id = o.getId();
-            // load children
-            String formatter = "%s[@campusId=%d]";
             
             return o;
         } catch (Exception ex) {

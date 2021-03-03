@@ -121,8 +121,7 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
 
     @Override
     public void save(PlanoAvaliacao o) {
-        Integer planoId = o.getId().getPlanoDeEnsino().getId(),
-                sequencia = o.getId().getSequencia(),
+        Integer planoId = o.getId().getPlanoDeEnsino().getId(), 
                 undId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getId(),
                 cursoId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId().getId(),
                 campusId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
@@ -152,8 +151,7 @@ public class PlanoAvaliacaoDaoXML extends AbstractDaoXML<PlanoAvaliacao> {
             /**
              * Exclusão do objeo PlanoAvaliacao
              */
-            Integer planoId = o.getId().getPlanoDeEnsino().getId(),
-                    sequencia = o.getId().getSequencia(),
+            Integer planoId = o.getId().getPlanoDeEnsino().getId(), 
                     undId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getId(),
                     cursoId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId().getId(),
                     campusId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();

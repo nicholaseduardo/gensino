@@ -206,7 +206,7 @@ public class UnidadeCurricular implements Serializable {
                     sbComplementar.append(ref.getId().getBibliografia().getReferencia());
                 }
             }
-            return (sbBasica.toString() + "\n\n" + sbComplementar.toString());
+            return sbBasica.toString() + "\n\n" + sbComplementar.toString();
     }
 
     @Override

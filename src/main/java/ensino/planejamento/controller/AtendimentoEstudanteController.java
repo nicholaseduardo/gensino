@@ -6,13 +6,10 @@
 package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.DaoFactory;
 import ensino.planejamento.model.AtendimentoEstudante;
 import ensino.planejamento.model.AtendimentoEstudanteFactory;
 import ensino.planejamento.model.PermanenciaEstudantil;
-import ensino.planejamento.model.PlanoDeEnsino;
-import java.text.ParseException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

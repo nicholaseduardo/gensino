@@ -75,7 +75,6 @@ public class PlanoDeEnsinoFrequenciaPanel extends DefaultFieldsPanel {
     }
 
     private JScrollPane createTablePane() {
-        JPanel panel = new JPanel();
         frequenciaTable = new JTable();
         ListSelectionModel cellSelectionModel = frequenciaTable.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

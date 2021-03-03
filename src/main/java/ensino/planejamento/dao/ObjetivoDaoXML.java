@@ -100,7 +100,6 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
     public void save(Objetivo o) {
         // cria a expressão de acordo com o código do campus
         Integer planoId = o.getPlanoDeEnsino().getId(),
-                sequencia = o.getId().getSequencia(),
                 undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId().getId(),
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();
@@ -121,7 +120,6 @@ public class ObjetivoDaoXML extends AbstractDaoXML<Objetivo> {
     public void delete(Objetivo o) {
         try {
             Integer planoId = o.getPlanoDeEnsino().getId(),
-                    sequencia = o.getId().getSequencia(),
                     undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId().getId(),
                     cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId().getId(),
                     campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();

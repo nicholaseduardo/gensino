@@ -274,7 +274,7 @@ public abstract class GenImportDialog extends JDialog {
     private void importaDados() {
         try {
             // identifica o separador de colunas
-            String sep = (radioVirgula.isSelected() ? "," : ";");
+            String sep = radioVirgula.isSelected() ? "," : ";";
             int updatedSize = 0;
             long bytesReaded = 0;
             long fileSize = 0;
@@ -294,7 +294,7 @@ public abstract class GenImportDialog extends JDialog {
                     // mapeia os dados e os armazena na lista
                     HashMap<String, Object> map = new HashMap();
                     for (int i = 0; i < fields.length; i++) {
-                        map.put(fields[i], (i < aLine.length ? aLine[i] : ""));
+                        map.put(fields[i], i < aLine.length ? aLine[i] : "");
                     }
                     data.add(map);
                     // atualiza a barra de progresso
@@ -307,11 +307,11 @@ public abstract class GenImportDialog extends JDialog {
                 }
             }
             finishProgressBar();
-            JOptionPane.showMessageDialog(GenImportDialog.this,
+            JOptionPane.showMessageDialog(this,
                     "Dados importado com sucesso!", "Informação",
                     JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(GenImportDialog.this,
+            JOptionPane.showMessageDialog(this,
                     String.format("Erro ao tentar ler os dados do arquivo!\n[%s]",
                             ex.getMessage()),
                     "I/O Erro",

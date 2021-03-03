@@ -86,8 +86,7 @@ public class DiarioFrequenciaDaoXML extends AbstractDaoXML<DiarioFrequencia> {
     @Override
     public DiarioFrequencia findById(Object... ids) {
         int i = 0;
-        Integer id = (Integer) ids[i++],
-                diarioId = (Integer) ids[i++],
+        Integer diarioId = (Integer) ids[i++],
                 estudanteId = (Integer) ids[i++],
                 turmaId = (Integer) ids[i++],
                 planoDeEnsinoId = (Integer) ids[i++],

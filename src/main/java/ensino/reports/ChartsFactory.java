@@ -5,7 +5,6 @@
  */
 package ensino.reports;
 
-import ensino.components.GenJButton;
 import ensino.components.GenJLabel;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;

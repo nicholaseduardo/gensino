@@ -59,7 +59,7 @@ public class DiarioPanel extends GenJPanel {
         tabs = new JTabbedPane();
 
         DiarioFrequenciaPanel freqPanel = new DiarioFrequenciaPanel(frame, planoDeEnsino);
-        DiarioAvaliacaoPanel avaliacaoPanel = new DiarioAvaliacaoPanel(frame, planoDeEnsino);
+        DiarioAvaliacaoPanel avaliacaoPanel = new DiarioAvaliacaoPanel();
         DiarioConteudoPanel conteudoPanel = new DiarioConteudoPanel(null, planoDeEnsino);
 
         tabs.addTab("Frequência", iconFrequency, freqPanel);

@@ -17,7 +17,6 @@ import ensino.defaults.DefaultFieldsPanel;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
 import ensino.planejamento.model.Metodologia;
-import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.panels.detalhamento.DetalhamentoFields;
 import ensino.planejamento.view.renderer.ConfigTreeCellRenderer;
@@ -55,12 +54,10 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
     private DefaultMutableTreeNode rootTree;
 
     private JPanel detalhamentoCardPanel;
-    private PlanoDeEnsino planoDeEnsino;
 
     // campos obrigatórios
     private PeriodoLetivo periodoLetivo;
     private List<Atividade> listaAtividades;
-    private List<Objetivo> listaObjetivos;
     // campo opcional, depende de dados previamente cadastrados
     private List<Detalhamento> listaDetalhamentos;
     private Component frame;
@@ -69,15 +66,12 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
             PlanoDeEnsino planoDeEnsino) {
         super("Detalhamento");
         this.frame = frame;
-        this.planoDeEnsino = planoDeEnsino;
         this.periodoLetivo = planoDeEnsino.getPeriodoLetivo();
         this.listaAtividades = periodoLetivo.getId().getCalendario().getAtividades();
-        this.listaObjetivos = planoDeEnsino.getObjetivos();
         this.listaDetalhamentos = planoDeEnsino.getDetalhamentos();
 
         initComponents();
 
-        loadTreeDetalhamento();
         treeDetalhamento.setSelectionRow(2);
     }
 
@@ -110,6 +104,8 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
 
         detalhamentoCardPanel = createPanel(new CardLayout(5, 5));
         panel.add(detalhamentoCardPanel, BorderLayout.CENTER);
+        
+        loadTreeDetalhamento();
     }
 
     private String atividadesDaSemana(SemanaLetiva semanaLetiva) {
@@ -202,7 +198,6 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
         Calendario calendario = (Calendario) mapValues.get("calendario");
         listaAtividades = calendario != null
                 ? calendario.getAtividades() : new ArrayList();
-        listaObjetivos = (List<Objetivo>) mapValues.get("objetivos");
 
         loadTreeDetalhamento();
     }

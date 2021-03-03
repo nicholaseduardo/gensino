@@ -232,7 +232,7 @@ public class FrequenciaChartPanel extends JPanel {
 
             rowsData[i][0] = e.getNome();
             rowsData[i][1] = nFaltas;
-            rowsData[i][2] = (nFaltas.doubleValue() / nDiarios.doubleValue() * 100);
+            rowsData[i][2] = nFaltas.doubleValue() / nDiarios.doubleValue() * 100;
         }
 
         JTable table = new JTable(rowsData, columnNames);

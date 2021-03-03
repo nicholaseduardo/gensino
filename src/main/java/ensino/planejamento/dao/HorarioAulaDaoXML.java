@@ -140,7 +140,6 @@ public class HorarioAulaDaoXML extends AbstractDaoXML<HorarioAula> {
     @Override
     public void delete(HorarioAula o) {
         Integer planoId = o.getPlanoDeEnsino().getId(),
-                id = o.getId().getId(),
                 undId = o.getPlanoDeEnsino().getUnidadeCurricular().getId().getId(),
                 cursoId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getId().getId(),
                 campusId = o.getPlanoDeEnsino().getUnidadeCurricular().getCurso().getCampus().getId();

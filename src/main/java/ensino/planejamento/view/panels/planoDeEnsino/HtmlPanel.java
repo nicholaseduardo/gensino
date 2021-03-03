@@ -5,7 +5,6 @@
  */
 package ensino.planejamento.view.panels.planoDeEnsino;
 
-import com.itextpdf.layout.font.FontProvider;
 import ensino.components.GenJButton;
 import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.ReferenciaBibliografica;
@@ -37,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -78,7 +76,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
         setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
         setBorder(BorderFactory.createEtchedBorder());
         setLayout(new BorderLayout());
-        
+
         ButtonAction btAction = new ButtonAction();
         /**
          * Adiciona o botão para geração do PDF
@@ -86,11 +84,11 @@ public class HtmlPanel extends DefaultFieldsPanel {
         ImageIcon icon = new ImageIcon(getClass().getResource("/img/pdf-button-25px.png"));
         btPdf = new GenJButton("Salvar como PDF", icon);
         btPdf.addActionListener(btAction);
-        
+
         icon = new ImageIcon(getClass().getResource("/img/html-button-25px.png"));
         btHtml = new GenJButton("Salvar como HTML", icon);
         btHtml.addActionListener(btAction);
-        
+
         JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelButton.add(btHtml);
         panelButton.add(btPdf);
@@ -201,7 +199,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
         for (int i = 0; i < listaAvaliacoes.size(); i++) {
             PlanoAvaliacao pa = listaAvaliacoes.get(i);
             // registra o número de avaliações por bimestre
-            nAvaliacoesPorEtapaEnsino[pa.getEtapaEnsino().getId().getId()-1]++;
+            nAvaliacoesPorEtapaEnsino[pa.getEtapaEnsino().getId().getId() - 1]++;
 
             String sAvaliacao = "";
             if (mapLinhas.containsKey(pa.getEtapaEnsino())) {
@@ -228,7 +226,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
         for (Map.Entry<EtapaEnsino, String> entry : mapLinhas.entrySet()) {
             EtapaEnsino key = entry.getKey();
             String value = entry.getValue();
-            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorEtapaEnsino[key.getId().getId()-1])));
+            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorEtapaEnsino[key.getId().getId() - 1])));
         }
         return sData.toString();
     }
@@ -269,7 +267,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
             }
         });
         String sColunas = "";
-        Calendar cal = Calendar.getInstance();
+        
         for (int i = 0; i < listaDetalha.size(); i++) {
             Detalhamento o = listaDetalha.get(i);
             StringBuilder sMetodologias = new StringBuilder();
@@ -427,11 +425,11 @@ public class HtmlPanel extends DefaultFieldsPanel {
     }
 
     private void saveFile(int type) {
-        String sType = (type == 0 ? "HTML" : "PDF");
-        
+        String sType = type == 0 ? "HTML" : "PDF";
+
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Salvar como " + sType);
-        
+
         int nUserSelection = fileChooser.showSaveDialog(this);
         if (nUserSelection == JFileChooser.APPROVE_OPTION) {
             try {
@@ -453,7 +451,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
                 os.write(jEditorPane.getText().getBytes());
                 os.close();
                 fos.close();
-                
+
                 if (type == 1) {
                     /**
                      * Remove o arquivo temporário
@@ -502,5 +500,4 @@ public class HtmlPanel extends DefaultFieldsPanel {
 //            Logger.getLogger(HtmlPanel.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //    }
-
 }

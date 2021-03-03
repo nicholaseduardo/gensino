@@ -25,7 +25,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,9 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -65,10 +61,6 @@ public class JCalendario extends JPanel {
      * semana e o mês do ano
      */
     private static final int LARGURA = 7;
-    /**
-     * Indica o ano de referência deste calendário
-     */
-    private Integer ano;
     /**
      * Indica o mês de referência do calendário
      */
@@ -113,7 +105,6 @@ public class JCalendario extends JPanel {
     public JCalendario(Integer ano, MesesDeAno mes, List<Atividade> atividades) {
         super(new BorderLayout(5, 5));
         try {
-            this.ano = ano;
             this.mes = mes;
             this.atividades = atividades;
             this.diasUteis = 0;
@@ -143,7 +134,7 @@ public class JCalendario extends JPanel {
         this.atividades = atividades;
         reloadCalendar();
     }
-    
+
     public void setCalendario(Calendario calendario) {
         this.calendario = calendario;
     }
@@ -292,7 +283,7 @@ public class JCalendario extends JPanel {
 
         loadAtividades();
     }
-    
+
     public void enableButtons(boolean enable) {
         btAdd.setEnabled(enable);
         Integer tam = listaAtividades.getModel().getSize();
@@ -313,7 +304,7 @@ public class JCalendario extends JPanel {
      * @param p
      */
     private void loadData(GridBagConstraints c, JPanel p) {
-        Border lblBorder = BorderFactory.createLineBorder(Color.gray);
+        
         for (int i = 0; i < ALTURA; i++) {
             // criação dos botões
             c.gridx = 0;
@@ -321,8 +312,8 @@ public class JCalendario extends JPanel {
             for (int j = 0; j < LARGURA; j++) {
                 JLabel lblBlank = new JLabel(" ");
                 p.add(
-                        (diasDoMes[i][j] != null
-                                ? diasDoMes[i][j] : lblBlank), c);
+                        diasDoMes[i][j] != null
+                                ? diasDoMes[i][j] : lblBlank, c);
                 c.gridx++;
             }
         }
@@ -359,7 +350,7 @@ public class JCalendario extends JPanel {
             }
         }
         int result = diasUteis + diasLetivos - diasNaoLetivos;
-        return (result < 0 ? 0 : result);
+        return result < 0 ? 0 : result;
     }
 
     /**
@@ -388,7 +379,7 @@ public class JCalendario extends JPanel {
         DefaultListModel listModel = new DefaultListModel();
         while (it.hasNext()) {
             Atividade at = it.next();
-            StringBuilder sb = new StringBuilder();
+
             Periodo periodo = at.getPeriodo();
             calendar.setTime(periodo.getDe());
 
@@ -434,8 +425,8 @@ public class JCalendario extends JPanel {
                      * legenda da atividade
                      */
                     Legenda leg = a.getLegenda();
-                    if (currButton != null && ((diaDaSemana > 0 && diaDaSemana < 6)
-                            || ((diaDaSemana > 5 || diaDaSemana == 0) && leg.isLetivo()))) {
+                    if (currButton != null && diaDaSemana > 0 && diaDaSemana < 6
+                            || diaDaSemana > 5 || diaDaSemana == 0 && leg.isLetivo()) {
                         currButton.setBackground(leg.getCor());
                     }
                 }
@@ -494,7 +485,7 @@ public class JCalendario extends JPanel {
                         dialogAt.setAtividade(at);
                         dialogAt.setVisible(true);
                     } else if (btDel.equals(source)) {
-                        Atividade selectedItem = (Atividade)listaAtividades.getSelectedValue();
+                        Atividade selectedItem = (Atividade) listaAtividades.getSelectedValue();
                         if (selectedItem == null) {
                             JOptionPane.showMessageDialog(null,
                                     "Selecione uma atividade para realizar a operação de alteração",
@@ -527,5 +518,5 @@ public class JCalendario extends JPanel {
         }
 
     }
-    
+
 }

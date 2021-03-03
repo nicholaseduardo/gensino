@@ -127,8 +127,8 @@ public class CampusFields extends DefaultFieldsPanel {
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("id", ("".equals(txtId.getText()) ? null
-                : Integer.parseInt(txtId.getText())));
+        map.put("id", "".equals(txtId.getText()) ? null
+                : Integer.parseInt(txtId.getText()));
         map.put("nome", txtNome.getText());
         map.put("status", comboStatus.getSelectedItem());
 

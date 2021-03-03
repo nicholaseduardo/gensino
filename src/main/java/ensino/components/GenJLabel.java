@@ -22,7 +22,6 @@ import javax.swing.border.Border;
 public class GenJLabel extends JLabel {
 
     private String actionCommand;
-    private Integer columns;
 
     public GenJLabel() {
         actionCommand = "";

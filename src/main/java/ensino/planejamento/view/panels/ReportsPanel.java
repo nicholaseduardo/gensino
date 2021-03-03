@@ -60,9 +60,9 @@ public class ReportsPanel extends GenJPanel {
         btExit = createButton(new ActionHandler(AcoesBotoes.CLOSE));
         tabs = new JTabbedPane();
         
-        PlanoDeEnsinoHtml planoDeEnsinoReport = new PlanoDeEnsinoHtml(frame, planoDeEnsino);
-        PlanoDeEnsinoHtmlNotas notasReport = new PlanoDeEnsinoHtmlNotas(frame, planoDeEnsino);
-        PlanoDeEnsinoCharts graficosPanel = new PlanoDeEnsinoCharts(frame, planoDeEnsino);
+        PlanoDeEnsinoHtml planoDeEnsinoReport = new PlanoDeEnsinoHtml(planoDeEnsino);
+        PlanoDeEnsinoHtmlNotas notasReport = new PlanoDeEnsinoHtmlNotas(planoDeEnsino);
+        PlanoDeEnsinoCharts graficosPanel = new PlanoDeEnsinoCharts(planoDeEnsino);
         
         tabs.addTab("Impressão do Plano de Ensino", iconReport, planoDeEnsinoReport);
         tabs.addTab("Relatório de Notas", iconReport, notasReport);

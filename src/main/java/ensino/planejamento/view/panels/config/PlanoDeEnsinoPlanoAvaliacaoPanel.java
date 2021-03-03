@@ -391,10 +391,10 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
 
         private PlanoAvaliacao createPlanoAvaliacaoFromFields() {
             String sSequencia = txtId.getText();
-            Integer sequencia = sSequencia.matches("\\d+") ? Integer.parseInt(sSequencia) : null;
+            Integer seq = sSequencia.matches("\\d+") ? Integer.parseInt(sSequencia) : null;
             PlanoAvaliacao o = PlanoAvaliacaoFactory.getInstance()
                     .createObject(
-                            new PlanoAvaliacaoId(sequencia, planoDeEnsino),
+                            new PlanoAvaliacaoId(seq, planoDeEnsino),
                             txtNome.getText(),
                             comboEtapaEnsino.getSelectedItem(),
                             spinPeso.getValue(),

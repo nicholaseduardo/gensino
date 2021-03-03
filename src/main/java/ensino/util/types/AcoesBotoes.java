@@ -5,7 +5,6 @@
  */
 package ensino.util.types;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -26,7 +25,7 @@ public enum AcoesBotoes {
     BACKWARD(34), FORWARD(35), DELETE(36), UP(37), DOWN(38);
     
     private final Integer value;
-    private static String[] sData = {"Adicionar", "Excluir", "Alterar", "Salvar",
+    private static final String[] sData = {"Adicionar", "Excluir", "Alterar", "Salvar",
         "Fechar", "Duplicar", "Gerar", "Importar", "Novo", "Plano de Ensino",
         "Identificação", "Obj. Específicos", "Detalhamento", "Plano de Avaliações",
         "Horários das aulas", "Conteúdo Programático", "Frequência", "Avaliações",

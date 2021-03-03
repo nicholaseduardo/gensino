@@ -19,25 +19,16 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Docente"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemDocenteActionPerformed"/>
-                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="menuItemLegenda">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Legenda"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemLegendaActionPerformed"/>
-                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="menuItemNivelEnsino">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="N&#xed;veis de ensino"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemNivelEnsinoActionPerformed"/>
-                  </Events>
                 </MenuItem>
                 <Menu class="javax.swing.JMenu" name="jMenu4">
                   <Properties>
@@ -48,25 +39,16 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Recursos"/>
                       </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemRecursoActionPerformed"/>
-                      </Events>
                     </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="menuItemTecnica">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="T&#xe9;cnica"/>
                       </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemTecnicaActionPerformed"/>
-                      </Events>
                     </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="menuItemInstrumentoAvaliacao">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Instrumentos de Avalia&#xe7;&#xe3;o"/>
                       </Properties>
-                      <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemInstrumentoAvaliacaoActionPerformed"/>
-                      </Events>
                     </MenuItem>
                   </SubComponents>
                 </Menu>
@@ -136,9 +118,6 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Plano de Ensino (Lista)"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuItemPlanoDeEnsinoListaActionPerformed"/>
-              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

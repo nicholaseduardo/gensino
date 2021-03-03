@@ -14,12 +14,10 @@ import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.controller.AvaliacaoController;
 import ensino.planejamento.model.Avaliacao;
 import ensino.planejamento.model.PlanoAvaliacao;
-import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.AvaliacaoTableModel;
 import ensino.planejamento.view.renderer.AvaliacaoCellRenderer;
 import ensino.util.VerticalTableHeaderCellRenderer;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -50,18 +48,12 @@ import javax.swing.table.TableColumnModel;
 public class DiarioAvaliacaoPanel extends DefaultFieldsPanel {
 
     private List<PlanoAvaliacao> listaPlanoAvaliacoes;
-    private PlanoDeEnsino planoDeEnsino;
 
     private JTable avaliacaoTable;
     private AvaliacaoTableModel avaliacaoTableModel;
-    private Component frame;
 
-    public DiarioAvaliacaoPanel(Component frame, PlanoDeEnsino planoDeEnsino) {
+    public DiarioAvaliacaoPanel() {
         super("Registro das notas das avaliações");
-        this.frame = frame;
-        this.planoDeEnsino = planoDeEnsino;
-        listaPlanoAvaliacoes = planoDeEnsino.getPlanosAvaliacoes();
-
         initComponents();
 
         createAvaliacoesTable();
@@ -88,7 +80,6 @@ public class DiarioAvaliacaoPanel extends DefaultFieldsPanel {
     }
 
     private JScrollPane createTablePane() {
-        JPanel panel = new JPanel();
         avaliacaoTable = new JTable();
         ListSelectionModel cellSelectionModel = avaliacaoTable.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -259,9 +250,6 @@ public class DiarioAvaliacaoPanel extends DefaultFieldsPanel {
         public void actionPerformed(ActionEvent ae) {
             Object source = ae.getSource();
             if (source instanceof GenJFormattedTextField) {
-                GenJFormattedTextField txt = (GenJFormattedTextField) source;
-
-                Double value = Double.parseDouble(txt.getText());
                 int selectedRow = avaliacaoTable.getSelectedRow(),
                         selectedCol = avaliacaoTable.getSelectedColumn();
                 /**

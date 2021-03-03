@@ -38,7 +38,7 @@ public class GenTransferableTableRow implements Transferable {
 
     @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
-        return (flavor.getRepresentationClass() == TreePath.class);
+        return flavor.getRepresentationClass() == TreePath.class;
     }
 
     @Override

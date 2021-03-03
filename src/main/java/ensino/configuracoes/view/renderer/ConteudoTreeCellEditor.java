@@ -35,11 +35,9 @@ public class ConteudoTreeCellEditor extends AbstractCellEditor implements TreeCe
     private GenJPanel p = new GenJPanel(new BorderLayout());
     private String str = null;
     private Conteudo conteudo;
-    private GenJTree tree;
 
     public ConteudoTreeCellEditor(GenJTree tree) {
         super();
-        this.tree = tree;
         txtDescricao.addFocusListener(new TextFocusEvent(tree));
 
         p.setFocusable(false);

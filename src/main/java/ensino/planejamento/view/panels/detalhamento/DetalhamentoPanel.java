@@ -224,11 +224,11 @@ public class DetalhamentoPanel extends DefaultCleanFormPanel {
         Dimension dialogSize = dialog.getPreferredSize();
         int x = 0;
         if (dialogSize.width < screenSize.width) {
-            x = (screenSize.width / 2) - (dialogSize.width / 2);
+            x = screenSize.width / 2 - dialogSize.width / 2;
         }
         int y = 0;
         if (dialogSize.height < screenSize.height) {
-            y = (screenSize.height / 2) - (dialogSize.height / 2);
+            y = screenSize.height / 2 - dialogSize.height / 2;
         }
 
         dialog.setLocation(new Point(x, y));

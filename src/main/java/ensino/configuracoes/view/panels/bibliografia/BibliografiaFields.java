@@ -84,8 +84,8 @@ public class BibliografiaFields extends DefaultFieldsPanel {
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("id", ("".equals(txtId.getText()) ? null
-                : Integer.parseInt(txtId.getText())));
+        map.put("id", "".equals(txtId.getText()) ? null
+                : Integer.parseInt(txtId.getText()));
         map.put("titulo", txtTitulo.getText());
         map.put("autor", txtAutor.getText());
         map.put("referencia", txtReferencia.getText());
@@ -132,6 +132,7 @@ public class BibliografiaFields extends DefaultFieldsPanel {
         } else {
             return true;
         }
+        showInformationMessage(String.format(msg, campo));
         return false;
     }
 

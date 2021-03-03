@@ -40,7 +40,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -252,7 +251,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
             }
         });
         String sColunas = "";
-        Calendar cal = Calendar.getInstance();
+        
         for (int i = 0; i < listaDetalha.size(); i++) {
             Detalhamento o = listaDetalha.get(i);
             StringBuilder sMetodologias = new StringBuilder();
@@ -410,7 +409,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
     }
 
     private void saveFile(int type) {
-        String sType = (type == 0 ? "HTML" : "PDF"),
+        String sType = type == 0 ? "HTML" : "PDF",
                 sFilename = "", sExtensao = "";
         PeriodoLetivo pl = planoDeEnsino.getPeriodoLetivo();
         sFilename = String.format("%s.%s",
@@ -431,8 +430,8 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
             try {
                 File fileToSave = fileChooser.getSelectedFile();
                 sFilename = fileToSave.getName();
-                if ((type == 0 && !sFilename.matches(".+(.html)")) ||
-                        (type == 1 && !sFilename.matches(".+(.pdf)"))){
+                if (type == 0 && !sFilename.matches(".+(.html)") ||
+                        type == 1 && !sFilename.matches(".+(.pdf)")){
                     fileToSave = new File(sFilename + sExtensao);
                 }
 

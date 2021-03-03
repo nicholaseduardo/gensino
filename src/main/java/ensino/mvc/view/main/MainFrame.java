@@ -6,6 +6,9 @@
 package ensino.mvc.view.main;
 
 import ensino.configuracoes.model.Campus;
+import ensino.configuracoes.view.frame.FrameBibliografia;
+import ensino.configuracoes.view.frame.FrameCalendario;
+import ensino.configuracoes.view.frame.FrameCampus;
 import ensino.configuracoes.view.frame.FrameDocente;
 import ensino.configuracoes.view.frame.FrameInstrumentoAvaliacao;
 import ensino.configuracoes.view.frame.FrameLegenda;
@@ -13,32 +16,24 @@ import ensino.configuracoes.view.frame.FrameNivelEnsino;
 import ensino.configuracoes.view.frame.FrameRecurso;
 import ensino.configuracoes.view.frame.FrameTecnica;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.view.frame.FramePlanoDeEnsino;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyVetoException;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -52,7 +47,7 @@ import javax.swing.UIManager;
  *
  * @author nicho
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends JFrame {
 
     private JDesktopPane desktop;
     private HashMap<MenuOpcoes, String> mapPathIcons;
@@ -61,8 +56,6 @@ public class MainFrame extends javax.swing.JFrame {
     private JInternalFrame frameButtons;
     private JInternalFrame frameMemory;
 
-    private BufferedImage img;
-
     /**
      * Creates new form MainFrame
      */
@@ -70,18 +63,11 @@ public class MainFrame extends javax.swing.JFrame {
         listButtons = new ArrayList();
         initComponents();
 
-        URL url = getClass().getResource("/img/background-white.png");
-        try {
-            img = ImageIO.read(url);
-        } catch (IOException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         desktop = new JDesktopPane() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.white);
+                g.setColor(java.awt.Color.white);
                 Dimension d = getSize();
                 g.fillRect(0, 0, d.width, d.height);
             }
@@ -127,9 +113,8 @@ public class MainFrame extends javax.swing.JFrame {
         if (campusVigente != null) {
 
             framePainel = createIFrame("Lista de Cursos do Campus", null);
-            AreaDeTrabalhoView p = new AreaDeTrabalhoView(campusVigente, framePainel);
-            p.setDesktop(desktop);
-
+            AreaDeTrabalhoView p = new AreaDeTrabalhoView(framePainel);
+            
             JScrollPane scroll = new JScrollPane(p);
             scroll.setAutoscrolls(true);
 
@@ -167,9 +152,6 @@ public class MainFrame extends javax.swing.JFrame {
         mapPathIcons.put(MenuOpcoes.CAMPI, "/img/university-icon-50px.png");
         mapPathIcons.put(MenuOpcoes.CALENDARIO, "/img/calendar-image-png-50px.png");
         mapPathIcons.put(MenuOpcoes.BIBLIOGRAFIA, "/img/library-icon-50px.png");
-//        mapPathIcons.put(MenuOpcoes.CURSO, "/img/courses-icon-50px.png");
-//        mapPathIcons.put(MenuOpcoes.TURMA, "/img/classroom-50px.png");
-//        mapPathIcons.put(MenuOpcoes.UC, "/img/school-icon-50px.png");
         mapPathIcons.put(MenuOpcoes.SAIR, "/img/exit-button-50px.png");
     }
 
@@ -183,17 +165,17 @@ public class MainFrame extends javax.swing.JFrame {
         button.setPreferredSize(new Dimension(120, 100));
 
         button.addActionListener(listener);
-        button.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200, 60)));
+        button.setBorder(BorderFactory.createLineBorder(new java.awt.Color(200, 200, 200, 60)));
 
         button.setOpaque(true);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 Object o = evt.getSource();
                 if (o instanceof JButton) {
                     JButton b = (JButton) o;
-                    b.setBackground(Color.GRAY);
+                    b.setBackground(java.awt.Color.GRAY);
                 }
             }
 
@@ -219,8 +201,8 @@ public class MainFrame extends javax.swing.JFrame {
         frame.pack();
 
         df = frame.getSize();
-        int x = (d.width / 2) - (df.width / 2),
-                y = (d.height / 2) - (df.height / 2);
+        int x = d.width / 2 - df.width / 2,
+                y = d.height / 2 - df.height / 2;
         frame.setLocation(new Point(x, y));
         frame.setVisible(true);
         desktop.add(frame);
@@ -232,12 +214,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     private void updateComponents() {
-        Integer x = 10, y = 20;
-        Dimension distance = new Dimension(140, 140),
+            Dimension distance = new Dimension(140, 140),
                 dDesktop = desktop.getSize();
         Integer nRowButtons = dDesktop.height / distance.height,
-                nColButtons = dDesktop.width / distance.width,
-                inc = 0, nButtons = listButtons.size();
+                nButtons = listButtons.size();
         Integer col = 1;
         Dimension dbf = null, dpf = null;
         if (nButtons > nRowButtons && nRowButtons > 0) {
@@ -275,7 +255,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void createButtons(MainActionListener listener) {
         for (MenuOpcoes menu : MenuOpcoes.values()) {
-            Icon icon = new ImageIcon(getClass().getResource(mapPathIcons.get(menu)));
+            Icon icon = new javax.swing.ImageIcon(getClass().getResource(mapPathIcons.get(menu)));
             addIcon(menu.toString(), menu.getValue(), icon, listener);
         }
         updateComponents();
@@ -295,6 +275,14 @@ public class MainFrame extends javax.swing.JFrame {
         menuItemBibliografia.addActionListener(mainListener);
         menuItemPlanoDeEnsino.addActionListener(mainListener);
         menuItemSair.addActionListener(mainListener);
+        
+        menuItemDocente.addActionListener(mainListener);
+        menuItemLegenda.addActionListener(mainListener);
+        menuItemNivelEnsino.addActionListener(mainListener);
+        menuItemRecurso.addActionListener(mainListener);
+        menuItemTecnica.addActionListener(mainListener);
+        menuItemInstrumentoAvaliacao.addActionListener(mainListener);
+        menuItemPlanoDeEnsino.addActionListener(mainListener);
 
         menuItemCampus.setActionCommand(MenuOpcoes.CAMPI.getValue());
         menuItemCalendario.setActionCommand(MenuOpcoes.CALENDARIO.getValue());
@@ -305,30 +293,24 @@ public class MainFrame extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    private class MainActionListener implements ActionListener {
+    private class MainActionListener implements java.awt.event.ActionListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(java.awt.event.ActionEvent e) {
 
             MenuOpcoes menu = MenuOpcoes.of(e.getActionCommand());
 
             try {
                 switch (menu) {
                     case CAMPI:
-                        addFrame(new ensino.configuracoes.view.frame.FrameCampus(framePainel));
+                        addFrame(new FrameCampus(framePainel));
                         break;
                     case CALENDARIO:
-                        addFrame(new ensino.configuracoes.view.frame.FrameCalendario());
+                        addFrame(new FrameCalendario());
                         break;
                     case BIBLIOGRAFIA:
-                        addFrame(new ensino.configuracoes.view.frame.FrameBibliografia());
+                        addFrame(new FrameBibliografia());
                         break;
-//                    case CURSO:
-//                        addFrame(new ensino.configuracoes.view.frame.FrameCursos());
-//                        break;
-//                    case UC:
-//                        addFrame(new ensino.configuracoes.view.frame.FrameUnidadeCurricular());
-//                        break;
                     case SAIR:
 
                         Runtime rt = Runtime.getRuntime();
@@ -338,6 +320,23 @@ public class MainFrame extends javax.swing.JFrame {
 
                         System.exit(0);
                         break;
+                    default:
+                        Object source = e.getSource();
+                        if (source == menuItemDocente) {
+                            addFrame(new FrameDocente());
+                        } else if (source == menuItemLegenda) {
+                            addFrame(new FrameLegenda());
+                        } else if (source == menuItemNivelEnsino) {
+                            addFrame(new FrameNivelEnsino());
+                        } else if (source == menuItemRecurso) {
+                            addFrame(new FrameRecurso());
+                        } else if (source == menuItemTecnica) {
+                            addFrame(new FrameTecnica());
+                        } else if (source == menuItemInstrumentoAvaliacao) {
+                            addFrame(new FrameInstrumentoAvaliacao());
+                        } else if (source == menuItemPlanoDeEnsino) {
+                            addFrame(new FramePlanoDeEnsino());
+                        }
                 }
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainActionListener.class.getName()).log(Level.SEVERE, null, ex);
@@ -348,7 +347,6 @@ public class MainFrame extends javax.swing.JFrame {
 
     private enum MenuOpcoes {
         CAMPI("campi"), CALENDARIO("cal"), BIBLIOGRAFIA("bib"), 
-        //CURSO("curso"), TURMA("turma"), UC("uc"), 
         SAIR("sair");
 
         private String value;
@@ -428,53 +426,23 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu2.setText("Configurações");
 
         menuItemDocente.setText("Docente");
-        menuItemDocente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemDocenteActionPerformed(evt);
-            }
-        });
         jMenu2.add(menuItemDocente);
 
         menuItemLegenda.setText("Legenda");
-        menuItemLegenda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemLegendaActionPerformed(evt);
-            }
-        });
         jMenu2.add(menuItemLegenda);
 
         menuItemNivelEnsino.setText("Níveis de ensino");
-        menuItemNivelEnsino.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemNivelEnsinoActionPerformed(evt);
-            }
-        });
         jMenu2.add(menuItemNivelEnsino);
 
         jMenu4.setText("Metodologia");
 
         menuItemRecurso.setText("Recursos");
-        menuItemRecurso.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemRecursoActionPerformed(evt);
-            }
-        });
         jMenu4.add(menuItemRecurso);
 
         menuItemTecnica.setText("Técnica");
-        menuItemTecnica.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemTecnicaActionPerformed(evt);
-            }
-        });
         jMenu4.add(menuItemTecnica);
 
         menuItemInstrumentoAvaliacao.setText("Instrumentos de Avaliação");
-        menuItemInstrumentoAvaliacao.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemInstrumentoAvaliacaoActionPerformed(evt);
-            }
-        });
         jMenu4.add(menuItemInstrumentoAvaliacao);
 
         jMenu2.add(jMenu4);
@@ -513,11 +481,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         menuItemPlanoDeEnsinoLista.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/plano-icon-25px.png"))); // NOI18N
         menuItemPlanoDeEnsinoLista.setText("Plano de Ensino (Lista)");
-        menuItemPlanoDeEnsinoLista.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemPlanoDeEnsinoListaActionPerformed(evt);
-            }
-        });
         menuGerenciamento.add(menuItemPlanoDeEnsinoLista);
 
         menuPrincipal.add(menuGerenciamento);
@@ -537,69 +500,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void menuItemDocenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDocenteActionPerformed
-        try {
-            addFrame(new FrameDocente());
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_menuItemDocenteActionPerformed
-
-    private void menuItemLegendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemLegendaActionPerformed
-        try {
-            // TODO add your handling code here:
-            addFrame(new FrameLegenda());
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_menuItemLegendaActionPerformed
-
-    private void menuItemNivelEnsinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNivelEnsinoActionPerformed
-        try {
-            // TODO add your handling code here:
-            addFrame(new FrameNivelEnsino());
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_menuItemNivelEnsinoActionPerformed
-
-    private void menuItemRecursoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemRecursoActionPerformed
-        try {
-            // TODO add your handling code here:
-            addFrame(new FrameRecurso());
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_menuItemRecursoActionPerformed
-
-    private void menuItemTecnicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemTecnicaActionPerformed
-        // TODO add your handling code here:
-        try {
-            // TODO add your handling code here:
-            addFrame(new FrameTecnica());
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_menuItemTecnicaActionPerformed
-
-    private void menuItemInstrumentoAvaliacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemInstrumentoAvaliacaoActionPerformed
-        try {
-            // TODO add your handling code here:
-            addFrame(new FrameInstrumentoAvaliacao());
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_menuItemInstrumentoAvaliacaoActionPerformed
-
-    private void menuItemPlanoDeEnsinoListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemPlanoDeEnsinoListaActionPerformed
-        try {
-            // TODO add your handling code here:
-            addFrame(new ensino.planejamento.view.frame.FramePlanoDeEnsinoLista());
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_menuItemPlanoDeEnsinoListaActionPerformed
 
     /**
      * @param args the command line arguments

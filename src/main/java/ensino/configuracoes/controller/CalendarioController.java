@@ -6,13 +6,10 @@
 package ensino.configuracoes.controller;
 
 import ensino.configuracoes.dao.xml.CalendarioDaoXML;
-import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.CalendarioFactory;
 import ensino.configuracoes.model.Campus;
-import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.patterns.AbstractController;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.patterns.factory.DaoFactory;
 import java.net.URL;
 import java.util.List;
@@ -38,7 +35,7 @@ public class CalendarioController extends AbstractController<Calendario> {
      * @param campus Instância de um objeto da classe <code>Campus</code>
      * @return
      */
-    public Calendario buscarPor(Integer ano, Campus campus) {;
+    public Calendario buscarPor(Integer ano, Campus campus) {
         return super.getDao().findById(ano, campus);
     }
 

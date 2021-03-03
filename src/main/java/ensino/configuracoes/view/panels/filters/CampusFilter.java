@@ -74,7 +74,7 @@ public class CampusFilter extends JPanel {
                         parentPanel.reloadTableData();
                     }
                 });
-            };
+            }
             
         } catch (Exception ex) {
             Logger.getLogger(CampusFilter.class.getName()).log(Level.SEVERE, null, ex);

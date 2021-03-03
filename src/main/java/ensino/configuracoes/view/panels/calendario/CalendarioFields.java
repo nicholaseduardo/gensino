@@ -200,8 +200,8 @@ public class CalendarioFields extends DefaultFieldsPanel {
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("ano", ("".equals(txtAno.getText()) ? null
-                : Integer.parseInt(txtAno.getText())));
+        map.put("ano", "".equals(txtAno.getText()) ? null
+                : Integer.parseInt(txtAno.getText()));
         map.put("descricao", txtDescricao.getText());
         map.put("campus", comboCampus.getSelectedItem());
         map.putAll(atividadePanel.getFieldValues());

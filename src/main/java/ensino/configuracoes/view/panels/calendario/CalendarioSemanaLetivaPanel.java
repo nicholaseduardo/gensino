@@ -107,15 +107,6 @@ public class CalendarioSemanaLetivaPanel extends DefaultFieldsPanel {
     }
 
     /**
-     * Recupera a lista de atividades atualizada (adicionadas/removidas)
-     *
-     * @return
-     */
-    private List<SemanaLetiva> getData() {
-        return semanaLetivaTableModel.getData();
-    }
-
-    /**
      * Inicializa a tabela de dados de atividades
      *
      * @param data

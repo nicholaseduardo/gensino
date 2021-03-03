@@ -38,7 +38,6 @@ import javax.swing.ListCellRenderer;
  */
 public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
 
-    private Component frame;
     private UnidadeCurricular unidadeCurricular;
     private GenJTextField txtId;
     private GenJTextField txtSequencia;
@@ -47,17 +46,11 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
     private GenJComboBox comboConteudo;
     private ConteudoComboBoxModel comboModel;
 
-    public UnidadeCurricularConteudoFields(UnidadeCurricular unidadeCurricular,
-            Component frame) {
+    public UnidadeCurricularConteudoFields(UnidadeCurricular unidadeCurricular) {
         super();
         this.unidadeCurricular = unidadeCurricular;
-        this.frame = frame;
 
         initComponents();
-    }
-
-    public void setFrame(Component frame) {
-        this.frame = frame;
     }
 
     private void initComponents() {
@@ -142,7 +135,7 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
         Integer sequencia = sSequencia.matches("\\d+") ? Integer.parseInt(sSequencia) : 0;
         String sNivel = txtNivel.getText();
         Integer nivel = sNivel.matches("\\d+") ? Integer.parseInt(sNivel) : 0;
-        
+
         map.put("id", id);
         map.put("unidadeCurricular", unidadeCurricular);
         map.put("descricao", txtDescricao.getText());
@@ -182,6 +175,7 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
         } else {
             return true;
         }
+        showWarningMessage(String.format(msg, campo));
         return false;
     }
 
@@ -215,8 +209,6 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
 
         @Override
         public void itemStateChanged(ItemEvent evt) {
-            GenJComboBox cb = (GenJComboBox) evt.getSource();
-
             if (evt.getStateChange() == ItemEvent.SELECTED) {
                 Conteudo item = (Conteudo) evt.getItem();
                 Integer nivel = null, sequencia = null;
@@ -235,8 +227,7 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
                          */
                         if (c.getId().getId().equals(id)) {
                             /**
-                             * Força a atualização correta da sequencia do
-                             * item
+                             * Força a atualização correta da sequencia do item
                              */
                             sequencia = i;
                             break;
@@ -267,10 +258,10 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
     private class ComboRenderer implements ListCellRenderer {
 
         protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-        
+
         public String repeatString(String value, Integer number) {
             StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < number; i++) {
+            for (int i = 0; i < number; i++) {
                 sb.append(value);
             }
             return sb.toString();
@@ -282,13 +273,14 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
             if (value instanceof Conteudo) {
                 Conteudo c = (Conteudo) value;
                 Color theForeground = null;
-                
+
                 Integer nivel = c.getNivel();
-                
+
                 int n = nivel != null && nivel > 1 ? nivel - 1 : 0;
                 String theText = c.getDescricao() != null ? c.getDescricao() : "";
-                if (n > 0)
+                if (n > 0) {
                     theText = repeatString("--", n).concat(theText);
+                }
 
                 theForeground = list.getForeground();
 

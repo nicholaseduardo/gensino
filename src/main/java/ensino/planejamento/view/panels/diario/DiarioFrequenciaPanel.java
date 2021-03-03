@@ -104,7 +104,6 @@ public class DiarioFrequenciaPanel extends DefaultFieldsPanel {
     }
 
     private JScrollPane createTablePane() {
-        JPanel panel = createPanel();
         frequenciaTable = new JTable();
         ListSelectionModel cellSelectionModel = frequenciaTable.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

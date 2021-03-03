@@ -67,7 +67,7 @@ public class ObjetivosChartPanel extends JPanel {
     }
 
     private void addBarMap(List<Objetivo> lObjetivos, HashMap<Objetivo, Double> barMap,
-            int i, int j, Double localMedia) {
+            int j, Double localMedia) {
         Objetivo obj = lObjetivos.get(j);
         /**
          * Se a chave para controle das médias não existe, então deve ser criada
@@ -104,7 +104,7 @@ public class ObjetivosChartPanel extends JPanel {
     }
 
     private void addPieMap(List<Objetivo> lObjetivos, HashMap<Objetivo, HashMap<String, Integer>> pieMap,
-            int i, int j, Double localMedia) {
+            int j, Double localMedia) {
         Objetivo ee = lObjetivos.get(j);
         HashMap<String, Integer> dataMap;
 
@@ -159,11 +159,11 @@ public class ObjetivosChartPanel extends JPanel {
                 /**
                  * Controle do grafico de barras
                  */
-                addBarMap(lObjetivos, barMap, i, j, localMedia);
+                addBarMap(lObjetivos, barMap, j, localMedia);
                 /**
                  * Controle do gráfico de pizza
                  */
-                addPieMap(lObjetivos, pieMap, i, j, localMedia);
+                addPieMap(lObjetivos, pieMap, j, localMedia);
             }
             Double media = e.getMediaObjetivoGeral(planoDeEnsino);
             rowsData[i][j + 1] = media;

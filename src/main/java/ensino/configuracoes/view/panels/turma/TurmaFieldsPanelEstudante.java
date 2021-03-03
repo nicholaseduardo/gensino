@@ -16,7 +16,6 @@ import ensino.helpers.DateHelper;
 import ensino.helpers.GridLayoutHelper;
 import ensino.util.types.SituacaoEstudante;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Calendar;
@@ -42,8 +41,6 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
     private GenJComboBox comboSituacao;
     private GenJSpinner spinData;
 
-    private Component frame;
-
     public TurmaFieldsPanelEstudante(Turma turma) {
         super("Dados dos estudantes");
         this.turma = turma;
@@ -52,10 +49,6 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
 
     public TurmaFieldsPanelEstudante() {
         this(null);
-    }
-
-    public void setFrame(Component frame) {
-        this.frame = frame;
     }
 
     private void initComponents() {
@@ -201,8 +194,6 @@ public class TurmaFieldsPanelEstudante extends DefaultFieldsPanel {
         txtRegistro.setEnabled(active);
         comboSituacao.setEnabled(active);
         spinData.setEnabled(active);
-
-        Boolean status = "".equals(txtId.getText());
     }
 
     @Override

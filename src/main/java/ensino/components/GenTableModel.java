@@ -22,11 +22,6 @@ public class GenTableModel<T> extends AbstractTableModel {
 
     private List<T> data;
     private String[] columnNames;
-    private Boolean hasButtons;
-
-    public GenTableModel(List<T> data, String[] columnNames) {
-        this(data, columnNames, false);
-    }
 
     /**
      * Construtor
@@ -34,13 +29,10 @@ public class GenTableModel<T> extends AbstractTableModel {
      * @param data Lista de dados de uma classe
      * @param columnNames Os nomes das colunas devem respeitar os nomes dos
      * atributos
-     * @param hasButtons Se verdadeiro, indica que a última coluna representa os
-     * botões.
      */
-    public GenTableModel(List<T> data, String[] columnNames, Boolean hasButtons) {
+    public GenTableModel(List<T> data, String[] columnNames) {
         this.data = data;
         this.columnNames = columnNames;
-        this.hasButtons = hasButtons;
     }
 
     @Override
@@ -73,9 +65,7 @@ public class GenTableModel<T> extends AbstractTableModel {
                     Field field = c.getDeclaredField(columnNames[index]);
                     return field.getClass();
                 }
-            } catch (NoSuchFieldException ex) {
-                Logger.getLogger(GenTableModel.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
+            } catch (NoSuchFieldException | SecurityException ex) {
                 Logger.getLogger(GenTableModel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

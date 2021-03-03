@@ -12,7 +12,6 @@ import ensino.configuracoes.controller.CursoController;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoFactory;
-import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.view.panels.curso.CursoFields;
 import ensino.configuracoes.view.panels.turma.TurmaPanel;
 import ensino.configuracoes.view.panels.unidadeCurricular.UnidadeCurricularPanel;
@@ -24,14 +23,12 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -44,8 +41,6 @@ import javax.swing.JTabbedPane;
  */
 public class AreaDeTrabalhoView extends GenJPanel {
 
-    private JDesktopPane desktop;
-
     private GenJLabel lblCurso;
     private GenJLabel lblNivelEnsino;
 
@@ -54,7 +49,7 @@ public class AreaDeTrabalhoView extends GenJPanel {
     private Campus campusVigente;
     private Component frame;
 
-    public AreaDeTrabalhoView(Campus campus, Component frame) {
+    public AreaDeTrabalhoView(Component frame) {
         super();
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         campusVigente = ControllerFactory.getCampusVigente();
@@ -70,39 +65,6 @@ public class AreaDeTrabalhoView extends GenJPanel {
         } catch (Exception ex) {
             showErrorMessage(ex);
         }
-    }
-
-    public void setDesktop(JDesktopPane desktop) {
-        this.desktop = desktop;
-    }
-
-    private JPanel createTurmaPanel(Turma turma) {
-        URL urlTurma = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "classroom-25px.png"));
-        ImageIcon iconTurma = new ImageIcon(urlTurma);
-
-        GenJLabel lblTitulo = new GenJLabel("Turma: " + turma.getNome(), iconTurma, JLabel.LEFT);
-        lblTitulo.setHorizontalTextPosition(JLabel.RIGHT);
-        lblTitulo.resetFontSize(12);
-
-        GenJLabel lblNEstudantes = new GenJLabel(String.format("[Estudantes: %d]",
-                turma.getEstudantes().size()), JLabel.RIGHT);
-        lblNEstudantes.resetFontSize(12);
-
-        GenJLabel lblAno = new GenJLabel(String.format("[Ano: %d]",
-                turma.getAno()), JLabel.RIGHT);
-        lblAno.resetFontSize(12);
-
-        JPanel panelTitulo = createPanel(new GridLayout(0, 2));
-        panelTitulo.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(lblTitulo));
-        panelTitulo.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblNEstudantes));
-        panelTitulo.add(createPanel(new FlowLayout(FlowLayout.LEFT, 5, 5)).add(new GenJLabel("")));
-        panelTitulo.add(createPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5)).add(lblAno));
-
-        JPanel panel = createPanel();
-        panel.setLayout(new BorderLayout());
-        panel.add(panelTitulo, BorderLayout.CENTER);
-
-        return panel;
     }
 
     private void updateLabelCurso(Curso curso) {

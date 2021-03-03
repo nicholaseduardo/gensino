@@ -113,8 +113,8 @@ public class CursoFieldsPanel extends DefaultFieldsPanel {
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap<>();
 
-        map.put("id", ("".equals(txtId.getText()) ? null
-                : Integer.parseInt(txtId.getText())));
+        map.put("id", "".equals(txtId.getText()) ? null
+                : Integer.parseInt(txtId.getText()));
         map.put("nome", txtNome.getText());
         map.put("campus", comboCampus.getSelectedItem());
         map.put("nivelEnsino", comboNivelEnsino.getSelectedItem());
@@ -136,7 +136,7 @@ public class CursoFieldsPanel extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(HashMap<String, Object> mapValues) {
         Integer codigo = (Integer) mapValues.get("id");
-        Campus campus = (Campus) mapValues.get("campus");
+        
         setFieldValues(codigo, (String) mapValues.get("nome"),
                 (Campus) mapValues.get("campus"),
                 (NivelEnsino) mapValues.get("nivelEnsino"));

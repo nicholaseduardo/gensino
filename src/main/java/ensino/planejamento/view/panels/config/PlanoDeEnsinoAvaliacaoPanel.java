@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -62,7 +61,6 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
     }
 
     private JScrollPane createTablePane() {
-        JPanel panel = new JPanel();
         avaliacaoTable = new JTable();
         ListSelectionModel cellSelectionModel = avaliacaoTable.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -82,8 +80,8 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
         if (!listaPlanoAvaliacoes.isEmpty()) {
             /**
              * O número de colunas de registro de avaliações é equivalente ao
-             * número de planos de avaliações lançados no sistema.
-             * Considera mais uma unidade para adicionar a coluna com os dados do
+             * número de planos de avaliações lançados no sistema. Considera
+             * mais uma unidade para adicionar a coluna com os dados do
              * estudante
              */
             int columnCount = listaPlanoAvaliacoes.size() + 1;
@@ -99,7 +97,7 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
             int i = 1;
             while (itPlanoAvaliacao.hasNext()) {
                 PlanoAvaliacao planoAvaliacao = itPlanoAvaliacao.next();
-                String colName = String.format("%s [%s]", 
+                String colName = String.format("%s [%s]",
                         planoAvaliacao.getNome(),
                         planoAvaliacao.getEtapaEnsino().getNome());
                 aColumnNames[i++] = colName;
@@ -122,7 +120,7 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
                 itPlanoAvaliacao = listaPlanoAvaliacoes.iterator();
                 while (itPlanoAvaliacao.hasNext()) {
                     PlanoAvaliacao planoAvaliacao = itPlanoAvaliacao.next();
-                    
+
                     inList.add(planoAvaliacao.getAvaliacaoDo(estudante));
                 }
             }
@@ -238,9 +236,6 @@ public class PlanoDeEnsinoAvaliacaoPanel extends DefaultFieldsPanel {
         public void actionPerformed(ActionEvent ae) {
             Object source = ae.getSource();
             if (source instanceof GenJFormattedTextField) {
-                GenJFormattedTextField txt = (GenJFormattedTextField) source;
-
-                Double value = Double.parseDouble(txt.getText());
                 int selectedRow = avaliacaoTable.getSelectedRow(),
                         selectedCol = avaliacaoTable.getSelectedColumn();
                 /**
