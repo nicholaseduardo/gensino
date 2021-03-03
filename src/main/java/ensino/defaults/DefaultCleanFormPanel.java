@@ -515,8 +515,6 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
             } catch (Exception ex) {
                 showErrorMessage(ex);
             }
-        } else {
-            showInformationMessage("Os campos em Asterisco (*) não foram preenchidos/selecioados.");
         }
     }
 
