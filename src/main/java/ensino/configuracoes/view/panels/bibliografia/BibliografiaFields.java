@@ -120,13 +120,13 @@ public class BibliografiaFields extends DefaultFieldsPanel {
     public boolean isValidated() {
         String msg = "O campo [%s] não foi informado.",
                 campo = "";
-        if (!"".equals(txtTitulo.getText())) {
+        if ("".equals(txtTitulo.getText())) {
             campo = "TITULO";
             txtTitulo.requestFocusInWindow();
-        } else if (!"".equals(txtAutor.getText())) {
+        } else if ("".equals(txtAutor.getText())) {
             campo = "AUTOR";
             txtAutor.requestFocusInWindow();
-        } else if (!"".equals(txtReferencia.getText())) {
+        } else if ("".equals(txtReferencia.getText())) {
             campo = "REFERÊNCIA";
             txtReferencia.requestFocusInWindow();
         } else {
