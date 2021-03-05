@@ -453,19 +453,4 @@ public class UnidadeCurricularFieldsObjetivoUCConteudo extends DefaultFieldsPane
         }
 
     }
-
-//    public static void main(String args[]) {
-//        try {
-//            ObjetivoUCController col = ControllerFactory.createObjetivoUCController();
-//            List<ObjetivoUC> l = col.listar();
-//            while (!l.isEmpty()) {
-//                ObjetivoUC c = l.get(l.size() - 1);
-//                System.out.println(c);
-//                col.remover(c);
-//                l.remove(c);
-//            }
-//        } catch (Exception ex) {
-//            Logger.getLogger(UnidadeCurricularFieldsObjetivoUCObjetivoUCConteudo.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
 }
