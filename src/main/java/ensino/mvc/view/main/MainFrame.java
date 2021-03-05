@@ -114,7 +114,7 @@ public class MainFrame extends JFrame {
 
             framePainel = createIFrame("Lista de Cursos do Campus", null);
             AreaDeTrabalhoView p = new AreaDeTrabalhoView(framePainel);
-            
+
             JScrollPane scroll = new JScrollPane(p);
             scroll.setAutoscrolls(true);
 
@@ -214,7 +214,7 @@ public class MainFrame extends JFrame {
     }
 
     private void updateComponents() {
-            Dimension distance = new Dimension(140, 140),
+        Dimension distance = new Dimension(140, 140),
                 dDesktop = desktop.getSize();
         Integer nRowButtons = dDesktop.height / distance.height,
                 nButtons = listButtons.size();
@@ -275,7 +275,7 @@ public class MainFrame extends JFrame {
         menuItemBibliografia.addActionListener(mainListener);
         menuItemPlanoDeEnsino.addActionListener(mainListener);
         menuItemSair.addActionListener(mainListener);
-        
+
         menuItemDocente.addActionListener(mainListener);
         menuItemLegenda.addActionListener(mainListener);
         menuItemNivelEnsino.addActionListener(mainListener);
@@ -297,46 +297,45 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
-
-            MenuOpcoes menu = MenuOpcoes.of(e.getActionCommand());
-
             try {
-                switch (menu) {
-                    case CAMPI:
-                        addFrame(new FrameCampus(framePainel));
-                        break;
-                    case CALENDARIO:
-                        addFrame(new FrameCalendario());
-                        break;
-                    case BIBLIOGRAFIA:
-                        addFrame(new FrameBibliografia());
-                        break;
-                    case SAIR:
+                Object source = e.getSource();
+                if (source == menuItemDocente) {
+                    addFrame(new FrameDocente());
+                } else if (source == menuItemLegenda) {
+                    addFrame(new FrameLegenda());
+                } else if (source == menuItemNivelEnsino) {
+                    addFrame(new FrameNivelEnsino());
+                } else if (source == menuItemRecurso) {
+                    addFrame(new FrameRecurso());
+                } else if (source == menuItemTecnica) {
+                    addFrame(new FrameTecnica());
+                } else if (source == menuItemInstrumentoAvaliacao) {
+                    addFrame(new FrameInstrumentoAvaliacao());
+                } else if (source == menuItemPlanoDeEnsino) {
+                    addFrame(new FramePlanoDeEnsino());
+                } else {
+                    MenuOpcoes menu = MenuOpcoes.of(e.getActionCommand());
+                    switch (menu) {
+                        case CAMPI:
+                            addFrame(new FrameCampus(framePainel));
+                            break;
+                        case CALENDARIO:
+                            addFrame(new FrameCalendario());
+                            break;
+                        case BIBLIOGRAFIA:
+                            addFrame(new FrameBibliografia());
+                            break;
+                        case SAIR:
 
-                        Runtime rt = Runtime.getRuntime();
-                        System.out.println("\nMemória depois da criação dos objetos: " + rt.freeMemory());
-                        rt.gc();
-                        System.out.println("Memória depois executar o gc: " + rt.freeMemory());
+                            Runtime rt = Runtime.getRuntime();
+                            System.out.println("\nMemória depois da criação dos objetos: " + rt.freeMemory());
+                            rt.gc();
+                            System.out.println("Memória depois executar o gc: " + rt.freeMemory());
 
-                        System.exit(0);
-                        break;
-                    default:
-                        Object source = e.getSource();
-                        if (source == menuItemDocente) {
-                            addFrame(new FrameDocente());
-                        } else if (source == menuItemLegenda) {
-                            addFrame(new FrameLegenda());
-                        } else if (source == menuItemNivelEnsino) {
-                            addFrame(new FrameNivelEnsino());
-                        } else if (source == menuItemRecurso) {
-                            addFrame(new FrameRecurso());
-                        } else if (source == menuItemTecnica) {
-                            addFrame(new FrameTecnica());
-                        } else if (source == menuItemInstrumentoAvaliacao) {
-                            addFrame(new FrameInstrumentoAvaliacao());
-                        } else if (source == menuItemPlanoDeEnsino) {
-                            addFrame(new FramePlanoDeEnsino());
-                        }
+                            System.exit(0);
+                            break;
+
+                    }
                 }
             } catch (PropertyVetoException ex) {
                 Logger.getLogger(MainActionListener.class.getName()).log(Level.SEVERE, null, ex);
@@ -346,7 +345,7 @@ public class MainFrame extends JFrame {
     }
 
     private enum MenuOpcoes {
-        CAMPI("campi"), CALENDARIO("cal"), BIBLIOGRAFIA("bib"), 
+        CAMPI("campi"), CALENDARIO("cal"), BIBLIOGRAFIA("bib"),
         SAIR("sair");
 
         private String value;
