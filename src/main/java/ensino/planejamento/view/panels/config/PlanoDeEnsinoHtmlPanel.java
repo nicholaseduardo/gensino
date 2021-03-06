@@ -183,7 +183,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
         for (int i = 0; i < listaAvaliacoes.size(); i++) {
             PlanoAvaliacao pa = listaAvaliacoes.get(i);
             // registra o número de avaliações por etapa de ensino
-            nAvaliacoesPorBimestre[pa.getEtapaEnsino().getId().getId()-1]++;
+            nAvaliacoesPorBimestre[pa.getEtapaEnsino().getId().getId().intValue()-1]++;
 
             String sAvaliacao = "";
             if (mapLinhas.containsKey(pa.getEtapaEnsino())) {
@@ -210,7 +210,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
         for (Map.Entry<EtapaEnsino, String> entry : mapLinhas.entrySet()) {
             EtapaEnsino key = entry.getKey();
             String value = entry.getValue();
-            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorBimestre[key.getId().getId()-1])));
+            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorBimestre[key.getId().getId().intValue()-1])));
         }
         return sData.toString();
     }
@@ -247,7 +247,7 @@ public class PlanoDeEnsinoHtmlPanel extends DefaultFieldsPanel {
         listaDetalha.sort(new Comparator<Detalhamento>() {
             @Override
             public int compare(Detalhamento o1, Detalhamento o2) {
-                return o1.getId().getSequencia() - o2.getId().getSequencia();
+                return o1.getId().getSequencia().intValue() - o2.getId().getSequencia().intValue();
             }
         });
         String sColunas = "";

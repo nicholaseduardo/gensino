@@ -441,7 +441,7 @@ public class ConfigPlanoDeEnsinoPanel extends JPanel {
                     /**
                      * Busca o detalhamento pelo ID da semana
                      */
-                    detalhamentoPanel.setFieldValues(oPlano.getDetalhamentos().get(oSemanaLetiva.getId().getId() - 1));
+                    detalhamentoPanel.setFieldValues(oPlano.getDetalhamentos().get(oSemanaLetiva.getId().getId().intValue() - 1));
                     layout.show(planoDeEnsinoCardPanel, detalhamentoPanel.getName());
                 } else if (TabsPlano.ESP.toString().equals(sSource)) {
                     objetivoEspecificoPanel.setFieldValues(parentNode.getUserObject());

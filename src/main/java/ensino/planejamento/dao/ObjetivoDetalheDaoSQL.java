@@ -7,11 +7,15 @@ package ensino.planejamento.dao;
 
 import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.Detalhamento;
-import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.ObjetivoDetalhe;
-import ensino.planejamento.model.ObjetivoDetalheId;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -19,78 +23,39 @@ import javax.persistence.TypedQuery;
  */
 public class ObjetivoDetalheDaoSQL extends AbstractDaoSQL<ObjetivoDetalhe> {
 
-    public ObjetivoDetalheDaoSQL() {
-        super();
+    public ObjetivoDetalheDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(ObjetivoDetalhe o) {
-        if (this.findById(o.getId().getDetalhamento(), o.getId().getObjetivo()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<ObjetivoDetalhe> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<ObjetivoDetalhe> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<ObjetivoDetalhe> list(String criteria, Object ref) {
-        String sql = "SELECT od FROM ObjetivoDetalhe od ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE od.id.objetivo.id.sequencia > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY od.id.detalhamento.id.sequencia, od.id.objetivo.id.sequencia ";
-
-        TypedQuery query = entityManager.createQuery(sql, ObjetivoDetalhe.class);
-        return query.getResultList();
+    public List<ObjetivoDetalhe> findAll() {
+        return findBy(null);
     }
 
     @Override
     public ObjetivoDetalhe findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return em.find(ObjetivoDetalhe.class, id);
     }
 
-    @Override
-    public ObjetivoDetalhe findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
-        }
-        Object oDetalhamento = ids[0];
-        if (!(oDetalhamento instanceof Detalhamento)) {
-            System.err.println("Primeiro atributo deve ser Detalhamento");
-            return null;
-        }
-        Object oObjetivo = ids[1];
-        if (!(oObjetivo instanceof Objetivo)) {
-            System.err.println("Segundo atributo deve ser Objetivo");
-            return null;
-        }
-        return entityManager.find(ObjetivoDetalhe.class,
-                new ObjetivoDetalheId((Objetivo) oObjetivo, (Detalhamento) oDetalhamento));
-    }
+    public List<ObjetivoDetalhe> findBy(Detalhamento detalhamento) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(ObjetivoDetalhe.class);
 
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        Root<ObjetivoDetalhe> root = query.from(ObjetivoDetalhe.class);
 
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Predicate> predicates = new ArrayList();
+
+        if (detalhamento != null) {
+            Predicate p = builder.equal(root.get("id").get("detalhamento"), detalhamento);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        query.orderBy(
+                builder.asc(root.get("id").get("detalhamento").get("id").get("sequencia")), 
+                builder.asc(root.get("id").get("objetivo").get("id").get("sequencia")));
+        TypedQuery<ObjetivoDetalhe> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
 }

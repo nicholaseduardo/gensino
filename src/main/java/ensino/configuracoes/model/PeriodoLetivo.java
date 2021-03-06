@@ -53,6 +53,10 @@ public class PeriodoLetivo implements Serializable {
     public void setId(PeriodoLetivoId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasId();
+    }
 
     public Calendario getCalendario() {
         if (id != null) {

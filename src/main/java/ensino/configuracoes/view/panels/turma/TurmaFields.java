@@ -126,7 +126,7 @@ public class TurmaFields extends DefaultFieldsPanel {
         return map;
     }
 
-    private void setFieldValues(Integer id, String nome, Integer ano,
+    private void setFieldValues(Long id, String nome, Integer ano,
             Curso curso) {
         txtId.setText(id.toString());
         txtNome.setText(nome);
@@ -137,7 +137,7 @@ public class TurmaFields extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(HashMap<String, Object> mapValues) {
         setFieldValues(
-                (Integer) mapValues.get("id"),
+                (Long) mapValues.get("id"),
                 (String) mapValues.get("nome"),
                 (Integer) mapValues.get("ano"),
                 (Curso) mapValues.get("curso"));

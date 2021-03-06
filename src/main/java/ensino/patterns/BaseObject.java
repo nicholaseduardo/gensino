@@ -44,6 +44,10 @@ public abstract class BaseObject implements Serializable {
         this.id = id;
     }
 
+    public boolean hasId() {
+        return id != null && id > 0;
+    }
+
     public String getNome() {
         return nome;
     }

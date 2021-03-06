@@ -99,7 +99,7 @@ public class ControllerFactory {
     }
     
     public static DocenteController createDocenteController() throws Exception {
-        return DocenteController.getInstance();
+        return new DocenteController();
     }
     
     public static BibliografiaController createBibliografiaController() throws Exception {
@@ -107,27 +107,27 @@ public class ControllerFactory {
     }
     
     public static InstrumentoAvaliacaoController createInstrumentoAvaliacaoController() throws Exception {
-        return InstrumentoAvaliacaoController.getInstance();
+        return new InstrumentoAvaliacaoController();
     }
     
     public static RecursoController createRecursoController() throws Exception {
-        return RecursoController.getInstance();
+        return new RecursoController();
     }
     
     public static TecnicaController createTecnicaController() throws Exception {
-        return TecnicaController.getInstance();
+        return new TecnicaController();
     }
     
     public static NivelEnsinoController createNivelEnsinoController() throws Exception {
-        return NivelEnsinoController.getInstance();
+        return new NivelEnsinoController();
     }
     
     public static EtapaEnsinoController createEtapaEnsinoController() throws Exception {
-        return EtapaEnsinoController.getInstance();
+        return new EtapaEnsinoController();
     }
     
     public static LegendaController createLegendaController() throws Exception {
-        return LegendaController.getInstance();
+        return new LegendaController();
     }
     
     public static PlanoDeEnsinoController createPlanoDeEnsinoController() throws Exception {
@@ -151,19 +151,19 @@ public class ControllerFactory {
     }
     
     public static ObjetivoDetalheController createObjetivoDetalheController() throws Exception {
-        return ObjetivoDetalheController.getInstance();
+        return new ObjetivoDetalheController();
     }
     
     public static DiarioController createDiarioController() throws Exception {
-        return DiarioController.getInstance();
+        return new DiarioController();
     }
     
     public static PermanenciaEstudantilController createPermanenciaEstudantilController() throws Exception {
-        return PermanenciaEstudantilController.getInstance();
+        return new PermanenciaEstudantilController();
     }
     
     public static AtendimentoEstudanteController createAtendimentoEstudanteController() throws Exception {
-        return AtendimentoEstudanteController.getInstance();
+        return new AtendimentoEstudanteController();
     }
     
     public static DiarioFrequenciaController createDiarioFrequenciaController() throws Exception {

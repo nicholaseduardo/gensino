@@ -5,13 +5,20 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.Campus;
 import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Metodologia;
 import ensino.planejamento.model.MetodologiaId;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -19,90 +26,63 @@ import javax.persistence.TypedQuery;
  */
 public class MetodologiaDaoSQL extends AbstractDaoSQL<Metodologia> {
 
-    public MetodologiaDaoSQL() {
-        super();
+    public MetodologiaDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Metodologia o) {
-        if (o.getId().getSequencia() == null) {
-            o.getId().setSequencia(nextVal(o));
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public void delete(Metodologia o) {
-        entityManager.remove(entityManager.getReference(Metodologia.class, o.getId()));
-    }
-
-    @Override
-    public List<Metodologia> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Metodologia> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Metodologia> list(String criteria, Object ref) {
-        String sql = "SELECT m FROM Metodologia m ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE m.id.sequencia > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY m.tipoMetodo, m.metodo.nome ";
-
-        TypedQuery query = entityManager.createQuery(sql, Metodologia.class);
-        return query.getResultList();
+    public List<Metodologia> findAll() {
+        return findBy(null);
     }
 
     @Override
     public Metodologia findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return em.find(Metodologia.class, id);
+    }
+
+    public List<Metodologia> findBy(Detalhamento detalhamento) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Metodologia.class);
+
+        Root<Metodologia> root = query.from(Metodologia.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (detalhamento != null) {
+            Predicate p = builder.equal(root.get("id").get("detalhamento"), detalhamento);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        query.orderBy(builder.asc(root.get("tipoMetodo")), builder.asc(root.get("metodo").get("nome")));
+        TypedQuery<Metodologia> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public Metodologia findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(Metodologia o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setSequencia(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oSequencia = ids[0];
-        if (!(oSequencia instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oDetalhamento = ids[1];
-        if (!(oDetalhamento instanceof Campus)) {
-            System.err.println("Segundo atributo deve ser Detalhamento");
-            return null;
-        }
-        return entityManager.find(Metodologia.class,
-                new MetodologiaId((Integer) oSequencia, (Detalhamento) oDetalhamento));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(Metodologia object) {
+        MetodologiaId composedId = object.getId();
+        String sql = "select max(a.id.sequencia) from Metodologia a where a.id.detalhamento = :pDetalhamento";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        Metodologia o = (Metodologia) params[0];
-        int id = 1;
-        List<Metodologia> l = o.getId().getDetalhamento().getMetodologias();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getSequencia() + 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pDetalhamento", composedId.getDetalhamento());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
 
 }

@@ -5,13 +5,13 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.PeriodoLetivoDaoXML;
+import ensino.configuracoes.dao.sqlite.PeriodoLetivoDaoSQL;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.PeriodoLetivoFactory;
+import ensino.configuracoes.model.PeriodoLetivoId;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -24,10 +24,6 @@ public class PeriodoLetivoController extends AbstractController<PeriodoLetivo> {
         super(DaoFactory.createPeriodoLetivoDao(), PeriodoLetivoFactory.getInstance());
     }
 
-    public PeriodoLetivoController(URL url) throws Exception {
-        super(new PeriodoLetivoDaoXML(url), PeriodoLetivoFactory.getInstance());
-    }
-
     /**
      * Busca um periodoLetivo pela sua chave primária
      *
@@ -36,8 +32,9 @@ public class PeriodoLetivoController extends AbstractController<PeriodoLetivo> {
      * <code>Calendario</code>
      * @return
      */
-    public PeriodoLetivo buscarPor(Integer numero, Calendario calendario) {
-        return super.getDao().findById(numero, calendario);
+    public PeriodoLetivo buscarPor(Long numero, Calendario calendario) {
+        PeriodoLetivoDaoSQL d = (PeriodoLetivoDaoSQL)this.dao;
+        return d.findById(new PeriodoLetivoId(numero, calendario));
     }
 
     /**
@@ -47,28 +44,8 @@ public class PeriodoLetivoController extends AbstractController<PeriodoLetivo> {
      * @return
      */
     public List<PeriodoLetivo> listar(Calendario o) {
-        String filter = "";
-        Integer ano = o.getId().getAno(),
-                campusId = o.getId().getCampus().getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//PeriodoLetivo/periodoLetivo[@ano=%d and @campusId=%d]",
-                    ano, campusId);
-        } else {
-            filter = String.format(" AND pl.id.calendario.id.ano = %d "
-                    + "AND pl.id.calendario.id.campus.id = %d ", ano, campusId);
-        }
-        return super.getDao().list(filter, o);
+        PeriodoLetivoDaoSQL d = (PeriodoLetivoDaoSQL)this.dao;
+        return d.findBy(o);
     }
-
-    @Override
-    public PeriodoLetivo salvar(PeriodoLetivo o) throws Exception {
-        o = super.salvar(o);
-        return o;
-    }
-
-    @Override
-    public PeriodoLetivo remover(PeriodoLetivo o) throws Exception {
-        o = super.remover(o);
-        return o;
-    }
+    
 }

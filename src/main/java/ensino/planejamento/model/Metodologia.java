@@ -50,6 +50,10 @@ public class Metodologia implements Serializable {
         this.id = id;
     }
     
+    public Boolean hasId() {
+        return id.hasSequencia();
+    }
+    
     public Detalhamento getDetalhamento() {
         return id.getDetalhamento();
     }

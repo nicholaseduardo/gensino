@@ -59,7 +59,7 @@ import javax.swing.text.MaskFormatter;
 public class PlanoDeEnsinoConteudo extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
-    private Integer sequencia;
+    private Long sequencia;
     private GenJTextArea txtConteudo;
     private GenJTextArea txtObservacao;
     private GenJComboBox comboTipoAula;
@@ -359,7 +359,7 @@ public class PlanoDeEnsinoConteudo extends DefaultFieldsPanel {
             if (TipoAula.NORMAL.equals(comboTipoAula.getSelectedItem())) {
                 showInformationMessage("Não é permitido adicionar Horário do TIPO NORMAL.");
             } else {
-                int id = 1;
+                Long id = 1L;
                 if (!conteudoTableModel.isEmpty()) {
                     /**
                      * Procedimento realizado para gerar a chave única de cada

@@ -5,15 +5,14 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.EstudanteDaoXML;
+import ensino.configuracoes.dao.sqlite.EstudanteDaoSQL;
 import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.EstudanteFactory;
+import ensino.configuracoes.model.EstudanteId;
 import ensino.configuracoes.model.Turma;
 import ensino.patterns.AbstractController;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.DaoFactory;
 import ensino.util.types.SituacaoEstudante;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -26,23 +25,15 @@ public class EstudanteController extends AbstractController<Estudante> {
         super(DaoFactory.createEstudanteDao(), EstudanteFactory.getInstance());
     }
 
-    public EstudanteController(URL url) throws Exception {
-        super(new EstudanteDaoXML(url), EstudanteFactory.getInstance());
-    }
-
     /**
      * Buscar por id do estudante
      *
      * @param id Sequencia do estudante
-     * @param turmaId Identificação da turma
-     * @param cursoId Identificação do curso ao qual a unidade curricular está
-     * vinculada
-     * @param campusId Identificação do campos ao qual pertence o curso
+     * @param turma Identificação da turma
      * @return
      */
-    public Estudante buscarPor(Integer id, Integer turmaId, Integer cursoId, Integer campusId) {
-        DaoPattern<Estudante> estudanteDao = super.getDao();
-        return estudanteDao.findById(id, turmaId, cursoId, campusId);
+    public Estudante buscarPor(Long id, Turma turma) {
+        return this.dao.findById(new EstudanteId(id, turma));
     }
 
     /**
@@ -52,39 +43,19 @@ public class EstudanteController extends AbstractController<Estudante> {
      * @return
      */
     public List<Estudante> listar(Turma turma) {
-        DaoPattern<Estudante> estudanteDao = super.getDao();
-        String filter = String.format(" AND e.id.turma.id.id = %d "
-                + "AND e.id.turma.id.curso.id.id = %d "
-                + "AND e.id.turma.id.curso.id.campus.id = %d ", 
-                turma.getId().getId(), 
-                turma.getCurso().getId().getId(),
-                turma.getCurso().getCampus().getId());
-        return estudanteDao.list(filter, turma);
+        return this.listar(turma, null, null);
     }
-    
+
     /**
      * Listar estudantes de acordo com a turma, nome ou situação
+     *
      * @param turma
      * @param nome
      * @param situacao
-     * @return 
+     * @return
      */
     public List<Estudante> listar(Turma turma, String nome, SituacaoEstudante situacao) {
-        DaoPattern<Estudante> estudanteDao = super.getDao();
-        String filter = String.format(" AND e.id.turma.id.id = %d "
-                + "AND e.id.turma.id.curso.id.id = %d "
-                + "AND e.id.turma.id.curso.id.campus.id = %d ", 
-                turma.getId().getId(), 
-                turma.getCurso().getId().getId(),
-                turma.getCurso().getCampus().getId());
-        if (nome != null && !"".equals(nome)) {
-            filter += " AND UPPER(e.nome) LIKE UPPER('%"+ nome+"%') ";
-        }
-        
-        if (situacao != null) {
-            filter += " AND situacaoEstudante = '" + situacao.getValue() + "'";
-        }
-        
-        return estudanteDao.list(filter, turma);
+        EstudanteDaoSQL d = (EstudanteDaoSQL) this.dao;
+        return d.findBy(turma, nome, situacao);
     }
 }

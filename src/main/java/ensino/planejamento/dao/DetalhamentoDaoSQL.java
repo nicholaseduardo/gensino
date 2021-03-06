@@ -5,13 +5,21 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.Campus;
+import ensino.configuracoes.model.SemanaLetiva;
 import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoId;
 import ensino.planejamento.model.PlanoDeEnsino;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -19,92 +27,69 @@ import javax.persistence.TypedQuery;
  */
 public class DetalhamentoDaoSQL extends AbstractDaoSQL<Detalhamento> {
 
-    public DetalhamentoDaoSQL() {
-        super();
+    public DetalhamentoDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Detalhamento o) {
-        if (o.getId().getSequencia() == null) {
-            o.getId().setSequencia(nextVal(o));
-        }
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public void delete(Detalhamento o) {
-        entityManager.remove(entityManager.getReference(Detalhamento.class, o.getId()));
-    }
-
-    @Override
-    public List<Detalhamento> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Detalhamento> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Detalhamento> list(String criteria, Object ref) {
-        String sql = "SELECT d FROM Detalhamento d ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE d.id.sequencia > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY d.semanaLetiva.id.id ";
-
-        TypedQuery query = entityManager.createQuery(sql, Detalhamento.class);
-        return query.getResultList();
+    public List<Detalhamento> findAll() {
+        return findBy(null, null);
     }
 
     @Override
     public Detalhamento findById(Object id) {
-        return entityManager.find(Detalhamento.class, id);
+        return em.find(Detalhamento.class, id);
+    }
+
+    public List<Detalhamento> findBy(PlanoDeEnsino planoDeEnsino, SemanaLetiva semanaLetiva) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Detalhamento.class);
+
+        Root<Detalhamento> root = query.from(Detalhamento.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (planoDeEnsino != null) {
+            Predicate p = builder.equal(root.get("id").get("planoDeEnsino"), planoDeEnsino);
+            predicates.add(p);
+        }
+
+        if (semanaLetiva != null) {
+            Predicate p = builder.equal(root.get("semanaLetiva"), semanaLetiva);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        query.orderBy(
+                builder.asc(root.get("semanaLetiva").get("id").get("id")));
+        TypedQuery<Detalhamento> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public Detalhamento findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(Detalhamento o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setSequencia(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oSequencia = ids[0];
-        if (!(oSequencia instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oPlanoDeEnsino = ids[1];
-        if (!(oPlanoDeEnsino instanceof Campus)) {
-            System.err.println("Segundo atributo deve ser PlanoDeEnsino");
-            return null;
-        }
-        return entityManager.find(Detalhamento.class,
-                new DetalhamentoId((Integer) oSequencia, (PlanoDeEnsino) oPlanoDeEnsino));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(Detalhamento object) {
+        DetalhamentoId composedId = object.getId();
+        String sql = "select max(a.id.sequencia) from Detalhamento a where a.id.planoDeEnsino = :pPlanoDeEnsino";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        Detalhamento o = (Detalhamento) params[0];
-        int id = 1;
-        List<Detalhamento> l = o.getId().getPlanoDeEnsino().getDetalhamentos();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getSequencia() + 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pPlanoDeEnsino", composedId.getPlanoDeEnsino());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
 
 }

@@ -7,9 +7,6 @@ package ensino.configuracoes.model;
 
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -39,24 +36,10 @@ public class DocenteFactory implements BeanFactory<Docente> {
     }
 
     @Override
-    public Docente getObject(Element e) {
-        return createObject(new Integer(e.getAttribute("id")),
-                e.getAttribute("nome"));
-    }
-
-    @Override
     public Docente getObject(HashMap<String, Object> p) {
         return createObject(
                 p.get("id"),
                 p.get("nome"));
-    }
-
-    @Override
-    public Node toXml(Document doc, Docente o) {
-        Element e = doc.createElement("docente");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("nome", o.getNome());
-        return e;
     }
     
 }

@@ -5,18 +5,11 @@
  */
 package ensino.planejamento.model;
 
-import ensino.helpers.DateHelper;
 import ensino.patterns.factory.BeanFactory;
 import ensino.util.types.TipoAula;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -44,7 +37,7 @@ public class DiarioFactory implements BeanFactory<Diario> {
         if (args[i] instanceof DiarioId) {
             o.setId((DiarioId) args[i++]);
         } else {
-            o.getId().setId((Integer) args[i++]);
+            o.getId().setId((Long) args[i++]);
         }
         o.setData((Date) args[i++]);
         o.setHorario((String) args[i++]);
@@ -56,28 +49,9 @@ public class DiarioFactory implements BeanFactory<Diario> {
     }
 
     @Override
-    public Diario getObject(Element e) {
-        try {
-            Diario o = createObject(
-                    Integer.parseInt(e.getAttribute("id")),
-                    DateHelper.stringToDate(e.getAttribute("data"), "dd/MM/yyyy"),
-                    e.getAttribute("horario"),
-                    e.getAttribute("obsevacoes"),
-                    e.getAttribute("conteudo"),
-                    TipoAula.of(e.getAttribute("tipoAula"))
-            );
-
-            return o;
-        } catch (ParseException ex) {
-            Logger.getLogger(DiarioFactory.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @Override
     public Diario getObject(HashMap<String, Object> p) {
         Diario o = createObject(
-                new DiarioId((Integer) p.get("id"),
+                new DiarioId((Long) p.get("id"),
                         (PlanoDeEnsino) p.get("planoDeEnsino")),
                 p.get("data"),
                 p.get("horario"),
@@ -90,24 +64,6 @@ public class DiarioFactory implements BeanFactory<Diario> {
         }
 
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, Diario o) {
-        Element e = doc.createElement("diario");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("data", DateHelper.dateToString(o.getData(), "dd/MM/yyyy"));
-        e.setAttribute("horario", o.getHorario());
-        e.setAttribute("observacoes", o.getObservacoes());
-        e.setAttribute("conteudo", o.getConteudo());
-        e.setAttribute("tipoAula", o.getTipoAula().getValue());
-
-        e.setAttribute("planoDeEnsinoId", o.getId().getPlanoDeEnsino().getId().toString());
-        e.setAttribute("unidadeCurricularId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getId().toString());
-        e.setAttribute("cursoId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getId().toString());
-        e.setAttribute("campusId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getCampus().getId().toString());
-
-        return e;
     }
 
 }

@@ -43,7 +43,7 @@ import javax.swing.table.TableColumnModel;
  */
 public class ObjetivoEspecificoPanel extends DefaultFieldsPanel {
 
-    private Integer sequencia;
+    private Long sequencia;
     private GenJTextArea txtObjetivo;
     private GenJButton btAdd;
     private GenJButton btUpdate;
@@ -194,7 +194,7 @@ public class ObjetivoEspecificoPanel extends DefaultFieldsPanel {
         txtObjetivo.setText("");
     }
 
-    private void setFieldValues(Integer sequencia, String descricao) {
+    private void setFieldValues(Long sequencia, String descricao) {
         this.sequencia = sequencia;
         txtObjetivo.setText(descricao);
     }
@@ -241,7 +241,7 @@ public class ObjetivoEspecificoPanel extends DefaultFieldsPanel {
                 int selectedRow = objetivoTable.getSelectedRow();
                 objetivoTableModel.updateRow(selectedRow, createObjetivoFromFields());
             } else if (source == btAdd && isValidated()) {
-                int id = 1;
+                Long id = 1L;
                 if (!objetivoTableModel.isEmpty()) {
                     /**
                      * Procedimento realizado para gerar a chave única de cada

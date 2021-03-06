@@ -5,17 +5,9 @@
  */
 package ensino.configuracoes.model;
 
-import ensino.configuracoes.dao.xml.LegendaDaoXML;
-import ensino.helpers.DateHelper;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.BeanFactory;
 import ensino.util.types.Periodo;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -56,7 +48,7 @@ public class AtividadeFactory implements BeanFactory<Atividade> {
     public Atividade createObject(Object... args) {
         Atividade o = new Atividade();
         int i = 0;
-        o.getId().setId((Integer) args[i++]);
+        o.getId().setId((Long) args[i++]);
         o.setPeriodo((Periodo) args[i++]);
         o.setDescricao((String) args[i++]);
         o.setLegenda((Legenda) args[i++]);
@@ -67,47 +59,11 @@ public class AtividadeFactory implements BeanFactory<Atividade> {
     }
 
     @Override
-    public Atividade getObject(Element e) {
-        try {
-            Atividade o = createObject(
-                    Integer.parseInt(e.getAttribute("id")),
-                    new Periodo(DateHelper.stringToDate(e.getAttribute("periodoDe"), "dd/MM/yyyy"),
-                            DateHelper.stringToDate(e.getAttribute("periodoAte"), "dd/MM/yyyy")),
-                    e.getAttribute("descricao"),
-                    null);
-            // Recupera a legenda
-            String sLegendaId = e.getAttribute("legendaId");
-            if (sLegendaId.matches("\\d+")) {
-                DaoPattern<Legenda> daoLegenda = LegendaDaoXML.getInstance();
-                o.setLegenda(daoLegenda.findById(new Integer(sLegendaId)));
-            }
-            
-            return o;
-        } catch (Exception ex) {
-            Logger.getLogger(AtividadeFactory.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @Override
     public Atividade getObject(HashMap<String, Object> p) {
         Atividade o = createObject(p.get("id"),p.get("periodo"),
                 p.get("descricao"),p.get("legenda"));
         o.getId().setCalendario((Calendario) p.get("calendario"));
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, Atividade o) {
-        Element e = doc.createElement("atividade");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("ano", o.getId().getCalendario().getId().getAno().toString());
-        e.setAttribute("campusId", o.getId().getCalendario().getId().getCampus().getId().toString());
-        e.setAttribute("periodoDe", o.getPeriodo().getDeText());
-        e.setAttribute("periodoAte", o.getPeriodo().getAteText());
-        e.setAttribute("descricao", o.getDescricao());
-        e.setAttribute("legendaId", o.getLegenda().getId().toString());
-        return e;
     }
 
 }

@@ -6,10 +6,9 @@
 package ensino.patterns;
 
 import ensino.patterns.factory.BeanFactory;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,10 +17,7 @@ import java.util.logging.Logger;
 public abstract class AbstractController<T> {
 
     private BeanFactory<T> beanFactory;
-    private DaoPattern<T> dao;
-
-    public AbstractController() {
-    }
+    protected DaoPattern<T> dao;
 
     public AbstractController(DaoPattern<T> dao) {
         this.dao = dao;
@@ -32,50 +28,22 @@ public abstract class AbstractController<T> {
         this.beanFactory = beanFactory;
     }
 
-    protected void setDao(DaoPattern<T> dao) {
-        this.dao = dao;
-    }
-
-    protected DaoPattern<T> getDao() {
-        return this.dao;
-    }
-
     public T salvar(HashMap<String, Object> params) throws Exception {
         return this.salvar(beanFactory.getObject(params));
     }
 
     public T salvar(T object) throws Exception {
-        startTransaction();
-        salvarSemCommit(object);
-        commit();
+        this.dao.save(object);
         return object;
     }
 
-    public T salvarSemCommit(T object) {
-        dao.save(object);
+    public T salvarSemCommit(T object) throws SQLException {
+        this.dao.save(object, Boolean.FALSE);
         return object;
-    }
-
-    public void startTransaction() {
-        dao.startTransaction();
-    }
-
-    public void rollback() {
-        dao.rollback();
     }
 
     public void close() {
         dao.close();
-    }
-
-    public void commit() throws Exception {
-        try {
-            dao.commit();
-        } catch (Exception ex) {
-            rollback();
-            Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
-            throw ex;
-        }
     }
 
     /**
@@ -98,10 +66,6 @@ public abstract class AbstractController<T> {
         }
     }
 
-    public boolean isTransactionActive() {
-        return dao.isTranscationActive();
-    }
-
     /**
      * Salvar em cascata. Esse método tem o objetivo de salvar a lista de
      * objetos <code>T</code> sem realizar o COMMIT
@@ -121,15 +85,13 @@ public abstract class AbstractController<T> {
     }
 
     public T remover(T object) throws Exception {
-        startTransaction();
-        dao.delete(object);
-        this.commit();
-
+        dao.delete(object, Boolean.TRUE);
+        
         return object;
     }
 
     public T removerSemCommit(T object) throws Exception {
-        dao.delete(object);
+        dao.delete(object, Boolean.FALSE);
         return object;
     }
 
@@ -155,28 +117,10 @@ public abstract class AbstractController<T> {
     }
 
     public List<T> listar() {
-        return this.listar("");
-    }
-
-    public List<T> listar(String criteria) {
-        startTransaction();
-        List<T> l = dao.list(criteria);
-        try {
-            if (isTransactionActive()) {
-                commit();
-            }
-        } catch (Exception ex) {
-
-            Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return l;
+        return this.dao.findAll();
     }
 
     public T buscarPorId(Object id) {
         return dao.findById(id);
-    }
-
-    public T buscarPorId(Object... ids) {
-        return dao.findById(ids);
     }
 }

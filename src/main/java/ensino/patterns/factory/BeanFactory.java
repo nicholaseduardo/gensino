@@ -6,9 +6,6 @@
 package ensino.patterns.factory;
 
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -25,18 +22,6 @@ public interface BeanFactory<T> {
      */
     T createObject(Object ...args);
     /**
-     * @Since("jun 18 2020")
-     * 
-     * Construtor por elementos do XML.
-     * Método utilizado para criar um objeto a partir
-     * de atributos do arquivo XML.
-     * @param e     Instância da classe <code>Element</code> que contém
-     *              os dados a serem atribuídos à classe
-     * @return 
-     */
-    @Deprecated
-    T getObject(Element e);
-    /**
      * Construtor por elementos de um HahsMap.
      * Método utilizado para criar um objeto a partir
      * dos dados armazenados no HashMap
@@ -46,17 +31,4 @@ public interface BeanFactory<T> {
      * @return 
      */
     T getObject(HashMap<String, Object> p);
-    /**
-     * @Since("jun 18 2020")
-     * 
-     * Converter para XML.
-     * Captura o objeto como referência e o converte em um objecto da classe
-     * <Node>
-     * @param doc   Objeto da classe <code>Document</code> relativo ao arquivo
-     *              XML que contém os dados da classe a ser convertida
-     * @param o     Instância da classe a ser convertida
-     * @return 
-     */
-    @Deprecated
-    Node toXml(Document doc, T o);
 }

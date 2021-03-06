@@ -7,9 +7,6 @@ package ensino.configuracoes.model;
 
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -39,24 +36,10 @@ public class TecnicaFactory implements BeanFactory<Tecnica> {
     }
 
     @Override
-    public Tecnica getObject(Element e) {
-        return createObject(new Integer(e.getAttribute("id")),
-                e.getAttribute("nome"));
-    }
-
-    @Override
     public Tecnica getObject(HashMap<String, Object> p) {
         return createObject(
                 p.get("id"),
                 p.get("nome"));
-    }
-
-    @Override
-    public Node toXml(Document doc, Tecnica o) {
-        Element e = doc.createElement("tecnica");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("nome", o.getNome());
-        return e;
     }
     
 }

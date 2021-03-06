@@ -7,6 +7,7 @@ package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
+import ensino.planejamento.dao.DiarioFrequenciaDaoSQL;
 import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.DiarioFrequencia;
 import ensino.planejamento.model.DiarioFrequenciaFactory;
@@ -29,21 +30,7 @@ public class DiarioFrequenciaController extends AbstractController<DiarioFrequen
      * @return 
      */
     public List<DiarioFrequencia> list(Diario o) {
-        String filter = "";
-        Integer id = o.getId().getId(),
-                planoId = o.getId().getPlanoDeEnsino().getId(),
-                undId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getId(),
-                cursoId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getId(),
-                campusId = o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getCampus().getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//DiarioFrequencia/diarioFrequencia"
-                + "[@diarioId=%d and @planoDeEnsinoId=%d and "
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]", 
-                    id, planoId, undId, cursoId, campusId);
-        } else {
-            filter = String.format(" AND o.id.diario.id = %d ", id);
-        }
-        
-        return super.getDao().list(filter, o);
+        DiarioFrequenciaDaoSQL d = (DiarioFrequenciaDaoSQL) this.dao;
+        return d.findBy(o);
     }
 }

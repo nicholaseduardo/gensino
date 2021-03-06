@@ -5,13 +5,13 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.SemanaLetivaDaoXML;
+import ensino.configuracoes.dao.sqlite.SemanaLetivaDaoSQL;
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.SemanaLetivaFactory;
+import ensino.configuracoes.model.SemanaLetivaId;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -24,10 +24,6 @@ public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
         super(DaoFactory.createSemanaLetivaDao(), SemanaLetivaFactory.getInstance());
     }
 
-    public SemanaLetivaController(URL url) throws Exception {
-        super(new SemanaLetivaDaoXML(url), SemanaLetivaFactory.getInstance());
-    }
-
     /**
      * Busca um periodoLetivo pela sua chave primária
      *
@@ -36,8 +32,9 @@ public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
      * <code>PeriodoLetivo</code>
      * @return
      */
-    public SemanaLetiva buscarPor(Integer id, PeriodoLetivo periodoLetivo) {
-        return super.getDao().findById(id, periodoLetivo);
+    public SemanaLetiva buscarPor(Long id, PeriodoLetivo periodoLetivo) {
+        SemanaLetivaDaoSQL d = (SemanaLetivaDaoSQL) this.dao;
+        return d.findById(new SemanaLetivaId(id, periodoLetivo));
     }
 
     /**
@@ -47,20 +44,8 @@ public class SemanaLetivaController extends AbstractController<SemanaLetiva> {
      * @return
      */
     public List<SemanaLetiva> listar(PeriodoLetivo o) {
-        String filter = "";
-        Integer numero = o.getId().getNumero(),
-                ano = o.getId().getCalendario().getId().getAno(), 
-                campusId = o.getId().getCalendario().getId().getCampus().getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//SemanaLetiva/semanaLetiva[@pNumero=%d "
-                + "and @ano=%d and @campusId=%d]",
-                numero, ano, campusId);
-        } else {
-            filter = String.format(" AND sl.id.periodoLetivo.id.numero = %d "
-                    + "AND sl.id.periodoLetivo.id.calendario.id.ano = %d "
-                    + "AND sl.id.periodoLetivo.id.calendario.id.campus.id = %d ", numero, ano, campusId);
-        }
-        return super.getDao().list(filter, o);
+        SemanaLetivaDaoSQL d = (SemanaLetivaDaoSQL) this.dao;
+        return d.findBy(o);
     }
 
 }

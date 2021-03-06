@@ -24,7 +24,7 @@ public class CursoId implements Serializable {
     
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campus_id")
@@ -33,17 +33,21 @@ public class CursoId implements Serializable {
     public CursoId() {
     }
 
-    public CursoId(Integer id, Campus campus) {
+    public CursoId(Long id, Campus campus) {
         this.id = id;
         this.campus = campus;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean hasId() {
+        return id != null && id > 0;
     }
 
     public Campus getCampus() {

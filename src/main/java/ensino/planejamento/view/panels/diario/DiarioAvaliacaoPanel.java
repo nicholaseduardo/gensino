@@ -56,6 +56,8 @@ public class DiarioAvaliacaoPanel extends DefaultFieldsPanel {
         super("Registro das notas das avaliações");
         initComponents();
 
+        listaPlanoAvaliacoes = new ArrayList();
+        
         createAvaliacoesTable();
         refreshAvaliacoes();
     }

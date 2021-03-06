@@ -172,7 +172,7 @@ public class UnidadeCurricularSearch extends JPanel {
                     txtId.requestFocusInWindow();
                     txtId.selectAll();
                 } else {
-                    Integer id = Integer.parseInt(sid);
+                    Long id = Long.parseLong(sid);
                     setObjectValue((UnidadeCurricular) col.buscarPor(id,
                             selectedCurso));
                 }

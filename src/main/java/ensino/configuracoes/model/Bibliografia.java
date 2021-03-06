@@ -40,6 +40,10 @@ public class Bibliografia implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id != null && id > 0;
+    }
 
     public String getTitulo() {
         return titulo;

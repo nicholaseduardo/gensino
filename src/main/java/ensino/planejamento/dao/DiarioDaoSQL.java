@@ -10,8 +10,12 @@ import ensino.planejamento.model.Diario;
 import ensino.planejamento.model.DiarioId;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.util.types.TipoAula;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,125 +29,71 @@ import javax.persistence.criteria.Root;
  */
 public class DiarioDaoSQL extends AbstractDaoSQL<Diario> {
 
-    public DiarioDaoSQL() {
-        super();
+    public DiarioDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Diario o) {
-        if (o.getId().getId() == null) {
-            o.getId().setId(nextVal(o));
-        }
-
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public void delete(Diario o) {
-        entityManager.remove(entityManager.getReference(Diario.class, o.getId()));
-    }
-
-    @Override
-    public List<Diario> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Diario> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Diario> list(String filters, Object ref) {
-        CriteriaBuilder builder = getCriteriaBuilder();
-        CriteriaQuery<Diario> criteria = builder.createQuery(Diario.class);
-
-        Root<Diario> from = criteria.from(Diario.class);
-
-        Predicate p1 = builder.gt(from.get("id").get("id"), 0);
-        CriteriaQuery<Diario> select = criteria.select(from);
-        select.orderBy(builder.asc(from.get("data")), builder.asc(from.get("horario")));
-
-        TypedQuery<Diario> query = entityManager.createQuery(select.where(p1));
-        return query.getResultList();
-    }
-
-    public List<Diario> list(PlanoDeEnsino o, Date data, TipoAula tipo) {
-        CriteriaBuilder builder = getCriteriaBuilder();
-        CriteriaQuery<Diario> criteria = builder.createQuery(Diario.class);
-
-        Root<Diario> from = criteria.from(Diario.class);
-
-        Predicate pPlano = builder.equal(from.get("id").get("planoDeEnsino").get("id"), o.getId()),
-                pdata = null, ptipo = null;
-        if (data != null) {
-            pdata = builder.equal(from.get("data"), data);
-        }
-        if (tipo != null) {
-            ptipo = builder.equal(from.get("tipoAula"), data);
-        }
-
-        CriteriaQuery<Diario> select = criteria.select(from);
-        if (pdata != null && ptipo != null) {
-            select.where(pPlano, pdata, ptipo);
-        } else if (pdata != null) {
-            select.where(pPlano, pdata);
-        } else if (ptipo != null) {
-            select.where(pPlano, ptipo);
-        } else {
-            select.where(pPlano);
-        }
-        
-        select.orderBy(builder.asc(from.get("data")), builder.asc(from.get("horario")));
-
-        TypedQuery<Diario> query = entityManager.createQuery(select);
-        return query.getResultList();
+    public List<Diario> findAll() {
+        return findBy(null, null, null);
     }
 
     @Override
     public Diario findById(Object id) {
-        return entityManager.find(Diario.class, id);
+        return em.find(Diario.class, id);
+    }
+
+    public List<Diario> findBy(PlanoDeEnsino planoDeEnsino, Date data, TipoAula tipo) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Diario.class);
+
+        Root<Diario> root = query.from(Diario.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (planoDeEnsino != null) {
+            Predicate p = builder.equal(root.get("id").get("planoDeEnsino"), planoDeEnsino);
+            predicates.add(p);
+        }
+        if (data != null) {
+            Predicate p = builder.equal(root.get("data"), data);
+            predicates.add(p);
+        }
+        if (tipo != null) {
+            Predicate p = builder.equal(root.get("tipoAula"), tipo);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        query.orderBy(builder.asc(root.get("data")), builder.asc(root.get("horario")));
+        TypedQuery<Diario> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public Diario findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(Diario o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oSequencia = ids[0];
-        if (!(oSequencia instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oPlanoDeEnsino = ids[1];
-        if (!(oPlanoDeEnsino instanceof PlanoDeEnsino)) {
-            System.err.println("Segundo atributo deve ser PlanoDeEnsino");
-            return null;
-        }
-        return entityManager.find(Diario.class,
-                new DiarioId((Integer) oSequencia, (PlanoDeEnsino) oPlanoDeEnsino));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(Diario object) {
+        DiarioId composedId = object.getId();
+        String sql = "select max(a.id.id) from Diario a where a.id.planoDeEnsino = :pPlanoDeEnsino";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        Diario o = (Diario) params[0];
-        int id = 1;
-        List<Diario> l = o.getId().getPlanoDeEnsino().getDiarios();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getId() + 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pPlanoDeEnsino", composedId.getPlanoDeEnsino());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
 
 }

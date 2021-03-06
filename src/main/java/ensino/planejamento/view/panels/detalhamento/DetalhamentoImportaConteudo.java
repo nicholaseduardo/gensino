@@ -475,7 +475,7 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
     }
     
     private Metodologia createMetodologia(Detalhamento d, BaseObject bo) {
-        int id = 1;
+        Long id = 1L;
         List<Metodologia> l = d.getMetodologias();
         if (!l.isEmpty()) {
             id = l.get(l.size() - 1).getId().getSequencia() + 1;

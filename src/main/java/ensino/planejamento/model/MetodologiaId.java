@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 public class MetodologiaId implements Serializable {
     
     @Column(name = "sequencia")
-    private Integer sequencia;
+    private Long sequencia;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns(value = {
@@ -34,17 +34,21 @@ public class MetodologiaId implements Serializable {
     public MetodologiaId() {
     }
 
-    public MetodologiaId(Integer sequencia, Detalhamento detalhamento) {
+    public MetodologiaId(Long sequencia, Detalhamento detalhamento) {
         this.sequencia = sequencia;
         this.detalhamento = detalhamento;
     }
 
-    public Integer getSequencia() {
+    public Long getSequencia() {
         return sequencia;
     }
 
-    public void setSequencia(Integer sequencia) {
+    public void setSequencia(Long sequencia) {
         this.sequencia = sequencia;
+    }
+    
+    public Boolean hasSequencia() {
+        return sequencia != null && sequencia > 0;
     }
 
     public Detalhamento getDetalhamento() {

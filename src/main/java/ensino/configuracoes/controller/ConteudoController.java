@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
+import ensino.configuracoes.dao.sqlite.ConteudoDaoSQL;
 import ensino.configuracoes.model.Conteudo;
 import ensino.configuracoes.model.ConteudoFactory;
 import ensino.configuracoes.model.ConteudoId;
@@ -30,7 +31,7 @@ public class ConteudoController extends AbstractController<Conteudo> {
      * @return
      */
     public Conteudo buscarPor(ConteudoId id) {
-        return super.getDao().findById(id);
+        return this.dao.findById(id);
     }
 
     public List<Conteudo> listar(UnidadeCurricular o) {
@@ -38,17 +39,7 @@ public class ConteudoController extends AbstractController<Conteudo> {
     }
 
     public List<Conteudo> listar(UnidadeCurricular o, String descricao) {
-        String filter = "";
-        filter = String.format(" AND c.id.unidadeCurricular.id.id = %d "
-                + " AND c.id.unidadeCurricular.id.curso.id.id = %d "
-                + " AND c.id.unidadeCurricular.id.curso.id.campus.id = %d ",
-                o.getId().getId(),
-                o.getId().getCurso().getId().getId(),
-                o.getId().getCurso().getId().getCampus().getId());
-        if (descricao != null && !"".equals(descricao)) {
-            filter += " AND UPPER(c.descricao) LIKE UPPER('%"+descricao+"%') ";
-        }
-
-        return super.getDao().list(filter, o);
+        ConteudoDaoSQL d = (ConteudoDaoSQL) this.dao;
+        return d.findBy(o, descricao);
     }
 }

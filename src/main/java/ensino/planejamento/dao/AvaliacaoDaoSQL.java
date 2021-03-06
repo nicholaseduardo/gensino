@@ -5,13 +5,17 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.Estudante;
 import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.Avaliacao;
-import ensino.planejamento.model.AvaliacaoId;
 import ensino.planejamento.model.PlanoAvaliacao;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -19,78 +23,36 @@ import javax.persistence.TypedQuery;
  */
 public class AvaliacaoDaoSQL extends AbstractDaoSQL<Avaliacao> {
 
-    public AvaliacaoDaoSQL() {
-        super();
+    public AvaliacaoDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Avaliacao o) {
-        if (this.findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<Avaliacao> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Avaliacao> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Avaliacao> list(String criteria, Object ref) {
-        String sql = "SELECT od FROM Avaliacao od ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE od.id.planoAvaliacao.id.sequencia > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY od.id.planoAvaliacao.id.sequencia, od.id.estudante.nome ";
-
-        TypedQuery query = entityManager.createQuery(sql, Avaliacao.class);
-        return query.getResultList();
+    public List<Avaliacao> findAll() {
+        return findBy(null);
     }
 
     @Override
     public Avaliacao findById(Object id) {
-        return entityManager.find(Avaliacao.class, id);
+        return em.find(Avaliacao.class, id);
     }
 
-    @Override
-    public Avaliacao findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
-        }
-        Object oEstudante = ids[0];
-        if (!(oEstudante instanceof Estudante)) {
-            System.err.println("Primeiro atributo deve ser Estudante");
-            return null;
-        }
-        Object oPlanoAvaliacao = ids[1];
-        if (!(oPlanoAvaliacao instanceof PlanoAvaliacao)) {
-            System.err.println("Segundo atributo deve ser PlanoAvaliacao");
-            return null;
-        }
-        return entityManager.find(Avaliacao.class,
-                new AvaliacaoId((PlanoAvaliacao) oPlanoAvaliacao, (Estudante) oEstudante));
-    }
+    public List<Avaliacao> findBy(PlanoAvaliacao planoAvaliacao) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Avaliacao.class);
 
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        Root<Avaliacao> root = query.from(Avaliacao.class);
 
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Predicate> predicates = new ArrayList();
+
+        if (planoAvaliacao != null) {
+            Predicate p = builder.equal(root.get("id").get("planoAvaliacao"), planoAvaliacao);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<Avaliacao> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
 }

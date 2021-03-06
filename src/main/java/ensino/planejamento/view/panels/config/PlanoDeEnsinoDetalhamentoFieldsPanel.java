@@ -552,7 +552,7 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
                     BaseObject selected = (BaseObject) comboMetodo.getSelectedItem();
                     if (selected != null && tipoMetodo != null) {
-                        Integer id = 1;
+                        Long id = 1L;
                         if (!metodologiaTableModel.isEmpty()) {
                             Metodologia mTemp = metodologiaTableModel.getMax(Comparator.comparing(a -> a.getId().getSequencia()));
                             id = mTemp.getId().getSequencia() + 1;

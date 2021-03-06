@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 public class SemanaLetivaId implements Serializable {
 
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns(value = {
@@ -35,18 +35,22 @@ public class SemanaLetivaId implements Serializable {
     public SemanaLetivaId() {
     }
 
-    public SemanaLetivaId(Integer id, PeriodoLetivo periodoLetivo) {
+    public SemanaLetivaId(Long id, PeriodoLetivo periodoLetivo) {
         this.id = id;
         this.periodoLetivo = periodoLetivo;
     }
 
     
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+    
+    public Boolean hasId() {
+        return id != null && id > 0;
     }
 
     public PeriodoLetivo getPeriodoLetivo() {

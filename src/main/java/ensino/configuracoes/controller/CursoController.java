@@ -5,13 +5,13 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.CursoDaoXML;
+import ensino.configuracoes.dao.sqlite.CursoDaoSQL;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoFactory;
+import ensino.configuracoes.model.CursoId;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -24,18 +24,14 @@ public class CursoController extends AbstractController<Curso> {
         super(DaoFactory.createCursoDao(), CursoFactory.getInstance());
     }
     
-    public CursoController(URL url) throws Exception {
-        super(new CursoDaoXML(url), CursoFactory.getInstance());
-    }
-    
     /**
      * Busca um curso pela sua chave primária
      * @param id        Id do curso
      * @param campus  Instância da classe <code>Campus</code>
      * @return 
      */
-    public Curso buscarPor(Integer id, Campus campus) {
-        return super.getDao().findById(id, campus);
+    public Curso buscarPor(Long id, Campus campus) {
+        return this.dao.findById(new CursoId(id, campus));
     }
     
     /**
@@ -44,28 +40,13 @@ public class CursoController extends AbstractController<Curso> {
      * @return 
      */
     public List<Curso> listar(Campus campus) {
-        String filter = "";
-        Integer id = campus.getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//Curso/curso[@campusId=%d]", campus.getId());
-        } else {
-            filter = String.format(" AND c.id.campus.id = %d ", id);
-        }
-        
-        return super.getDao().list(filter, campus);
+        CursoDaoSQL d = (CursoDaoSQL) this.dao;
+        return d.findBy(campus, null);
     }
     
     public List<Curso> listar(Campus campus, String text) {
-        String filter = "";
-        Integer id = campus.getId();
-        
-        filter = String.format(" AND c.id.campus.id = %d ", id);
-        if (text != null && !"".equals(text)) {
-            filter += " AND UPPER(c.nome) LIKE UPPER('%"+text+"%') ";
-        }
-        
-        return super.getDao().list(filter, campus);
-        
+        CursoDaoSQL d = (CursoDaoSQL) this.dao;
+        return d.findBy(campus, text);
     }
     
     @Override

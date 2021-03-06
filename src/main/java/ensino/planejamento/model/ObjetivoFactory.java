@@ -8,9 +8,6 @@ package ensino.planejamento.model;
 import ensino.configuracoes.model.ObjetivoUC;
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -50,7 +47,7 @@ public class ObjetivoFactory implements BeanFactory<Objetivo> {
         if (args[i] instanceof ObjetivoId) {
             o.setId((ObjetivoId) args[i++]);
         } else {
-            o.getId().setSequencia((Integer) args[i++]);
+            o.getId().setSequencia((Long) args[i++]);
         }
         o.setDescricao((String) args[i++]);
         o.setObjetivoUC((ObjetivoUC) args[i++]);
@@ -62,34 +59,14 @@ public class ObjetivoFactory implements BeanFactory<Objetivo> {
     }
 
     @Override
-    public Objetivo getObject(Element e) {
-        return createObject(
-                Integer.parseInt(e.getAttribute("sequencia")),
-                e.getAttribute("descricao"));
-    }
-
-    @Override
     public Objetivo getObject(HashMap<String, Object> p) {
         Objetivo o = createObject(
-                new ObjetivoId((Integer) p.get("sequencia"),
+                new ObjetivoId((Long) p.get("sequencia"),
                 (PlanoDeEnsino) p.get("planoDeEnsino")),
                 p.get("descricao"),
                 p.get("objetivoUC"));
 
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, Objetivo o) {
-        Element e = doc.createElement("objetivo");
-        e.setAttribute("sequencia", o.getId().getSequencia().toString());
-        e.setAttribute("descricao", o.getDescricao());
-        e.setAttribute("planoDeEnsinoId", o.getId().getPlanoDeEnsino().getId().toString());
-        e.setAttribute("unidadeCurricularId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().toString());
-        e.setAttribute("cursoId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getId().toString());
-        e.setAttribute("campusId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getCampus().getId().toString());
-
-        return e;
     }
 
 }

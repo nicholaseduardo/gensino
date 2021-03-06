@@ -9,9 +9,6 @@ import ensino.patterns.factory.BeanFactory;
 import ensino.util.types.DiaDaSemana;
 import ensino.util.types.Turno;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -39,23 +36,13 @@ public class HorarioAulaFactory implements BeanFactory<HorarioAula> {
         if (args[i] instanceof HorarioAulaId) {
             o.setId((HorarioAulaId) args[i++]);
         } else {
-            o.getId().setId((Integer) args[i++]);
+            o.getId().setId((Long) args[i++]);
         }
         o.setDiaDaSemana((DiaDaSemana) args[i++]);
         o.setHorario((String) args[i++]);
         o.setTurno((Turno) args[i++]);
 
         return o;
-    }
-
-    @Override
-    public HorarioAula getObject(Element e) {
-        return createObject(
-                Integer.parseInt(e.getAttribute("id")),
-                DiaDaSemana.of(Integer.parseInt(e.getAttribute("diaDaSemana"))),
-                e.getAttribute("horario"),
-                Turno.of(Integer.parseInt(e.getAttribute("turno")))
-        );
     }
 
     @Override
@@ -67,21 +54,6 @@ public class HorarioAulaFactory implements BeanFactory<HorarioAula> {
         o.getId().setPlanoDeEnsino((PlanoDeEnsino) p.get("planoDeEnsino"));
 
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, HorarioAula o) {
-        Element e = doc.createElement("horarioAula");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("diaDaSemana", String.valueOf(o.getDiaDaSemana().getValue()));
-        e.setAttribute("horario", o.getHorario());
-        e.setAttribute("turno", String.valueOf(o.getTurno().getValue()));
-
-        e.setAttribute("planoDeEnsinoId", o.getId().getPlanoDeEnsino().getId().toString());
-        e.setAttribute("unidadeCurricularId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getId().toString());
-        e.setAttribute("cursoId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getId().toString());
-        e.setAttribute("campusId", o.getId().getPlanoDeEnsino().getUnidadeCurricular().getId().getCurso().getId().getCampus().getId().toString());
-        return e;
     }
 
 }

@@ -27,7 +27,7 @@ import javax.swing.JScrollPane;
  */
 public class PlanoDeEnsinoObjetivoEspecificoFields extends DefaultFieldsPanel {
 
-    private Integer sequencia;
+    private Long sequencia;
     private GenJTextArea txtObjetivo;
     private GenJComboBox comboObjetivoUC;
 

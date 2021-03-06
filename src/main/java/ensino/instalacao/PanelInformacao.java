@@ -9,15 +9,8 @@ import ensino.components.GenJButton;
 import ensino.components.GenJCheckBox;
 import ensino.components.GenJLabel;
 import ensino.components.GenJTextArea;
-import ensino.configuracoes.controller.BibliografiaController;
-import ensino.configuracoes.controller.InstrumentoAvaliacaoController;
-import ensino.configuracoes.controller.LegendaController;
-import ensino.configuracoes.controller.RecursoController;
-import ensino.configuracoes.controller.TecnicaController;
 import ensino.configuracoes.view.panels.campus.CampusFields;
 import ensino.configuracoes.view.panels.docente.DocenteFields;
-import ensino.patterns.AbstractController;
-import ensino.patterns.factory.ControllerFactory;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -29,12 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -174,77 +162,77 @@ public class PanelInformacao extends JFrame {
      * instrumentos de avaliação direto do ambiente de desenvolvimento:
      * github.com
      */
-    private void importarDados() {
-        if (isOnline()) {
-            try {
-                InputStream is = getClass().getResourceAsStream("/txt/url-imports.txt");
-                Scanner s = new Scanner(is);
-                AbstractController localController = null, onlineController = null;
-                while (s.hasNext()) {
-                    String sUrl = s.nextLine();
-                    URL url = new URL(sUrl);
-                    if (sUrl.matches(".+(legenda.xml).*")) {
-                        onlineController = new LegendaController(url);
-                        localController = ControllerFactory.createLegendaController();
-                    } else if (sUrl.matches(".+(recurso.xml).*")) {
-                        onlineController = new RecursoController(url);
-                        localController = ControllerFactory.createRecursoController();
-                    } else if (sUrl.matches(".+(tecnica.xml).*")) {
-                        onlineController = new TecnicaController(url);
-                        localController = ControllerFactory.createTecnicaController();
-                    } else if (sUrl.matches(".+(instrumentoAvaliacao.xml).*")) {
-                        onlineController = new InstrumentoAvaliacaoController(url);
-                        localController = ControllerFactory.createInstrumentoAvaliacaoController();
-                    } else if (sUrl.matches(".+(bibliografia.xml).*")) {
-                        onlineController = new BibliografiaController(url);
-                        localController = ControllerFactory.createBibliografiaController();
-                    }
-
-                    if (onlineController != null && localController != null) {
-                        List list = onlineController.listar();
-                        for (int i = 0; i < list.size(); i++) {
-                            Object o = list.get(i);
-                            localController.salvar(o);
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                        "Erro no sistema. Contate o desenvolvedor relatando o erro: " + ex.getMessage()
-                        + ex.getCause() != null ? "\nCausa: " + ex.getCause().getMessage() : "",
-                        "Erro de sistema", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private Boolean isOnline() {
-        String errorMessage = "";
-        while (true) {
-            try {
-                URL mandarMail = new URL("https://www.github.com");
-                URLConnection conn = mandarMail.openConnection();
-
-                HttpURLConnection httpConn = (HttpURLConnection) conn;
-                httpConn.connect();
-                int x = httpConn.getResponseCode();
-                if (x == 200) {
-                    return true;
-                }
-            } catch (MalformedURLException ex) {
-                errorMessage = ex.getMessage();
-            } catch (IOException ex) {
-                errorMessage = ex.getMessage();
-            }
-            if (!"".equals(errorMessage)) {
-                JOptionPane.showMessageDialog(this,
-                        "Não é possível importar os dados básicos do sistema.\n"
-                        + "Motivo: sem acesso a internet.",
-                        "Aviso de sistema",
-                        JOptionPane.INFORMATION_MESSAGE);
-                return false;
-            }
-        }
-    }
+//    private void importarDados() {
+//        if (isOnline()) {
+//            try {
+//                InputStream is = getClass().getResourceAsStream("/txt/url-imports.txt");
+//                Scanner s = new Scanner(is);
+//                AbstractController localController = null, onlineController = null;
+//                while (s.hasNext()) {
+//                    String sUrl = s.nextLine();
+//                    URL url = new URL(sUrl);
+//                    if (sUrl.matches(".+(legenda.xml).*")) {
+//                        onlineController = new LegendaController(url);
+//                        localController = ControllerFactory.createLegendaController();
+//                    } else if (sUrl.matches(".+(recurso.xml).*")) {
+//                        onlineController = new RecursoController(url);
+//                        localController = ControllerFactory.createRecursoController();
+//                    } else if (sUrl.matches(".+(tecnica.xml).*")) {
+//                        onlineController = new TecnicaController(url);
+//                        localController = ControllerFactory.createTecnicaController();
+//                    } else if (sUrl.matches(".+(instrumentoAvaliacao.xml).*")) {
+//                        onlineController = new InstrumentoAvaliacaoController(url);
+//                        localController = ControllerFactory.createInstrumentoAvaliacaoController();
+//                    } else if (sUrl.matches(".+(bibliografia.xml).*")) {
+//                        onlineController = new BibliografiaController(url);
+//                        localController = ControllerFactory.createBibliografiaController();
+//                    }
+//
+//                    if (onlineController != null && localController != null) {
+//                        List list = onlineController.listar();
+//                        for (int i = 0; i < list.size(); i++) {
+//                            Object o = list.get(i);
+//                            localController.salvar(o);
+//                        }
+//                    }
+//                }
+//            } catch (Exception ex) {
+//                JOptionPane.showMessageDialog(this,
+//                        "Erro no sistema. Contate o desenvolvedor relatando o erro: " + ex.getMessage()
+//                        + ex.getCause() != null ? "\nCausa: " + ex.getCause().getMessage() : "",
+//                        "Erro de sistema", JOptionPane.ERROR_MESSAGE);
+//            }
+//        }
+//    }
+//
+//    private Boolean isOnline() {
+//        String errorMessage = "";
+//        while (true) {
+//            try {
+//                URL mandarMail = new URL("https://www.github.com");
+//                URLConnection conn = mandarMail.openConnection();
+//
+//                HttpURLConnection httpConn = (HttpURLConnection) conn;
+//                httpConn.connect();
+//                int x = httpConn.getResponseCode();
+//                if (x == 200) {
+//                    return true;
+//                }
+//            } catch (MalformedURLException ex) {
+//                errorMessage = ex.getMessage();
+//            } catch (IOException ex) {
+//                errorMessage = ex.getMessage();
+//            }
+//            if (!"".equals(errorMessage)) {
+//                JOptionPane.showMessageDialog(this,
+//                        "Não é possível importar os dados básicos do sistema.\n"
+//                        + "Motivo: sem acesso a internet.",
+//                        "Aviso de sistema",
+//                        JOptionPane.INFORMATION_MESSAGE);
+//                return false;
+//            }
+//        }
+//    }
 
     private class ButtonAction implements ActionListener {
 
@@ -291,7 +279,7 @@ public class PanelInformacao extends JFrame {
                     /**
                      * Importa os dados padrões do sistema
                      */
-                    importarDados();
+//                    importarDados();
                     JOptionPane.showMessageDialog(PanelInformacao.this, "Inicialização completa.\n"
                             + "Agora você pode utilizar o sistema de gestão\n"
                             + "de planos de ensino.\n\n"

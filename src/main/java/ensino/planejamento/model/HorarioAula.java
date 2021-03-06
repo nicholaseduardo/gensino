@@ -92,6 +92,10 @@ public class HorarioAula implements Serializable {
         this.id = id;
     }
     
+    public Boolean hasId() {
+        return id.hasId();
+    }
+    
     public PlanoDeEnsino getPlanoDeEnsino() {
         return id.getPlanoDeEnsino();
     }

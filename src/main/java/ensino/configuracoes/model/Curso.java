@@ -56,6 +56,10 @@ public class Curso implements Serializable {
         this.id = id;
     }
 
+    public boolean hasId() {
+        return id.hasId();
+    }
+
     public String getNome() {
         return nome;
     }

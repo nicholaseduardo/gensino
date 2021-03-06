@@ -59,6 +59,10 @@ public class SemanaLetiva implements Serializable {
     public void setId(SemanaLetivaId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasId();
+    }
 
     public PeriodoLetivo getPeriodoLetivo() {
         if (id != null) {

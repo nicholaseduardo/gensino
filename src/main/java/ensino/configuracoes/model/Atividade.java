@@ -57,6 +57,10 @@ public class Atividade implements Serializable {
     public void setId(AtividadeId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasId();
+    }
 
     public String getDescricao() {
         return descricao;

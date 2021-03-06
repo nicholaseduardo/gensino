@@ -9,8 +9,16 @@ import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.PeriodoLetivoId;
 import ensino.configuracoes.model.Calendario;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -18,82 +26,62 @@ import javax.persistence.TypedQuery;
  */
 public class PeriodoLetivoDaoSQL extends AbstractDaoSQL<PeriodoLetivo> {
 
-    public PeriodoLetivoDaoSQL() {
-        super();
+    public PeriodoLetivoDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(PeriodoLetivo o) {
-        if (o.getId().getNumero()== null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<PeriodoLetivo> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<PeriodoLetivo> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<PeriodoLetivo> list(String criteria, Object ref) {
-        String sql = 
-                "SELECT pl "
-                + "FROM PeriodoLetivo pl ";
-
-        if (!"".equals(criteria)) {
-            sql += "WHERE pl.id.numero > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY pl.id.calendario.id.campus.nome, "
-                + "pl.id.calendario.id.ano, "
-                + "pl.id.numero ";
-
-        TypedQuery query = entityManager.createQuery(sql, PeriodoLetivo.class);
-        return query.getResultList();
+    public List<PeriodoLetivo> findAll() {
+        return this.findBy(null);
     }
 
     @Override
     public PeriodoLetivo findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return em.find(PeriodoLetivo.class, id);
+    }
+
+    public List<PeriodoLetivo> findBy(Calendario calendario) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(PeriodoLetivo.class);
+
+        Root<PeriodoLetivo> root = query.from(PeriodoLetivo.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (calendario != null) {
+            Predicate p = builder.equal(root.get("id").get("calendario"), calendario);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<PeriodoLetivo> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public PeriodoLetivo findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(PeriodoLetivo o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setNumero(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oNumero = ids[0];
-        if (!(oNumero instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oCalendario = ids[1];
-        if (!(oCalendario instanceof Calendario)) {
-            System.err.println("Segundo atributo deve ser Calendario");
-            return null;
-        }
-        return entityManager.find(PeriodoLetivo.class,
-                new PeriodoLetivoId((Integer) oNumero, (Calendario) oCalendario));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(PeriodoLetivo object) {
+        PeriodoLetivoId composedId = object.getId();
+        String sql = "select max(pe.id.numero) from PeriodoLetivo pe where pe.id.calendario = :pCalendario ";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pCalendario", composedId.getCalendario());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
+        }
+        return maxNumero + 1;
     }
 
 }

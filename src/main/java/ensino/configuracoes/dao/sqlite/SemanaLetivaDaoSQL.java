@@ -5,12 +5,20 @@
  */
 package ensino.configuracoes.dao.sqlite;
 
+import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.configuracoes.model.SemanaLetiva;
 import ensino.configuracoes.model.SemanaLetivaId;
-import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -18,83 +26,62 @@ import javax.persistence.TypedQuery;
  */
 public class SemanaLetivaDaoSQL extends AbstractDaoSQL<SemanaLetiva> {
 
-    public SemanaLetivaDaoSQL() {
-        super();
+    public SemanaLetivaDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(SemanaLetiva o) {
-        if (o.getId().getId()== null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<SemanaLetiva> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<SemanaLetiva> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<SemanaLetiva> list(String criteria, Object ref) {
-        String sql = 
-                "SELECT sl "
-                + "FROM SemanaLetiva sl ";
-
-        if (!"".equals(criteria)) {
-            sql += "WHERE sl.id.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY sl.id.periodoLetivo.id.calendario.id.campus.nome, "
-                + "sl.id.periodoLetivo.id.calendario.id.ano, "
-                + "sl.id.periodoLetivo.id.numero, "
-                + "sl.id.id ";
-
-        TypedQuery query = entityManager.createQuery(sql, SemanaLetiva.class);
-        return query.getResultList();
+    public List<SemanaLetiva> findAll() {
+        return this.findBy(null);
     }
 
     @Override
     public SemanaLetiva findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return em.find(SemanaLetiva.class, id);
+    }
+
+    public List<SemanaLetiva> findBy(PeriodoLetivo periodoLetivo) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(SemanaLetiva.class);
+
+        Root<SemanaLetiva> root = query.from(SemanaLetiva.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (periodoLetivo != null) {
+            Predicate p = builder.equal(root.get("id").get("periodoLetivo"), periodoLetivo);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<SemanaLetiva> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public SemanaLetiva findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(SemanaLetiva o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oNumero = ids[0];
-        if (!(oNumero instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oPeriodoLetivo = ids[1];
-        if (!(oPeriodoLetivo instanceof PeriodoLetivo)) {
-            System.err.println("Segundo atributo deve ser PeriodoLetivo");
-            return null;
-        }
-        return entityManager.find(SemanaLetiva.class,
-                new SemanaLetivaId((Integer) oNumero, (PeriodoLetivo) oPeriodoLetivo));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(SemanaLetiva object) {
+        SemanaLetivaId composedId = object.getId();
+        String sql = "select max(sl.id.id) from SemanaLetiva sl where c.id.periodoLetivo = :pPeriodoLetivo ";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pPeriodoLetivo", composedId.getPeriodoLetivo());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
+        }
+        return maxNumero + 1;
     }
 
 }

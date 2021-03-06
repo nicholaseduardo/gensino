@@ -229,7 +229,7 @@ public class HorarioAulaPanel extends DefaultFieldsPanel {
                     HorarioAula horarioAula = new HorarioAula();
                     String sId = txtId.getText();
                     if (sId.matches("\\d")) {
-                        horarioAula.getId().setId(Integer.parseInt(sId));
+                        horarioAula.getId().setId(Long.parseLong(sId));
                     }
 
                     Calendar cal = Calendar.getInstance();

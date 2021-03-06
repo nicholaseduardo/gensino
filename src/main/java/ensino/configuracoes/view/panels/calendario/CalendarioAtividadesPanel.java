@@ -299,7 +299,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
         return map;
     }
 
-    private void setFieldValues(Integer id, String descricao, Periodo periodo,
+    private void setFieldValues(Long id, String descricao, Periodo periodo,
             Legenda legenda) {
         txtId.setText(id != null ? id.toString() : null);
         txtAtividade.setText(descricao);
@@ -412,7 +412,7 @@ public class CalendarioAtividadesPanel extends DefaultFieldsPanel {
                 int selectedRow = atividadeTable.getSelectedRow();
                 atividadeTableModel.updateRow(selectedRow, createAtividadeFromFields());
             } else if (source == btAdd && isValidated()) {
-                int id = 1;
+                Long id = 1L;
                 if (!atividadeTableModel.isEmpty()) {
                     /**
                      * Procedimento realizado para gerar a chave única de cada

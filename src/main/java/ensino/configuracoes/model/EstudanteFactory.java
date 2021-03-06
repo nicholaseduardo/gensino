@@ -13,9 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -42,7 +39,7 @@ public class EstudanteFactory implements BeanFactory<Estudante> {
         if (args[i] instanceof EstudanteId) {
             o.setId((EstudanteId) args[i++]);
         } else {
-            o.getId().setId((Integer) args[i++]);
+            o.getId().setId((Long) args[i++]);
         }
         o.setNome((String) args[i++]);
         o.setRegistro((String) args[i++]);
@@ -50,16 +47,6 @@ public class EstudanteFactory implements BeanFactory<Estudante> {
         o.setIngresso((Date) args[i++]);
         return o;
     }
-
-    @Override
-    public Estudante getObject(Element e) {
-        return createObject(
-                Integer.valueOf(e.getAttribute("id")),
-                e.getAttribute("nome"),
-                e.getAttribute("registro")
-        );
-    }
-
     @Override
     public Estudante getObject(HashMap<String, Object> p) {
         try {
@@ -67,7 +54,7 @@ public class EstudanteFactory implements BeanFactory<Estudante> {
                     sId = (String) p.get("id");
 
             Estudante o = createObject(
-                    new EstudanteId(sId.matches("\\d+") ? Integer.parseInt(sId) : null,
+                    new EstudanteId(sId.matches("\\d+") ? Long.parseLong(sId) : null,
                             (Turma) p.get("turma")),
                     p.get("nome"),
                     p.get("registro"),
@@ -80,17 +67,5 @@ public class EstudanteFactory implements BeanFactory<Estudante> {
         }
         return null;
     }
-
-    @Override
-    public Node toXml(Document doc, Estudante o) {
-        Element e = (Element) doc.createElement("estudante");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("turmaId", o.getId().getTurma().getId().getId().toString());
-        e.setAttribute("cursoId", o.getId().getTurma().getId().getCurso().getId().getId().toString());
-        e.setAttribute("campusId", o.getId().getTurma().getId().getCurso().getId().getCampus().getId().toString());
-        e.setAttribute("nome", o.getNome());
-        e.setAttribute("registro", o.getRegistro());
-        return e;
-    }
-
+    
 }

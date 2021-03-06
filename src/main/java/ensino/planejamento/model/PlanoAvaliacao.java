@@ -132,6 +132,10 @@ public class PlanoAvaliacao implements Serializable {
         this.id = id;
     }
     
+    public Boolean hasId() {
+        return id.hasSequencia();
+    }
+    
     public PlanoDeEnsino getPlanoDeEnsino() {
         if (id != null)
             return id.getPlanoDeEnsino();

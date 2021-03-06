@@ -7,9 +7,6 @@ package ensino.configuracoes.model;
 
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -50,7 +47,7 @@ public class ConteudoFactory implements BeanFactory<Conteudo> {
         if (args[i] instanceof ConteudoId) {
             o.setId((ConteudoId) args[i++]);
         } else {
-            o.getId().setId((Integer) args[i++]);
+            o.getId().setId((Long) args[i++]);
         }
         o.setSequencia((Integer) args[i++]);
         o.setDescricao((String) args[i++]);
@@ -60,26 +57,15 @@ public class ConteudoFactory implements BeanFactory<Conteudo> {
     }
 
     @Override
-    public Conteudo getObject(Element e) {
-        return null;
-    }
-
-    @Override
     public Conteudo getObject(HashMap<String, Object> p) {
         Conteudo o = createObject(
-                new ConteudoId((Integer) p.get("id"),
+                new ConteudoId((Long) p.get("id"),
                         (UnidadeCurricular) p.get("unidadeCurricular")),
                 (Integer)p.get("sequencia"),
                 (String)p.get("descricao"),
                 (Conteudo)p.get("conteudoParent"),
                 (Integer)p.get("nivel"));
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, Conteudo o) {
-        Element e = doc.createElement("conteudo");
-        return e;
     }
 
 }

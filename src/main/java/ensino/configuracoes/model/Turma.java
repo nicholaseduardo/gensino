@@ -43,6 +43,10 @@ public class Turma implements Serializable {
     public void setId(TurmaId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasId();
+    }
 
     public String getNome() {
         return nome;

@@ -8,9 +8,6 @@ package ensino.configuracoes.model;
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
 import java.util.List;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -37,19 +34,11 @@ public class TurmaFactory implements BeanFactory<Turma> {
         if (args[i] instanceof TurmaId) {
             o.setId((TurmaId) args[i++]);
         } else {
-            o.getId().setId((Integer) args[i++]);
+            o.getId().setId((Long) args[i++]);
         }
         o.setNome((String) args[i++]);
         o.setAno((Integer) args[i++]);
         return o;
-    }
-
-    @Override
-    public Turma getObject(Element e) {
-        return createObject(
-                Integer.valueOf(e.getAttribute("id")),
-                e.getAttribute("nome"),
-                Integer.valueOf(e.getAttribute("ano")));
     }
 
     public Turma updateObject(Turma o, HashMap<String, Object> p) {
@@ -67,7 +56,7 @@ public class TurmaFactory implements BeanFactory<Turma> {
     @Override
     public Turma getObject(HashMap<String, Object> p) {
         Turma o = createObject(
-                new TurmaId((Integer) p.get("id"), (Curso) p.get("curso")),
+                new TurmaId((Long) p.get("id"), (Curso) p.get("curso")),
                 (String) p.get("nome"),
                 (Integer) p.get("ano")
         );
@@ -78,18 +67,6 @@ public class TurmaFactory implements BeanFactory<Turma> {
             });
         }
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, Turma o) {
-        Element e = (Element) doc.createElement("turma");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("cursoId", o.getId().getCurso().getId().getId().toString());
-        e.setAttribute("campusId", o.getId().getCurso().getId().getCampus().getId().toString());
-        e.setAttribute("nome", o.getNome());
-        e.setAttribute("ano", o.getAno().toString());
-
-        return e;
     }
 
 }

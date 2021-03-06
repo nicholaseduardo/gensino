@@ -25,7 +25,7 @@ public class HorarioAulaId implements Serializable {
      * horário da aula.
      */
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     
     /**
      * Atributo utilizado para identificar em qual plano
@@ -38,17 +38,21 @@ public class HorarioAulaId implements Serializable {
     public HorarioAulaId() {
     }
 
-    public HorarioAulaId(Integer id, PlanoDeEnsino planoDeEnsino) {
+    public HorarioAulaId(Long id, PlanoDeEnsino planoDeEnsino) {
         this.id = id;
         this.planoDeEnsino = planoDeEnsino;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+    
+    public Boolean hasId() {
+        return id != null && id > 0;
     }
 
     public PlanoDeEnsino getPlanoDeEnsino() {

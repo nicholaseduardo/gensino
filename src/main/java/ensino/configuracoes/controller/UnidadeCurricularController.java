@@ -5,16 +5,14 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
+import ensino.configuracoes.dao.sqlite.UnidadeCurricularDaoSQL;
 import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.UnidadeCurricularFactory;
+import ensino.configuracoes.model.UnidadeCurricularId;
 import ensino.patterns.AbstractController;
-import ensino.patterns.DaoPattern;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -26,11 +24,7 @@ public class UnidadeCurricularController extends AbstractController<UnidadeCurri
     public UnidadeCurricularController() throws Exception {
         super(DaoFactory.createUnidadeCurricularDao(), UnidadeCurricularFactory.getInstance());
     }
-
-    public UnidadeCurricularController(URL url) throws Exception {
-        super(new UnidadeCurricularDaoXML(url), UnidadeCurricularFactory.getInstance());
-    }
-
+    
     /**
      * Buscar por id da unidade curricular
      *
@@ -39,9 +33,8 @@ public class UnidadeCurricularController extends AbstractController<UnidadeCurri
      * vinculada
      * @return
      */
-    public UnidadeCurricular buscarPor(Integer id, Curso curso) {
-        DaoPattern<UnidadeCurricular> dao = super.getDao();
-        return dao.findById(id, curso);
+    public UnidadeCurricular buscarPor(Long id, Curso curso) {
+        return this.dao.findById(new UnidadeCurricularId(id, curso));
     }
 
     /**
@@ -51,47 +44,12 @@ public class UnidadeCurricularController extends AbstractController<UnidadeCurri
      * @return
      */
     public List<UnidadeCurricular> listar(Curso curso) {
-        String filter = "";
-        Integer id = null,
-                campusId = ControllerFactory.getCampusVigente().getId();
-
-        if (curso != null) {
-            id = curso.getId().getId();
-            campusId = curso.getId().getCampus().getId();
-        }
-
-        if (DaoFactory.isXML()) {
-            filter = String.format("//UnidadeCurricular/unidadeCurricular[@cursoId=%d and @campusId=%d]",
-                    curso.getId().getId(), curso.getId().getCampus().getId());
-        } else {
-            filter = String.format(" AND u.id.curso.id.campus.id = %d ", campusId);
-            if (id != null) {
-                filter += String.format(" AND u.id.curso.id.id = %d ", id);
-            }
-        }
-
-        return super.getDao().list(filter, curso);
+        return this.listar(curso, null);
     }
 
     public List<UnidadeCurricular> listar(Curso curso, String nome) {
-        String filter = "";
-        Integer id = null,
-                campusId = ControllerFactory.getCampusVigente().getId();
-
-        if (curso != null) {
-            id = curso.getId().getId();
-            campusId = curso.getId().getCampus().getId();
-            
-            filter += String.format(" AND u.id.curso.id.id = %d ", id);
-        }
-        
-        filter += String.format(" AND u.id.curso.id.campus.id = %d ", campusId);
-
-        if (nome != null && !"".equals(nome)) {
-            filter += " AND UPPER(u.nome) LIKE UPPER('%"+ nome +"%') ";
-        }
-
-        return super.getDao().list(filter, curso);
+        UnidadeCurricularDaoSQL d = (UnidadeCurricularDaoSQL) this.dao;
+        return d.findBy(curso, nome, null);
     }
 
     /**
@@ -101,16 +59,8 @@ public class UnidadeCurricularController extends AbstractController<UnidadeCurri
      * @return
      */
     public List<UnidadeCurricular> listar(Campus campus) {
-        String filter = "";
-        Integer id = campus.getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//UnidadeCurricular/unidadeCurricular[@campusId=%d]",
-                    id);
-        } else {
-            filter = String.format(" AND u.id.curso.id.campus.id = %d ", id);
-        }
-
-        return super.getDao().list(filter);
+        UnidadeCurricularDaoSQL d = (UnidadeCurricularDaoSQL) this.dao;
+        return d.findBy(null, null, campus);
     }
 
     @Override

@@ -9,9 +9,6 @@ import ensino.patterns.factory.BeanFactory;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.util.HashMap;
 import java.util.List;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -38,7 +35,7 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
         if (args[i] instanceof UnidadeCurricularId) {
             o.setId((UnidadeCurricularId) args[i++]);
         } else {
-            o.getId().setId((Integer) args[i++]);
+            o.getId().setId((Long) args[i++]);
         }
         o.setNome((String) args[i++]);
         o.setnAulasTeoricas((Integer) args[i++]);
@@ -46,18 +43,6 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
         o.setCargaHoraria((Integer) args[i++]);
         o.setEmenta((String) args[i++]);
         return o;
-    }
-
-    @Override
-    public UnidadeCurricular getObject(Element e) {
-        return createObject(
-                Integer.parseInt(e.getAttribute("id")),
-                e.getAttribute("nome"),
-                Integer.parseInt(e.getAttribute("nAulasTeoricas")),
-                Integer.parseInt(e.getAttribute("nAulasPraticas")),
-                Integer.parseInt(e.getAttribute("cargaHoraria")),
-                e.getAttribute("ementa")
-        );
     }
 
     public UnidadeCurricular updateObject(UnidadeCurricular o, HashMap<String, Object> p) {
@@ -96,7 +81,7 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
     @Override
     public UnidadeCurricular getObject(HashMap<String, Object> p) {
         UnidadeCurricular o = createObject(
-                new UnidadeCurricularId((Integer) p.get("id"), (Curso) p.get("curso")),
+                new UnidadeCurricularId((Long) p.get("id"), (Curso) p.get("curso")),
                 p.get("nome"),
                 p.get("nAulasTeoricas"),
                 p.get("nAulasPraticas"),
@@ -128,20 +113,6 @@ public class UnidadeCurricularFactory implements BeanFactory<UnidadeCurricular> 
             });
         }
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, UnidadeCurricular o) {
-        Element e = (Element) doc.createElement("unidadeCurricular");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("cursoId", o.getId().getCurso().getId().getId().toString());
-        e.setAttribute("campusId", o.getId().getCurso().getId().getCampus().getId().toString());
-        e.setAttribute("nome", o.getNome());
-        e.setAttribute("nAulasTeoricas", o.getnAulasTeoricas().toString());
-        e.setAttribute("nAulasPraticas", o.getnAulasPraticas().toString());
-        e.setAttribute("cargaHoraria", o.getCargaHoraria().toString());
-        e.setAttribute("ementa", o.getEmenta());
-        return e;
     }
 
 }

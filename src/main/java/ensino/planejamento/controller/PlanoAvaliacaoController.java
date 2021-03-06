@@ -9,6 +9,7 @@ import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
+import ensino.planejamento.dao.PlanoAvaliacaoDaoSQL;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoAvaliacaoFactory;
 import ensino.planejamento.model.PlanoDeEnsino;
@@ -31,21 +32,7 @@ public class PlanoAvaliacaoController extends AbstractController<PlanoAvaliacao>
     public List<PlanoAvaliacao> listar(PlanoDeEnsino o, 
             EtapaEnsino ee,
             InstrumentoAvaliacao ia) {
-        String filter = "";
-        Integer id = o.getId();
-        filter = String.format(" AND p.id.planoDeEnsino.id = %d ", id);
-        
-        if (ee != null) {
-            filter += String.format(" AND p.etapaEnsino.id.nivelEnsino.id = %d "
-                    + " AND p.etapaEnsino.id.id = %d ", 
-                    ee.getNivelEnsino().getId(), ee.getId().getId());
-        }
-        
-        if (ia != null) {
-            filter += String.format(" AND p.instrumentoAvaliacao.id = %d ", 
-                    ia.getId());
-        }
-
-        return super.getDao().list(filter, o);
+        PlanoAvaliacaoDaoSQL d = (PlanoAvaliacaoDaoSQL) this.dao;
+        return d.findBy(o, ee, ia);
     }
 }

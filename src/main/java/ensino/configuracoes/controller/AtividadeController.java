@@ -5,13 +5,13 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.AtividadeDaoXML;
+import ensino.configuracoes.dao.sqlite.AtividadeDaoSQL;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeFactory;
+import ensino.configuracoes.model.AtividadeId;
 import ensino.configuracoes.model.Calendario;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -24,10 +24,6 @@ public class AtividadeController extends AbstractController<Atividade> {
         super(DaoFactory.createAtividadeDao(), AtividadeFactory.getInstance());
     }
 
-    public AtividadeController(URL url) throws Exception {
-        super(new AtividadeDaoXML(url), AtividadeFactory.getInstance());
-    }
-
     /**
      * Buscar por id da atividade
      *
@@ -36,8 +32,8 @@ public class AtividadeController extends AbstractController<Atividade> {
      * <code>Calendario</code>
      * @return
      */
-    public Atividade buscarPor(Integer id, Calendario calendario) {
-        return super.getDao().findById(id, calendario);
+    public Atividade buscarPor(Long id, Calendario calendario) {
+        return this.dao.findById(new AtividadeId(id, calendario));
     }
 
     /**
@@ -47,16 +43,8 @@ public class AtividadeController extends AbstractController<Atividade> {
      * @return
      */
     public List<Atividade> listar(Calendario o) {
-        String filter = "";
-        Integer ano = o.getId().getAno(), 
-                campusId = o.getId().getCampus().getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//Atividade/atividade[@ano=%d and @campusId=%d]",
-                    ano, campusId);
-        } else {
-            filter = String.format(" AND at.id.calendario.id.ano = %d "
-                    + "AND at.id.calendario.id.campus.id = %d ", ano, campusId);
-        }
-        return super.getDao().list(filter, o);
+        AtividadeDaoSQL d = (AtividadeDaoSQL) this.dao;
+        return d.findBy(o);
     }
+    
 }

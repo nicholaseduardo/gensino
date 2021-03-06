@@ -7,8 +7,15 @@ package ensino.configuracoes.dao.sqlite;
 
 import ensino.configuracoes.model.Bibliografia;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -16,72 +23,50 @@ import javax.persistence.TypedQuery;
  */
 public class BibliografiaDaoSQL extends AbstractDaoSQL<Bibliografia> {
 
-    private static BibliografiaDaoSQL instance = null;
-
-    private BibliografiaDaoSQL() {
-        super();
-    }
-
-    public static BibliografiaDaoSQL getInstance() {
-        if (instance == null) {
-            instance = new BibliografiaDaoSQL();
-        }
-        return instance;
+    public BibliografiaDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Bibliografia o) {
-        if (o.getId() == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<Bibliografia> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Bibliografia> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Bibliografia> list(String criteria, Object ref) {
-        String sql = "SELECT b FROM Bibliografia b ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE b.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY b.titulo ";
-
-        TypedQuery query = entityManager.createQuery(sql, Bibliografia.class);
-        return query.getResultList();
+    public List<Bibliografia> findAll() {
+        return findBy(null, null);
     }
 
     @Override
     public Bibliografia findById(Object id) {
-        return entityManager.find(Bibliografia.class, id);
+        return em.find(Bibliografia.class, id);
     }
 
-    @Override
-    public Bibliografia findById(Object... ids) {
-        return this.findById(ids[0]);
-    }
+    public List<Bibliografia> findBy(String titulo, String autor) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Bibliografia.class);
 
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        Root<Bibliografia> root = query.from(Bibliografia.class);
 
+        List<Predicate> predicates = new ArrayList();
+
+        if (titulo != null && !"".equals(titulo)) {
+            Predicate p = builder.like(root.get("titulo"), "%"+titulo+"%");
+            predicates.add(p);
+        }
+
+        if (autor != null && !"".equals(autor)) {
+            Predicate p = builder.like(root.get("autor"), "%"+autor+"%");
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<Bibliografia> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
+    }
+    
     @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void save(Bibliografia o) throws SQLException {
+        if (!o.hasId()) {
+            super.save(o);
+        } else {
+            super.update(o);
+        }
     }
 
 }

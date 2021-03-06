@@ -26,7 +26,7 @@ public class AtendimentoEstudanteId implements Serializable {
      * de atendimento aos estudantes
      */
     @Column(name = "sequencia")
-    private Integer sequencia;
+    private Long sequencia;
     /**
      * Atributo utilizado para identificar de qual permanência
      * é o atendimento
@@ -53,18 +53,22 @@ public class AtendimentoEstudanteId implements Serializable {
     public AtendimentoEstudanteId() {
     }
 
-    public AtendimentoEstudanteId(Integer id, PermanenciaEstudantil permanenciaEstudantil, Estudante estudante) {
+    public AtendimentoEstudanteId(Long id, PermanenciaEstudantil permanenciaEstudantil, Estudante estudante) {
         this.sequencia = id;
         this.permanenciaEstudantil = permanenciaEstudantil;
         this.estudante = estudante;
     }
 
-    public Integer getSequencia() {
+    public Long getSequencia() {
         return sequencia;
     }
 
-    public void setSequencia(Integer sequencia) {
+    public void setSequencia(Long sequencia) {
         this.sequencia = sequencia;
+    }
+    
+    public Boolean hasSequencia() {
+        return sequencia != null && sequencia > 0;
     }
 
     public PermanenciaEstudantil getPermanenciaEstudantil() {

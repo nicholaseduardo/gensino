@@ -5,6 +5,7 @@
  */
 package ensino.patterns;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -13,18 +14,17 @@ import java.util.List;
  * @param <T>
  */
 public interface DaoPattern<T> {
-    void save(T o);
-    void delete(T o);
-    List<T> list();
-    List<T> list(Object ref);
-    List<T> list(String criteria, Object ref);
+    void save(T object) throws SQLException;
+    void save(T object, Boolean commit) throws SQLException;
+    void update(T object) throws SQLException;
+    void delete(T object) throws SQLException;
+    void delete(T object, Boolean commit) throws SQLException;
+    void begin() throws SQLException;
+    void commit() throws SQLException;
+    void rollback() throws SQLException;
+    List<T> findAll();
     T findById(Object id);
-    T findById(Object ...ids);
-    boolean isTranscationActive();
-    void startTransaction();
-    void commit() throws Exception;
-    void rollback();
     void close();
-    Integer nextVal();
-    Integer nextVal(Object ...params);
+    Long nextVal();
+    Long nextVal(T composedId);
 }

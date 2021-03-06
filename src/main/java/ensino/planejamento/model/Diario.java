@@ -100,6 +100,10 @@ public class Diario implements Serializable {
     public void setId(DiarioId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasId();
+    }
 
     public PlanoDeEnsino getPlanoDeEnsino() {
         return id.getPlanoDeEnsino();
@@ -217,7 +221,7 @@ public class Diario implements Serializable {
     }
 
     public void criarFrequencia(List<Estudante> estudantes) {
-        int seqId = 1;
+        Long seqId = 1L;
         for (int i = 0; i < estudantes.size(); i++) {
             Estudante estudante = estudantes.get(i);
 

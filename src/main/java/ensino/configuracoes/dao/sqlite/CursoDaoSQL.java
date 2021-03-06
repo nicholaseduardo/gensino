@@ -9,102 +9,84 @@ import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.CursoId;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
  * @author santos
  */
 public class CursoDaoSQL extends AbstractDaoSQL<Curso> {
-
-    public CursoDaoSQL() {
-        super();
+    
+    public CursoDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Curso o) {
-        if (o.getId().getId() == null) {
-            o.getId().setId(nextVal(o));
-        }
-        
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public void delete(Curso o) {
-        entityManager.remove(entityManager.getReference(Curso.class, o.getId()));
-    }
-
-    @Override
-    public List<Curso> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Curso> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Curso> list(String criteria, Object ref) {
-        String sql = "SELECT c FROM Curso c ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE c.id.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY c.id.campus.nome, c.nome ";
-
-        TypedQuery query = entityManager.createQuery(sql, Curso.class);
-        return query.getResultList();
+    public List<Curso> findAll() {
+        return this.findBy(null, null);
     }
 
     @Override
     public Curso findById(Object id) {
-        return entityManager.find(Curso.class, id);
+        return em.find(Curso.class, id);
+    }
+
+    public List<Curso> findBy(Campus campus, String nomeCurso) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Curso.class);
+
+        Root<Curso> root = query.from(Curso.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (nomeCurso != null && !"".equals(nomeCurso)) {
+            Predicate p = builder.equal(root.get("nome"), nomeCurso);
+            predicates.add(p);
+        }
+
+        if (campus != null) {
+            Predicate p = builder.equal(root.get("id").get("campus"), campus);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<Curso> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public Curso findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(Curso o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oAno = ids[0];
-        if (!(oAno instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oCampus = ids[1];
-        if (!(oCampus instanceof Campus)) {
-            System.err.println("Segundo atributo deve ser Campus");
-            return null;
-        }
-        return entityManager.find(Curso.class,
-                new CursoId((Integer) oAno, (Campus) oCampus));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(Curso object) {
+        CursoId composedId = object.getId();
+        String sql = "select max(c.id.id) from Curso c where c.id.campus = :pCampus ";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        Curso o = (Curso) params[0];
-        int id = 1;
-        List<Curso> l = o.getId().getCampus().getCursos();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getId() + 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pCampus", composedId.getCampus());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
 
 }

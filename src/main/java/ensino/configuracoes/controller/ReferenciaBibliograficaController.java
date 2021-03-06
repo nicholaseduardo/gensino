@@ -5,14 +5,14 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDaoXML;
+import ensino.configuracoes.dao.sqlite.ReferenciaBibliograficaDaoSQL;
+import ensino.configuracoes.model.Bibliografia;
 import ensino.configuracoes.model.ReferenciaBibliografica;
 import ensino.configuracoes.model.ReferenciaBibliograficaFactory;
+import ensino.configuracoes.model.ReferenciaBibliograficaId;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.patterns.AbstractController;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -25,21 +25,16 @@ public class ReferenciaBibliograficaController extends AbstractController<Refere
         super(DaoFactory.createReferenciaBibliograficaDao(), ReferenciaBibliograficaFactory.getInstance());
     }
     
-    public ReferenciaBibliograficaController(URL url) throws Exception {
-        super(new ReferenciaBibliograficaDaoXML(url), ReferenciaBibliograficaFactory.getInstance());
-    }
-    
     /**
      * Buscar por id da atividade
      * @param sequencia     Sequencia da Referencia Bibliografica
-     * @param unidadeId     Identificação da unidade curricular
-     * @param cursoId       Identificação do curso ao qual a unidade curricular está vinculada
-     * @param campusId      Identificação do campos ao qual pertence o curso
+     * @param unidadeCurricular     Identificação da unidade curricular
+     * @param bibliografia          Bibliografia de referência
      * @return 
      */
-    public ReferenciaBibliografica buscarPor(Integer sequencia, Integer unidadeId, Integer cursoId, Integer campusId) {
-        DaoPattern<ReferenciaBibliografica> dao = super.getDao();
-        return dao.findById(sequencia, unidadeId, cursoId, campusId);
+    public ReferenciaBibliografica buscarPor(Long sequencia, 
+            UnidadeCurricular unidadeCurricular, Bibliografia bibliografia) {
+        return dao.findById(new ReferenciaBibliograficaId(sequencia, unidadeCurricular, bibliografia));
     }
     
     public List<ReferenciaBibliografica> listar(UnidadeCurricular o) {
@@ -47,25 +42,7 @@ public class ReferenciaBibliograficaController extends AbstractController<Refere
     }
     
     public List<ReferenciaBibliografica> listar(UnidadeCurricular o, Integer tipoReferencia) {
-        String filter = "";
-        if (DaoFactory.isXML()) {
-            filter = String.format("//ReferenciaBibliografica/referenciaBibliografica["
-                + "@unidadeCurricularId=%d and @cursoId=%d and @campusId=%d]",
-                o.getId().getId(), 
-                o.getId().getCurso().getId(),
-                o.getId().getCurso().getId().getCampus().getId());
-        } else {
-            filter = String.format(" AND rb.id.unidadeCurricular.id.id = %d "
-                    + " AND rb.id.unidadeCurricular.id.curso.id.id = %d "
-                    + " AND rb.id.unidadeCurricular.id.curso.id.campus.id = %d ", 
-                    o.getId().getId(),
-                    o.getId().getCurso().getId().getId(),
-                    o.getId().getCurso().getId().getCampus().getId());
-            if (tipoReferencia != null && tipoReferencia > -1) {
-                filter += String.format(" AND rb.tipo = %d ", tipoReferencia);
-            }
-        }
-        
-        return super.getDao().list(filter, o);
+        ReferenciaBibliograficaDaoSQL d = (ReferenciaBibliograficaDaoSQL) this.dao;
+        return d.findBy(o, tipoReferencia);
     }
 }

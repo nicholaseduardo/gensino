@@ -53,6 +53,10 @@ public class AtendimentoEstudante implements Serializable {
     public void setId(AtendimentoEstudanteId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasSequencia();
+    }
 
     public Presenca getPresenca() {
         return presenca;

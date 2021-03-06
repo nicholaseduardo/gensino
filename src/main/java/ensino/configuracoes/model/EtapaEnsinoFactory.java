@@ -7,9 +7,6 @@ package ensino.configuracoes.model;
 
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -36,7 +33,7 @@ public class EtapaEnsinoFactory implements BeanFactory<EtapaEnsino> {
         if (args[i] instanceof EtapaEnsinoId) {
             o.setId((EtapaEnsinoId) args[i++]);
         } else {
-            o.getId().setId((Integer) args[i++]);
+            o.getId().setId((Long) args[i++]);
         }
         o.setNome((String) args[i++]);
         o.setRecuperacao((Boolean) args[i++]);
@@ -45,12 +42,6 @@ public class EtapaEnsinoFactory implements BeanFactory<EtapaEnsino> {
         }
 
         return o;
-    }
-
-    @Override
-    public EtapaEnsino getObject(Element e) {
-        return createObject(Integer.parseInt(e.getAttribute("id")),
-                e.getAttribute("nome"));
     }
 
     public EtapaEnsino updateObject(EtapaEnsino o, HashMap<String, Object> p) {
@@ -69,13 +60,5 @@ public class EtapaEnsinoFactory implements BeanFactory<EtapaEnsino> {
                 p.get("recuperacao"),
                 p.get("nivelDependente"));
     }
-
-    @Override
-    public Node toXml(Document doc, EtapaEnsino o) {
-        Element e = doc.createElement("tecnica");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("nome", o.getNome());
-        return e;
-    }
-
+    
 }

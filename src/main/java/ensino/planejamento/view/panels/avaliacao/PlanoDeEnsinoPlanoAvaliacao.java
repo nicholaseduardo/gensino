@@ -188,7 +188,7 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
             showWarningMessage("Já existem avalições lançadas. Essa operação lançará novas avaliações "
                     + "no final da lista.");
         }
-        Integer sequencia = 1;
+        Long sequencia = 1L;
 
         for (Detalhamento detalhe : listaDetalhamento) {
             // para cada detalhe, verifica-se os métodos vinculados

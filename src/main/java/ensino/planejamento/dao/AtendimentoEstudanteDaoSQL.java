@@ -5,13 +5,20 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.Estudante;
 import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.AtendimentoEstudante;
 import ensino.planejamento.model.AtendimentoEstudanteId;
 import ensino.planejamento.model.PermanenciaEstudantil;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -19,112 +26,65 @@ import javax.persistence.TypedQuery;
  */
 public class AtendimentoEstudanteDaoSQL extends AbstractDaoSQL<AtendimentoEstudante> {
 
-    public AtendimentoEstudanteDaoSQL() {
-        super();
+    public AtendimentoEstudanteDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(AtendimentoEstudante o) {
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public void delete(AtendimentoEstudante o) {
-        entityManager.remove(entityManager.getReference(AtendimentoEstudante.class, o.getId()));
-    }
-
-    @Override
-    public List<AtendimentoEstudante> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<AtendimentoEstudante> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<AtendimentoEstudante> list(String criteria, Object ref) {
-        String sql = "SELECT ae FROM AtendimentoEstudante ae ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE ae.id.estudante.id.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY ae.id.estudante.nome ";
-
-        TypedQuery query = entityManager.createQuery(sql, AtendimentoEstudante.class);
-        return query.getResultList();
+    public List<AtendimentoEstudante> findAll() {
+        return findBy(null);
     }
 
     @Override
     public AtendimentoEstudante findById(Object id) {
-        return entityManager.find(AtendimentoEstudante.class, id);
+        return em.find(AtendimentoEstudante.class, id);
+    }
+
+    public List<AtendimentoEstudante> findBy(PermanenciaEstudantil permanenciaEstudantil) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(AtendimentoEstudante.class);
+
+        Root<AtendimentoEstudante> root = query.from(AtendimentoEstudante.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (permanenciaEstudantil != null) {
+            Predicate p = builder.equal(root.get("id").get("permanenciaEstudantil"), permanenciaEstudantil);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<AtendimentoEstudante> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public AtendimentoEstudante findById(Object... ids) {
-        if (ids.length != 3) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(AtendimentoEstudante o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setSequencia(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object id = ids[0];
-        if (!(id instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oPermanenciaEstudantil = ids[1];
-        if (!(oPermanenciaEstudantil instanceof PermanenciaEstudantil)) {
-            System.err.println("Segundo atributo deve ser PermanenciaEstudantil");
-            return null;
-        }
-        Object oEstudante = ids[2];
-        if (!(oEstudante instanceof Estudante)) {
-            System.err.println("Terceiro atributo deve ser Estudante");
-            return null;
-        }
-        return this.findById(AtendimentoEstudante.class,
-                new AtendimentoEstudanteId((Integer) id, (PermanenciaEstudantil) oPermanenciaEstudantil, (Estudante) oEstudante));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(AtendimentoEstudante object) {
+        AtendimentoEstudanteId composedId = object.getId();
+        String sql = "select max(a.id.sequencia) from AtendimentoEstudante a"
+                + " where a.id.permanenciaEstudantil = :pPermanenciaEstudantil " +
+                  "   and a.id.estudante = :pEstudante ";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        AtendimentoEstudante o = (AtendimentoEstudante) params[0];
-        int id = 1;
-        List<AtendimentoEstudante> l = o.getId().getPermanenciaEstudantil().getAtendimentos();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getSequencia() + 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pPermanenciaEstudantil", composedId.getPermanenciaEstudantil());
+        query.setParameter("pEstudante", composedId.getEstudante());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
-
-//    public static void main(String args[]) {
-//        AtendimentoEstudanteDaoSQL dao = new AtendimentoEstudanteDaoSQL();
-//        List<AtendimentoEstudante> l = dao.list();
-//
-//        for (AtendimentoEstudante pe : l) {
-//
-//            System.out.println(pe);
-////            try {
-////                dao.startTransaction();
-////                dao.delete(pe);
-////                dao.commit();
-////            } catch (SQLException ex) { 
-////                dao.rollback();
-////                Logger.getLogger(AtendimentoEstudanteDaoSQL.class.getName()).log(Level.SEVERE, null, ex);
-////            }
-//        }
-//    }
 
 }

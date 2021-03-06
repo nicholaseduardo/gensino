@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
+import ensino.configuracoes.dao.sqlite.ObjetivoUCConteudoDaoSQL;
 import ensino.configuracoes.model.Conteudo;
 import ensino.configuracoes.model.ObjetivoUC;
 import ensino.configuracoes.model.ObjetivoUCConteudo;
@@ -24,22 +25,12 @@ public class ObjetivoUCConteudoController extends AbstractController<ObjetivoUCC
     }
     
     public List<ObjetivoUCConteudo> listar(ObjetivoUC o) {
-        String filter = "";
-        Integer id = o.getId().getSequencia();
-        if (!DaoFactory.isXML()) {
-            filter = String.format(" AND oc.id.objetivo.id.sequencia = %d ", id);
-        }
-        
-        return super.getDao().list(filter, o);
+        ObjetivoUCConteudoDaoSQL d = (ObjetivoUCConteudoDaoSQL) this.dao;
+        return d.findBy(o, null);
     }
     
     public List<ObjetivoUCConteudo> listar(Conteudo o) {
-        String filter = "";
-        Integer id = o.getId().getId();
-        if (!DaoFactory.isXML()) {
-            filter = String.format(" AND oc.id.conteudo.id.id = %d ", id);
-        }
-        
-        return super.getDao().list(filter, o);
+        ObjetivoUCConteudoDaoSQL d = (ObjetivoUCConteudoDaoSQL) this.dao;
+        return d.findBy(null, o);
     }
 }

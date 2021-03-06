@@ -37,6 +37,10 @@ public class ReferenciaBibliografica implements Serializable {
         this.id = id;
     }
     
+    public Boolean hasId() {
+        return id.hasSequencia();
+    }
+    
     public Bibliografia getBibliografia() {
         return id.getBibliografia();
     }

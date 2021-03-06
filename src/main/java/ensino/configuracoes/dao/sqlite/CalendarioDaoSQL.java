@@ -6,11 +6,16 @@
 package ensino.configuracoes.dao.sqlite;
 
 import ensino.configuracoes.model.Calendario;
-import ensino.configuracoes.model.CalendarioId;
 import ensino.configuracoes.model.Campus;
 import ensino.connection.AbstractDaoSQL;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -18,85 +23,36 @@ import javax.persistence.TypedQuery;
  */
 public class CalendarioDaoSQL extends AbstractDaoSQL<Calendario> {
 
-    public CalendarioDaoSQL() {
-        super();
-    }
-
-    private boolean exists(Calendario o) {
-        Calendario c =  findById(o.getId());
-        return c != null;
+    public CalendarioDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Calendario o) {
-        if (!exists(o)) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<Calendario> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Calendario> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Calendario> list(String criteria, Object ref) {
-        String sql = 
-                "SELECT cal "
-                + "FROM Calendario cal ";
-
-        if (!"".equals(criteria)) {
-            sql += "WHERE cal.id.ano > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY cal.id.campus.nome, cal.id.ano ";
-
-        TypedQuery query = entityManager.createQuery(sql, Calendario.class);
-        return query.getResultList();
+    public List<Calendario> findAll() {
+        return findBy(null);
     }
 
     @Override
     public Calendario findById(Object id) {
-        return entityManager.find(Calendario.class, id);
+        return em.find(Calendario.class, id);
     }
 
-    @Override
-    public Calendario findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
-        }
-        Object oAno = ids[0];
-        if (!(oAno instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oCampus = ids[1];
-        if (!(oCampus instanceof Campus)) {
-            System.err.println("Segundo atributo deve ser Campus");
-            return null;
-        }
-        CalendarioId pk = new CalendarioId((Integer) oAno, (Campus) oCampus);
-        return entityManager.find(Calendario.class, pk);
-    }
+    public List<Calendario> findBy(Campus campus) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Calendario.class);
 
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        Root<Calendario> root = query.from(Calendario.class);
 
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Predicate> predicates = new ArrayList();
+
+        if (campus != null) {
+            Predicate p = builder.equal(root.get("id").get("campus"), campus);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<Calendario> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
 }

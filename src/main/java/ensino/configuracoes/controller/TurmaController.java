@@ -5,14 +5,13 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.TurmaDaoXML;
+import ensino.configuracoes.dao.sqlite.TurmaDaoSQL;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.TurmaFactory;
+import ensino.configuracoes.model.TurmaId;
 import ensino.patterns.AbstractController;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -25,10 +24,6 @@ public class TurmaController extends AbstractController<Turma> {
         super(DaoFactory.createTurmaDao(), TurmaFactory.getInstance());
     }
 
-    public TurmaController(URL url) throws Exception {
-        super(new TurmaDaoXML(url), TurmaFactory.getInstance());
-    }
-
     /**
      * Buscar por id da turma
      *
@@ -37,9 +32,8 @@ public class TurmaController extends AbstractController<Turma> {
      * vinculada
      * @return
      */
-    public Turma buscarPor(Integer id, Curso curso) {
-        DaoPattern<Turma> turmaDao = super.getDao();
-        return turmaDao.findById(id, curso);
+    public Turma buscarPor(Long id, Curso curso) {
+        return this.dao.findById(new TurmaId(id, curso));
     }
 
     /**
@@ -49,25 +43,7 @@ public class TurmaController extends AbstractController<Turma> {
      * @return
      */
     public List<Turma> listar(Curso curso) {
-        String filter = "";
-        Integer id = curso.getId().getId(),
-                campusId = curso.getId().getCampus().getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//Turma/turma[@cursoId=%d and @campusId=%d]",
-                id, campusId);
-        } else {
-            filter = String.format(" AND t.id.curso.id.id = %d "
-                    + " AND t.id.curso.id.campus.id = %d ", id, campusId);
-        }
-        
-        return super.getDao().list(filter, curso);
-    }
-
-    @Override
-    public Turma salvar(Turma o) throws Exception {
-        startTransaction();
-        o = super.salvarSemCommit(o);
-        commit();
-        return o;
+        TurmaDaoSQL d = (TurmaDaoSQL)this.dao;
+        return d.findBy(curso);
     }
 }

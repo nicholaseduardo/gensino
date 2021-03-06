@@ -26,7 +26,7 @@ public class DiarioFrequenciaId implements Serializable {
      * Atributo utilizado para identificar uma frequência do diário
      */
     @Column
-    private Integer id;
+    private Long id;
     
     /**
      * Atributo utilizado para identificar de qual diário é o registro
@@ -54,18 +54,22 @@ public class DiarioFrequenciaId implements Serializable {
     public DiarioFrequenciaId() {
     }
 
-    public DiarioFrequenciaId(Integer id, Diario diario, Estudante estudante) {
+    public DiarioFrequenciaId(Long id, Diario diario, Estudante estudante) {
         this.id = id;
         this.diario = diario;
         this.estudante = estudante;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+    
+    public Boolean hasId() {
+        return id != null && id > 0;
     }
 
     public Diario getDiario() {

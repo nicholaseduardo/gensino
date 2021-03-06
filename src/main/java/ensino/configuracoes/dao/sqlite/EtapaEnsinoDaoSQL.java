@@ -5,10 +5,20 @@
  */
 package ensino.configuracoes.dao.sqlite;
 
+import ensino.configuracoes.model.EtapaEnsinoId;
 import ensino.configuracoes.model.EtapaEnsino;
+import ensino.configuracoes.model.NivelEnsino;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -16,85 +26,62 @@ import javax.persistence.TypedQuery;
  */
 public class EtapaEnsinoDaoSQL extends AbstractDaoSQL<EtapaEnsino> {
 
-    private static EtapaEnsinoDaoSQL instance = null;
-
-    private EtapaEnsinoDaoSQL() {
-        super();
-    }
-
-    public static EtapaEnsinoDaoSQL getInstance() {
-        if (instance == null) {
-            instance = new EtapaEnsinoDaoSQL();
-        }
-        return instance;
+    public EtapaEnsinoDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(EtapaEnsino o) {
-        if (o.getId().getId() == null) {
-            o.getId().setId(nextVal(o));
-        }
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public void delete(EtapaEnsino o) {
-        entityManager.remove(entityManager.getReference(EtapaEnsino.class, o));
-    }
-
-    @Override
-    public List<EtapaEnsino> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<EtapaEnsino> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<EtapaEnsino> list(String criteria, Object ref) {
-        String sql = "SELECT ee FROM EtapaEnsino ee ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE ee.id.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY ee.id.id ";
-
-        TypedQuery query = entityManager.createQuery(sql, EtapaEnsino.class);
-        return query.getResultList();
+    public List<EtapaEnsino> findAll() {
+        return findBy(null);
     }
 
     @Override
     public EtapaEnsino findById(Object id) {
-        return entityManager.find(EtapaEnsino.class, id);
+        return em.find(EtapaEnsino.class, id);
     }
 
-    @Override
-    public EtapaEnsino findById(Object... ids) {
-        return this.findById(ids[0]);
-    }
+    public List<EtapaEnsino> findBy(NivelEnsino nivelEnsino) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(EtapaEnsino.class);
 
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        Root<EtapaEnsino> root = query.from(EtapaEnsino.class);
 
-    @Override
-    public Integer nextVal(Object... params) {
-        EtapaEnsino o = (EtapaEnsino) params[0];
-        List<EtapaEnsino> l = o.getNivelEnsino().getEtapas();
-        if (!l.isEmpty()) {
-            return l.get(l.size() - 1).getId().getId() + 1;
+        List<Predicate> predicates = new ArrayList();
+
+        if (nivelEnsino != null) {
+            Predicate p = builder.equal(root.get("id").get("nivelEnsino"), nivelEnsino);
+            predicates.add(p);
         }
-        return 1;
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<EtapaEnsino> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
+    }
+
+    @Override
+    public void save(EtapaEnsino o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
+        }
+    }
+
+    @Override
+    public Long nextVal(EtapaEnsino object) {
+        EtapaEnsinoId composedId = object.getId();
+        String sql = "select max(ee.id.sequencia) from EtapaEnsino ee where ee.id.nivelEnsino = :pNivelEnsino";
+
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pNivelEnsino", composedId.getNivelEnsino());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
+        }
+        return maxNumero + 1;
     }
 
 }

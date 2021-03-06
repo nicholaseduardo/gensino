@@ -51,6 +51,10 @@ public class EtapaEnsino implements Serializable {
     public void setId(EtapaEnsinoId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasId();
+    }
 
     public String getNome() {
         return nome;

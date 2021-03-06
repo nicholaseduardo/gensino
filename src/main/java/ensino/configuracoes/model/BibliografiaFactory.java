@@ -7,9 +7,6 @@ package ensino.configuracoes.model;
 
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -39,17 +36,7 @@ public class BibliografiaFactory implements BeanFactory<Bibliografia> {
         o.setReferencia((String) args[i++]);
         return o;
     }
-
-    @Override
-    public Bibliografia getObject(Element e) {
-        return createObject(
-                new Integer(e.getAttribute("id")),
-                e.getAttribute("titulo"),
-                e.getAttribute("autor"),
-                e.getAttribute("referencia")
-        );
-    }
-
+    
     @Override
     public Bibliografia getObject(HashMap<String, Object> p) {
         return createObject(
@@ -58,16 +45,6 @@ public class BibliografiaFactory implements BeanFactory<Bibliografia> {
                 p.get("autor"),
                 p.get("referencia")
         );
-    }
-
-    @Override
-    public Node toXml(Document doc, Bibliografia o) {
-        Element e = doc.createElement("bibliografia");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("titulo", o.getTitulo());
-        e.setAttribute("autor", o.getAutor());
-        e.setAttribute("referencia", o.getReferencia());
-        return e;
     }
     
 }

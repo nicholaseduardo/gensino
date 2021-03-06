@@ -6,92 +6,43 @@
 package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
-import ensino.patterns.DaoPattern;
 import ensino.patterns.factory.DaoFactory;
 import ensino.planejamento.dao.PermanenciaEstudantilDaoSQL;
 import ensino.planejamento.model.PermanenciaEstudantil;
 import ensino.planejamento.model.PermanenciaEstudantilFatory;
+import ensino.planejamento.model.PermanenciaEstudantilId;
 import ensino.planejamento.model.PlanoDeEnsino;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-import static java.util.Locale.filter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author nicho
  */
 public class PermanenciaEstudantilController extends AbstractController<PermanenciaEstudantil> {
-    private static PermanenciaEstudantilController instance = null;
     
-    private PermanenciaEstudantilController() throws Exception {
+    public PermanenciaEstudantilController() throws Exception {
         super(DaoFactory.createPermanenciaEstudantilDao(), PermanenciaEstudantilFatory.getInstance());
-    }
-    
-    public static PermanenciaEstudantilController getInstance() throws Exception {
-        if (instance == null)
-            instance = new PermanenciaEstudantilController();
-        return instance;
-    }
-    
-    @Override
-    public PermanenciaEstudantil salvar(PermanenciaEstudantil o) throws Exception {
-        o = super.salvar(o);
-        
-        return o;
-    }
-    
-    /**
-     *
-     * @param o
-     * @return
-     */
-    @Override
-    public PermanenciaEstudantil salvarSemCommit(PermanenciaEstudantil o) {
-        try {
-            o = super.salvarSemCommit(o);
-            
-            return o;
-        } catch (Exception ex) {
-            Logger.getLogger(PermanenciaEstudantilController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
     }
     
     /**
      * Buscar por sequência do diario
      * @param id                    Identificação do diário
-     * @param planoId               Identificação do plano de ensino
-     * @param unidadeCurricularId   Identificação da unidade curricular
-     * @param cursoId               Identificação do curso
-     * @param campusId              Identificação do campus
+     * @param planoDeEnsino               Identificação do plano de ensino
      * @return 
      * @throws java.text.ParseException 
      */
-    public PermanenciaEstudantil buscarPor(Integer id, Integer planoId,
-            Integer unidadeCurricularId, Integer cursoId, Integer campusId) throws ParseException {
-        DaoPattern<PermanenciaEstudantil> dao = super.getDao();
-        return dao.findById(id, planoId, unidadeCurricularId,
-                cursoId, campusId);
+    public PermanenciaEstudantil buscarPor(Long id, PlanoDeEnsino planoDeEnsino) throws ParseException {
+        return this.dao.findById(new PermanenciaEstudantilId(id, planoDeEnsino));
     }
     
     public List<PermanenciaEstudantil> listar(PlanoDeEnsino o) {
-        String filter;
-        Integer id = o.getId();
-        if (DaoFactory.isXML()) {
-            filter = "";
-        } else {
-            filter = String.format(" AND pe.id.planoDeEnsino.id = %d ", id);
-        }
-        
-        return super.getDao().list(filter, o);
+        return this.listar(o, null);
     }
     
     public List<PermanenciaEstudantil> listar(PlanoDeEnsino o, Date data) {
-        PermanenciaEstudantilDaoSQL dao = (PermanenciaEstudantilDaoSQL)getDao();
-        
-        return dao.list(o, data);
+        PermanenciaEstudantilDaoSQL d = (PermanenciaEstudantilDaoSQL) this.dao;
+        return d.findBy(o, data);
     }
 }

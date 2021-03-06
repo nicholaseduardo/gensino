@@ -36,7 +36,7 @@ import javax.swing.text.MaskFormatter;
 public class DiarioConteudoFieldsPanel extends DefaultFieldsPanel {
 
     private PlanoDeEnsino planoDeEnsino;
-    private Integer sequencia;
+    private Long sequencia;
     private GenJTextArea txtConteudo;
     private GenJTextArea txtObservacao;
     private GenJComboBox comboTipoAula;

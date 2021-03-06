@@ -191,7 +191,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
         listaAvaliacoes.sort(new Comparator<PlanoAvaliacao>() {
             @Override
             public int compare(PlanoAvaliacao o1, PlanoAvaliacao o2) {
-                return o1.getId().getSequencia() - o2.getId().getSequencia();
+                return o1.getId().getSequencia().intValue() - o2.getId().getSequencia().intValue();
             }
         });
         LinkedHashMap<EtapaEnsino, String> mapLinhas = new LinkedHashMap<>();
@@ -199,7 +199,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
         for (int i = 0; i < listaAvaliacoes.size(); i++) {
             PlanoAvaliacao pa = listaAvaliacoes.get(i);
             // registra o número de avaliações por bimestre
-            nAvaliacoesPorEtapaEnsino[pa.getEtapaEnsino().getId().getId() - 1]++;
+            nAvaliacoesPorEtapaEnsino[pa.getEtapaEnsino().getId().getId().intValue() - 1]++;
 
             String sAvaliacao = "";
             if (mapLinhas.containsKey(pa.getEtapaEnsino())) {
@@ -226,7 +226,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
         for (Map.Entry<EtapaEnsino, String> entry : mapLinhas.entrySet()) {
             EtapaEnsino key = entry.getKey();
             String value = entry.getValue();
-            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorEtapaEnsino[key.getId().getId() - 1])));
+            sData.append(value.replaceAll("_nlinhas_", String.valueOf(nAvaliacoesPorEtapaEnsino[key.getId().getId().intValue() - 1])));
         }
         return sData.toString();
     }
@@ -263,7 +263,7 @@ public class HtmlPanel extends DefaultFieldsPanel {
         listaDetalha.sort(new Comparator<Detalhamento>() {
             @Override
             public int compare(Detalhamento o1, Detalhamento o2) {
-                return o1.getId().getSequencia() - o2.getId().getSequencia();
+                return o1.getId().getSequencia().intValue() - o2.getId().getSequencia().intValue();
             }
         });
         String sColunas = "";

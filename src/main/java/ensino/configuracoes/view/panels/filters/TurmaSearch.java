@@ -165,7 +165,7 @@ public class TurmaSearch extends JPanel {
                     txtId.requestFocusInWindow();
                     txtId.selectAll();
                 } else {
-                    Integer id = Integer.parseInt(sid);
+                    Long id = Long.parseLong(sid);
                     setObjectValue((Turma) col.buscarPor(id, selectedCurso));
                 }
             } else {

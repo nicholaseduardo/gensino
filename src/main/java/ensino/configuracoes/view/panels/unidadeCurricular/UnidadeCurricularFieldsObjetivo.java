@@ -45,7 +45,7 @@ import javax.swing.table.TableColumnModel;
  */
 public class UnidadeCurricularFieldsObjetivo extends DefaultFieldsPanel {
 
-    private Integer sequencia;
+    private Long sequencia;
     private GenJTextArea txtObjetivo;
     private GenJButton btAdd;
     private GenJButton btUpdate;
@@ -209,7 +209,7 @@ public class UnidadeCurricularFieldsObjetivo extends DefaultFieldsPanel {
         txtObjetivo.setText("");
     }
 
-    private void setFieldValues(Integer sequencia, String descricao) {
+    private void setFieldValues(Long sequencia, String descricao) {
         this.sequencia = sequencia;
         txtObjetivo.setText(descricao);
     }
@@ -280,7 +280,7 @@ public class UnidadeCurricularFieldsObjetivo extends DefaultFieldsPanel {
     @Override
     public void onAddAction(ActionEvent e, Object o) {
         if (isValidated()) {
-            int id = 1;
+            Long id = 1L;
             if (!objetivoTableModel.isEmpty()) {
                 /**
                  * Procedimento realizado para gerar a chave única de cada

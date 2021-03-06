@@ -213,7 +213,7 @@ public class NivelEnsinoEtapaFields extends DefaultFieldsPanel {
             if ("".equals(txtId.getText())) {
                 etapaEnsino = EtapaEnsinoFactory.getInstance().getObject(getFieldValues());
                 Integer n = nivelEnsino.getEtapas().size();
-                Integer seq = 1;
+                Long seq = 1L;
                 if (!nivelEnsino.getEtapas().isEmpty()) {
                     seq = nivelEnsino.getEtapas().get(n - 1).getId().getId() + 1;
                 }

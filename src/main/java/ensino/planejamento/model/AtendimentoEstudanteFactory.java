@@ -9,9 +9,6 @@ import ensino.configuracoes.model.Estudante;
 import ensino.patterns.factory.BeanFactory;
 import ensino.util.types.Presenca;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -44,25 +41,15 @@ public class AtendimentoEstudanteFactory implements BeanFactory<AtendimentoEstud
     }
 
     @Override
-    public AtendimentoEstudante getObject(Element e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public AtendimentoEstudante getObject(HashMap<String, Object> p) {
         AtendimentoEstudante o = createObject(
                 new AtendimentoEstudanteId(
-                        (Integer)p.get("sequencia"), 
+                        (Long)p.get("sequencia"), 
                         (PermanenciaEstudantil)p.get("permanenciaEstudantil"), 
                         (Estudante)p.get("planoDeEnsino")),
                 p.get("presenca")
         );
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, AtendimentoEstudante o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

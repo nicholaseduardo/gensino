@@ -9,8 +9,16 @@ import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.ObjetivoId;
 import ensino.planejamento.model.PlanoDeEnsino;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -18,95 +26,63 @@ import javax.persistence.TypedQuery;
  */
 public class ObjetivoDaoSQL extends AbstractDaoSQL<Objetivo> {
 
-    public ObjetivoDaoSQL() {
-        super();
+    public ObjetivoDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Objetivo o) {
-        if (o.getId().getSequencia() == null) {
-            o.getId().setSequencia(nextVal(o));
-        }
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-    
-    @Override
-    public void delete(Objetivo o) {
-        entityManager.remove(entityManager.getReference(Objetivo.class, o.getId()));
-    }
-
-    @Override
-    public List<Objetivo> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Objetivo> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Objetivo> list(String criteria, Object ref) {
-        String sql = "SELECT o FROM Objetivo o ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE o.id.sequencia > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY o.id.sequencia ";
-
-        TypedQuery query = entityManager.createQuery(sql, Objetivo.class);
-        return query.getResultList();
+    public List<Objetivo> findAll() {
+        return findBy(null);
     }
 
     @Override
     public Objetivo findById(Object id) {
-        if (id instanceof ObjetivoId) {
-            return entityManager.find(Objetivo.class, id);
+        return em.find(Objetivo.class, id);
+    }
+
+    public List<Objetivo> findBy(PlanoDeEnsino planoDeEnsino) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Objetivo.class);
+
+        Root<Objetivo> root = query.from(Objetivo.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (planoDeEnsino != null) {
+            Predicate p = builder.equal(root.get("id").get("planoDeEnsino"), planoDeEnsino);
+            predicates.add(p);
         }
-        return null;
+        
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        
+        TypedQuery<Objetivo> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public Objetivo findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(Objetivo o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setSequencia(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oSequencia = ids[0];
-        if (!(oSequencia instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oPlanoDeEnsino = ids[1];
-        if (!(oPlanoDeEnsino instanceof PlanoDeEnsino)) {
-            System.err.println("Segundo atributo deve ser PlanoDeEnsino");
-            return null;
-        }
-        return entityManager.find(Objetivo.class,
-                new ObjetivoId((Integer) oSequencia, (PlanoDeEnsino) oPlanoDeEnsino));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(Objetivo object) {
+        ObjetivoId composedId = object.getId();
+        String sql = "select max(a.id.sequencia) from Objetivo a where a.id.planoDeEnsino = :pPlanoDeEnsino";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        Objetivo o = (Objetivo) params[0];
-        int id = 1;
-        List<Objetivo> l = o.getId().getPlanoDeEnsino().getObjetivos();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getSequencia() + 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pPlanoDeEnsino", composedId.getPlanoDeEnsino());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
 
 }

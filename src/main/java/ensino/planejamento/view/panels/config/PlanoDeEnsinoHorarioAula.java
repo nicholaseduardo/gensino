@@ -321,7 +321,7 @@ public class PlanoDeEnsinoHorarioAula extends DefaultFieldsPanel {
 
         HorarioAula o = HorarioAulaFactory.getInstance()
                 .createObject(new HorarioAulaId(
-                        Integer.parseInt(sId), planoDeEnsino),
+                        Long.parseLong(sId), planoDeEnsino),
                         comboDiaDaSemana.getSelectedItem(),
                         sHorario, turno);
         try {
@@ -354,7 +354,7 @@ public class PlanoDeEnsinoHorarioAula extends DefaultFieldsPanel {
     @Override
     public void onAddAction(ActionEvent e, Object o) {
         if (isValidated()) {
-            int id = 1;
+            Long id = 1L;
             if (!horarioAulaTableModel.isEmpty()) {
                 /**
                  * Procedimento realizado para gerar a chave única de cada

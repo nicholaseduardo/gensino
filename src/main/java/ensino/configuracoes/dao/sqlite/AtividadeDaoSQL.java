@@ -9,8 +9,16 @@ import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeId;
 import ensino.configuracoes.model.Calendario;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -18,80 +26,62 @@ import javax.persistence.TypedQuery;
  */
 public class AtividadeDaoSQL extends AbstractDaoSQL<Atividade> {
 
-    public AtividadeDaoSQL() {
-        super();
+    public AtividadeDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Atividade o) {
-        if (o.getId().getId() == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<Atividade> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Atividade> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Atividade> list(String criteria, Object ref) {
-        String sql = 
-                "SELECT at "
-                + "FROM Atividade at ";
-
-        if (!"".equals(criteria)) {
-            sql += "WHERE at.id.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY at.id.calendario.id.ano, at.id.id ";
-
-        TypedQuery query = entityManager.createQuery(sql, Atividade.class);
-        return query.getResultList();
+    public List<Atividade> findAll() {
+        return findBy(null);
     }
 
     @Override
     public Atividade findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return em.find(Atividade.class, id);
+    }
+
+    public List<Atividade> findBy(Calendario calendario) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Atividade.class);
+
+        Root<Atividade> root = query.from(Atividade.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (calendario != null) {
+            Predicate p = builder.equal(root.get("id").get("calendario"), calendario);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<Atividade> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public Atividade findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(Atividade o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oAno = ids[0];
-        if (!(oAno instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oCalendario = ids[1];
-        if (!(oCalendario instanceof Calendario)) {
-            System.err.println("Segundo atributo deve ser Calendario");
-            return null;
-        }
-        return entityManager.find(Atividade.class,
-                new AtividadeId((Integer) oAno, (Calendario) oCalendario));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(Atividade object) {
+        AtividadeId composedId = object.getId();
+        String sql = "select max(a.id.id) from Atividade a where a.id.calendario = :pCalendario";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pCalendario", composedId.getCalendario());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
+        }
+        return maxNumero + 1;
     }
 
 }

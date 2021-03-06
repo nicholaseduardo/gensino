@@ -8,7 +8,7 @@ package ensino.configuracoes.dao.sqlite;
 import ensino.configuracoes.model.Tecnica;
 import ensino.connection.AbstractDaoSQL;
 import java.util.List;
-import javax.persistence.TypedQuery;
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -16,72 +16,20 @@ import javax.persistence.TypedQuery;
  */
 public class TecnicaDaoSQL extends AbstractDaoSQL<Tecnica> {
 
-    private static TecnicaDaoSQL instance = null;
+    private static final String jpql = " select t from Tecnica t ";
 
-    private TecnicaDaoSQL() {
-        super();
-    }
-
-    public static TecnicaDaoSQL getInstance() {
-        if (instance == null) {
-            instance = new TecnicaDaoSQL();
-        }
-        return instance;
+    public TecnicaDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Tecnica o) {
-        if (o.getId() == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<Tecnica> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Tecnica> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Tecnica> list(String criteria, Object ref) {
-        String sql = "SELECT c FROM Tecnica c";
-
-        if (!"".equals(criteria)) {
-            sql += "WHERE id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY nome ";
-
-        TypedQuery query = entityManager.createQuery(sql, Tecnica.class);
-        return query.getResultList();
+    public List<Tecnica> findAll() {
+        return em.createQuery(jpql, Tecnica.class).getResultList();
     }
 
     @Override
     public Tecnica findById(Object id) {
-        return entityManager.find(Tecnica.class, id);
-    }
-
-    @Override
-    public Tecnica findById(Object... ids) {
-        return this.findById(ids[0]);
-    }
-
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return em.find(Tecnica.class, id);
     }
 
 }

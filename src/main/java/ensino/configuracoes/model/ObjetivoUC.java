@@ -44,6 +44,10 @@ public class ObjetivoUC implements Serializable {
     public void setId(ObjetivoUCId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasSequencia();
+    }
 
     public String getShortName() {
         return String.format("Obj. [id: %d]", id.getSequencia());

@@ -5,13 +5,20 @@
  */
 package ensino.planejamento.dao;
 
-import ensino.configuracoes.model.Campus;
 import ensino.connection.AbstractDaoSQL;
 import ensino.planejamento.model.HorarioAula;
 import ensino.planejamento.model.HorarioAulaId;
 import ensino.planejamento.model.PlanoDeEnsino;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -19,90 +26,63 @@ import javax.persistence.TypedQuery;
  */
 public class HorarioAulaDaoSQL extends AbstractDaoSQL<HorarioAula> {
 
-    public HorarioAulaDaoSQL() {
-        super();
+    public HorarioAulaDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(HorarioAula o) {
-        if (o.getId().getId()== null) {
-            o.getId().setId(nextVal(o));
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public void delete(HorarioAula o) {
-        entityManager.remove(entityManager.getReference(HorarioAula.class, o.getId()));
-    }
-
-    @Override
-    public List<HorarioAula> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<HorarioAula> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<HorarioAula> list(String criteria, Object ref) {
-        String sql = "SELECT ha FROM HorarioAula ha ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE ha.id.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY ha.diaDaSemana, ha.turno, ha.horario ";
-
-        TypedQuery query = entityManager.createQuery(sql, HorarioAula.class);
-        return query.getResultList();
+    public List<HorarioAula> findAll() {
+        return findBy(null);
     }
 
     @Override
     public HorarioAula findById(Object id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return em.find(HorarioAula.class, id);
+    }
+
+    public List<HorarioAula> findBy(PlanoDeEnsino planoDeEnsino) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(HorarioAula.class);
+
+        Root<HorarioAula> root = query.from(HorarioAula.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (planoDeEnsino != null) {
+            Predicate p = builder.equal(root.get("id").get("planoDeEnsino"), planoDeEnsino);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        query.orderBy(builder.asc(root.get("diaDaSemana")), builder.asc(root.get("turno")), builder.asc(root.get("horario")));
+        TypedQuery<HorarioAula> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public HorarioAula findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(HorarioAula o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oSequencia = ids[0];
-        if (!(oSequencia instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oPlanoDeEnsino = ids[1];
-        if (!(oPlanoDeEnsino instanceof Campus)) {
-            System.err.println("Segundo atributo deve ser PlanoDeEnsino");
-            return null;
-        }
-        return entityManager.find(HorarioAula.class,
-                new HorarioAulaId((Integer) oSequencia, (PlanoDeEnsino) oPlanoDeEnsino));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(HorarioAula object) {
+        HorarioAulaId composedId = object.getId();
+        String sql = "select max(a.id.id) from HorarioAula a where a.id.planoDeEnsino = :pPlanoDeEnsino";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        HorarioAula o = (HorarioAula) params[0];
-        int id = 1;
-        List<HorarioAula> l = o.getId().getPlanoDeEnsino().getHorarios();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getId()+ 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pPlanoDeEnsino", composedId.getPlanoDeEnsino());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
 
 }

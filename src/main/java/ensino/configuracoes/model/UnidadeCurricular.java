@@ -65,6 +65,10 @@ public class UnidadeCurricular implements Serializable {
     public void setId(UnidadeCurricularId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasId();
+    }
 
     public String getNome() {
         return nome;

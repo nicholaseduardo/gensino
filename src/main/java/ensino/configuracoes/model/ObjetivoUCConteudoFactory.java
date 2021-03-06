@@ -7,9 +7,6 @@ package ensino.configuracoes.model;
 
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -41,11 +38,6 @@ public class ObjetivoUCConteudoFactory implements BeanFactory<ObjetivoUCConteudo
     }
 
     @Override
-    public ObjetivoUCConteudo getObject(Element e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public ObjetivoUCConteudo getObject(HashMap<String, Object> p) {
         ObjetivoUCConteudo o = createObject(
                 (ObjetivoUC) p.get("objetivo"),
@@ -53,11 +45,6 @@ public class ObjetivoUCConteudoFactory implements BeanFactory<ObjetivoUCConteudo
                 (Integer) p.get("ordem"));
 
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, ObjetivoUCConteudo o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

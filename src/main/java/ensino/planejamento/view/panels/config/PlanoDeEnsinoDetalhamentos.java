@@ -153,7 +153,7 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
                 if (!listaDetalhamentos.isEmpty()) {
                     for (int j = 0; j < nSemanas; j++) {
                         SemanaLetiva semanaLetiva = semanas.get(j);
-                        Detalhamento detalhamento = listaDetalhamentos.get(semanaLetiva.getId().getId() - 1);
+                        Detalhamento detalhamento = listaDetalhamentos.get(semanaLetiva.getId().getId().intValue() - 1);
                         detalhamento.setObservacao(atividadesDaSemana(semanaLetiva));
 
                         DetalhamentoFields detalhamentoFields;
@@ -273,7 +273,7 @@ public class PlanoDeEnsinoDetalhamentos extends DefaultFieldsPanel {
             DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tp.getLastPathComponent();
             if (selectedNode.getUserObject() instanceof SemanaLetiva) {
                 SemanaLetiva semanaLetiva = (SemanaLetiva) selectedNode.getUserObject();
-                Integer index = semanaLetiva.getId().getId();
+                Integer index = semanaLetiva.getId().getId().intValue();
 
                 DetalhamentoFields detalhamentoFields = (DetalhamentoFields) detalhamentoCardPanel.getComponent(index);
                 /**

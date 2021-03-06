@@ -5,30 +5,17 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.TecnicaDaoXML;
 import ensino.configuracoes.model.TecnicaFactory;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 
 /**
  *
  * @author nicho
  */
 public class TecnicaController  extends AbstractController {
-    private static TecnicaController instance = null;
     
-    private TecnicaController() throws Exception {
+    public TecnicaController() throws Exception {
         super(DaoFactory.createTecnicaDao(), TecnicaFactory.getInstance());
-    }
-    
-    public static TecnicaController getInstance() throws Exception {
-        if (instance == null)
-            instance = new TecnicaController();
-        return instance;
-    }
-    
-    public TecnicaController(URL url) throws Exception {
-        super(new TecnicaDaoXML(url), TecnicaFactory.getInstance());
     }
 }

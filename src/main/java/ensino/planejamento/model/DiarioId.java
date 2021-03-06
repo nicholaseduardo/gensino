@@ -24,7 +24,7 @@ public class DiarioId implements Serializable {
      * Atributo utilizado para identificar unicamente o lançamento de diário.
      */
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     
     /**
      * Atributo utilizado para identificar em qual plano de ensino serão
@@ -37,17 +37,21 @@ public class DiarioId implements Serializable {
     public DiarioId() {
     }
 
-    public DiarioId(Integer id, PlanoDeEnsino planoDeEnsino) {
+    public DiarioId(Long id, PlanoDeEnsino planoDeEnsino) {
         this.id = id;
         this.planoDeEnsino = planoDeEnsino;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+    
+    public Boolean hasId() {
+        return id != null && id > 0;
     }
 
     public PlanoDeEnsino getPlanoDeEnsino() {

@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 public class TurmaId implements Serializable {
 
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns(value = {
@@ -34,17 +34,21 @@ public class TurmaId implements Serializable {
     public TurmaId() {
     }
 
-    public TurmaId(Integer id, Curso curso) {
+    public TurmaId(Long id, Curso curso) {
         this.id = id;
         this.curso = curso;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+    
+    public Boolean hasId() {
+        return id != null && id > 0;
     }
 
     public Curso getCurso() {

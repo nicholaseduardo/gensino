@@ -5,12 +5,21 @@
  */
 package ensino.configuracoes.dao.sqlite;
 
+import ensino.configuracoes.model.Campus;
 import ensino.configuracoes.model.Curso;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.configuracoes.model.UnidadeCurricularId;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -18,97 +27,72 @@ import javax.persistence.TypedQuery;
  */
 public class UnidadeCurricularDaoSQL extends AbstractDaoSQL<UnidadeCurricular> {
 
-    public UnidadeCurricularDaoSQL() {
-        super();
+    public UnidadeCurricularDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(UnidadeCurricular o) {
-        if (o.getId().getId() == null) {
-            o.getId().setId(nextVal(o));
-            o.getCurso().addUnidadeCurricular(o);
-        } else {
-            o.getCurso().updateUnidadeCurricular(o);
-        }
-        
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public void delete(UnidadeCurricular o) {
-        entityManager.remove(entityManager.getReference(UnidadeCurricular.class, o.getId()));
-    }
-
-    @Override
-    public List<UnidadeCurricular> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<UnidadeCurricular> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<UnidadeCurricular> list(String criteria, Object ref) {
-        String sql = "SELECT u FROM UnidadeCurricular u ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE u.id.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY u.id.curso.id.campus.nome, "
-                + "u.id.curso.nome, u.id.id ";
-
-        TypedQuery query = entityManager.createQuery(sql, UnidadeCurricular.class);
-        return query.getResultList();
+    public List<UnidadeCurricular> findAll() {
+        return this.findBy(null, null, null);
     }
 
     @Override
     public UnidadeCurricular findById(Object id) {
-        return entityManager.find(UnidadeCurricular.class, id);
+        return em.find(UnidadeCurricular.class, id);
+    }
+
+    public List<UnidadeCurricular> findBy(Curso curso, String nome, Campus campus) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(UnidadeCurricular.class);
+
+        Root<UnidadeCurricular> root = query.from(UnidadeCurricular.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (curso != null) {
+            Predicate p = builder.equal(root.get("id").get("curso"), curso);
+            predicates.add(p);
+        }
+
+        if (campus != null) {
+            Predicate p = builder.equal(root.get("campus"), campus);
+            predicates.add(p);
+        }
+        
+        if (nome != null && !"".equals(nome)) {
+            Predicate p = builder.like(root.get("nome"), "%"+nome+"%");
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        TypedQuery<UnidadeCurricular> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public UnidadeCurricular findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(UnidadeCurricular o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oNumero = ids[0];
-        if (!(oNumero instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oCurso = ids[1];
-        if (!(oCurso instanceof Curso)) {
-            System.err.println("Segundo atributo deve ser Curso");
-            return null;
-        }
-        UnidadeCurricularId pk = new UnidadeCurricularId((Integer) oNumero, (Curso) oCurso);
-        return entityManager.find(UnidadeCurricular.class, pk);
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(UnidadeCurricular object) {
+        UnidadeCurricularId composedId = object.getId();
+        String sql = "select max(uc.id.id) from UnidadeCurricular uc where a.id.curso = :pCurso";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        UnidadeCurricular o = (UnidadeCurricular) params[0];
-        int id = 1;
-        List<UnidadeCurricular> l = o.getId().getCurso().getUnidadesCurriculares();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getId() + 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pCurso", composedId.getCurso());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
 
 }

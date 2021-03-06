@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 public class ObjetivoUCId implements Serializable {
     
     @Column(name = "sequencia")
-    private Integer sequencia;
+    private Long sequencia;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns(value = {
@@ -35,17 +35,21 @@ public class ObjetivoUCId implements Serializable {
     public ObjetivoUCId() {
     }
 
-    public ObjetivoUCId(Integer sequencia, UnidadeCurricular unidadeCurricular) {
+    public ObjetivoUCId(Long sequencia, UnidadeCurricular unidadeCurricular) {
         this.sequencia = sequencia;
         this.unidadeCurricular = unidadeCurricular;
     }
 
-    public Integer getSequencia() {
+    public Long getSequencia() {
         return sequencia;
     }
 
-    public void setSequencia(Integer sequencia) {
+    public void setSequencia(Long sequencia) {
         this.sequencia = sequencia;
+    }
+    
+    public Boolean hasSequencia() {
+        return sequencia != null && sequencia > 0;
     }
 
     public UnidadeCurricular getUnidadeCurricular() {

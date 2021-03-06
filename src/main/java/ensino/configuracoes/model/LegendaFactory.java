@@ -8,9 +8,6 @@ package ensino.configuracoes.model;
 import ensino.patterns.factory.BeanFactory;
 import java.awt.Color;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -42,15 +39,6 @@ public class LegendaFactory implements BeanFactory<Legenda> {
     }
 
     @Override
-    public Legenda getObject(Element e) {
-        return createObject(new Integer(e.getAttribute("id")),
-                e.getAttribute("nome"),
-                Boolean.parseBoolean(e.getAttribute("letivo")),
-                Boolean.parseBoolean(e.getAttribute("informativo")),
-                new Color(Integer.parseInt(e.getAttribute("cor"))));
-    }
-
-    @Override
     public Legenda getObject(HashMap<String, Object> p) {
         return createObject(
                 p.get("id"),
@@ -59,17 +47,6 @@ public class LegendaFactory implements BeanFactory<Legenda> {
                 p.get("informativo"),
                 p.get("cor")
         );
-    }
-
-    @Override
-    public Node toXml(Document doc, Legenda o) {
-        Element e = doc.createElement("legenda");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("nome", o.getNome());
-        e.setAttribute("letivo", o.isLetivo().toString());
-        e.setAttribute("informativo", o.isInformativo().toString());
-        e.setAttribute("cor", String.valueOf(o.getCor().getRGB()));
-        return e;
     }
     
 }

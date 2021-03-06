@@ -372,11 +372,11 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
     private class ButtonAction implements ActionListener {
 
         private PlanoAvaliacaoController col;
-        private int sequencia;
+        private Long sequencia;
 
         public ButtonAction() {
             try {
-                sequencia = 1;
+                sequencia = 1L;
                 col = ControllerFactory.createPlanoAvaliacaoController();
             } catch (Exception ex) {
                 Logger.getLogger(PlanoDeEnsinoPlanoAvaliacaoPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -391,7 +391,7 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
 
         private PlanoAvaliacao createPlanoAvaliacaoFromFields() {
             String sSequencia = txtId.getText();
-            Integer seq = sSequencia.matches("\\d+") ? Integer.parseInt(sSequencia) : null;
+            Long seq = sSequencia.matches("\\d+") ? Long.parseLong(sSequencia) : null;
             PlanoAvaliacao o = PlanoAvaliacaoFactory.getInstance()
                     .createObject(
                             new PlanoAvaliacaoId(seq, planoDeEnsino),
@@ -422,7 +422,7 @@ public class PlanoDeEnsinoPlanoAvaliacaoPanel extends DefaultFieldsPanel {
             if (source == btUpdate) {
                 planoAvaliacaoTableModel.updateRow(selectedRow, createPlanoAvaliacaoFromFields());
             } else if (source == btAdd && isValidated()) {
-                int id = 1;
+                Long id = 1L;
                 if (!planoAvaliacaoTableModel.isEmpty()) {
                     /**
                      * Procedimento realizado para gerar a chave única de cada

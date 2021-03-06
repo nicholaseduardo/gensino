@@ -151,11 +151,11 @@ public class DetalhamentoPanel extends DefaultFieldsPanel {
                         // adiciona o conteúdo do detalhamento caso exista
                         if (!listaDetalhamentos.isEmpty()) {
                             // índice do detalhamento baseia-se na sequência da semana menos uma unidade
-                            detalhamentoFields.setFieldValues(listaDetalhamentos.get(semanaLetiva.getId().getId() - 1));
+                            detalhamentoFields.setFieldValues(listaDetalhamentos.get(semanaLetiva.getId().getId().intValue() - 1));
                         }
                     } else {
                         // atualiza o formulário criado
-                        detalhamentoFields = (DetalhamentoFieldsPanel) detalhamentoCardPanel.getComponent(semanaLetiva.getId().getId());
+                        detalhamentoFields = (DetalhamentoFieldsPanel) detalhamentoCardPanel.getComponent(semanaLetiva.getId().getId().intValue());
                     }
                     // Vincula os objetivos definidos pelo usuário aos campos de detalhamento
                     HashMap<String, Object> mapValues = new HashMap();

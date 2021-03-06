@@ -265,7 +265,7 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
         return map;
     }
 
-    private void setFieldValues(Integer id, String descricao, Periodo periodo) {
+    private void setFieldValues(Long id, String descricao, Periodo periodo) {
         txtId.setText(id != null ? id.toString() : null);
         txtDescricao.setText(descricao);
         txtDe.setValue(periodo.getDeText());
@@ -377,7 +377,7 @@ public class CalendarioPeriodoLetivoPanel extends DefaultFieldsPanel {
                 int selectedRow = periodoLetivoTable.getSelectedRow();
                 periodoLetivoTableModel.updateRow(selectedRow, createPeriodoLetivoFromFields());
             } else if (source == btAdd && isValidated()) {
-                int id = 1;
+                Long id = 1L;
                 if (!periodoLetivoTableModel.isEmpty()) {
                     /**
                      * Procedimento realizado para gerar a chave única de cada

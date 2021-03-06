@@ -331,7 +331,7 @@ public class PlanoDeEnsino implements Serializable {
             Calendar cal = Calendar.getInstance();
 
             // variável utilizada para controlar o ID de sequência dos diários
-            int idDiario = 1;
+            Long idDiario = 1L;
             Iterator<Detalhamento> itDetalhamento = detalhamentos.iterator();
             while (itDetalhamento.hasNext()) {
                 Detalhamento detalhe = itDetalhamento.next();

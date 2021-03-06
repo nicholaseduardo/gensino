@@ -7,6 +7,7 @@ package ensino.planejamento.controller;
 
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
+import ensino.planejamento.dao.ObjetivoDaoSQL;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.ObjetivoFactory;
 import ensino.planejamento.model.PlanoDeEnsino;
@@ -23,11 +24,7 @@ public class ObjetivoController extends AbstractController<Objetivo> {
     }
     
     public List<Objetivo> listar(PlanoDeEnsino o) {
-        String filter = "";
-        Integer id = o.getId();
-        
-        filter = String.format(" AND o.id.planoDeEnsino.id = %d ", id);
-        
-        return super.getDao().list(filter, o);
+        ObjetivoDaoSQL d = (ObjetivoDaoSQL) this.dao;
+        return d.findBy(o);
     }
 }

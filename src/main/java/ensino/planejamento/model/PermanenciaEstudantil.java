@@ -75,6 +75,10 @@ public class PermanenciaEstudantil implements Serializable {
     public void setId(PermanenciaEstudantilId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasSequencia();
+    }
 
     public Date getDataAtendimento() {
         return dataAtendimento;

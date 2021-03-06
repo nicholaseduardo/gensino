@@ -25,7 +25,7 @@ public class PlanoAvaliacaoId implements Serializable {
      * dos instrumentos avaliativos.
      */
     @Column(name = "sequencia")
-    private Integer sequencia;
+    private Long sequencia;
     /**
      * Atributo utilizado para identifica a qual plano de ensino
      * pertence esse plano de avaliações
@@ -37,17 +37,21 @@ public class PlanoAvaliacaoId implements Serializable {
     public PlanoAvaliacaoId() {
     }
 
-    public PlanoAvaliacaoId(Integer sequencia, PlanoDeEnsino planoDeEnsino) {
+    public PlanoAvaliacaoId(Long sequencia, PlanoDeEnsino planoDeEnsino) {
         this.sequencia = sequencia;
         this.planoDeEnsino = planoDeEnsino;
     }
 
-    public Integer getSequencia() {
+    public Long getSequencia() {
         return sequencia;
     }
 
-    public void setSequencia(Integer sequencia) {
+    public void setSequencia(Long sequencia) {
         this.sequencia = sequencia;
+    }
+    
+    public Boolean hasSequencia() {
+        return sequencia != null && sequencia > 0;
     }
 
     public PlanoDeEnsino getPlanoDeEnsino() {

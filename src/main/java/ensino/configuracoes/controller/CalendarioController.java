@@ -5,13 +5,13 @@
  */
 package ensino.configuracoes.controller;
 
-import ensino.configuracoes.dao.xml.CalendarioDaoXML;
+import ensino.configuracoes.dao.sqlite.CalendarioDaoSQL;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.CalendarioFactory;
+import ensino.configuracoes.model.CalendarioId;
 import ensino.configuracoes.model.Campus;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -24,10 +24,6 @@ public class CalendarioController extends AbstractController<Calendario> {
         super(DaoFactory.createCalendarioDao(), CalendarioFactory.getInstance());
     }
 
-    public CalendarioController(URL url) throws Exception {
-        super(new CalendarioDaoXML(url), CalendarioFactory.getInstance());
-    }
-
     /**
      * Busca um calendario pela sua chave primária
      *
@@ -36,7 +32,7 @@ public class CalendarioController extends AbstractController<Calendario> {
      * @return
      */
     public Calendario buscarPor(Integer ano, Campus campus) {
-        return super.getDao().findById(ano, campus);
+        return this.dao.findById(new CalendarioId(ano, campus));
     }
 
     /**
@@ -46,28 +42,8 @@ public class CalendarioController extends AbstractController<Calendario> {
      * @return
      */
     public List<Calendario> listar(Campus campus) {
-        String filter = "";
-        Integer id = campus.getId();
-        if (DaoFactory.isXML()) {
-            filter = String.format("//Calendario/calendario[@campusId=%d]", id);
-        } else {
-            filter = String.format(" AND cal.id.campus.id = %d ", id);
-        }
-        return super.getDao().list(filter, campus);
-    }
-
-    @Override
-    public Calendario salvar(Calendario o) throws Exception {
-        startTransaction();
-        o = super.salvarSemCommit(o);
-        this.commit();
-
-        return o;
+        CalendarioDaoSQL d = (CalendarioDaoSQL)this.dao;
+        return d.findBy(campus);
     }
     
-    @Override
-    public Calendario remover(Calendario o) throws Exception {
-        o = super.remover(o);
-        return o;
-    }
 }

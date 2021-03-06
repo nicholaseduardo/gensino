@@ -86,8 +86,8 @@ public class Estudante implements Serializable {
         return this.deleted;
     }
 
-    public boolean issetId() {
-        return id.getId() != null;
+    public boolean hasId() {
+        return id.hasId();
     }
 
     public EstudanteId getId() {

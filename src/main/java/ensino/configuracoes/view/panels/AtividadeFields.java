@@ -151,7 +151,7 @@ public class AtividadeFields extends DefaultFieldsPanel {
         return null;
     }
 
-    private void setFieldValues(Integer id, Periodo periodo,
+    private void setFieldValues(Long id, Periodo periodo,
             String descricao, Legenda legenda) {
         txtId.setText(id.toString());
         txtDe.setText(periodo.getDeText());
@@ -162,7 +162,7 @@ public class AtividadeFields extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(HashMap<String, Object> mapValues) {
-        Integer id = (Integer) mapValues.get("id");
+        Long id = (Long) mapValues.get("id");
         setFieldValues(id,
                 (Periodo) mapValues.get("periodo"),
                 (String) mapValues.get("descricao"),

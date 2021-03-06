@@ -20,7 +20,7 @@ import javax.persistence.ManyToOne;
 @Embeddable
 public class EtapaEnsinoId implements Serializable {
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "nivelEnsino_id")
@@ -29,17 +29,21 @@ public class EtapaEnsinoId implements Serializable {
     public EtapaEnsinoId() {
     }
 
-    public EtapaEnsinoId(Integer id, NivelEnsino nivelEnsino) {
+    public EtapaEnsinoId(Long id, NivelEnsino nivelEnsino) {
         this.id = id;
         this.nivelEnsino = nivelEnsino;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+    
+    public Boolean hasId() {
+        return id != null && id > 0;
     }
 
     public NivelEnsino getNivelEnsino() {

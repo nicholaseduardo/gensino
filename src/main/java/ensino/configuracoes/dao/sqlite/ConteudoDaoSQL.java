@@ -9,9 +9,16 @@ import ensino.configuracoes.model.Conteudo;
 import ensino.configuracoes.model.ConteudoId;
 import ensino.configuracoes.model.UnidadeCurricular;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -19,67 +26,83 @@ import javax.persistence.TypedQuery;
  */
 public class ConteudoDaoSQL extends AbstractDaoSQL<Conteudo> {
 
-    public ConteudoDaoSQL() {
-        super();
+    public ConteudoDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Conteudo o) {
-        if (o.getId().getId()== null) {
-            o.getId().setId(nextVal(o));
-            o.getId().getUnidadeCurricular().addConteudo(o);
-        }
-        
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
+    public List<Conteudo> findAll() {
+        return findBy(null, null);
     }
 
     @Override
-    public void delete(Conteudo o) {
-        entityManager.remove(entityManager.getReference(Conteudo.class, o.getId()));
+    public Conteudo findById(Object id) {
+        return em.find(Conteudo.class, id);
     }
 
-    @Override
-    public List<Conteudo> list() {
-        return this.list(null);
-    }
+    public List<Conteudo> findBy(UnidadeCurricular unidadeCurricular, String descricao) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Conteudo.class);
 
-    @Override
-    public List<Conteudo> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
+        Root<Conteudo> root = query.from(Conteudo.class);
 
-    @Override
-    public List<Conteudo> list(String criteria, Object ref) {
-        String sql = "SELECT c FROM Conteudo c ";
+        List<Predicate> predicates = new ArrayList();
 
-        if (!"".equals(criteria)) {
-            sql += " WHERE c.id.id > 0 " + criteria;
+        if (unidadeCurricular != null) {
+            Predicate p = builder.equal(root.get("id").get("unidadeCurricular"), unidadeCurricular);
+            predicates.add(p);
         }
 
-        // order
-        sql += " ORDER BY c.id.unidadeCurricular.nome, "
-                + " c.nivel, sequencia ";
+        if (descricao != null && !"".equals(descricao)) {
+            Predicate p = builder.like(root.get("descricao"), "%" + descricao + "%");
+            predicates.add(p);
+        }
 
-        TypedQuery query = entityManager.createQuery(sql, Conteudo.class);
-        List<Conteudo> l = query.getResultList();
-        
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        query.orderBy(
+                builder.asc(root.get("id").get("unidadeCurricular").get("nome")),
+                builder.asc(root.get("nivel")), builder.asc(root.get("sequencia")));
+        TypedQuery<Conteudo> typedQuery = em.createQuery(query);
+        List<Conteudo> l = typedQuery.getResultList();
+
         return addChildren(null, l);
     }
-    
+
+    @Override
+    public void save(Conteudo o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
+        }
+    }
+
+    @Override
+    public Long nextVal(Conteudo object) {
+        ConteudoId composedId = object.getId();
+        String sql = "select max(c.id.id) from Conteudo c where c.id.unidadeCurricular = :pUnidadeCurricular";
+
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pUnidadeCurricular", composedId.getUnidadeCurricular());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
+        }
+        return maxNumero + 1;
+    }
+
     private List<Conteudo> addChildren(Conteudo root, List<Conteudo> l) {
         List<Conteudo> list = new ArrayList();
-        
+
         /**
          * Localizar os childs do root
          */
-        for(Conteudo c : l) {
-            if (root == null && !c.hasParent() ||
-                    c.hasParent() && c.getConteudoParent().equals(root)){
+        for (Conteudo c : l) {
+            if (root == null && !c.hasParent()
+                    || c.hasParent() && c.getConteudoParent().equals(root)) {
                 list.add(c);
                 /**
                  * Adiciona os childs de C
@@ -88,46 +111,6 @@ public class ConteudoDaoSQL extends AbstractDaoSQL<Conteudo> {
             }
         }
         return list;
-    }
-
-    @Override
-    public Conteudo findById(Object id) {
-        return entityManager.find(Conteudo.class, id);
-    }
-
-    @Override
-    public Conteudo findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
-        }
-        Object oNumero = ids[0];
-        if (!(oNumero instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oUnidade = ids[1];
-        if (!(oUnidade instanceof UnidadeCurricular)) {
-            System.err.println("Segundo atributo deve ser UnidadeCurricular");
-            return null;
-        }
-        return entityManager.find(Conteudo.class, new ConteudoId((Integer) oNumero, (UnidadeCurricular) oUnidade));
-    }
-
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Integer nextVal(Object... params) {
-        Conteudo o = (Conteudo) params[0];
-        int id = 1;
-        List<Conteudo> l = o.getId().getUnidadeCurricular().getConteudos();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getId()+ 1;
-        }
-        return id;
     }
 
 }

@@ -160,7 +160,7 @@ public class CursoSearch extends GenJPanel {
                     txtId.requestFocusInWindow();
                     txtId.selectAll();
                 } else {
-                    Integer id = Integer.parseInt(sid);
+                    Long id = Long.parseLong(sid);
                     setObjectValue((Curso) col.buscarPor(id, selectedCampus));
                 }
             } else {

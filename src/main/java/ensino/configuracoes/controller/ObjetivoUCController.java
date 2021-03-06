@@ -5,6 +5,7 @@
  */
 package ensino.configuracoes.controller;
 
+import ensino.configuracoes.dao.sqlite.ObjetivoUCDaoSQL;
 import ensino.configuracoes.model.ObjetivoUC;
 import ensino.configuracoes.model.ObjetivoUCFactory;
 import ensino.configuracoes.model.ObjetivoUCId;
@@ -30,18 +31,11 @@ public class ObjetivoUCController extends AbstractController<ObjetivoUC> {
      * @return
      */
     public ObjetivoUC buscarPor(ObjetivoUCId id) {
-        return super.getDao().findById(id);
+        return this.dao.findById(id);
     }
 
     public List<ObjetivoUC> listar(UnidadeCurricular o) {
-        String filter = "";
-        filter = String.format(" AND c.id.unidadeCurricular.id.id = %d "
-                + " AND c.id.unidadeCurricular.id.curso.id.id = %d "
-                + " AND c.id.unidadeCurricular.id.curso.id.campus.id = %d ",
-                o.getId().getId(),
-                o.getId().getCurso().getId().getId(),
-                o.getId().getCurso().getId().getCampus().getId());
-
-        return super.getDao().list(filter, o);
+        ObjetivoUCDaoSQL d = (ObjetivoUCDaoSQL) this.dao;
+        return d.findBy(o);
     }
 }

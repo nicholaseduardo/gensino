@@ -7,8 +7,9 @@ package ensino.configuracoes.dao.sqlite;
 
 import ensino.configuracoes.model.Legenda;
 import ensino.connection.AbstractDaoSQL;
+import java.sql.SQLException;
 import java.util.List;
-import javax.persistence.TypedQuery;
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -16,72 +17,29 @@ import javax.persistence.TypedQuery;
  */
 public class LegendaDaoSQL extends AbstractDaoSQL<Legenda> {
     
-    private static LegendaDaoSQL instance = null;
+    private static final String jpql = " select l from Legenda l ";
     
-    private LegendaDaoSQL() {
-        super();
+    public LegendaDaoSQL(EntityManager em) {
+        super(em);
     }
-    
-    public static LegendaDaoSQL getInstance() {
-        if (instance == null) {
-            instance = new LegendaDaoSQL();
-        }
-        return instance;
-    }
-    
-    @Override
-    public void save(Legenda o) {
-        if (o.getId() == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-    
-    @Override
-    public List<Legenda> list() {
-        return this.list(null);
-    }
-    
-    @Override
-    public List<Legenda> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-    
-    @Override
-    public List<Legenda> list(String criteria, Object ref) {
-        String sql = "SELECT c FROM Legenda c";
-        
-        if (!"".equals(criteria)) {
-            sql += "WHERE id > 0 " + criteria;
-        }
 
-        // order
-        sql += " ORDER BY nome ";
-        
-        TypedQuery query = entityManager.createQuery(sql, Legenda.class);
-        return query.getResultList();
+    @Override
+    public List<Legenda> findAll() {
+        return em.createQuery(jpql, Legenda.class).getResultList();
     }
-    
+
     @Override
     public Legenda findById(Object id) {
-        return entityManager.find(Legenda.class, id);
+        return em.find(Legenda.class, id);
     }
     
     @Override
-    public Legenda findById(Object... ids) {
-        return this.findById(ids[0]);
-    }
-    
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void save(Legenda o) throws SQLException {
+        if (!o.hasId()) {
+            super.save(o);
+        } else {
+            super.update(o);
+        }
     }
     
 }

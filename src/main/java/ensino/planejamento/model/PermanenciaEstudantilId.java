@@ -24,7 +24,7 @@ public class PermanenciaEstudantilId implements Serializable {
      * de atendimento aos estudantes
      */
     @Column(name = "sequencia")
-    private Integer sequencia;
+    private Long sequencia;
     /**
      * Atributo utilizado para identifica a qual plano de ensino
      * pertence esse plano de avaliações
@@ -36,17 +36,21 @@ public class PermanenciaEstudantilId implements Serializable {
     public PermanenciaEstudantilId() {
     }
 
-    public PermanenciaEstudantilId(Integer sequencia, PlanoDeEnsino planoDeEnsino) {
+    public PermanenciaEstudantilId(Long sequencia, PlanoDeEnsino planoDeEnsino) {
         this.sequencia = sequencia;
         this.planoDeEnsino = planoDeEnsino;
     }
 
-    public Integer getSequencia() {
+    public Long getSequencia() {
         return sequencia;
     }
 
-    public void setSequencia(Integer sequencia) {
+    public void setSequencia(Long sequencia) {
         this.sequencia = sequencia;
+    }
+    
+    public Boolean hasSequencia() {
+        return sequencia != null && sequencia > 0;
     }
 
     public PlanoDeEnsino getPlanoDeEnsino() {

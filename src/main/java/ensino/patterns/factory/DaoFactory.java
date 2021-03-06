@@ -26,47 +26,20 @@ import ensino.configuracoes.dao.sqlite.SemanaLetivaDaoSQL;
 import ensino.configuracoes.dao.sqlite.TecnicaDaoSQL;
 import ensino.configuracoes.dao.sqlite.TurmaDaoSQL;
 import ensino.configuracoes.dao.sqlite.UnidadeCurricularDaoSQL;
-import ensino.configuracoes.dao.xml.AtividadeDaoXML;
-import ensino.configuracoes.dao.xml.BibliografiaDaoXML;
-import ensino.configuracoes.dao.xml.CalendarioDaoXML;
-import ensino.configuracoes.dao.xml.CampusDaoXML;
-import ensino.configuracoes.dao.xml.CursoDaoXML;
-import ensino.configuracoes.dao.xml.DocenteDaoXML;
-import ensino.configuracoes.dao.xml.EstudanteDaoXML;
-import ensino.configuracoes.dao.xml.EtapaEnsinoDaoXML;
-import ensino.configuracoes.dao.xml.InstrumentoAvaliacaoDaoXML;
-import ensino.configuracoes.dao.xml.LegendaDaoXML;
-import ensino.configuracoes.dao.xml.NivelEnsinoDaoXML;
-import ensino.configuracoes.dao.xml.PeriodoLetivoDaoXML;
-import ensino.configuracoes.dao.xml.RecursoDaoXML;
-import ensino.configuracoes.dao.xml.ReferenciaBibliograficaDaoXML;
-import ensino.configuracoes.dao.xml.SemanaLetivaDaoXML;
-import ensino.configuracoes.dao.xml.TecnicaDaoXML;
-import ensino.configuracoes.dao.xml.TurmaDaoXML;
-import ensino.configuracoes.dao.xml.UnidadeCurricularDaoXML;
+import ensino.connection.Connection;
 import ensino.patterns.DaoPattern;
 import ensino.planejamento.dao.AtendimentoEstudanteDaoSQL;
 import ensino.planejamento.dao.AvaliacaoDaoSQL;
-import ensino.planejamento.dao.AvaliacaoDaoXML;
 import ensino.planejamento.dao.DetalhamentoDaoSQL;
-import ensino.planejamento.dao.DetalhamentoDaoXML;
 import ensino.planejamento.dao.DiarioDaoSQL;
-import ensino.planejamento.dao.DiarioDaoXML;
 import ensino.planejamento.dao.DiarioFrequenciaDaoSQL;
-import ensino.planejamento.dao.DiarioFrequenciaDaoXML;
 import ensino.planejamento.dao.HorarioAulaDaoSQL;
-import ensino.planejamento.dao.HorarioAulaDaoXML;
 import ensino.planejamento.dao.MetodologiaDaoSQL;
-import ensino.planejamento.dao.MetodologiaDaoXML;
 import ensino.planejamento.dao.ObjetivoDaoSQL;
-import ensino.planejamento.dao.ObjetivoDaoXML;
 import ensino.planejamento.dao.ObjetivoDetalheDaoSQL;
-import ensino.planejamento.dao.ObjetivoDetalheDaoXML;
 import ensino.planejamento.dao.PermanenciaEstudantilDaoSQL;
 import ensino.planejamento.dao.PlanoAvaliacaoDaoSQL;
-import ensino.planejamento.dao.PlanoAvaliacaoDaoXML;
 import ensino.planejamento.dao.PlanoDeEnsinoDaoSQL;
-import ensino.planejamento.dao.PlanoDeEnsinoDaoXML;
 import ensino.util.ConfigProperties;
 
 /**
@@ -79,162 +52,134 @@ public class DaoFactory {
     }
     
     public static DaoPattern createCampusDao() throws Exception {
-         return isXML() ? CampusDaoXML.getInstance() :
-                new CampusDaoSQL();
+         return new CampusDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createCursoDao() throws Exception {
-         return isXML() ? CursoDaoXML.getInstance() :
-                new CursoDaoSQL();
+         return new CursoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createTurmaDao() throws Exception {
-         return isXML() ? TurmaDaoXML.getInstance() :
-                new TurmaDaoSQL();
+         return new TurmaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createEstudanteDao() throws Exception {
-         return isXML() ? EstudanteDaoXML.getInstance() :
-                new EstudanteDaoSQL();
+         return new EstudanteDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createCalendarioDao() throws Exception {
-         return isXML() ? CalendarioDaoXML.getInstance() :
-                new CalendarioDaoSQL();
+         return new CalendarioDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createAtividadeDao() throws Exception {
-         return isXML() ? AtividadeDaoXML.getInstance() :
-                new AtividadeDaoSQL();
+         return new AtividadeDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createPeriodoLetivoDao() throws Exception {
-         return isXML() ? PeriodoLetivoDaoXML.getInstance() :
-                new PeriodoLetivoDaoSQL();
+         return new PeriodoLetivoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createSemanaLetivaDao() throws Exception {
-         return isXML() ? SemanaLetivaDaoXML.getInstance() :
-                new SemanaLetivaDaoSQL();
+         return new SemanaLetivaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createBibliografiaDao() throws Exception {
-         return isXML() ? BibliografiaDaoXML.getInstance() :
-                BibliografiaDaoSQL.getInstance();
+         return new BibliografiaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createDocenteDao() throws Exception {
-         return isXML() ? DocenteDaoXML.getInstance() :
-                DocenteDaoSQL.getInstance();
+         return new DocenteDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createInstrumentoAvaliacaoDao() throws Exception {
-         return isXML() ? InstrumentoAvaliacaoDaoXML.getInstance() :
-                InstrumentoAvaliacaoDaoSQL.getInstance();
+         return new InstrumentoAvaliacaoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createLegendaDao() throws Exception {
-         return isXML() ? LegendaDaoXML.getInstance() :
-                LegendaDaoSQL.getInstance();
+         return new LegendaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createRecursoDao() throws Exception {
-         return isXML() ? RecursoDaoXML.getInstance() :
-                RecursoDaoSQL.getInstance();
+         return new RecursoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createTecnicaDao() throws Exception {
-         return isXML() ? TecnicaDaoXML.getInstance() :
-                TecnicaDaoSQL.getInstance();
+         return new TecnicaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createNivelEnsinoDao() throws Exception {
-         return isXML() ? NivelEnsinoDaoXML.getInstance() :
-                NivelEnsinoDaoSQL.getInstance();
+         return new NivelEnsinoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createEtapaEnsinoDao() throws Exception {
-         return isXML() ? EtapaEnsinoDaoXML.getInstance() :
-                EtapaEnsinoDaoSQL.getInstance();
+         return new EtapaEnsinoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createUnidadeCurricularDao() throws Exception {
-         return isXML() ? UnidadeCurricularDaoXML.getInstance() :
-                new UnidadeCurricularDaoSQL();
+         return new UnidadeCurricularDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createPlanoDeEnsinoDao() throws Exception {
-         return isXML() ? PlanoDeEnsinoDaoXML.getInstance() :
-                new PlanoDeEnsinoDaoSQL();
+         return new PlanoDeEnsinoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createObjetivoDao() throws Exception {
-         return isXML() ? ObjetivoDaoXML.getInstance() :
-                new ObjetivoDaoSQL();
+         return new ObjetivoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createDiarioDao() throws Exception {
-         return isXML() ? DiarioDaoXML.getInstance() :
-                new DiarioDaoSQL();
+         return new DiarioDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createPermanenciaEstudantilDao() throws Exception {
-         return new PermanenciaEstudantilDaoSQL();
+         return new PermanenciaEstudantilDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createAtendimentoEstudanteDao() throws Exception {
-         return new AtendimentoEstudanteDaoSQL();
+         return new AtendimentoEstudanteDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createPlanoAvaliacaoDao() throws Exception {
-         return isXML() ? PlanoAvaliacaoDaoXML.getInstance() :
-                new PlanoAvaliacaoDaoSQL();
+         return new PlanoAvaliacaoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createHorarioAulaDao() throws Exception {
-         return isXML() ? HorarioAulaDaoXML.getInstance() :
-                new HorarioAulaDaoSQL();
+         return new HorarioAulaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createDetalhamentoDao() throws Exception {
-         return isXML() ? DetalhamentoDaoXML.getInstance() :
-                new DetalhamentoDaoSQL();
+         return new DetalhamentoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createObjetivoDetalheDao() throws Exception {
-         return isXML() ? ObjetivoDetalheDaoXML.getInstance() :
-                new ObjetivoDetalheDaoSQL();
+         return new ObjetivoDetalheDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createMetodologiaDao() throws Exception {
-         return isXML() ? MetodologiaDaoXML.getInstance() :
-                new MetodologiaDaoSQL();
+         return new MetodologiaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createDiarioFrequenciaDao() throws Exception {
-         return isXML() ? DiarioFrequenciaDaoXML.getInstance() :
-                new DiarioFrequenciaDaoSQL();
+         return new DiarioFrequenciaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createAvaliacaoDao() throws Exception {
-         return isXML() ? AvaliacaoDaoXML.getInstance() :
-                new AvaliacaoDaoSQL();
+         return new AvaliacaoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createReferenciaBibliograficaDao() throws Exception {
-         return isXML() ? ReferenciaBibliograficaDaoXML.getInstance() :
-                new ReferenciaBibliograficaDaoSQL();
+         return new ReferenciaBibliograficaDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createConteudoDao() throws Exception {
-         return !isXML() ? new ConteudoDaoSQL() : null;
+         return new ConteudoDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createObjetivoUCDao() throws Exception {
-         return !isXML() ? new ObjetivoUCDaoSQL() : null;
+         return new ObjetivoUCDaoSQL(Connection.createEntityManager());
     }
     
     public static DaoPattern createObjetivoUCConteudoDao() throws Exception {
-         return !isXML() ? new ObjetivoUCConteudoDaoSQL() : null;
+         return new ObjetivoUCConteudoDaoSQL(Connection.createEntityManager());
     }
 }

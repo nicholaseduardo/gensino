@@ -172,7 +172,7 @@ public class CursoFields extends DefaultFieldsPanel {
         return map;
     }
 
-    private void setFieldValues(Integer codigo, String nome,
+    private void setFieldValues(Long codigo, String nome,
             Campus iCampus, NivelEnsino nivelEnsino) {
         txtId.setText(codigo.toString());
         txtNome.setText(nome);
@@ -182,7 +182,7 @@ public class CursoFields extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(HashMap<String, Object> mapValues) {
-        Integer codigo = (Integer) mapValues.get("id");
+        Long codigo = (Long) mapValues.get("id");
         
         setFieldValues(codigo, (String) mapValues.get("nome"),
                 (Campus) mapValues.get("campus"),

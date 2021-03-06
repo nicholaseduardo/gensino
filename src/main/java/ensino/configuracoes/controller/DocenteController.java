@@ -16,15 +16,7 @@ import ensino.patterns.factory.DaoFactory;
  */
 public class DocenteController extends AbstractController<Docente> {
     
-    private static DocenteController instance = null;
-
-    private DocenteController() throws Exception {
+    public DocenteController() throws Exception {
         super(DaoFactory.createDocenteDao(), DocenteFactory.getInstance());
-    }
-    
-    public static DocenteController getInstance() throws Exception {
-        if (instance == null)
-            instance = new DocenteController();
-        return instance;
     }
 }

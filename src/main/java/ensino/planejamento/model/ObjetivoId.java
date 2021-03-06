@@ -21,7 +21,7 @@ import javax.persistence.ManyToOne;
 public class ObjetivoId implements Serializable {
     
     @Column(name = "sequencia")
-    private Integer sequencia;
+    private Long sequencia;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "planoDeEnsino_id")
@@ -30,17 +30,21 @@ public class ObjetivoId implements Serializable {
     public ObjetivoId() {
     }
 
-    public ObjetivoId(Integer sequencia, PlanoDeEnsino planoDeEnsino) {
+    public ObjetivoId(Long sequencia, PlanoDeEnsino planoDeEnsino) {
         this.sequencia = sequencia;
         this.planoDeEnsino = planoDeEnsino;
     }
 
-    public Integer getSequencia() {
+    public Long getSequencia() {
         return sequencia;
     }
 
-    public void setSequencia(Integer sequencia) {
+    public void setSequencia(Long sequencia) {
         this.sequencia = sequencia;
+    }
+    
+    public Boolean hasSequencia() {
+        return sequencia != null && sequencia > 0;
     }
 
     public PlanoDeEnsino getPlanoDeEnsino() {

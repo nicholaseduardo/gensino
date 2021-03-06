@@ -22,7 +22,7 @@ import javax.persistence.ManyToOne;
 public class ConteudoId implements Serializable {
     
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns(value = {
@@ -32,7 +32,7 @@ public class ConteudoId implements Serializable {
     })
     private UnidadeCurricular unidadeCurricular;
     
-    public ConteudoId(Integer sequencia, UnidadeCurricular uc) {
+    public ConteudoId(Long sequencia, UnidadeCurricular uc) {
         this.id = sequencia;
         this.unidadeCurricular = uc;
     }
@@ -40,12 +40,16 @@ public class ConteudoId implements Serializable {
     public ConteudoId() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer sequencia) {
+    public void setId(Long sequencia) {
         this.id = sequencia;
+    }
+    
+    public Boolean hasId() {
+        return id != null && id > 0;
     }
 
     public UnidadeCurricular getUnidadeCurricular() {

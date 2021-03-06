@@ -80,7 +80,7 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
          */
         List<Estudante> l = planoDeEnsino.getTurma().getEstudantes();
         listaAtendimentoEstudantes = new ArrayList();
-        Integer seq = 1;
+        Long seq = 1L;
         for (Estudante e : l) {
             AtendimentoEstudante ae = AtendimentoEstudanteFactory.getInstance().
                     createObject(new AtendimentoEstudanteId(seq++, null, e),
@@ -276,7 +276,7 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
         }
     }
 
-    private void setFieldValues(Integer id, String descricao, Date data,
+    private void setFieldValues(Long id, String descricao, Date data,
             Date hora) {
         txtId.setText(id.toString());
         txtDescricao.setText(descricao);
@@ -287,7 +287,7 @@ public class PermanenciaEstudantilFieldsPanel extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(HashMap<String, Object> mapValues) {
         setFieldValues(
-                (Integer) mapValues.get("id"),
+                (Long) mapValues.get("id"),
                 (String) mapValues.get("descricao"),
                 (Date) mapValues.get("dataAtendimento"),
                 (Date) mapValues.get("horaAtendimento"));

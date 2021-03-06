@@ -80,6 +80,10 @@ public class Detalhamento implements Serializable {
         this.id = id;
     }
     
+    public Boolean hasId() {
+        return id.hasSequencia();
+    }
+    
     public PlanoDeEnsino getPlanoDeEnsino() {
         return id.getPlanoDeEnsino();
     }

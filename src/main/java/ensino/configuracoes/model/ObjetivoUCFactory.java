@@ -7,9 +7,6 @@ package ensino.configuracoes.model;
 
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -50,7 +47,7 @@ public class ObjetivoUCFactory implements BeanFactory<ObjetivoUC> {
         if (args[i] instanceof ObjetivoUCId) {
             o.setId((ObjetivoUCId) args[i++]);
         } else {
-            o.getId().setSequencia((Integer) args[i++]);
+            o.getId().setSequencia((Long) args[i++]);
         }
         o.setDescricao((String) args[i++]);
         o.setOrdem((Integer) args[i++]);
@@ -62,29 +59,14 @@ public class ObjetivoUCFactory implements BeanFactory<ObjetivoUC> {
     }
 
     @Override
-    public ObjetivoUC getObject(Element e) {
-        return createObject(
-                Integer.parseInt(e.getAttribute("sequencia")),
-                e.getAttribute("descricao"));
-    }
-
-    @Override
     public ObjetivoUC getObject(HashMap<String, Object> p) {
         ObjetivoUC o = createObject(
-                new ObjetivoUCId((Integer) p.get("sequencia"),
+                new ObjetivoUCId((Long) p.get("sequencia"),
                 (UnidadeCurricular) p.get("unidadeCurricular")),
                 p.get("ordem"),
                 p.get("descricao"));
 
         return o;
-    }
-
-    @Override
-    public Node toXml(Document doc, ObjetivoUC o) {
-        Element e = doc.createElement("objetivoUC");
-        e.setAttribute("sequencia", o.getId().getSequencia().toString());
-        
-        return e;
     }
 
 }

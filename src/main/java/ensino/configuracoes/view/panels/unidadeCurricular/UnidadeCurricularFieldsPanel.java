@@ -136,7 +136,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
                             "Aviso", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                int id = 1;
+                Long id = 1L;
                 if (!referenciaTableModel.isEmpty()) {
                     /**
                      * Procedimento realizado para gerar a chave única de cada
@@ -294,7 +294,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
         return map;
     }
 
-    private void setFieldValues(Integer id, String nome, Integer nAulasTeoricas,
+    private void setFieldValues(Long id, String nome, Integer nAulasTeoricas,
             Integer nAulasPraticas, Integer cargaHoraria,
             String ementa, Curso curso,
             List<ReferenciaBibliografica> listReferencias) {
@@ -324,7 +324,7 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
     @Override
     public void setFieldValues(HashMap<String, Object> mapValues) {
         setFieldValues(
-                (Integer) mapValues.get("id"),
+                (Long) mapValues.get("id"),
                 (String) mapValues.get("nome"),
                 (Integer) mapValues.get("nAulasTeoricas"),
                 (Integer) mapValues.get("nAulasPraticas"),

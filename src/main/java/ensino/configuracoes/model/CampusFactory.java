@@ -10,9 +10,6 @@ import ensino.util.types.StatusCampus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -45,14 +42,6 @@ public class CampusFactory implements BeanFactory<Campus> {
     }
 
     @Override
-    public Campus getObject(Element e) {
-        Integer id = Integer.parseInt(e.getAttribute("id"));
-        Campus campus = createObject(id, e.getAttribute("nome"));
-        
-        return campus;
-    }
-
-    @Override
     public Campus getObject(HashMap<String, Object> p) {
         Campus campus = createObject(p.get("id"), p.get("nome"),
                 p.get("status"));
@@ -67,15 +56,5 @@ public class CampusFactory implements BeanFactory<Campus> {
         }
         campus.setCalendarios(calendarios);
         return campus;
-    }
-
-    @Override
-    public Node toXml(Document doc, Campus o) {
-        Element e = doc.createElement("campus");
-        e.setAttribute("id", o.getId().toString());
-        e.setAttribute("nome", o.getNome());
-        e.setAttribute("status", o.getStatus() != null ? o.getStatus().toString() : "");
-        
-        return e;
     }
 }

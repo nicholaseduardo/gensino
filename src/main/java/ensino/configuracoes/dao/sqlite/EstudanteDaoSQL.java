@@ -9,8 +9,17 @@ import ensino.configuracoes.model.Turma;
 import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.EstudanteId;
 import ensino.connection.AbstractDaoSQL;
+import ensino.util.types.SituacaoEstudante;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -18,90 +27,73 @@ import javax.persistence.TypedQuery;
  */
 public class EstudanteDaoSQL extends AbstractDaoSQL<Estudante> {
 
-    public EstudanteDaoSQL() {
-        super();
+    public EstudanteDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Estudante o) {
-        if (o.getId().getId() == null) {
-            o.getId().setId(nextVal(o));
-        }
-        
-        if (findById(o.getId()) == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<Estudante> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Estudante> list(Object ref) {
-        String sql = ref instanceof String ? (String) ref : "";
-        return this.list(sql, ref);
-    }
-
-    @Override
-    public List<Estudante> list(String criteria, Object ref) {
-        String sql = "SELECT e FROM Estudante e ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE e.id.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY e.id.turma.id.curso.nome,"
-                + "e.id.turma.id.curso.id.campus.nome, "
-                + "e.id.id ";
-
-        TypedQuery query = entityManager.createQuery(sql, Estudante.class);
-        return query.getResultList();
+    public List<Estudante> findAll() {
+        return findBy(null, null, null);
     }
 
     @Override
     public Estudante findById(Object id) {
-        return entityManager.find(Estudante.class, id);
+        return em.find(Estudante.class, id);
+    }
+
+    public List<Estudante> findBy(Turma turma, String nome, SituacaoEstudante situacao) {
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Estudante.class);
+
+        Root<Estudante> root = query.from(Estudante.class);
+
+        List<Predicate> predicates = new ArrayList();
+
+        if (turma != null) {
+            Predicate p = builder.equal(root.get("id").get("turma"), turma);
+            predicates.add(p);
+        }
+        
+        if (nome != null && !"".equals(nome)) {
+            Predicate p = builder.like(root.get("nome"), "%" + nome + "%");
+            predicates.add(p);
+        }
+        
+        if (situacao != null) {
+            Predicate p = builder.equal(root.get("situacaoEstudante"), situacao);
+            predicates.add(p);
+        }
+
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+        query.orderBy(builder.asc(root.get("nome")));
+        TypedQuery<Estudante> typedQuery = em.createQuery(query);
+        return typedQuery.getResultList();
     }
 
     @Override
-    public Estudante findById(Object... ids) {
-        if (ids.length != 2) {
-            System.err.println("Quantidade de parâmetros errada. Esperado 2 parametros");
-            return null;
+    public void save(Estudante o) throws SQLException {
+        if (!o.hasId()) {
+            o.getId().setId(nextVal(o));
+            super.save(o);
+        } else {
+            super.update(o);
         }
-        Object oAno = ids[0];
-        if (!(oAno instanceof Integer)) {
-            System.err.println("Primeiro atributo deve ser Integer");
-            return null;
-        }
-        Object oTurma = ids[1];
-        if (!(oTurma instanceof Turma)) {
-            System.err.println("Segundo atributo deve ser Turma");
-            return null;
-        }
-        return entityManager.find(Estudante.class,
-                new EstudanteId((Integer) oAno, (Turma) oTurma));
     }
 
     @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public Long nextVal(Estudante object) {
+        EstudanteId composedId = object.getId();
+        String sql = "select max(e.id.id) from Estudante e where e.id.turma = :pTurma";
 
-    @Override
-    public Integer nextVal(Object... params) {
-        Estudante o = (Estudante) params[0];
-        int id = 1;
-        List<Estudante> l = o.getId().getTurma().getEstudantes();
-        if (!l.isEmpty()) {
-            id = l.get(l.size() - 1).getId().getId() + 1;
+        Long maxNumero = 1L;
+        TypedQuery<Long> query = em.createQuery(sql, Long.class);
+        query.setParameter("pTurma", composedId.getTurma());
+        try {
+            maxNumero = query.getSingleResult();
+        } catch (NoResultException ex) {
+            return maxNumero;
         }
-        return id;
+        return maxNumero + 1;
     }
 
 }

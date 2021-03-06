@@ -80,6 +80,10 @@ public class Conteudo implements Serializable {
     public void setId(ConteudoId id) {
         this.id = id;
     }
+    
+    public Boolean hasId() {
+        return id.hasId();
+    }
 
     public UnidadeCurricular getUnidadeCurricular() {
         if (id != null) {

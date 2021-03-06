@@ -8,6 +8,7 @@ package ensino.configuracoes.dao.sqlite;
 import ensino.configuracoes.model.Campus;
 import ensino.connection.AbstractDaoSQL;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 /**
@@ -16,63 +17,27 @@ import javax.persistence.TypedQuery;
  */
 public class CampusDaoSQL extends AbstractDaoSQL<Campus> {
 
-    public CampusDaoSQL() {
-        super();
+    private static final String jpql = " select c from Campus c ";
+
+    public CampusDaoSQL(EntityManager em) {
+        super(em);
     }
 
     @Override
-    public void save(Campus o) {
-        if (o.getId() == null) {
-            entityManager.persist(o);
-        } else {
-            entityManager.merge(o);
-        }
-    }
-
-    @Override
-    public List<Campus> list() {
-        return this.list(null);
-    }
-
-    @Override
-    public List<Campus> list(Object ref) {
-        return this.list(ref.toString(), ref);
-    }
-
-    @Override
-    public List<Campus> list(String criteria, Object ref) {
-        String sql = "SELECT c FROM Campus c ";
-
-        if (!"".equals(criteria)) {
-            sql += " WHERE c.id > 0 " + criteria;
-        }
-
-        // order
-        sql += " ORDER BY c.nome ";
-
-        TypedQuery query = entityManager.createQuery(sql, Campus.class);
-        List<Campus> list = query.getResultList();
-        return list;
+    public List<Campus> findAll() {
+        return em.createQuery(jpql, Campus.class).getResultList();
     }
 
     @Override
     public Campus findById(Object id) {
-        return entityManager.find(Campus.class, id);
+        return em.find(Campus.class, id);
     }
 
-    @Override
-    public Campus findById(Object... ids) {
-        return this.findById(ids[0]);
-    }
+    public Campus findByStatusVigente() {
+        String sql = String.format("%s where c.status = 'V' ", jpql);
 
-    @Override
-    public Integer nextVal() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Integer nextVal(Object... params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        TypedQuery<Campus> query = em.createQuery(sql, Campus.class);
+        return query.getSingleResult();
     }
 
 }

@@ -8,9 +8,6 @@ package ensino.configuracoes.model;
 import ensino.patterns.factory.BeanFactory;
 import java.util.HashMap;
 import java.util.List;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -40,13 +37,6 @@ public class CalendarioFactory implements BeanFactory<Calendario> {
     }
 
     @Override
-    public Calendario getObject(Element e) {
-        Integer ano = Integer.valueOf(e.getAttribute("ano"));
-        Calendario c = createObject(ano, e.getAttribute("descricao"));
-        return c;
-    }
-
-    @Override
     public Calendario getObject(HashMap<String, Object> p) {
         Calendario c = createObject(p.get("ano"), p.get("descricao"));
         c.getId().setCampus((Campus) p.get("campus"));
@@ -58,16 +48,6 @@ public class CalendarioFactory implements BeanFactory<Calendario> {
         });
         
         return c;
-    }
-
-    @Override
-    public Node toXml(Document doc, Calendario o) {
-        Element e = doc.createElement("calendario");
-        e.setAttribute("ano", o.getId().getAno().toString());
-        e.setAttribute("campusId", o.getId().getCampus().getId().toString());
-        e.setAttribute("descricao", o.getDescricao());
-
-        return e;
     }
 
 }
