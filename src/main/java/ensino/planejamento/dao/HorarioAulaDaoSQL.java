@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -71,16 +70,22 @@ public class HorarioAulaDaoSQL extends AbstractDaoSQL<HorarioAula> {
 
     @Override
     public Long nextVal(HorarioAula object) {
-        HorarioAulaId composedId = object.getId();
-        String sql = "select max(a.id.id) from HorarioAula a where a.id.planoDeEnsino = :pPlanoDeEnsino";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pPlanoDeEnsino", composedId.getPlanoDeEnsino());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<HorarioAula> root = query.from(HorarioAula.class);
+
+        query.select(builder.max(root.<Long>get("id").get("sequencia")));
+
+        HorarioAulaId id = object.getId();
+        query.where(builder.equal(root.get("id").get("planoDeEnsino"), id.getPlanoDeEnsino()));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

@@ -14,7 +14,6 @@ import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
-import ensino.patterns.factory.ControllerFactory;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoAvaliacao;
@@ -35,8 +34,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -109,7 +106,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
             comboBimestre = new GenJComboBox(Bimestre.values());
 
             txtNome = new GenJTextField(20, true);
-            comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(ControllerFactory.createInstrumentoAvaliacaoController()));
+            comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(TipoMetodo.INSTRUMENTO));
             spinPeso = new GenJSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.1));
             spinPeso.setEditor(new JSpinner.NumberEditor(spinPeso, "0.0"));
             spinValor = new GenJSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.1));
@@ -164,7 +161,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
             panel.add(comboObjetivo, c);
 
         } catch (Exception ex) {
-            Logger.getLogger(PlanoAvaliacaoPanel.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
         }
         return panel;
     }
@@ -267,7 +264,7 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
         } else {
             return true;
         }
-        JOptionPane.showMessageDialog(this, msg, "Aviso", JOptionPane.WARNING_MESSAGE);
+        showWarningMessage(msg);
         return false;
     }
 
@@ -331,7 +328,6 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                     plano.setValor((Double) spinValor.getValue());
                     plano.setData((Date) spinData.getValue());
                     plano.setObjetivo((Objetivo) comboObjetivo.getSelectedItem());
-//                    plano.setBimestre((Bimestre) comboBimestre.getSelectedItem());
 
                     if (selectedRow < 0 || temp.getId().getSequencia() == null) {
                         // cria um novo plano
@@ -374,8 +370,6 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                             // Cria a avaliação básica a partir do método de avaliação
                             PlanoAvaliacao plano = new PlanoAvaliacao();
                             plano.setNome(String.format("Avaliação %d", sequencia++));
-                            // Inicaliza sempre no primeiro bimestre
-//                            plano.setBimestre(Bimestre.PRIMEIRO);
                             // Inicializa com peso 1
                             plano.setPeso(1.0);
                             // Inicializa com o valor 10.0 (nota máxima)
@@ -424,7 +418,6 @@ public class PlanoAvaliacaoPanel extends DefaultFieldsPanel {
                 spinPeso.setValue(plano.getPeso());
                 spinValor.setValue(plano.getValor());
                 spinData.setValue(plano.getData());
-//                comboBimestre.setSelectedItem(plano.getBimestre());
                 comboBimestre.repaint();
 
                 comboObjetivo.setSelectedItem(plano.getObjetivo());

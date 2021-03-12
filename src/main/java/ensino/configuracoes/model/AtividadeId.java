@@ -24,7 +24,7 @@ public class AtividadeId implements Serializable {
     @Column(name = "id")
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "calendario_ano"),
         @JoinColumn(name = "campus_id")

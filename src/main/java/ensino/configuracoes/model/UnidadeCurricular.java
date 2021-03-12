@@ -233,26 +233,24 @@ public class UnidadeCurricular implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        
         final UnidadeCurricular other = (UnidadeCurricular) obj;
-        if (!Objects.equals(this.nome, other.nome)) {
+        if (!Objects.equals(this.nome, other.getNome())) {
             return false;
         }
-        if (!Objects.equals(this.ementa, other.ementa)) {
+        if (!Objects.equals(this.ementa, other.getEmenta())) {
             return false;
         }
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.id, other.getId())) {
             return false;
         }
-        if (!Objects.equals(this.nAulasTeoricas, other.nAulasTeoricas)) {
+        if (!Objects.equals(this.nAulasTeoricas, other.getnAulasTeoricas())) {
             return false;
         }
-        if (!Objects.equals(this.nAulasPraticas, other.nAulasPraticas)) {
+        if (!Objects.equals(this.nAulasPraticas, other.getnAulasPraticas())) {
             return false;
         }
-        if (!Objects.equals(this.cargaHoraria, other.cargaHoraria)) {
+        if (!Objects.equals(this.cargaHoraria, other.getCargaHoraria())) {
             return false;
         }
         return true;

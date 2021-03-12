@@ -43,7 +43,13 @@ public class EstudanteFactory implements BeanFactory<Estudante> {
         }
         o.setNome((String) args[i++]);
         o.setRegistro((String) args[i++]);
-        o.setSituacaoEstudante((SituacaoEstudante) args[i++]);
+        SituacaoEstudante se;
+        if (args[i] instanceof String)
+            se = SituacaoEstudante.of((String)args[i++]);
+        else {
+            se = (SituacaoEstudante) args[i++];
+        }
+        o.setSituacaoEstudante(se);
         o.setIngresso((Date) args[i++]);
         return o;
     }

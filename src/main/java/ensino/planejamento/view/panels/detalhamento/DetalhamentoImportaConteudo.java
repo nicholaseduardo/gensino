@@ -11,6 +11,7 @@ import ensino.components.GenJList;
 import ensino.components.GenJTree;
 import ensino.components.GenTreeModel;
 import ensino.components.renderer.GenCellRenderer;
+import ensino.configuracoes.controller.ObjetivoUCConteudoController;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.Calendario;
 import ensino.configuracoes.model.Conteudo;
@@ -25,6 +26,8 @@ import ensino.configuracoes.view.models.SemanaLetivaTableModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.patterns.BaseObject;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.DetalhamentoController;
+import ensino.planejamento.controller.ObjetivoController;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.DetalhamentoFactory;
 import ensino.planejamento.model.DetalhamentoId;
@@ -90,15 +93,27 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
     private GenJTree tree;
     private ConteudoTreeModel treeModel;
 
-    private PlanoDeEnsino planoDeEnsino;
-    private Component frame;
+    private final PlanoDeEnsino planoDeEnsino;
+    private final Component frame;
+
+    private ObjetivoUCConteudoController ouccCol;
+    private ObjetivoController objetivoCol;
+    private DetalhamentoController detalhamentoCol;
 
     public DetalhamentoImportaConteudo(Component frame, PlanoDeEnsino planoDeEnsino) {
         super();
         this.planoDeEnsino = planoDeEnsino;
         this.frame = frame;
+        
+        try {
+            this.ouccCol = ControllerFactory.createObjetivoUCConteudoController();
+            this.objetivoCol = ControllerFactory.createObjetivoController();
+            this.detalhamentoCol = ControllerFactory.createDetalhamentoController();
 
-        initComponents();
+            initComponents();
+        } catch (Exception ex) {
+            showErrorMessage(ex);
+        }
     }
 
     private void initComponents() {
@@ -406,8 +421,6 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
         Object nodeObject = node.getUserObject();
         if (nodeObject instanceof SemanaLetiva && sl.equals(nodeObject)) {
             return node;
-//            DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) node.getParent();
-//            return parentNode;
         }
 
         int childCount = node.getChildCount();
@@ -417,7 +430,6 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
                 DefaultMutableTreeNode semanaNode = getSemanaNode(child, sl);
                 if (semanaNode != null) {
                     return semanaNode;
-//                    return conteudoNode;
                 }
             }
         }
@@ -425,7 +437,7 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
     }
 
     private void vincularObjetivo(Detalhamento d, Conteudo conteudo) throws Exception {
-        List<ObjetivoUCConteudo> loucc = ControllerFactory.createObjetivoUCConteudoController().listar(conteudo);
+        List<ObjetivoUCConteudo> loucc = this.ouccCol.listar(conteudo);
         Objetivo obj = null;
         if (!loucc.isEmpty()) {
             /**
@@ -448,7 +460,7 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
                 }
             }
             /**
-             * Se o objetivo não existir no plano de ensino, ele deve ser 
+             * Se o objetivo não existir no plano de ensino, ele deve ser
              * cadastrado
              */
             if (obj == null) {
@@ -458,9 +470,9 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
                  */
                 obj = ObjetivoFactory.getInstance().createObject(
                         new ObjetivoId(null, planoDeEnsino),
-                        oucc.getObjetivoUC().getDescricao(), 
+                        oucc.getObjetivoUC().getDescricao(),
                         oucc.getObjetivoUC());
-                ControllerFactory.createObjetivoController().salvar(obj);
+                objetivoCol.salvar(obj);
                 planoDeEnsino.addObjetivo(obj);
             }
         }
@@ -473,17 +485,17 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
             d.addObjetivoDetalhe(od);
         }
     }
-    
+
     private Metodologia createMetodologia(Detalhamento d, BaseObject bo) {
         Long id = 1L;
         List<Metodologia> l = d.getMetodologias();
         if (!l.isEmpty()) {
             id = l.get(l.size() - 1).getId().getSequencia() + 1;
         }
-        
+
         Metodologia m = MetodologiaFactory.getInstance()
-                            .createObject(new MetodologiaId(id, d),
-                                    TipoMetodo.of(bo), bo);
+                .createObject(new MetodologiaId(id, d),
+                        TipoMetodo.of(bo), bo);
         return m;
     }
 
@@ -552,7 +564,6 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
                 if (!lMetodosGerais.isEmpty()) {
                     for (BaseObject bo : lMetodosGerais) {
                         Metodologia m = createMetodologia(d, bo);
-//                        ControllerFactory.createMetodologiaController().salvar(m);
                         d.addMetodologia(m);
                     }
                 }
@@ -569,28 +580,13 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
                 /**
                  * Salva o detalhamento e o adiciona ao plano de ensino.
                  */
-                ControllerFactory.createDetalhamentoController().salvar(d);
+                detalhamentoCol.salvar(d);
                 planoDeEnsino.addDetalhamento(d);
             }
             showInformationMessage("Estrutura de detalhamento construída com sucesso!");
             onCloseAction(e);
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onCloseAction(ActionEvent e) {
-        if (frame instanceof JInternalFrame) {
-            JInternalFrame f = (JInternalFrame) frame;
-            f.dispose();
-        } else if (frame instanceof JDialog) {
-            JDialog d = (JDialog) frame;
-            d.dispose();
-        } else {
-            JFrame f = (JFrame) frame;
-            f.dispose();
         }
     }
 
@@ -644,7 +640,6 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
         Object o = ((DefaultMutableTreeNode) value).getUserObject();
         if (o instanceof Conteudo) {
             descricao = ((Conteudo) o).getDescricao();
-//            fontSize = 16;
         } else if (o instanceof SemanaLetiva) {
             imgPath = "calendar-image-png-25px";
             SemanaLetiva sl = (SemanaLetiva) o;
@@ -699,6 +694,24 @@ public class DetalhamentoImportaConteudo extends DefaultFieldsPanel {
         panel.setBackground(defaultBackground);
 
         return panel;
+    }
+
+    @Override
+    public void onCloseAction(ActionEvent e) {
+        if (frame instanceof JInternalFrame) {
+            JInternalFrame f = (JInternalFrame) frame;
+            f.dispose();
+        } else if (frame instanceof JDialog) {
+            JDialog d = (JDialog) frame;
+            d.dispose();
+        } else {
+            JFrame f = (JFrame) frame;
+            f.dispose();
+        }
+        Runtime rt = Runtime.getRuntime();
+        System.out.println("\nMemória depois da criação dos objetos: " + rt.freeMemory());
+        rt.gc();
+        System.out.println("Memória depois executar o gc: " + rt.freeMemory());
     }
 
     private class ObjectCellRenderer extends GenCellRenderer {

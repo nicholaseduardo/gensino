@@ -28,7 +28,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -136,16 +135,6 @@ public class UnidadeCurricularFieldsPanel extends DefaultFieldsPanel {
                             "Aviso", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                Long id = 1L;
-                if (!referenciaTableModel.isEmpty()) {
-                    /**
-                     * Procedimento realizado para gerar a chave única de cada
-                     * atividade para cada calendário/campusll
-                     */
-                    ReferenciaBibliografica atemp = referenciaTableModel.getMax(Comparator.comparing(a -> a.getId().getSequencia()));
-                    id = atemp.getId().getSequencia();
-                }
-                rb.getId().setSequencia(id);
                 referenciaTableModel.addRow(rb);
 
                 compoBiblioSearch.setObjectValue(null);

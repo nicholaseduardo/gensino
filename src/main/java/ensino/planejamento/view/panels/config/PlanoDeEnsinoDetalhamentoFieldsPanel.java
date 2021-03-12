@@ -52,8 +52,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -430,15 +428,15 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
             try {
                 if (aModel.isSelected()) {
                     if (e.getSource() == checkTecnica) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createTecnicaController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(TipoMetodo.TECNICA));
                     } else if (e.getSource() == checkRecurso) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createRecursoController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(TipoMetodo.RECURSO));
                     } else if (e.getSource() == checkInstrumento) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createInstrumentoAvaliacaoController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(TipoMetodo.INSTRUMENTO));
                     }
                 }
             } catch (Exception ex) {
-                Logger.getLogger(PlanoDeEnsinoDetalhamentoFieldsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMessage(ex);
             }
         }
 
@@ -472,63 +470,59 @@ public class PlanoDeEnsinoDetalhamentoFieldsPanel extends DefaultFieldsPanel {
 
     private class ButtonAction implements ActionListener {
 
-        private DetalhamentoController col;
-
-        public ButtonAction() {
-            try {
-                col = ControllerFactory.createDetalhamentoController();
-            } catch (Exception ex) {
-                Logger.getLogger(PlanoDeEnsinoDetalhamentoFieldsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
         @Override
         public void actionPerformed(ActionEvent e) {
-            Object source = e.getSource();
-            if (source == btReplicarMetodo) {
-                if (metodologiaTableModel.isEmpty()) {
-                    showWarningMessage("Não é possível importar dados pois a tabela de metodologias"
-                            + " está vazia.");
-                    return;
-                }
-
-                int confirmForm = JOptionPane.showConfirmDialog(PlanoDeEnsinoDetalhamentoFieldsPanel.this,
-                        "Confirma a replicação das metodologias para todas as demais"
-                        + " semanas?", "Confirmação", JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (confirmForm == JOptionPane.OK_OPTION) {
-                    /**
-                     * Recupera a lista de detalhamento
-                     */
-                    List<Detalhamento> lDetalhamento = detalhamento.getPlanoDeEnsino().getDetalhamentos();
-                    try {
-                        for (int i = 1; i < lDetalhamento.size(); i++) {
-                            Detalhamento o = lDetalhamento.get(i);
-                            o.getMetodologias().clear();
-                            Iterator<Metodologia> it = metodologiaTableModel.getData().iterator();
-                            while(it.hasNext()) {
-                                o.addMetodologia(it.next());
+            try {
+                Object source = e.getSource();
+                DetalhamentoController col = ControllerFactory.createDetalhamentoController();
+                if (source == btReplicarMetodo) {
+                    if (metodologiaTableModel.isEmpty()) {
+                        showWarningMessage("Não é possível importar dados pois a tabela de metodologias"
+                                + " está vazia.");
+                        return;
+                    }
+                    
+                    int confirmForm = JOptionPane.showConfirmDialog(PlanoDeEnsinoDetalhamentoFieldsPanel.this,
+                            "Confirma a replicação das metodologias para todas as demais"
+                                    + " semanas?", "Confirmação", JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE);
+                    if (confirmForm == JOptionPane.OK_OPTION) {
+                        /**
+                         * Recupera a lista de detalhamento
+                         */
+                        List<Detalhamento> lDetalhamento = detalhamento.getPlanoDeEnsino().getDetalhamentos();
+                        try {
+                            for (int i = 1; i < lDetalhamento.size(); i++) {
+                                Detalhamento o = lDetalhamento.get(i);
+                                o.getMetodologias().clear();
+                                Iterator<Metodologia> it = metodologiaTableModel.getData().iterator();
+                                while(it.hasNext()) {
+                                    o.addMetodologia(it.next());
+                                }
+                                col.salvar(o);
                             }
-                            col.salvar(o);
+                            showInformationMessage("A replicação das metodologias foi realizada com sucesso.");
+                        } catch (Exception ex) {
+                            showErrorMessage(ex);
                         }
-                        showInformationMessage("A replicação das metodologias foi realizada com sucesso.");
+                    }
+                } else if (source == btSalvar) {
+                    detalhamento.setConteudo(txtConteudo.getText());
+                    ObservacaoListModel obsModel = (ObservacaoListModel) txtObservacao.getModel();
+                    detalhamento.setObservacao(obsModel.toString());
+                    detalhamento.setNAulasPraticas((Integer) txtNAulasP.getValue());
+                    detalhamento.setNAulasTeoricas((Integer) txtNAulasT.getValue());
+                    
+                    try {
+                        col.salvar(detalhamento);
+                        showInformationMessage("As alterações foram salvas!");
                     } catch (Exception ex) {
                         showErrorMessage(ex);
                     }
                 }
-            } else if (source == btSalvar) {
-                detalhamento.setConteudo(txtConteudo.getText());
-                ObservacaoListModel obsModel = (ObservacaoListModel) txtObservacao.getModel();
-                detalhamento.setObservacao(obsModel.toString());
-                detalhamento.setNAulasPraticas((Integer) txtNAulasP.getValue());
-                detalhamento.setNAulasTeoricas((Integer) txtNAulasT.getValue());
-
-                try {
-                    col.salvar(detalhamento);
-                    showInformationMessage("As alterações foram salvas!");
-                } catch (Exception ex) {
-                    showErrorMessage(ex);
-                }
+                col.close();
+            } catch (Exception ex) {
+                showErrorMessage(ex);
             }
         }
 

@@ -24,7 +24,7 @@ public class ObjetivoUCId implements Serializable {
     @Column(name = "sequencia")
     private Long sequencia;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "unidadeCurricular_id"),
         @JoinColumn(name = "curso_id"),
@@ -76,14 +76,12 @@ public class ObjetivoUCId implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        
         final ObjetivoUCId other = (ObjetivoUCId) obj;
-        if (!Objects.equals(this.sequencia, other.sequencia)) {
+        if (!Objects.equals(this.sequencia, other.getSequencia())) {
             return false;
         }
-        if (!Objects.equals(this.unidadeCurricular, other.unidadeCurricular)) {
+        if (!Objects.equals(this.unidadeCurricular, other.getUnidadeCurricular())) {
             return false;
         }
         return true;

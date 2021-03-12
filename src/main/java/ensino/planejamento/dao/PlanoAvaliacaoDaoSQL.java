@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -42,7 +41,7 @@ public class PlanoAvaliacaoDaoSQL extends AbstractDaoSQL<PlanoAvaliacao> {
         return em.find(PlanoAvaliacao.class, id);
     }
 
-    public List<PlanoAvaliacao> findBy(PlanoDeEnsino planoDeEnsino, 
+    public List<PlanoAvaliacao> findBy(PlanoDeEnsino planoDeEnsino,
             EtapaEnsino ee, InstrumentoAvaliacao ia) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery query = builder.createQuery(PlanoAvaliacao.class);
@@ -74,24 +73,32 @@ public class PlanoAvaliacaoDaoSQL extends AbstractDaoSQL<PlanoAvaliacao> {
     public void save(PlanoAvaliacao o) throws SQLException {
         if (!o.hasId()) {
             o.getId().setSequencia(nextVal(o));
-            super.save(o);
-        } else {
+        }
+        if (this.findById(o.getId()) != null) {
             super.update(o);
+        } else {
+            super.save(o);
         }
     }
 
     @Override
     public Long nextVal(PlanoAvaliacao object) {
-        PlanoAvaliacaoId composedId = object.getId();
-        String sql = "select max(a.id.sequencia) from PlanoAvaliacao a where a.id.planoDeEnsino = :pPlanoDeEnsino";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pPlanoDeEnsino", composedId.getPlanoDeEnsino());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<PlanoAvaliacao> root = query.from(PlanoAvaliacao.class);
+
+        query.select(builder.max(root.<Long>get("id").get("sequencia")));
+
+        PlanoAvaliacaoId id = object.getId();
+        query.where(builder.equal(root.get("id").get("planoDeEnsino"), id.getPlanoDeEnsino()));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

@@ -24,7 +24,7 @@ public class UnidadeCurricularId implements Serializable {
     @Column(name = "id")
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "curso_id"),
         @JoinColumn(name = "campus_id")
@@ -75,14 +75,12 @@ public class UnidadeCurricularId implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        
         final UnidadeCurricularId other = (UnidadeCurricularId) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.id, other.getId())) {
             return false;
         }
-        if (!Objects.equals(this.curso, other.curso)) {
+        if (!Objects.equals(this.curso, other.getCurso())) {
             return false;
         }
         return true;

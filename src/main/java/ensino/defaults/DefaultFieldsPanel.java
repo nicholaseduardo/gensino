@@ -6,13 +6,9 @@
 package ensino.defaults;
 
 import ensino.components.GenJPanel;
-import java.awt.Color;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.HashMap;
-import javax.swing.BorderFactory;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -142,17 +138,6 @@ public abstract class DefaultFieldsPanel extends GenJPanel implements
      * a janela for mostrada no evento componentShown()
      */
     public abstract void initFocus();
-    
-    /**
-     * Cria um objeto da classe <code>Border</code>
-     * @param title     Texto que será colocado como título da borda
-     * @return 
-     */
-    protected Border createTitleBorder(String title) {
-        return BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.BLACK), title, 
-                TitledBorder.LEFT, TitledBorder.TOP);
-    }
     
     @Override
     public void componentResized(ComponentEvent e) {

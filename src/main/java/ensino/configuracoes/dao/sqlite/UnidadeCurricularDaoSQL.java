@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -81,16 +80,22 @@ public class UnidadeCurricularDaoSQL extends AbstractDaoSQL<UnidadeCurricular> {
 
     @Override
     public Long nextVal(UnidadeCurricular object) {
-        UnidadeCurricularId composedId = object.getId();
-        String sql = "select max(uc.id.id) from UnidadeCurricular uc where a.id.curso = :pCurso";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pCurso", composedId.getCurso());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<UnidadeCurricular> root = query.from(UnidadeCurricular.class);
+
+        query.select(builder.max(root.<Long>get("id").get("id")));
+
+        UnidadeCurricularId id = object.getId();
+        query.where(builder.equal(root.get("id").get("curso"), id.getCurso()));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

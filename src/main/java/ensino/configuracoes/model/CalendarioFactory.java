@@ -40,9 +40,6 @@ public class CalendarioFactory implements BeanFactory<Calendario> {
     public Calendario getObject(HashMap<String, Object> p) {
         Calendario c = createObject(p.get("ano"), p.get("descricao"));
         c.getId().setCampus((Campus) p.get("campus"));
-        ((List<Atividade>) p.get("atividades")).forEach((atividade) -> {
-            c.addAtividade(atividade);
-        });
         ((List<PeriodoLetivo>) p.get("periodosLetivos")).forEach((periodoLetivo) -> {
             c.addPeriodoLetivo(periodoLetivo);
         });

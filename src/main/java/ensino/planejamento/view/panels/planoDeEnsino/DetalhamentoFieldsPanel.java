@@ -49,8 +49,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
@@ -348,14 +346,16 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
                 if (detalhe.getMetodologias().isEmpty()) {
                     MetodologiaController metodologiaCol = ControllerFactory.createMetodologiaController();
                     detalhe.setMetodologias(metodologiaCol.listar(detalhe));
+                    metodologiaCol.close();
                 }
 
                 if (detalhe.getObjetivoDetalhes().isEmpty()) {
                     ObjetivoDetalheController objetivoCol = ControllerFactory.createObjetivoDetalheController();
                     detalhe.setObjetivoDetalhes(objetivoCol.listar(detalhe));
+                    objetivoCol.close();
                 }
             } catch (Exception ex) {
-                Logger.getLogger(DetalhamentoFieldsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMessage(ex);
             }
             metodologiaTableModel = new MetodologiaTableModel(detalhe.getMetodologias());
             reloadMetodologiaTable();
@@ -419,15 +419,15 @@ public class DetalhamentoFieldsPanel extends DefaultFieldsPanel {
             try {
                 if (aModel.isSelected()) {
                     if (e.getSource() == checkTecnica) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createTecnicaController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(TipoMetodo.TECNICA));
                     } else if (e.getSource() == checkRecurso) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createRecursoController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(TipoMetodo.RECURSO));
                     } else if (e.getSource() == checkInstrumento) {
-                        comboMetodo.setModel(new MetodoComboBoxModel(ControllerFactory.createInstrumentoAvaliacaoController()));
+                        comboMetodo.setModel(new MetodoComboBoxModel(TipoMetodo.INSTRUMENTO));
                     }
                 }
             } catch (Exception ex) {
-                Logger.getLogger(DetalhamentoFieldsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMessage(ex);
             }
         }
 

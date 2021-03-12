@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -71,19 +70,22 @@ public class DiarioFrequenciaDaoSQL extends AbstractDaoSQL<DiarioFrequencia> {
 
     @Override
     public Long nextVal(DiarioFrequencia object) {
-        DiarioFrequenciaId composedId = object.getId();
-        String sql = "select max(a.id.id) from DiarioFrequencia a "
-                + " where a.id.diario = :pDiario "
-                + "   and a.id.estudante = :pEstudante";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pDiario", composedId.getDiario());
-        query.setParameter("pEstudante", composedId.getEstudante());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<DiarioFrequencia> root = query.from(DiarioFrequencia.class);
+
+        query.select(builder.max(root.<Long>get("id").get("id")));
+
+        DiarioFrequenciaId id = object.getId();
+        query.where(builder.equal(root.get("id").get("diario"), id.getDiario()));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

@@ -451,8 +451,6 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
                 fieldsPanel.setStatusPanel(DefaultFieldsPanel.UPDATE_STATUS_PANEL);
                 Object object = model.getRow(selectedRow);
                 controller.remover(object);
-                // remove o objeto da tabela cuja linha já foi marcada como selecionada
-                model.removeRow(selectedRow);
 
                 componentsControl(0);
                 // atualiza a tabela
@@ -460,7 +458,6 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
                 showInformationMessage("Dados excluídos com sucesso!");
             } catch (Exception ex) {
                 showErrorMessage(ex);
-                ex.printStackTrace();
             }
 
         }
@@ -530,7 +527,9 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
         }
     }
 
+    @Override
     public void onCloseAction(ActionEvent e) {
+        this.controller.close();
         if (frame instanceof JInternalFrame) {
             JInternalFrame f = (JInternalFrame) frame;
             f.dispose();
@@ -616,25 +615,4 @@ public abstract class DefaultCleanFormPanel<T> extends GenJPanel implements Comp
         }
 
     }
-
-//    public static void main(String args[]) {
-//        JFrame frame = new JFrame();
-//        JDesktopPane desktop = new JDesktopPane();
-//        frame.add(desktop, BorderLayout.CENTER);
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(640, 480);
-//
-//        JInternalFrame intFrame = new JInternalFrame(
-//                "Frame Interno", true, true, true, true);
-//        intFrame.setLocation(10, 10);
-//        intFrame.setSize(300, 300);
-//        intFrame.setVisible(true);
-//        
-//        DefaultCleanFormPanel panel = new DefaultCleanFormPanel(intFrame);
-//        intFrame.setContentPane(panel);
-//        panel.getTitlePanel().setText("Exercício");
-//        desktop.add(intFrame);
-//        
-//        frame.setVisible(true);
-//    }
 }

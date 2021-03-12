@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
@@ -96,9 +95,7 @@ public class PlanoAvaliacao implements Serializable {
     /**
      * Atributo utilizado para armazenas as notas das avaliações por estudante
      */
-    @OneToMany(mappedBy = "id.planoAvaliacao",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH},
-            fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.planoAvaliacao", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Avaliacao> avaliacoes;
 
     /**

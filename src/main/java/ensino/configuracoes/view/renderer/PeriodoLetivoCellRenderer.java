@@ -11,7 +11,6 @@ import ensino.configuracoes.view.models.PeriodoLetivoTableModel;
 import ensino.configuracoes.model.PeriodoLetivo;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -31,17 +30,13 @@ public class PeriodoLetivoCellRenderer extends GenCellRenderer {
                     new Color(table.getSelectionBackground().getRGB()));
         } else {
             setColors(new Color(table.getForeground().getRGB()),
-                    new Color(255, 255, 255)
-            );
+                    row % 2 == 0 ? 
+                        new Color(table.getBackground().getRGB()) : 
+                        new Color(240,240,240));
         }
 
         PeriodoLetivoTableModel model = (PeriodoLetivoTableModel) table.getModel();
         PeriodoLetivo pl = (PeriodoLetivo) model.getRow(row);
-        
-        // muda a cor da linha caso o objeto esteja marcado para exclusão
-        if (pl.isDeleted()) {
-            markAsDeleted();
-        }
         
         GenJLabel lblTitle = createLabel(String.format("[%d] %s", 
                 pl.getId().getNumero(),
@@ -52,20 +47,22 @@ public class PeriodoLetivoCellRenderer extends GenCellRenderer {
         lblPeriodo.resetFontSize(12);
         lblPeriodo.setIcon(new ImageIcon(getClass().getResource("/img/calendar-image-png-15px.png")));
         
-        JPanel panel = new JPanel(new GridLayout(2, 1));
+        GenJLabel lblSemanas = createLabel(String.format("%d Semanas Letivas", 
+                pl.getSemanasLetivas().size()));
+        lblSemanas.resetFontSize(12);
+        
+        JPanel pLabels = createPanel(new GridLayout(1,2,10,10));
+        pLabels.add(lblPeriodo);
+        pLabels.add(lblSemanas);
+        
+        JPanel panel = createPanel(new GridLayout(2, 1));
         
         panel.add(lblTitle);
-        panel.add(lblPeriodo);
-        panel.setBackground(getBack());
+        panel.add(pLabels);
 
         table.setRowHeight(panel.getPreferredSize().height + 10);
         panel.setOpaque(true);
-        
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        p.add(panel);
-        p.setBackground(getBack());
-        p.setOpaque(true);
-        return p;
+        return panel;
     }
 
 }

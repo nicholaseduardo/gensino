@@ -11,7 +11,6 @@ import ensino.configuracoes.view.models.AtividadeTableModel;
 import ensino.configuracoes.model.Atividade;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -31,8 +30,9 @@ public class AtividadeCellRenderer extends GenCellRenderer {
                     new Color(table.getSelectionBackground().getRGB()));
         } else {
             setColors(new Color(table.getForeground().getRGB()),
-                    new Color(255, 255, 255)
-            );
+                    row % 2 == 0 ? 
+                        new Color(table.getBackground().getRGB()) : 
+                        new Color(240,240,240));
         }
 
         AtividadeTableModel model = (AtividadeTableModel) table.getModel();
@@ -51,7 +51,7 @@ public class AtividadeCellRenderer extends GenCellRenderer {
         lblPeriodo.toBold();
         lblPeriodo.setForeground(at.getLegenda().getCor());
 
-        JPanel panel = new JPanel(new GridLayout(2, 1));
+        JPanel panel = new JPanel(new GridLayout(2, 1, 10, 0));
 
         panel.add(lblTitle);
         panel.add(lblPeriodo);
@@ -59,12 +59,13 @@ public class AtividadeCellRenderer extends GenCellRenderer {
 
         table.setRowHeight(panel.getPreferredSize().height + 10);
         panel.setOpaque(true);
+        return panel;
 
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        p.add(panel);
-        p.setBackground(getBack());
-        p.setOpaque(true);
-        return p;
+//        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+//        p.add(panel);
+//        p.setBackground(getBack());
+//        p.setOpaque(true);
+//        return p;
     }
 
 }

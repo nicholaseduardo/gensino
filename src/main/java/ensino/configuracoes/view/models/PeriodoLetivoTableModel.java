@@ -7,7 +7,6 @@ package ensino.configuracoes.view.models;
 
 import ensino.configuracoes.model.PeriodoLetivo;
 import ensino.defaults.DefaultTableModel;
-import ensino.patterns.factory.DaoFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,24 +22,8 @@ public class PeriodoLetivoTableModel extends DefaultTableModel<PeriodoLetivo> {
 
     public PeriodoLetivoTableModel(List<PeriodoLetivo> lista) {
         super(lista, new String[]{
-            "Descrição"
+            "Descrição", "Ações"
         });
-    }
-
-    /**
-     * Remoção lógica
-     *
-     * @param row
-     */
-    @Override
-    public void removeRow(int row) {
-        if (DaoFactory.isXML()) {
-            PeriodoLetivo o = lista.get(row);
-            o.delete();
-            updateRow(row, o);
-        } else {
-            super.removeRow(row);
-        }
     }
 
     @Override
@@ -48,7 +31,7 @@ public class PeriodoLetivoTableModel extends DefaultTableModel<PeriodoLetivo> {
         PeriodoLetivo periodoLetivo = getRow(rowIndex);
         switch (columnIndex) {
             case 0:
-                return periodoLetivo.getDescricao();
+                return periodoLetivo;
             default:
                 return null;
         }

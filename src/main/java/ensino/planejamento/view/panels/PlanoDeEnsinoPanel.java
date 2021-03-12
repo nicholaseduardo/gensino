@@ -94,7 +94,6 @@ public class PlanoDeEnsinoPanel extends DefaultCleanFormPanel {
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
     }
 

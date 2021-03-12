@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -52,11 +50,11 @@ public class DiarioAvaliacaoPanel extends DefaultFieldsPanel {
     private JTable avaliacaoTable;
     private AvaliacaoTableModel avaliacaoTableModel;
 
-    public DiarioAvaliacaoPanel() {
+    public DiarioAvaliacaoPanel(List<PlanoAvaliacao> listaPlanoAvaliacoes) {
         super("Registro das notas das avaliações");
         initComponents();
 
-        listaPlanoAvaliacoes = new ArrayList();
+        this.listaPlanoAvaliacoes = listaPlanoAvaliacoes;
         
         createAvaliacoesTable();
         refreshAvaliacoes();
@@ -207,9 +205,7 @@ public class DiarioAvaliacaoPanel extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(HashMap<String, Object> mapValues) {
-        listaPlanoAvaliacoes = (List<PlanoAvaliacao>) mapValues.get("planoAvaliacoes");
-        createAvaliacoesTable();
-        refreshAvaliacoes();
+        
     }
 
     @Override
@@ -238,32 +234,27 @@ public class DiarioAvaliacaoPanel extends DefaultFieldsPanel {
 
     private class TextActionEvent implements ActionListener {
 
-        private AvaliacaoController col;
-
-        public TextActionEvent() {
-            try {
-                col = ControllerFactory.createAvaliacaoController();
-            } catch (Exception ex) {
-                Logger.getLogger(DiarioAvaliacaoPanel.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
         @Override
         public void actionPerformed(ActionEvent ae) {
             Object source = ae.getSource();
             if (source instanceof GenJFormattedTextField) {
-                int selectedRow = avaliacaoTable.getSelectedRow(),
-                        selectedCol = avaliacaoTable.getSelectedColumn();
-                /**
-                 * Busca do objeto Avaliacao a ser atualizado na lista da table.
-                 */
-                Object o = avaliacaoTableModel.getObjectAt(selectedRow, selectedCol);
-                if (o instanceof Avaliacao) {
-                    try {
-                        col.salvar((Avaliacao) o);
-                    } catch (Exception ex) {
-                        showErrorMessage(ex);
-                    }
+                try {
+                    AvaliacaoController col = ControllerFactory.createAvaliacaoController();
+                    int selectedRow = avaliacaoTable.getSelectedRow(),
+                            selectedCol = avaliacaoTable.getSelectedColumn();
+                    /**
+                     * Busca do objeto Avaliacao a ser atualizado na lista da table.
+                     */
+                    Object o = avaliacaoTableModel.getObjectAt(selectedRow, selectedCol);
+                    if (o instanceof Avaliacao) {
+                        try {
+                            col.salvar((Avaliacao) o);
+                        } catch (Exception ex) {
+                            showErrorMessage(ex);
+                        }
+                    }   col.close();
+                } catch (Exception ex) {
+                    showErrorMessage(ex);
                 }
             }
         }

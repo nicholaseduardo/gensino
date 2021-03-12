@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
@@ -31,7 +30,7 @@ public class PeriodoLetivo implements Serializable {
     @Embedded
     private Periodo periodo;
 
-    @OneToMany(mappedBy = "id.periodoLetivo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.periodoLetivo", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SemanaLetiva> semanasLetivas;
     /**
      * Atributo utilizado para marcar o objeto para remoção futura. Valor

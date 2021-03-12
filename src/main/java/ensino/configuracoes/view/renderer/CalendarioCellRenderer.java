@@ -54,19 +54,19 @@ public class CalendarioCellRenderer extends GenCellRenderer {
                 cal.getPeriodosLetivos().size()), JLabel.RIGHT);
         lblPeriodoEnsino.resetFontSize(12);
         
-        JPanel panelIcons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        JPanel panelIcons = createPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panelIcons.add(lblTasks);
         panelIcons.add(lblPeriodoEnsino);
         panelIcons.setBackground(getBack());
 
-        JPanel panel = new JPanel(new GridLayout(2, 2, 10, 0));
+        JPanel panel = createPanel(new GridLayout(2, 2, 10, 0));
         panel.add(lblTitle);
         panel.add(new JLabel(""));
         panel.add(lblCampus);
         panel.add(panelIcons);
         panel.setBackground(getBack());
 
-        table.setRowHeight(panel.getPreferredSize().height + 10);
+        table.setRowHeight(panel.getPreferredSize().height + 20);
         panel.setOpaque(true);
         return panel;
     }

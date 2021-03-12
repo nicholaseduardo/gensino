@@ -31,7 +31,7 @@ public class SemanaLetivaFactory implements BeanFactory<SemanaLetiva> {
     public SemanaLetiva createObject(Object... args) {
         SemanaLetiva o = new SemanaLetiva();
         int i = 0;
-        o.getId().setId((Long) args[i++]);
+        o.setId((SemanaLetivaId) args[i++]);
         o.setDescricao((String) args[i++]);
         o.setPeriodo((Periodo) args[i++]);
         return o;
@@ -39,10 +39,10 @@ public class SemanaLetivaFactory implements BeanFactory<SemanaLetiva> {
 
     @Override
     public SemanaLetiva getObject(HashMap<String, Object> p) {
-        SemanaLetiva o = createObject(p.get("numero"),
+        SemanaLetiva o = createObject(
+                new SemanaLetivaId((Long)p.get("numero"), (PeriodoLetivo)p.get("periodoLetivo")),
                 p.get("descricao"),
                 p.get("periodo"));
-        o.getId().setPeriodoLetivo((PeriodoLetivo) p.get("periodoLetivo"));
         return o;
     }
 }

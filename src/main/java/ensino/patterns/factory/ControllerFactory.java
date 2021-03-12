@@ -55,7 +55,9 @@ public class ControllerFactory {
     public static Campus getCampusVigente() {
         try {
             CampusController col = createCampusController();
-            return col.getCampusVigente();
+            Campus campus = col.getCampusVigente();
+            col.close();
+            return campus;
         } catch (Exception ex) {
             Logger.getLogger(ControllerFactory.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -56,27 +56,37 @@ public abstract class AbstractController<T> {
     public void salvarEmCascata(List<T> l) throws Exception {
         try {
             if (l != null) {
+                this.dao.begin();
                 for (int i = 0; i < l.size(); i++) {
-                    this.salvar(l.get(i));
+                    this.salvarSemCommit(l.get(i));
                 }
+                this.dao.commit();
             }
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             dao.rollback();
             throw ex;
         }
     }
 
     /**
-     * Salvar em cascata. Esse método tem o objetivo de salvar a lista de
-     * objetos <code>T</code> sem realizar o COMMIT
+     * Salvar em cascata.Esse método tem o objetivo de salvar a lista de objetos
+     * <code>T</code> sem realizar o COMMIT
      *
      * @param l
+     * @throws java.lang.Exception
      */
     public void salvarEmCascataSemCommit(List<T> l) throws Exception {
-        if (l != null) {
-            for (int i = 0; i < l.size(); i++) {
-                this.salvarSemCommit(l.get(i));
+        try {
+            if (l != null) {
+                this.dao.begin();
+                for (int i = 0; i < l.size(); i++) {
+                    this.salvarSemCommit(l.get(i));
+                }
+                this.dao.commit();
             }
+        } catch (SQLException ex) {
+            dao.rollback();
+            throw ex;
         }
     }
 
@@ -86,7 +96,7 @@ public abstract class AbstractController<T> {
 
     public T remover(T object) throws Exception {
         dao.delete(object, Boolean.TRUE);
-        
+
         return object;
     }
 
@@ -98,9 +108,11 @@ public abstract class AbstractController<T> {
     public void removerEmCascata(List<T> l) throws Exception {
         try {
             if (l != null) {
+                this.dao.begin();
                 for (int i = 0; i < l.size(); i++) {
-                    this.remover(l.get(i));
+                    this.removerSemCommit(l.get(i));
                 }
+                this.dao.commit();
             }
         } catch (Exception ex) {
             dao.rollback();

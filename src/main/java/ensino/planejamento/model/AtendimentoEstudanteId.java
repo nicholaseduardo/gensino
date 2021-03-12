@@ -31,7 +31,7 @@ public class AtendimentoEstudanteId implements Serializable {
      * Atributo utilizado para identificar de qual permanência
      * é o atendimento
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "planoDeEnsino_id"),
         @JoinColumn(name = "permanenciaEstudantil_id")

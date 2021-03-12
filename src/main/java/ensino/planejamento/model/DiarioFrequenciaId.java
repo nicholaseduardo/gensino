@@ -32,7 +32,7 @@ public class DiarioFrequenciaId implements Serializable {
      * Atributo utilizado para identificar de qual diário é o registro
      * desta frequência.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "planoDeEnsino_id"),
         @JoinColumn(name = "diario_id")
@@ -42,7 +42,7 @@ public class DiarioFrequenciaId implements Serializable {
      * Atributo utilizado para identificar o estudante cuja frequência está
      * sendo registrada.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "campus_id"),
         @JoinColumn(name = "curso_id"),

@@ -8,12 +8,13 @@ package ensino.configuracoes.dao.sqlite;
 import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeId;
 import ensino.configuracoes.model.Calendario;
+import ensino.configuracoes.model.Legenda;
 import ensino.connection.AbstractDaoSQL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -32,7 +33,7 @@ public class AtividadeDaoSQL extends AbstractDaoSQL<Atividade> {
 
     @Override
     public List<Atividade> findAll() {
-        return findBy(null);
+        return findBy(null, null, null, null, null);
     }
 
     @Override
@@ -40,7 +41,8 @@ public class AtividadeDaoSQL extends AbstractDaoSQL<Atividade> {
         return em.find(Atividade.class, id);
     }
 
-    public List<Atividade> findBy(Calendario calendario) {
+    public List<Atividade> findBy(Calendario calendario, 
+            Date de, Date ate, String atividade, Legenda legenda) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery query = builder.createQuery(Atividade.class);
 
@@ -50,6 +52,26 @@ public class AtividadeDaoSQL extends AbstractDaoSQL<Atividade> {
 
         if (calendario != null) {
             Predicate p = builder.equal(root.get("id").get("calendario"), calendario);
+            predicates.add(p);
+        }
+
+        if (de != null) {
+            Predicate p = builder.greaterThanOrEqualTo(root.get("periodo").get("de"), de);
+            predicates.add(p);
+        }
+
+        if (ate != null) {
+            Predicate p = builder.lessThanOrEqualTo(root.get("periodo").get("ate"), ate);
+            predicates.add(p);
+        }
+
+        if (atividade != null && !"".equals(atividade)) {
+            Predicate p = builder.equal(root.get("descricao"), "%"+atividade+"%");
+            predicates.add(p);
+        }
+
+        if (legenda != null) {
+            Predicate p = builder.equal(root.get("legenda"), legenda);
             predicates.add(p);
         }
 
@@ -70,16 +92,22 @@ public class AtividadeDaoSQL extends AbstractDaoSQL<Atividade> {
 
     @Override
     public Long nextVal(Atividade object) {
-        AtividadeId composedId = object.getId();
-        String sql = "select max(a.id.id) from Atividade a where a.id.calendario = :pCalendario";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pCalendario", composedId.getCalendario());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<Atividade> root = query.from(Atividade.class);
+
+        query.select(builder.max(root.<Long>get("id").get("id")));
+
+        AtividadeId id = object.getId();
+        query.where(builder.equal(root.get("id").get("calendario"), id.getCalendario()));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

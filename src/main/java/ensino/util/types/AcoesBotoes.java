@@ -22,7 +22,9 @@ public enum AcoesBotoes {
     IMPORT(7), CANCEL(25), SEARCH(26), CLEAR(27), STRUCTURE(30),
     
     SELECTION(31), UC(32), TURMA(33),
-    BACKWARD(34), FORWARD(35), DELETE(36), UP(37), DOWN(38);
+    BACKWARD(34), FORWARD(35), DELETE(36), UP(37), DOWN(38),
+    
+    ATIVIDADE(39), PERIODO_LETIVO(40);
     
     private final Integer value;
     private static final String[] sData = {"Adicionar", "Excluir", "Alterar", "Salvar",
@@ -33,7 +35,7 @@ public enum AcoesBotoes {
         "Referências bibliográficas", "Estudantes", "Conteudo da U.C.", "Cancelar",
         "Buscar", "Limpar", "Diário", "Relatórios", "Estrutura", "Seleção",
         "Unidade Curricular", "Turma", "Para trás", "Para frente", "Delete",
-        "Para cima", "Para baixo"};
+        "Para cima", "Para baixo", "Atividade", "Período Letivo"};
     
     AcoesBotoes(Integer value) {
         this.value = value;

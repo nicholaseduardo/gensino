@@ -37,7 +37,6 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -334,6 +333,7 @@ public class PlanoDeEnsinoHorarioAula extends DefaultFieldsPanel {
 
     @Override
     public void onCloseAction(ActionEvent e) {
+        col.close();
         if (frame instanceof JInternalFrame) {
             JInternalFrame f = (JInternalFrame) frame;
             f.dispose();
@@ -391,7 +391,7 @@ public class PlanoDeEnsinoHorarioAula extends DefaultFieldsPanel {
     }
 
     @Override
-    public void onGenarateAction(ActionEvent e) {
+    public void onGenarateAction(ActionEvent e, Object o) {
         try {
             DiarioController colDiario = ControllerFactory.createDiarioController();
             if (!planoDeEnsino.getDiarios().isEmpty()
@@ -401,19 +401,14 @@ public class PlanoDeEnsinoHorarioAula extends DefaultFieldsPanel {
                             + "Deseja continuar?")) {
                 return;
             }
-            Iterator<Diario> it = planoDeEnsino.getDiarios().iterator();
-            while (it.hasNext()) {
-                Diario d = it.next();
-                colDiario.remover(d);
-            }
+            List<Diario> listaDiarios = colDiario.list(planoDeEnsino);
+            colDiario.removerEmCascata(listaDiarios);
 
             planoDeEnsino.criarDiarios();
-            it = planoDeEnsino.getDiarios().iterator();
-            while (it.hasNext()) {
-                Diario d = it.next();
-                colDiario.salvar(d);
-            }
+            colDiario.salvarEmCascata(planoDeEnsino.getDiarios());
+            
             showInformationMessage("Diário criado com sucesso!");
+            colDiario.close();
         } catch (Exception ex) {
             showErrorMessage(ex);
         }

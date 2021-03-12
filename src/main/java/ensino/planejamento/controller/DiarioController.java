@@ -28,17 +28,20 @@ public class DiarioController extends AbstractController<Diario> {
     /**
      * Listagem de diários por data
      *
-     * @param data Data a ser procurada
      * @param planoDeEnsino Identificação do plano de ensino
      * @return
      */
+    public List<Diario> list(PlanoDeEnsino planoDeEnsino) {
+        return this.list(null, planoDeEnsino);
+    }
+    
     public List<Diario> list(Date data, PlanoDeEnsino planoDeEnsino) {
         return this.listar(planoDeEnsino, data, null);
     }
 
     public List<Diario> listar(PlanoDeEnsino o, Date data, TipoAula tipo) {
-        DiarioDaoSQL dao = (DiarioDaoSQL) this.dao;
+        DiarioDaoSQL d = (DiarioDaoSQL) this.dao;
 
-        return dao.findBy(o, data, tipo);
+        return d.findBy(o, data, tipo);
     }
 }

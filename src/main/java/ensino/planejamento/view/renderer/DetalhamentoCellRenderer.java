@@ -38,10 +38,15 @@ public class DetalhamentoCellRenderer extends GenCellRenderer {
                 o.getSemanaLetiva().getPeriodo().toString()));
         lblSemana.setIcon(new ImageIcon(urlSemana));
         lblSemana.toBold();
+        
+        GenJLabel lblAulas = createLabel(String.format("[Aulas Práticas: %d - Aulas Teóricas: %d]",
+                o.getNAulasPraticas(), o.getNAulasTeoricas()));
+        lblAulas.resetFontSize(12);
 
-        JPanel panelSemana = new JPanel();
+        JPanel panelSemana = new JPanel(new GridLayout(1, 2, 10, 10));
         panelSemana.setBackground(getBack());
         panelSemana.add(lblSemana);
+        panelSemana.add(lblAulas);
 
         GenJLabel textArea = createLabel("");
         textArea.setText("<b>Conteúdo: </b>" + o.getConteudo(), 80);
@@ -85,7 +90,7 @@ public class DetalhamentoCellRenderer extends GenCellRenderer {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setOpaque(true);
         panel.setBackground(getBack());
-        panel.add(createLayoutPanel(lblSemana, FlowLayout.LEFT), BorderLayout.PAGE_START);
+        panel.add(panelSemana, BorderLayout.PAGE_START);
         panel.add(textArea, BorderLayout.CENTER);
         panel.add(panelMetodo, BorderLayout.PAGE_END);
 

@@ -24,7 +24,7 @@ public class PeriodoLetivoId implements Serializable {
     @Column(name = "numero")
     private Long numero;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "calendario_ano"),
         @JoinColumn(name = "campus_id")

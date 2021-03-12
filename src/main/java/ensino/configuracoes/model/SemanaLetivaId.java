@@ -24,7 +24,7 @@ public class SemanaLetivaId implements Serializable {
     @Column(name = "id")
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "periodoLetivo_numero"),
         @JoinColumn(name = "calendario_ano"),

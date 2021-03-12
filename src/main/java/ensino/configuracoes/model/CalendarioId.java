@@ -23,7 +23,7 @@ public class CalendarioId implements Serializable {
     @Column(name = "ano")
     private Integer ano;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "campus_id")
     private Campus campus;
     

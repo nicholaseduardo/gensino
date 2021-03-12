@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -70,16 +69,22 @@ public class PeriodoLetivoDaoSQL extends AbstractDaoSQL<PeriodoLetivo> {
 
     @Override
     public Long nextVal(PeriodoLetivo object) {
-        PeriodoLetivoId composedId = object.getId();
-        String sql = "select max(pe.id.numero) from PeriodoLetivo pe where pe.id.calendario = :pCalendario ";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pCalendario", composedId.getCalendario());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<PeriodoLetivo> root = query.from(PeriodoLetivo.class);
+
+        query.select(builder.max(root.<Long>get("id").get("numero")));
+
+        PeriodoLetivoId id = object.getId();
+        query.where(builder.equal(root.get("id").get("calendario"), id.getCalendario()));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

@@ -7,8 +7,13 @@ package ensino.configuracoes.view.models;
 
 import ensino.patterns.AbstractController;
 import ensino.patterns.BaseObject;
+import ensino.patterns.factory.ControllerFactory;
+import ensino.util.types.TipoMetodo;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 
@@ -18,19 +23,28 @@ import javax.swing.ComboBoxModel;
  */
 public class MetodoComboBoxModel extends AbstractListModel implements ComboBoxModel {
 
-    private AbstractController metodoCol;
+    private TipoMetodo tipoMetodo;
     private List<BaseObject> list;
 
     private BaseObject selection;
 
-    public MetodoComboBoxModel(AbstractController controller) {
-        metodoCol = controller;
+    public MetodoComboBoxModel(TipoMetodo tipoMetodo) {
+        this.list = new ArrayList();
+        this.tipoMetodo = tipoMetodo;
         initComponents();
     }
 
     public MetodoComboBoxModel(List<BaseObject> list) {
         this.list = list;
         initComponents();
+    }
+    
+    private AbstractController getController() throws Exception {
+        switch(tipoMetodo) {
+            case INSTRUMENTO: return ControllerFactory.createInstrumentoAvaliacaoController();
+            case RECURSO: return ControllerFactory.createRecursoController();
+            default: return ControllerFactory.createTecnicaController();
+        }
     }
 
     private void initComponents() {
@@ -39,8 +53,14 @@ public class MetodoComboBoxModel extends AbstractListModel implements ComboBoxMo
 
     public void refresh() {
         int index = 0;
-        if (metodoCol != null) {
-            list = (List<BaseObject>) metodoCol.listar();
+        if (tipoMetodo != null) {
+            try {
+                AbstractController col = getController();
+                list = (List<BaseObject>) col.listar();
+                col.close();
+            } catch (Exception ex) {
+                Logger.getLogger(MetodoComboBoxModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         if (!list.isEmpty()) {

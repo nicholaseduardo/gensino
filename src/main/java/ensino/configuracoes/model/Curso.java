@@ -153,17 +153,15 @@ public class Curso implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        
         final Curso other = (Curso) obj;
-        if (!Objects.equals(this.nome, other.nome)) {
+        if (!Objects.equals(this.nome, other.getNome())) {
             return false;
         }
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.id, other.getId())) {
             return false;
         }
-        if (!Objects.equals(this.nivelEnsino, other.nivelEnsino)) {
+        if (!Objects.equals(this.nivelEnsino, other.getNivelEnsino())) {
             return false;
         }
         return true;

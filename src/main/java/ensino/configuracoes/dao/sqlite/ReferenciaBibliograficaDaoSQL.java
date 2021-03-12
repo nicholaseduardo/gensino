@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -59,7 +58,6 @@ public class ReferenciaBibliograficaDaoSQL extends AbstractDaoSQL<ReferenciaBibl
             predicates.add(p);
         }
 
-
         query.where((Predicate[]) predicates.toArray(new Predicate[0]));
         TypedQuery<ReferenciaBibliografica> typedQuery = em.createQuery(query);
         return typedQuery.getResultList();
@@ -77,19 +75,24 @@ public class ReferenciaBibliograficaDaoSQL extends AbstractDaoSQL<ReferenciaBibl
 
     @Override
     public Long nextVal(ReferenciaBibliografica object) {
-        ReferenciaBibliograficaId composedId = object.getId();
-        String sql = "select max(rb.id.sequencia) from ReferenciaBibliografica rb "
-                + " where rb.id.unidadeCurricular = :pUnidadeCurricular "
-                + "   and rb.id.bibliografia = :pBibliografia ";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pUnidadeCurricular", composedId.getUnidadeCurricular());
-        query.setParameter("pBibliografia", composedId.getBibliografia());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<ReferenciaBibliografica> root = query.from(ReferenciaBibliografica.class);
+
+        query.select(builder.max(root.<Long>get("id").get("sequencia")));
+
+        List<Predicate> predicates = new ArrayList();
+        ReferenciaBibliograficaId id = object.getId();
+        predicates.add(builder.equal(root.get("id").get("unidadeCurricular"), id.getUnidadeCurricular()));
+        query.where((Predicate[]) predicates.toArray(new Predicate[0]));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

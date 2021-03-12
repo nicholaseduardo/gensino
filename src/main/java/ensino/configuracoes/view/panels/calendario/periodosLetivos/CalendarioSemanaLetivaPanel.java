@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.view.panels.calendario;
+package ensino.configuracoes.view.panels.calendario.periodosLetivos;
 
 import ensino.components.GenJLabel;
 import ensino.components.GenJTree;

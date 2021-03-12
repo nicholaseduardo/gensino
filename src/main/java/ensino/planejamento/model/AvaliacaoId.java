@@ -25,7 +25,7 @@ public class AvaliacaoId implements Serializable {
      * Atributo utilizado para identificar em qual plano de avaliacao será
      * utilizado para registro de nota do estudante
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "planoDeEnsino_id"),
         @JoinColumn(name = "planoAvaliacao_id")

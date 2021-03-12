@@ -8,7 +8,6 @@ package ensino.configuracoes.model;
 import ensino.patterns.factory.BeanFactory;
 import ensino.util.types.Periodo;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  *
@@ -44,9 +43,6 @@ public class PeriodoLetivoFactory implements BeanFactory<PeriodoLetivo> {
                 params.get("descricao"),
                 params.get("periodo"));
         p.getId().setCalendario((Calendario) params.get("calendario"));
-        ((List<SemanaLetiva>) params.get("semanasLetivas")).forEach((sem) -> {
-            p.addSemanaLetiva(sem);
-        });
         return p;
     }
 

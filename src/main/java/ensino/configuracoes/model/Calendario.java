@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 
@@ -26,11 +25,11 @@ public class Calendario implements Serializable {
     @Column(name = "descricao", nullable = false)
     private String descricao;
 
-    @OneToMany(mappedBy = "id.calendario", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.calendario", fetch = FetchType.EAGER, orphanRemoval = true)
     @OrderBy(value = "periodo.de")
     private List<Atividade> atividades;
 
-    @OneToMany(mappedBy = "id.calendario", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.calendario", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PeriodoLetivo> periodosLetivos;
 
     public Calendario() {

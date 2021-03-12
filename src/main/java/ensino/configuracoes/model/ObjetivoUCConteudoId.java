@@ -19,7 +19,7 @@ import javax.persistence.ManyToOne;
  */
 @Embeddable
 public class ObjetivoUCConteudoId implements Serializable {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "objetivouc_unidadeCurricular_id"),
         @JoinColumn(name = "objetivouc_curso_id"),
@@ -28,7 +28,7 @@ public class ObjetivoUCConteudoId implements Serializable {
     })
     private ObjetivoUC objetivo;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "conteudo_unidadeCurricular_id"),
         @JoinColumn(name = "conteudo_curso_id"),

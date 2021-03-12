@@ -45,24 +45,25 @@ public class CursoSearch extends GenJPanel {
     public CursoSearch() {
         this(null);
     }
-    
+
     /**
      * Construtor da classe. Exige que um campus seja informado para que o
      * componente funcione adequadamente.
-     * 
-     * @param selectedCampus    Objeto da classe <code>Campus</code>
+     *
+     * @param selectedCampus Objeto da classe <code>Campus</code>
      */
     public CursoSearch(Campus selectedCampus) {
         super();
         this.selectedCampus = selectedCampus;
         initComponents();
     }
-    
+
     /**
      * Para que a busca do curso funcione corretamente torna-se necessário
      * primeiro informar o campus. Logo, é possível criar o componente, porém,
      * ele funcionará somente quando o campus for informado.
-     * @param campus 
+     *
+     * @param campus
      */
     public void setSelectedCampus(Campus campus) {
         this.selectedCampus = campus;
@@ -126,8 +127,7 @@ public class CursoSearch extends GenJPanel {
                 setObjectValue(null);
                 return;
             }
-            
-            CursoController col = ControllerFactory.createCursoController();
+
             String sid = txtId.getText();
             // nenhum codigo foi digitado
             if (e.getSource() == btSearch) {
@@ -137,7 +137,7 @@ public class CursoSearch extends GenJPanel {
                 dialog.setTitle("Pesquisar Curso");
                 dialog.setModal(true);
                 dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                
+
                 CursoPanel bPanel = new CursoPanel(dialog, selectedCampus);
                 bPanel.createSelectButton();
                 dialog.getContentPane().add(bPanel);
@@ -153,7 +153,7 @@ public class CursoSearch extends GenJPanel {
                 dialog.pack();
                 dialog.setVisible(true);
 
-            } else if (!"".equals(sid))  {
+            } else if (!"".equals(sid)) {
                 if (!sid.matches("\\d+")) {
                     Toolkit.getDefaultToolkit().beep();
                     JOptionPane.showMessageDialog(null, "Identificador inválido", "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -161,7 +161,9 @@ public class CursoSearch extends GenJPanel {
                     txtId.selectAll();
                 } else {
                     Long id = Long.parseLong(sid);
+                    CursoController col = ControllerFactory.createCursoController();
                     setObjectValue((Curso) col.buscarPor(id, selectedCampus));
+                    col.close();
                 }
             } else {
                 setObjectValue(null);
@@ -176,7 +178,7 @@ public class CursoSearch extends GenJPanel {
         @Override
         public void focusGained(FocusEvent e) {
             if (e.getSource() instanceof GenJTextField) {
-                GenJTextField source = (GenJTextField)e.getSource();
+                GenJTextField source = (GenJTextField) e.getSource();
                 source.selectAll();
             }
         }
@@ -198,38 +200,8 @@ public class CursoSearch extends GenJPanel {
         }
 
     }
-    
+
     public void addDocumentListener(DocumentListener l) {
         txtNome.getDocument().addDocumentListener(l);
     }
-
-//    public static void main(String args[]) {
-//        JFrame frame = new JFrame();
-//        CursoSearch c = new CursoSearch();
-//        c.setSelectedCampus(new Campus(1, "Teste"));
-//        c.addDocumentListener(new DocumentListener() {
-//            @Override
-//            public void insertUpdate(DocumentEvent e) {
-//                System.out.println("Inserido ");
-//                System.out.println(c.getObjectValue().getNome());
-//            }
-//
-//            @Override
-//            public void removeUpdate(DocumentEvent e) {
-//                System.out.println("removido");
-//            }
-//
-//            @Override
-//            public void changedUpdate(DocumentEvent e) {
-//                System.out.println("alterado");
-//            }
-//        });
-//        JPanel panel = new JPanel();
-//        panel.add(c);
-//        panel.add(new JTextField(10));
-//        frame.getContentPane().add(panel);
-//        frame.pack();
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setVisible(true);
-//    }
 }

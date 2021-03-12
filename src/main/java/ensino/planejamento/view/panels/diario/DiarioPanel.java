@@ -30,12 +30,12 @@ import javax.swing.border.EmptyBorder;
  */
 public class DiarioPanel extends GenJPanel {
 
-    private PlanoDeEnsino planoDeEnsino;
+    private final PlanoDeEnsino planoDeEnsino;
 
     private GenJButton btExit;
     private JTabbedPane tabs;
 
-    private Component frame;
+    private final Component frame;
 
     public DiarioPanel(Component frame, PlanoDeEnsino planoDeEnsino) {
         super();
@@ -59,7 +59,7 @@ public class DiarioPanel extends GenJPanel {
         tabs = new JTabbedPane();
 
         DiarioFrequenciaPanel freqPanel = new DiarioFrequenciaPanel(frame, planoDeEnsino);
-        DiarioAvaliacaoPanel avaliacaoPanel = new DiarioAvaliacaoPanel();
+        DiarioAvaliacaoPanel avaliacaoPanel = new DiarioAvaliacaoPanel(planoDeEnsino.getPlanosAvaliacoes());
         DiarioConteudoPanel conteudoPanel = new DiarioConteudoPanel(null, planoDeEnsino);
 
         tabs.addTab("Frequência", iconFrequency, freqPanel);

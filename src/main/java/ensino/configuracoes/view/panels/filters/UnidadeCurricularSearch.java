@@ -110,6 +110,7 @@ public class UnidadeCurricularSearch extends JPanel {
                 if (unidade.getReferenciasBibliograficas().isEmpty()) {
                     ReferenciaBibliograficaController col = ControllerFactory.createReferenciaBibliograficaController();
                     unidade.setReferenciasBibliograficas(col.listar(unidade));
+                    col.close();
                 }
                 this.objectValue = unidade;
                 txtId.setText(unidade.getId().getId().toString());
@@ -139,7 +140,6 @@ public class UnidadeCurricularSearch extends JPanel {
                 return;
             }
 
-            UnidadeCurricularController col = ControllerFactory.createUnidadeCurricularController();
             String sid = txtId.getText();
             // nenhum codigo foi digitado
             if (e.getSource() == btSearch) {
@@ -173,8 +173,10 @@ public class UnidadeCurricularSearch extends JPanel {
                     txtId.selectAll();
                 } else {
                     Long id = Long.parseLong(sid);
+                    UnidadeCurricularController col = ControllerFactory.createUnidadeCurricularController();
                     setObjectValue((UnidadeCurricular) col.buscarPor(id,
                             selectedCurso));
+                    col.close();
                 }
             } else {
                 setObjectValue(null);

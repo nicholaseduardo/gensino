@@ -24,7 +24,7 @@ public class TurmaId implements Serializable {
     @Column(name = "id")
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "curso_id"),
         @JoinColumn(name = "campus_id")

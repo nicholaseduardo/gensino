@@ -51,14 +51,14 @@ import javax.swing.table.TableColumnModel;
  */
 public class DiarioFrequenciaPanel extends DefaultFieldsPanel {
 
-    private PlanoDeEnsino planoDeEnsino;
+    private final PlanoDeEnsino planoDeEnsino;
 
     private JTable frequenciaTable;
     private FrequenciaTableModel frequenciaTableModel;
 
     private GenJRadioButton checkPresenca;
     private GenJRadioButton checkFalta;
-    private Component frame;
+    private final Component frame;
 
     public DiarioFrequenciaPanel(Component frame, PlanoDeEnsino planoDeEnsino) {
         super("Frequência dos estudantes");

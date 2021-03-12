@@ -14,14 +14,18 @@ import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultFieldsPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.ObjetivoController;
+import ensino.planejamento.model.Objetivo;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoDeEnsino;
 import ensino.planejamento.view.models.ObjetivoComboBoxModel;
+import ensino.util.types.TipoMetodo;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -73,7 +77,6 @@ public class PlanoDeEnsinoPlanoAvaliacaoFields extends DefaultFieldsPanel {
         GridBagConstraints c = new GridBagConstraints();
         try {
             modelEtapaEnsino = new EtapaEnsinoComboBoxModel(
-                    ControllerFactory.createEtapaEnsinoController(),
                     planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino()
             );
             comboEtapaEnsino = new GenJComboBox(modelEtapaEnsino);
@@ -81,7 +84,7 @@ public class PlanoDeEnsinoPlanoAvaliacaoFields extends DefaultFieldsPanel {
             txtId = new GenJTextField(5, false);
             txtId.setEnabled(false);
             txtDescricao = new GenJTextField(20, true);
-            comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(ControllerFactory.createInstrumentoAvaliacaoController()));
+            comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(TipoMetodo.INSTRUMENTO));
             spinPeso = new GenJSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.1));
             spinPeso.setEditor(new JSpinner.NumberEditor(spinPeso, "0.0"));
             spinValor = new GenJSpinner(new SpinnerNumberModel(0.0, 0.0, null, 0.1));
@@ -91,7 +94,10 @@ public class PlanoDeEnsinoPlanoAvaliacaoFields extends DefaultFieldsPanel {
                     null, null, Calendar.DATE));
             spinData.setEditor(new JSpinner.DateEditor(spinData, "dd/MM/yyyy"));
 
-            objetivoComboModel = new ObjetivoComboBoxModel();
+            ObjetivoController objetivoCol = ControllerFactory.createObjetivoController();
+            List<Objetivo> listaObjetivos = objetivoCol.listar(this.planoDeEnsino);
+            objetivoCol.close();
+            objetivoComboModel = new ObjetivoComboBoxModel(listaObjetivos);
             comboObjetivo = new GenJComboBox(objetivoComboModel);
 
             int col = 0, row = 0;
@@ -150,9 +156,9 @@ public class PlanoDeEnsinoPlanoAvaliacaoFields extends DefaultFieldsPanel {
     public HashMap<String, Object> getFieldValues() {
         HashMap<String, Object> map = new HashMap();
         String sId = txtId.getText();
-        Integer id = null;
+        Long id = null;
         if (sId.matches("\\d+")) {
-            id = Integer.parseInt(sId);
+            id = Long.parseLong(sId);
         }
         map.put("sequencia", id);
         map.put("planoDeEnsino", planoDeEnsino);
@@ -193,10 +199,11 @@ public class PlanoDeEnsinoPlanoAvaliacaoFields extends DefaultFieldsPanel {
                 comboEtapaEnsino.repaint();
 
                 comboObjetivo.setSelectedItem(o.getObjetivo());
+                objetivoComboModel.setSelectedItem(o.getObjetivo());
+                comboObjetivo.setModel(objetivoComboModel);
                 comboObjetivo.repaint();
             } catch (Exception ex) {
                 showErrorMessage(ex);
-                ex.printStackTrace();
             }
         }
     }

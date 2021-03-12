@@ -24,7 +24,7 @@ public class EstudanteId implements Serializable {
     @Column(name = "id")
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "turma_id"),
         @JoinColumn(name = "curso_id"),

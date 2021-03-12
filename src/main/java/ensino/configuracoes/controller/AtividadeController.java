@@ -10,8 +10,10 @@ import ensino.configuracoes.model.Atividade;
 import ensino.configuracoes.model.AtividadeFactory;
 import ensino.configuracoes.model.AtividadeId;
 import ensino.configuracoes.model.Calendario;
+import ensino.configuracoes.model.Legenda;
 import ensino.patterns.AbstractController;
 import ensino.patterns.factory.DaoFactory;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,16 +37,26 @@ public class AtividadeController extends AbstractController<Atividade> {
     public Atividade buscarPor(Long id, Calendario calendario) {
         return this.dao.findById(new AtividadeId(id, calendario));
     }
+    
+    public List<Atividade> listar(Calendario o) {
+        AtividadeDaoSQL d = (AtividadeDaoSQL) this.dao;
+        return d.findBy(o, null, null, null, null);
+    }
 
     /**
      * Lista as atividades do calendário do campus
      *
      * @param o Identificação do calendário
+     * @param de
+     * @param ate
+     * @param atividade
+     * @param legenda
      * @return
      */
-    public List<Atividade> listar(Calendario o) {
+    public List<Atividade> listar(Calendario o, 
+            Date de, Date ate, String atividade, Legenda legenda) {
         AtividadeDaoSQL d = (AtividadeDaoSQL) this.dao;
-        return d.findBy(o);
+        return d.findBy(o, de, ate, atividade, legenda);
     }
     
 }

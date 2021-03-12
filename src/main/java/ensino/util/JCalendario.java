@@ -425,7 +425,7 @@ public class JCalendario extends JPanel {
                      * legenda da atividade
                      */
                     Legenda leg = a.getLegenda();
-                    if (currButton != null && diaDaSemana > 0 && diaDaSemana < 6
+                    if (leg != null && currButton != null && diaDaSemana > 0 && diaDaSemana < 6
                             || diaDaSemana > 5 || diaDaSemana == 0 && leg.isLetivo()) {
                         currButton.setBackground(leg.getCor());
                     }

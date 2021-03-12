@@ -27,7 +27,7 @@ public class Objetivo implements Serializable {
     @Column(name = "descricao", columnDefinition = "CLOB")
     private String descricao;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "objetivouc_unidadeCurricular_id"),
         @JoinColumn(name = "objetivouc_curso_id"),

@@ -124,14 +124,11 @@ public class ObjetivoUC implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
         final ObjetivoUC other = (ObjetivoUC) obj;
-        if (!Objects.equals(this.descricao, other.descricao)) {
+        if (!Objects.equals(this.descricao, other.getDescricao())) {
             return false;
         }
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.id, other.getId())) {
             return false;
         }
         return true;

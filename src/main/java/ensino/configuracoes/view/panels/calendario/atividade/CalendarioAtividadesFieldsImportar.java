@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ensino.configuracoes.view.panels.turma;
+package ensino.configuracoes.view.panels.calendario.atividade;
 
 import ensino.components.GenImportDialog;
 
@@ -11,24 +11,18 @@ import ensino.components.GenImportDialog;
  *
  * @author nicho
  */
-public class TurmaFieldsPanelEstudanteImportar extends GenImportDialog {
+public class CalendarioAtividadesFieldsImportar extends GenImportDialog {
 
-    public TurmaFieldsPanelEstudanteImportar() {
-        super("<html><h1>Orientações para importação de estudantes</h1></html>",
-                "<html>Organize os dados dos alunos em colunas: Id, Nome, Número do R.A., Data de Ingresso e Situação.<br/>"
-                + "<ol><li>Id = Id do estudante. Esse campo é utilizado para identificar a sequência de cadastro do estudante.</li>"
-                + "<li>Nome = Nome do estudante. Esse campo pode ter caracteres alfanuméricos.</li>"
-                + "<li>R.A. = Registro Acadêmico. Esse campo pode ter caracteres alfanuméricos.</li>"
-                + "<li>Ingresso = Data do Ingresso no curso. Esse campo pode ter data no formato dd/MM/yyyy.</li>"
-                + "<li>Situacao = Situação do Acadêmico. Esse campo deve ser preenchido com: 'EC', 'RN', 'RF', 'DE'.<br/>"
-                + "<b>Legenda:</b><br/>"
-                + "    <b>EC:</b> Em curso<br/>"
-                + "    <b>RN:</b> Reprovado por Nota<br/>"
-                + "    <b>RF:</b> Reprovado por Falta<br/>"
-                + "    <b>DE:</b> Desligado do curso</li></ol>"
+    public CalendarioAtividadesFieldsImportar() {
+        super("<html><h1>Orientações para importação de atividades de calendário</h1></html>",
+                "<html>Organize os dados das atividades em colunas: Mês, Dias, Atividade.<br/>"
+                + "<ol><li>Mês = Esse campo é utilizado para identificar o mês de realização da atividade. São as 3 primeiras letras do mês em MAIÚSCULO.</li>"
+                + "<li>Dias = Dia da atividade. Esse campo pode ter caracteres alfanuméricos. Por exemplo: 3, 3 a 10</li>"
+                + "<li>Atividade = Descrição da atividade. Esse campo pode ter caracteres alfanuméricos.</li>"
+                + "<li>Legenda = Código da legenda. Este código pode ser obtido no cadastro de legendas no sistema e deve ser informado o número de identificação da legenda.</li></ol>"
                 + "Importante: A primeira linha é utilizada para colocar os nomes dos campos e sua sequência deve ser respeitada.<br/>"
                 + "Salve o arquivo no formato *.CSV. Você pode escolhar o separador ',' ou ';'.</html>");
-        String campos[] = {"id", "nome", "registro", "ingresso", "situacao"};
+        String campos[] = {"mes", "dias", "atividades", "legenda"};
         super.setFileFields(campos);
         super.setVisible(true);
     }

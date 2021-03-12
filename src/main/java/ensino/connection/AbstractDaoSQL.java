@@ -72,7 +72,7 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
             }
         } catch (SQLException ex) {
             rollback();
-            throw new RuntimeException(ex);
+            throw ex;
         }
     }
 

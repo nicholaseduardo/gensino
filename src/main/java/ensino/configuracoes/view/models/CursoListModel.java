@@ -22,7 +22,6 @@ import javax.swing.AbstractListModel;
  */
 public class CursoListModel extends AbstractListModel {
 
-    private CursoController cursoCol;
     private List<Curso> list;
 
     private Campus campus;
@@ -39,7 +38,6 @@ public class CursoListModel extends AbstractListModel {
 
     private void initComponents() {
         try {
-            cursoCol = ControllerFactory.createCursoController();
             list = new ArrayList();
             refresh();
         } catch (Exception ex) {
@@ -48,15 +46,18 @@ public class CursoListModel extends AbstractListModel {
     }
 
     public void refresh() {
-        if (campus == null) {
-            list = (List<Curso>) cursoCol.listar();
-        } else {
+        try {
+            CursoController cursoCol = ControllerFactory.createCursoController();
             list = cursoCol.listar(campus);
+            cursoCol.close();
+            
+            if (!list.isEmpty()) {
+                list.sort(Comparator.comparing(Curso::getNome));
+            }
+            fireIntervalAdded(this, 0, 0);
+        } catch (Exception ex) {
+            Logger.getLogger(CursoListModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (!list.isEmpty()) {
-            list.sort(Comparator.comparing(Curso::getNome));
-        }
-        fireIntervalAdded(this, 0, 0);
     }
 
     public void setCampus(Campus campus) {
@@ -72,5 +73,5 @@ public class CursoListModel extends AbstractListModel {
     public Object getElementAt(int index) {
         return list.get(index);
     }
-    
+
 }

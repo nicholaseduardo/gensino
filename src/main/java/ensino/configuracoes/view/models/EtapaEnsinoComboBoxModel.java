@@ -8,7 +8,10 @@ package ensino.configuracoes.view.models;
 import ensino.configuracoes.controller.EtapaEnsinoController;
 import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.NivelEnsino;
+import ensino.patterns.factory.ControllerFactory;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 
@@ -18,7 +21,6 @@ import javax.swing.ComboBoxModel;
  */
 public class EtapaEnsinoComboBoxModel extends AbstractListModel implements ComboBoxModel {
 
-    private EtapaEnsinoController col;
     private List<EtapaEnsino> list;
     private NivelEnsino nivelEnsino;
 
@@ -28,8 +30,7 @@ public class EtapaEnsinoComboBoxModel extends AbstractListModel implements Combo
         this.list = list;
     }
 
-    public EtapaEnsinoComboBoxModel(EtapaEnsinoController controller, NivelEnsino nivelEnsino) {
-        col = controller;
+    public EtapaEnsinoComboBoxModel(NivelEnsino nivelEnsino) {
         this.nivelEnsino = nivelEnsino;
         initComponents();
     }
@@ -40,8 +41,14 @@ public class EtapaEnsinoComboBoxModel extends AbstractListModel implements Combo
 
     public void refresh() {
         int index = 0;
-        if (col != null && nivelEnsino != null) {
-            list = (List<EtapaEnsino>) col.listar(nivelEnsino);
+        if (nivelEnsino != null) {
+            try {
+                EtapaEnsinoController controller = ControllerFactory.createEtapaEnsinoController();
+                list = (List<EtapaEnsino>) controller.listar(nivelEnsino);
+                controller.close();
+            } catch (Exception ex) {
+                Logger.getLogger(EtapaEnsinoComboBoxModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         setSelectedItem(null);

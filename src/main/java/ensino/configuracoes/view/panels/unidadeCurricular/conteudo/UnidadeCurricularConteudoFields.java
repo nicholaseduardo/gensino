@@ -130,7 +130,7 @@ public class UnidadeCurricularConteudoFields extends DefaultFieldsPanel {
         HashMap<String, Object> map = new HashMap();
 
         String sId = txtId.getText();
-        Integer id = sId.matches("\\d+") ? Integer.parseInt(sId) : null;
+        Long id = sId.matches("\\d+") ? Long.parseLong(sId) : null;
         String sSequencia = txtSequencia.getText();
         Integer sequencia = sSequencia.matches("\\d+") ? Integer.parseInt(sSequencia) : 0;
         String sNivel = txtNivel.getText();

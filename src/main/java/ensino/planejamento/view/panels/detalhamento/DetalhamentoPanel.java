@@ -154,7 +154,7 @@ public class DetalhamentoPanel extends DefaultCleanFormPanel {
     }
 
     @Override
-    public void onGenarateAction(ActionEvent e) {
+    public void onGenarateAction(ActionEvent e, Object o) {
         /**
          * Cria o detalhamento caso ainda não exista
          */

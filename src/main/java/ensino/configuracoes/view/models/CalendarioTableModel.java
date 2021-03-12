@@ -14,23 +14,21 @@ import java.util.List;
  *
  * @author nicho
  */
-public class CalendarioTableModel extends DefaultTableModel {
+public class CalendarioTableModel extends DefaultTableModel<Calendario> {
 
     public CalendarioTableModel() {
         this(new ArrayList<Calendario>());
     }
     
     public CalendarioTableModel(List<Calendario> lista) {
-        super(lista, new String[] {
-            "Descricao"
-        });
+        super(lista, new String[] {"Nome", "Ações"});
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Calendario calendario = (Calendario) getRow(rowIndex);
         switch(columnIndex) {
-            case 0: return calendario.getDescricao();
+            case 0: return calendario;
             default: return null;
         }
     }

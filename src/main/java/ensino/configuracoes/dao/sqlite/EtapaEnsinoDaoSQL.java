@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -70,16 +69,22 @@ public class EtapaEnsinoDaoSQL extends AbstractDaoSQL<EtapaEnsino> {
 
     @Override
     public Long nextVal(EtapaEnsino object) {
-        EtapaEnsinoId composedId = object.getId();
-        String sql = "select max(ee.id.sequencia) from EtapaEnsino ee where ee.id.nivelEnsino = :pNivelEnsino";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pNivelEnsino", composedId.getNivelEnsino());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<EtapaEnsino> root = query.from(EtapaEnsino.class);
+
+        query.select(builder.max(root.<Long>get("id").get("sequencia")));
+
+        EtapaEnsinoId id = object.getId();
+        query.where(builder.equal(root.get("id").get("curso"), id.getNivelEnsino()));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

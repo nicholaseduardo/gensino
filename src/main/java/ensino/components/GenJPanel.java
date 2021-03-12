@@ -40,6 +40,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -96,6 +98,8 @@ public class GenJPanel extends JPanel {
     protected ImageIcon iconForward;
     protected ImageIcon iconUp;
     protected ImageIcon iconDown;
+    protected ImageIcon iconAtividade;
+    protected ImageIcon iconPeriodoLetivo;
 
     public GenJPanel() {
         super();
@@ -154,6 +158,8 @@ public class GenJPanel extends JPanel {
         iconUp = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Arrows-Up-icon-25px.png")));
         iconDown = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Arrows-Down-icon-25px.png")));
         iconDelete = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "del-black-icon-png-25px.png")));
+        iconAtividade = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "Status-mail-task-icon-25px.png")));
+        iconPeriodoLetivo = new ImageIcon(getClass().getResource(String.format("%s/%s", IMG_SOURCE, "calendar-week-icon-25px.png")));
 
         iconDiario = new ImageIcon(urlDiary);
 
@@ -181,6 +187,17 @@ public class GenJPanel extends JPanel {
 
     public JPanel createPanel() {
         return createPanel(new FlowLayout(FlowLayout.LEFT));
+    }
+    
+    /**
+     * Cria um objeto da classe <code>Border</code>
+     * @param title     Texto que será colocado como título da borda
+     * @return 
+     */
+    protected Border createTitleBorder(String title) {
+        return BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.BLACK), title, 
+                TitledBorder.LEFT, TitledBorder.TOP);
     }
 
     public JPanel createPanel(LayoutManager layout) {
@@ -321,7 +338,7 @@ public class GenJPanel extends JPanel {
 
     }
 
-    public void onGenarateAction(ActionEvent e) {
+    public void onGenarateAction(ActionEvent e, Object o) {
 
     }
 
@@ -464,6 +481,8 @@ public class GenJPanel extends JPanel {
                     : AcoesBotoes.UP.equals(acaoBotao) ? iconUp
                     : AcoesBotoes.DOWN.equals(acaoBotao) ? iconDown
                     : AcoesBotoes.DELETE.equals(acaoBotao) ? iconDelete
+                    : AcoesBotoes.ATIVIDADE.equals(acaoBotao) ? iconAtividade
+                    : AcoesBotoes.PERIODO_LETIVO.equals(acaoBotao) ? iconPeriodoLetivo
                     : null);
             this.acaoBotao = acaoBotao;
             this.object = object;
@@ -505,7 +524,7 @@ public class GenJPanel extends JPanel {
                     onDuplicateAction(ae, object);
                     break;
                 case GENERATE:
-                    onGenarateAction(ae);
+                    onGenarateAction(ae, object);
                     break;
                 case IMPORT:
                     onImportAction(ae);

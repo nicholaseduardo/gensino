@@ -20,14 +20,14 @@ import javax.persistence.ManyToOne;
 @Embeddable
 public class ObjetivoDetalheId implements Serializable {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "objetivo_planoDeEnsino_id"),
         @JoinColumn(name = "objetivo_id")
     })
     private Objetivo objetivo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "detalhamehto_planoDeEnsino_id"),
         @JoinColumn(name = "detalhamento_id")

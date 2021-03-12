@@ -24,7 +24,7 @@ public class MetodologiaId implements Serializable {
     @Column(name = "sequencia")
     private Long sequencia;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(value = {
         @JoinColumn(name = "planoDeEnsino_id"),
         @JoinColumn(name = "detalhamento_id")

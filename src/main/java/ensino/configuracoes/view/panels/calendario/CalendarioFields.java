@@ -18,26 +18,18 @@ import ensino.patterns.factory.ControllerFactory;
 import ensino.util.JCalendario;
 import ensino.util.types.MesesDeAno;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ComponentEvent;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -55,21 +47,16 @@ public class CalendarioFields extends DefaultFieldsPanel {
     private GenJTextField txtDescricao;
 
     private GenJComboBox comboCampus;
-    private JTabbedPane tabbedPanel;
     private JTabbedPane tabbedPaneCalendario;
 
-    /**
-     * Atributo utilizado para representar os campos de controle da atividade
-     */
-    private CalendarioAtividadesPanel atividadePanel;
     /**
      * Atributo utilizado para representar os campos de controle do periodo
      * letivo
      */
-    private CalendarioPeriodoLetivoPanel periodosLetivosPanel;
+    private List<Atividade> listaAtividades;
 
     public CalendarioFields(Campus campus) {
-        super();
+        super("Ficha");
         selectedCampus = campus;
         initComponents();
     }
@@ -80,18 +67,16 @@ public class CalendarioFields extends DefaultFieldsPanel {
 
     private void initComponents() {
         try {
-            setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-            JPanel panel = new JPanel(new BorderLayout(5, 5));
-            panel.add(createCalendarioFields(), BorderLayout.PAGE_START);
-            panel.add(createDetalhamentoPanel(), BorderLayout.CENTER);
-            add(panel);
+            setLayout(new BorderLayout(10, 10));
+            add(createCalendarioFields(), BorderLayout.CENTER);
+            add(createDetalhamentoPanel(), BorderLayout.PAGE_END);
         } catch (Exception ex) {
-            Logger.getLogger(CalendarioFields.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(ex);
         }
     }
 
     private JPanel createCalendarioFields() throws Exception {
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel panel = createPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
         GenJLabel lblAno = new GenJLabel("Ano:", JLabel.TRAILING);
@@ -130,28 +115,16 @@ public class CalendarioFields extends DefaultFieldsPanel {
         col = 0;
         GridLayoutHelper.setRight(c, col++, row);
         panel.add(lblDescricao, c);
-        GridLayoutHelper.set(c, col++, row, 2, 1, GridBagConstraints.LINE_START);
+        GridLayoutHelper.set(c, col++, row, 3, 1, GridBagConstraints.LINE_START);
         panel.add(txtDescricao, c);
 
         return panel;
     }
 
     private JPanel createDetalhamentoPanel() {
-        atividadePanel = new CalendarioAtividadesPanel();
-        periodosLetivosPanel = new CalendarioPeriodoLetivoPanel();
-        periodosLetivosPanel.setAtividadePanel(atividadePanel);
-        
-        tabbedPanel = new JTabbedPane();
-        tabbedPanel.addTab(TabsCalendario.ATIVIDADES.toString(), atividadePanel);
-        tabbedPanel.add(TabsCalendario.PERIODOS.toString(), periodosLetivosPanel);
-        tabbedPanel.addTab(TabsCalendario.CALENDARIO.toString(), createTabbedPaneCalendario());
-        tabbedPanel.addChangeListener(new TabsChangeListener());
-
-        Border lineBorder = BorderFactory.createLineBorder(Color.GRAY);
-        tabbedPanel.setBorder(BorderFactory.createTitledBorder(lineBorder, "Detalhamento", TitledBorder.LEFT, TitledBorder.TOP));
-        
-        JPanel panel = new JPanel();
-        panel.add(tabbedPanel);
+        JPanel panel = createPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        panel.setBorder(createTitleBorder("Calendário de atividades"));
+        panel.add(createTabbedPaneCalendario());
         return panel;
     }
 
@@ -173,7 +146,7 @@ public class CalendarioFields extends DefaultFieldsPanel {
         return tabbedPaneCalendario;
     }
 
-    public void reloadCalendarData(List<Atividade> atividadesLis) {
+    public void reloadCalendarData() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         String sAno = txtAno.getText();
@@ -184,14 +157,14 @@ public class CalendarioFields extends DefaultFieldsPanel {
         for (MesesDeAno mes : MesesDeAno.values()) {
             if (count < 1) {
                 // O componente não existe
-                JCalendario jcal = new JCalendario(ano, mes, atividadesLis);
+                JCalendario jcal = new JCalendario(ano, mes, this.listaAtividades);
                 tabbedPaneCalendario.addTab(mes.name(), jcal);
             } else {
                 int index = mes.getValue() - 1;
                 // Componente existe e a lista de atividades é atualizada
 
                 Component tabComponent = tabbedPaneCalendario.getComponentAt(index);
-                ((JCalendario) tabComponent).setAtividades(atividadesLis);
+                ((JCalendario) tabComponent).setAtividades(this.listaAtividades);
             }
         }
     }
@@ -204,8 +177,6 @@ public class CalendarioFields extends DefaultFieldsPanel {
                 : Integer.parseInt(txtAno.getText()));
         map.put("descricao", txtDescricao.getText());
         map.put("campus", comboCampus.getSelectedItem());
-        map.putAll(atividadePanel.getFieldValues());
-        map.putAll(periodosLetivosPanel.getFieldValues());
 
         return map;
     }
@@ -217,18 +188,15 @@ public class CalendarioFields extends DefaultFieldsPanel {
 
     @Override
     public void setFieldValues(Object object) {
-        atividadePanel.setFieldValues(object);
-        periodosLetivosPanel.setFieldValues(object);
         if (object instanceof Calendario) {
             Calendario calendario = (Calendario) object;
             txtAno.setText(calendario.getId().getAno().toString());
             txtDescricao.setText(calendario.getDescricao());
             comboCampus.setSelectedItem(calendario.getId().getCampus());
 
-            reloadCalendarData(calendario.getAtividades());
+            this.listaAtividades = calendario.getAtividades();
 
-            // Habilita a primeira aba do tabs
-            tabbedPanel.setSelectedIndex(TabsCalendario.ATIVIDADES.toInt());
+            reloadCalendarData();
         }
     }
 
@@ -251,8 +219,7 @@ public class CalendarioFields extends DefaultFieldsPanel {
         txtAno.setText("");
         txtDescricao.setText("");
         comboCampus.setSelectedItem(selectedCampus);
-        atividadePanel.clearFields();
-        periodosLetivosPanel.clearFields();
+        
         tabbedPaneCalendario.removeAll();
     }
 
@@ -261,62 +228,11 @@ public class CalendarioFields extends DefaultFieldsPanel {
         txtAno.setEnabled(active && txtAno.getText().isEmpty());
         txtDescricao.setEnabled(active);
         comboCampus.setEnabled(active && selectedCampus == null);
-
-        atividadePanel.enableFields(active);
-        periodosLetivosPanel.enableFields(active);
     }
 
     @Override
     public void initFocus() {
         txtAno.requestFocusInWindow();
-    }
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-        super.componentShown(e);
-        tabbedPanel.setSelectedIndex(TabsCalendario.ATIVIDADES.toInt());
-    }
-
-    private enum TabsCalendario {
-        ATIVIDADES(0), PERIODOS(1), SEMANAS(2), CALENDARIO(3);
-
-        private final int index;
-
-        TabsCalendario(int index) {
-            this.index = index;
-        }
-
-        public int toInt() {
-            return index;
-        }
-
-        @Override
-        public String toString() {
-            switch (index) {
-                case 0:
-                    return "Atividades letivas";
-                case 1:
-                    return "Períodos letivos";
-                case 2:
-                    return "Semanas letivas";
-                case 3:
-                    return "Calendário anual";
-            }
-            return null;
-        }
-    }
-
-    private class TabsChangeListener implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            if (tabbedPanel.getSelectedIndex() == TabsCalendario.CALENDARIO.toInt()
-                    && tabbedPaneCalendario.getTabCount() > 0) {
-                tabbedPaneCalendario.setSelectedIndex(0);
-                reloadCalendarData(atividadePanel.getData());
-            }
-        }
-
     }
 
 }

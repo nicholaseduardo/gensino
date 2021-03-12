@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -107,9 +106,7 @@ public class PlanoDeEnsino implements Serializable {
     @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Objetivo> objetivos;
 
-    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, 
-            cascade = {CascadeType.REMOVE, CascadeType.DETACH},
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Detalhamento> detalhamentos;
 
     @OneToMany(mappedBy = "id.planoDeEnsino", fetch = FetchType.LAZY, orphanRemoval = true)

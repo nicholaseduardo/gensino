@@ -272,11 +272,12 @@ public class FichaPlanoDeEnsino extends Report {
         return cell;
     }
 
-    private Table createDetalhamentoProposta() {
+    private Cell createDetalhamentoProposta() {
         String headerTitle[] = {"Mês", "Período", "N.o Aulas Teóricas",
             "N.o Aulas Práticas", "Observações", "Conteúdo a ser desenvolvido",
             "Metodologia"};
         Integer fontSize = 10, size = headerTitle.length;
+        Integer nSAP = 0, nSAT = 0;
 
         Table table = new Table(size);
         table.setWidth(UnitValue.createPercentValue(100));
@@ -310,11 +311,16 @@ public class FichaPlanoDeEnsino extends Report {
                  */
                 for(Detalhamento d : planoDeEnsino.getDetalhamentosPorMes(mes)) {
                     SemanaLetiva sl = d.getSemanaLetiva();
+                    Integer nat = d.getNAulasTeoricas(),
+                            nap = d.getNAulasPraticas();
+                    nSAT += nat;
+                    nSAP += nap;
+                    
                     table.addCell(createDefaultCell(sl.getPeriodo().toString(), 
                             fontSize, false, false, true, false));
-                    table.addCell(createDefaultCell(String.format("%d", d.getNAulasTeoricas()), 
+                    table.addCell(createDefaultCell(String.format("%d", nat), 
                             fontSize, false, true, true, false));
-                    table.addCell(createDefaultCell(String.format("%d", d.getNAulasPraticas()), 
+                    table.addCell(createDefaultCell(String.format("%d", nap), 
                             fontSize, false, true, true, false));
                     table.addCell(createDefaultCell("", fontSize, false, false, true, false));
                     table.addCell(createDefaultCell(d.getConteudo(), 
@@ -325,12 +331,22 @@ public class FichaPlanoDeEnsino extends Report {
                 
             }
         }
+        Cell tableCell = new Cell();
+        tableCell.add(table);
+        Paragraph pAulasPraticas = new Paragraph("Total de Aulas Práticas: ")
+                .add(String.format("%d", nSAP));
+        
+        Paragraph pAulasTeoricas = new Paragraph("Total de Aulas Teóricas: ")
+                .add(String.format("%d", nSAT));
+        
+        Paragraph pTotalAulas = new Paragraph("Total de Aulas Práticas: ")
+                .add(String.format("%d", nSAP + nSAT));
+        
+        tableCell.add(pAulasPraticas);
+        tableCell.add(pAulasTeoricas);
+        tableCell.add(pTotalAulas);
 
-        return table;
+        return tableCell;
     }
-
-//    public static void main(String args[]) throws Exception {
-//        new FichaPlanoDeEnsino(ControllerFactory.createPlanoDeEnsinoController().buscarPorId(13)).initReport();
-//    }
 
 }

@@ -20,7 +20,6 @@ import javax.swing.ComboBoxModel;
  * @author nicho
  */
 public class CampusComboBoxModel extends AbstractListModel implements ComboBoxModel {
-    private CampusController campusCol;
     private List<Campus> list;
     
     private Campus selection;
@@ -31,16 +30,18 @@ public class CampusComboBoxModel extends AbstractListModel implements ComboBoxMo
     
     private void initComponents() {
         try {
-            campusCol = ControllerFactory.createCampusController();
+            
             refresh();
         } catch (Exception ex) {
             Logger.getLogger(CampusComboBoxModel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    public void refresh() {
+    public void refresh() throws Exception {
         int index = 0;
+        CampusController campusCol = ControllerFactory.createCampusController();
         list = (List<Campus>) campusCol.listar();
+        campusCol.close();
         
         if (!list.isEmpty()) {
             list.sort(Comparator.comparing(Campus::getNome));

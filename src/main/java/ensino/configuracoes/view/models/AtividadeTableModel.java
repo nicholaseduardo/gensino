@@ -7,7 +7,6 @@ package ensino.configuracoes.view.models;
 
 import ensino.configuracoes.model.Atividade;
 import ensino.defaults.DefaultTableModel;
-import ensino.patterns.factory.DaoFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,31 +22,15 @@ public class AtividadeTableModel extends DefaultTableModel<Atividade> {
     
     public AtividadeTableModel(List<Atividade> lista) {
         super(lista, new String[] {
-            "Descrição"
+            "Descrição", "Ações"
         });
     }
-    
-    /**
-     * Remoção lógica
-     * @param row 
-     */
-    @Override
-    public void removeRow(int row) {
-        if (DaoFactory.isXML()) {
-            Atividade o = (Atividade) lista.get(row);
-            o.delete();
-            updateRow(row, o);
-        } else {
-            super.removeRow(row);
-        }
-    }
-    
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Atividade atividade = (Atividade) getRow(rowIndex);
         switch(columnIndex) {
-            case 0: return atividade.getDescricao();
+            case 0: return atividade;
             default: return null;
         }
     }

@@ -25,7 +25,7 @@ public class DateHelper {
     }
     
     public static Date stringToDate(String data, String format) throws ParseException {
-        if (!"".equals(data)) {
+        if (!"".equals(data) && !"  /  /    ".equals(data)) {
             SimpleDateFormat simple = new SimpleDateFormat(format);
             return simple.parse(data);
         }

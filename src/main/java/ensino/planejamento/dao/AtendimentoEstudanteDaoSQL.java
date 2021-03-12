@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -70,19 +69,22 @@ public class AtendimentoEstudanteDaoSQL extends AbstractDaoSQL<AtendimentoEstuda
 
     @Override
     public Long nextVal(AtendimentoEstudante object) {
-        AtendimentoEstudanteId composedId = object.getId();
-        String sql = "select max(a.id.sequencia) from AtendimentoEstudante a"
-                + " where a.id.permanenciaEstudantil = :pPermanenciaEstudantil " +
-                  "   and a.id.estudante = :pEstudante ";
+        Long maxNumero;
 
-        Long maxNumero = 1L;
-        TypedQuery<Long> query = em.createQuery(sql, Long.class);
-        query.setParameter("pPermanenciaEstudantil", composedId.getPermanenciaEstudantil());
-        query.setParameter("pEstudante", composedId.getEstudante());
-        try {
-            maxNumero = query.getSingleResult();
-        } catch (NoResultException ex) {
-            return maxNumero;
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+        Root<AtendimentoEstudante> root = query.from(AtendimentoEstudante.class);
+
+        query.select(builder.max(root.<Long>get("id").get("sequencia")));
+
+        AtendimentoEstudanteId id = object.getId();
+        query.where(builder.equal(root.get("id").get("permanenciaEstudantil"), id.getPermanenciaEstudantil()));
+
+        TypedQuery<Long> qr = em.createQuery(query);
+        maxNumero = qr.getSingleResult();
+
+        if (maxNumero == null) {
+            return 1L;
         }
         return maxNumero + 1;
     }

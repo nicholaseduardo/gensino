@@ -8,19 +8,22 @@ package ensino.planejamento.view.panels.avaliacao;
 import ensino.components.GenJButton;
 import ensino.components.GenJComboBox;
 import ensino.components.GenJLabel;
-import ensino.configuracoes.controller.EtapaEnsinoController;
+import ensino.configuracoes.model.Estudante;
 import ensino.configuracoes.model.EtapaEnsino;
 import ensino.configuracoes.model.InstrumentoAvaliacao;
 import ensino.configuracoes.model.InstrumentoAvaliacaoFactory;
+import ensino.configuracoes.model.NivelEnsino;
 import ensino.configuracoes.view.models.EtapaEnsinoComboBoxModel;
 import ensino.configuracoes.view.models.MetodoComboBoxModel;
 import ensino.defaults.DefaultCleanFormPanel;
 import ensino.helpers.GridLayoutHelper;
 import ensino.patterns.BaseObject;
 import ensino.patterns.factory.ControllerFactory;
+import ensino.planejamento.controller.AvaliacaoController;
 import ensino.planejamento.controller.PlanoAvaliacaoController;
 import ensino.planejamento.model.Detalhamento;
 import ensino.planejamento.model.Metodologia;
+import ensino.planejamento.model.ObjetivoDetalhe;
 import ensino.planejamento.model.PlanoAvaliacao;
 import ensino.planejamento.model.PlanoAvaliacaoFactory;
 import ensino.planejamento.model.PlanoAvaliacaoId;
@@ -48,10 +51,10 @@ import javax.swing.table.TableColumnModel;
  *
  * @author santos
  */
-public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
+public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel<PlanoAvaliacao> {
 
     private PlanoDeEnsino planoDeEnsino;
-    private EtapaEnsino etapaPadrao;
+
     private GenJComboBox comboEtapaEnsino;
     private EtapaEnsinoComboBoxModel modelEtapaEnsino;
     private GenJComboBox comboInstrumento;
@@ -65,8 +68,12 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
 
     public PlanoDeEnsinoPlanoAvaliacao(Component frame, PlanoDeEnsino planoDeEnsino) {
         super(frame);
+        this.planoDeEnsino = planoDeEnsino;
+        initComponents();
+    }
+
+    private void initComponents() {
         try {
-            this.planoDeEnsino = planoDeEnsino;
             URL url = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "project-plan-icon-50px.png"));
 
             setName("panel.planoDeEnsino.avaliacao.planoAvaliacao");
@@ -78,7 +85,6 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
             showPanelInCard(CARD_LIST);
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
     }
 
@@ -111,27 +117,23 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
 
     @Override
     public Object getSelectedObject() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
     public void addFiltersFields() {
         try {
             GenJLabel lblInstrumento = new GenJLabel("Instrumento de Avaliação:");
-            comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(ControllerFactory.createInstrumentoAvaliacaoController()));
+            comboInstrumento = new GenJComboBox(new MetodoComboBoxModel(TipoMetodo.INSTRUMENTO));
             lblInstrumento.setLabelFor(comboInstrumento);
 
             GenJLabel lblEtapa = new GenJLabel("Etapa de Ensino:");
-            EtapaEnsinoController colEtapaEnsino = ControllerFactory.createEtapaEnsinoController();
-            modelEtapaEnsino = new EtapaEnsinoComboBoxModel(colEtapaEnsino,
+            modelEtapaEnsino = new EtapaEnsinoComboBoxModel(
                     planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino()
             );
             comboEtapaEnsino = new GenJComboBox(modelEtapaEnsino);
             comboEtapaEnsino.repaint();
             lblEtapa.setLabelFor(comboEtapaEnsino);
-
-            List<EtapaEnsino> l = colEtapaEnsino.listar(planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino());
-            etapaPadrao = l.isEmpty() ? null : l.get(0);
 
             btSearch = createButton(new ActionHandler(AcoesBotoes.SEARCH));
             btClear = createButton(new ActionHandler(AcoesBotoes.CLEAR));
@@ -165,7 +167,6 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
 
         } catch (Exception ex) {
             showErrorMessage(ex);
-            ex.printStackTrace();
         }
     }
 
@@ -184,22 +185,32 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
             showWarningMessage("Não existem lançamentos de detalhamento para geração automática de avaliações");
             return;
         }
-        if (!getModel().isEmpty()) {
-            showWarningMessage("Já existem avalições lançadas. Essa operação lançará novas avaliações "
-                    + "no final da lista.");
-        }
-        Long sequencia = 1L;
 
-        for (Detalhamento detalhe : listaDetalhamento) {
-            // para cada detalhe, verifica-se os métodos vinculados
-            List<Metodologia> lMetodologia = detalhe.getMetodologias();
-            for (Metodologia metodologia : lMetodologia) {
-                // verifica se a metodologia é de avaliacao
-                if (metodologia.getTipo().equals(TipoMetodo.INSTRUMENTO)) {
-                    try {
+        try {
+            if (!getModel().isEmpty() && confirmDialog(
+                    "Já existem planos de avalições lançadas. Essa operação sobreescreverá as avaliações "
+                    + "existentes. Deseja continuar?")) {
+                getController().removerEmCascata(getModel().getData());
+            }
+            Long sequencia = 1L;
+            List<Estudante> listaEstudantes = planoDeEnsino.getTurma().getEstudantes();
+
+            NivelEnsino nivelEnsino = planoDeEnsino.getUnidadeCurricular().getCurso().getNivelEnsino();
+            EtapaEnsino etapaPadrao = nivelEnsino.getEtapas().get(0);
+
+            AvaliacaoController avaliacaoCol = ControllerFactory.createAvaliacaoController();
+            for (Detalhamento detalhe : listaDetalhamento) {
+                // para cada detalhe, verifica-se os métodos vinculados
+                List<Metodologia> lMetodologia = detalhe.getMetodologias();
+                for (Metodologia metodologia : lMetodologia) {
+                    // verifica se a metodologia é de avaliacao
+                    if (metodologia.getTipo().equals(TipoMetodo.INSTRUMENTO)) {
                         BaseObject bo = metodologia.getMetodo();
                         InstrumentoAvaliacao instrumentoAvaliacao = InstrumentoAvaliacaoFactory.getInstance()
                                 .createObject(bo.getId(), bo.getNome());
+
+                        ObjetivoDetalhe od = detalhe.getObjetivoDetalhes().isEmpty() ? null
+                                : detalhe.getObjetivoDetalhes().get(0);
                         // Cria a avaliação básica a partir do método de avaliação
                         PlanoAvaliacao plano = PlanoAvaliacaoFactory.getInstance()
                                 .createObject(
@@ -210,20 +221,23 @@ public class PlanoDeEnsinoPlanoAvaliacao extends DefaultCleanFormPanel {
                                         etapaPadrao, 1.0, 10.0,
                                         detalhe.getSemanaLetiva().getPeriodo().getAte(),
                                         instrumentoAvaliacao,
-                                        !detalhe.getObjetivoDetalhes().isEmpty()
-                                        ? detalhe.getObjetivoDetalhes().get(0).getObjetivo() : null);
+                                        od != null ? od.getObjetivo() : null);
+
+                        getController().salvar(plano);
                         /**
                          * Cria as avaliações do plano de avaliação por
                          * estudante
                          */
-                        plano.criarAvaliacoes(planoDeEnsino.getTurma().getEstudantes());
-                        getController().salvar(plano);
-                    } catch (Exception ex) {
-                        showErrorMessage(ex);
+                        plano.criarAvaliacoes(listaEstudantes);
+                        avaliacaoCol.salvarEmCascata(plano.getAvaliacoes());
                     }
                 }
             }
+            avaliacaoCol.close();
+        } catch (Exception ex) {
+            showErrorMessage(ex);
         }
+
         onSearchAction(e);
     }
 
