@@ -19,12 +19,13 @@ public interface DaoPattern<T> {
     void update(T object) throws SQLException;
     void delete(T object) throws SQLException;
     void delete(T object, Boolean commit) throws SQLException;
-    void begin() throws SQLException;
-    void commit() throws SQLException;
-    void rollback() throws SQLException;
+    
     List<T> findAll();
     T findById(Object id);
-    void close();
     Long nextVal();
     Long nextVal(T composedId);
+    
+    void close();void begin() throws SQLException;
+    void commit() throws SQLException;
+    void rollback() throws SQLException;
 }

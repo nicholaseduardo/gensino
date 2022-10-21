@@ -8,6 +8,8 @@ package ensino.connection;
 import ensino.patterns.DaoPattern;
 import java.sql.SQLException;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  *
@@ -16,7 +18,16 @@ import javax.persistence.EntityManager;
  */
 public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
+    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("GensinoDB");
     protected EntityManager em;
+
+    public AbstractDaoSQL() {
+
+    }
+
+    protected EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
 
     public AbstractDaoSQL(EntityManager em) {
         this.em = em;
@@ -24,6 +35,7 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
     @Override
     public void save(T object, Boolean commit) throws SQLException {
+        em = getEntityManager();
         try {
             if (commit) {
                 begin();
@@ -35,6 +47,10 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
         } catch (SQLException ex) {
             rollback();
             throw new RuntimeException(ex);
+        } finally {
+            if (em.isOpen()) {
+                em.close();
+            }
         }
     }
 
@@ -45,6 +61,7 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
     @Override
     public void update(T object) throws SQLException {
+        em = getEntityManager();
         try {
             begin();
             em.merge(object);
@@ -54,7 +71,7 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
             throw new RuntimeException(ex);
         }
     }
-    
+
     @Override
     public void delete(T object) throws SQLException {
         this.delete(object, Boolean.TRUE);
@@ -62,6 +79,7 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
     @Override
     public void delete(T object, Boolean commit) throws SQLException {
+        em = getEntityManager();
         try {
             if (commit) {
                 begin();
@@ -95,7 +113,9 @@ public abstract class AbstractDaoSQL<T> implements DaoPattern<T> {
 
     @Override
     public void close() {
-        this.em.close();
+        if (this.em.isOpen()) {
+            this.em.close();
+        }
     }
 
     @Override

@@ -23,8 +23,10 @@ import javax.persistence.Table;
 @Table(name = "nivelEnsino")
 public class NivelEnsino extends BaseObject {
     
-    @OneToMany(mappedBy = "id.nivelEnsino", cascade = CascadeType.ALL, 
-            fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.nivelEnsino", 
+            cascade = CascadeType.ALL, 
+            fetch = FetchType.LAZY, 
+            orphanRemoval = true)
     @OrderBy(value = "id.id")
     private List<EtapaEnsino> etapas;
     

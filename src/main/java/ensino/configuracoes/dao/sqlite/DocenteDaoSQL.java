@@ -28,7 +28,7 @@ public class DocenteDaoSQL extends AbstractDaoSQL<Docente> {
     }
 
     @Override
-    public Docente findById(Object id) {
+    public Docente findById(Object id) {        
         return em.find(Docente.class, id);
     }
 

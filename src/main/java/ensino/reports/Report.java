@@ -5,7 +5,7 @@
  */
 package ensino.reports;
 
-import com.itextpdf.io.font.FontConstants;
+import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.DeviceRgb;
@@ -31,9 +31,9 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.property.HorizontalAlignment;
-import com.itextpdf.layout.property.TextAlignment;
-import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
 import static ensino.components.GenJPanel.IMG_SOURCE;
 import ensino.helpers.DateHelper;
 import java.io.File;
@@ -86,7 +86,7 @@ public abstract class Report {
         pdf = new PdfDocument(pdfWriter);
         pdf.addEventHandler(PdfDocumentEvent.END_PAGE, new HeaderFooterHandler());
 
-        helvetica = PdfFontFactory.createFont(FontConstants.HELVETICA);
+        helvetica = PdfFontFactory.createFont(StandardFonts.HELVETICA);
 
         URL urlBrasao = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "brasao-do-brasil-republica.50px.png"));
         URL urlIfms = getClass().getResource(String.format("%s/%s", IMG_SOURCE, "marcaifms.50px.png"));
@@ -199,7 +199,7 @@ public abstract class Report {
                     .endText();
 
             // Adicionando o cabeçalho
-            Canvas canvasCabeca = new Canvas(pdfCanvas, pdfDoc,
+            Canvas canvasCabeca = new Canvas(pdfCanvas, 
                     new Rectangle(pageSize.getLeft() + 20,
                             pageSize.getBottom(),
                             pageSize.getWidth() - 40,
@@ -209,7 +209,7 @@ public abstract class Report {
             canvasCabeca.add(createReportHeader());
 
             // Adicionando o rodape
-            Canvas canvasRodape = new Canvas(pdfCanvas, pdfDoc,
+            Canvas canvasRodape = new Canvas(pdfCanvas, 
                     new Rectangle(pageSize.getLeft() + 20,
                             -pageSize.getTop() + 40,
                             pageSize.getWidth() - 40,

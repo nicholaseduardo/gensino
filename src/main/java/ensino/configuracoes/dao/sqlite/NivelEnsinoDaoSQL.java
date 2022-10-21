@@ -9,6 +9,7 @@ import ensino.configuracoes.model.NivelEnsino;
 import ensino.connection.AbstractDaoSQL;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 /**
  *
@@ -24,12 +25,19 @@ public class NivelEnsinoDaoSQL extends AbstractDaoSQL<NivelEnsino> {
 
     @Override
     public List<NivelEnsino> findAll() {
-        return em.createQuery(jpql, NivelEnsino.class).getResultList();
+        em = getEntityManager();
+        List<NivelEnsino> l = em.createQuery(jpql, NivelEnsino.class).getResultList();
+        close();
+        return l;
     }
 
     @Override
+    @Transactional
     public NivelEnsino findById(Object id) {
-        return em.find(NivelEnsino.class, id);
+        em = getEntityManager();
+        NivelEnsino obj = em.find(NivelEnsino.class, id);
+        close();
+        return obj;
     }
 
 }

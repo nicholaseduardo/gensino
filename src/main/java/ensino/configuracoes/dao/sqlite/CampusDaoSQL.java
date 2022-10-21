@@ -9,6 +9,7 @@ import ensino.configuracoes.model.Campus;
 import ensino.connection.AbstractDaoSQL;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 /**
@@ -35,9 +36,15 @@ public class CampusDaoSQL extends AbstractDaoSQL<Campus> {
 
     public Campus findByStatusVigente() {
         String sql = String.format("%s where c.status = 'V' ", jpql);
+        Campus obj;
+        try {
+            TypedQuery<Campus> query = em.createQuery(sql, Campus.class);
+            obj = query.getSingleResult();
+        } catch (NoResultException ex) {
+            obj = null;
+        }
 
-        TypedQuery<Campus> query = em.createQuery(sql, Campus.class);
-        return query.getSingleResult();
+        return obj;
     }
 
 }
