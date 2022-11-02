@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import mdlaf.MaterialLookAndFeel;
 
 /**
  *
@@ -41,13 +42,14 @@ public class Inicializacao {
                 * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
                 */
                 try {
-                    for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                        if ("Nimbus".equals(info.getName())) {
-                            UIManager.setLookAndFeel(info.getClassName());
-                            break;
-                        }
-                    }
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+//                    for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//                        if ("Nimbus".equals(info.getName())) {
+//                            UIManager.setLookAndFeel(info.getClassName());
+//                            break;
+//                        }
+//                    }
+                    UIManager.setLookAndFeel(new MaterialLookAndFeel());
+                } catch (UnsupportedLookAndFeelException ex) {
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 //</editor-fold>
